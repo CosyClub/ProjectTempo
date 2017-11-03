@@ -1,0 +1,7 @@
+# Ignore Emacs Backup Files
+*#*#
+*.#*
+*~
+
+# Ignore cmake build dir
+build/
