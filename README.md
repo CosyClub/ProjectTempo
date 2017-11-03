@@ -7,7 +7,7 @@
   The build is managed by CMake, hence the project can be built from command line or in an IDE of your choice.
 
   1. Clone Repository
-  2. If on Linux, run the "install_dependencies.sh" script. This works on Debian based systems and Archlinux so far. If you're one something out take a look at what packages the script installs and do the equivalent on your system
+  2. If on Linux, run the "install_dependencies.sh" script. This works on Debian based systems and Archlinux so far. If you're using something else take a look at what packages the script installs and do the equivalent on your system
   3. Create a directory "build" in root of repository
   4. Navigate to build directory in terminal
   5. Run the command `cmake ..` from the build directory, this will take a while as it builds Ogre and its dependencies
