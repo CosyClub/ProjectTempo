@@ -14,8 +14,6 @@ target_include_directories(client PRIVATE ${TEMPO_SDL2_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
 
 target_link_libraries(client sfml-system)
-target_link_libraries(client sfml-window)
-target_link_libraries(client sfml-graphics)
 target_link_libraries(client sfml-network)
 target_link_libraries(client sfml-audio)
 
