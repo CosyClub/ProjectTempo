@@ -18,6 +18,10 @@
 #include <OgreGLPlugin.h>
 #include <OgreGLRenderSystem.h>
 
+#include <SFML/System/Clock.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+
 int main(int argc, const char** argv){
 
 	/////////////////////////////////////////////////
@@ -30,7 +34,7 @@ int main(int argc, const char** argv){
 	root->addRenderSystem(renderer_gl);
 	root->setRenderSystem(renderer_gl);
 
-	// Now plugins are registered and engine is configured, do initialization
+	// Now plugins are registered and engine is configured, do initialisation
 	root->initialise(false);
 
 	printf("Initialised Ogre, starting application code...\n");
@@ -43,13 +47,27 @@ int main(int argc, const char** argv){
 	                              true);
 	resources.initialiseAllResourceGroups();
 
-	/////////////////////////////////////////////////
-	// Setup window and scene
+  /////////////////////////////////////////////////
+	// Setup window
+	int window_width  = 800;
+	int window_height = 600;
+	sf::ContextSettings sf_settings;
+	sf_settings.depthBits         = 24;
+	sf_settings.antialiasingLevel =  4;
+	sf_settings.stencilBits       =  8;
+	sf::RenderWindow sfapp(sf::VideoMode(window_width,window_height,32),
+	                       "RaveCave", sf::Style::Default, sf_settings);
 	Ogre::NameValuePairList window_options;
 	//window_options["vsync"] = "true";
-	Ogre::RenderWindow* app   = root->createRenderWindow("OgreDemo", 800, 600, false, &window_options);
-	Ogre::SceneManager* scene = root->createSceneManager(Ogre::ST_GENERIC);
+	window_options["externalWindowHandle"] = Ogre::StringConverter::toString(sfapp.getSystemHandle());
+	window_options["currentGlContext"] = "True";
+Ogre::RenderWindow* app   = root->createRenderWindow("RaveCave", window_width, window_height,
+                                                     false, &window_options);
+	app->setVisible(true);
 
+	/////////////////////////////////////////////////
+	// Setup scene
+	Ogre::SceneManager* scene = root->createSceneManager(Ogre::ST_GENERIC);
 	scene->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
 	Ogre::SceneNode* node_light = scene->getRootSceneNode()->createChildSceneNode();
 	Ogre::Light* light = scene->createLight("MainLight");
@@ -70,16 +88,22 @@ int main(int argc, const char** argv){
 	Ogre::Viewport* vp   = app->addViewport(camera);
 
 	/////////////////////////////////////////////////
-	// Setup input handling
-
-
-	/////////////////////////////////////////////////
-	// Start game, will block until frame listener returns false
+	// Startup main loop
 	int frame_counter = 0;
-	Ogre::Timer frame_timer;
-	Ogre::Timer fps_timer;
-	while(!app->isClosed()){
-		float rot_factor = (Ogre::Real)frame_timer.getMicroseconds() / 600000.0f;
+	sf::Clock frame_timer;
+	sf::Clock fps_timer;
+	while(sfapp.isOpen()){
+		sf::Event e;
+		while(sfapp.pollEvent(e)){
+			switch(e.type){
+			case sf::Event::Closed:
+				sfapp.close();
+				break;
+			default: break;
+			}
+		}
+
+		float rot_factor = frame_timer.getElapsedTime().asSeconds() * 1.5f;
 		float cam_dist   = 150 + (100 * sin(rot_factor / 3.0f));
 		float cam_x = cam_dist * sin(rot_factor);
 		float cam_z = cam_dist * cos(rot_factor);
@@ -90,14 +114,16 @@ int main(int argc, const char** argv){
 		root->renderOneFrame();
 
 		++frame_counter;
-		if(fps_timer.getMicroseconds() > 500000){
-			float seconds = fps_timer.getMicroseconds() / 1000000.0f;
+		if(fps_timer.getElapsedTime().asSeconds() > 0.5f){
+			float seconds = fps_timer.getElapsedTime().asSeconds();
 			printf("FPS: %i\n", (int)(frame_counter / seconds));
-			fps_timer.reset();
+			fps_timer.restart();
 			frame_counter = 0;
 		}
 	}
 
+	/////////////////////////////////////////////////
+	// Shutdown
 	printf("Cleaning up...\n");
 	delete root;
 	printf("Exiting\n");

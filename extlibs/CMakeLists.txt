@@ -30,3 +30,11 @@ execute_process(COMMAND cmake
 execute_process(COMMAND cmake --build
 	"${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/"
 )
+
+##########################################
+# SFML
+##########################################
+# Extract archive
+execute_process(COMMAND cmake -E tar xf SFML-2.4.2.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+# Build libraries
+add_subdirectory(SFML-2.4.2)
