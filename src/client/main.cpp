@@ -20,7 +20,6 @@
 
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
 
 int main(int argc, const char** argv){
 
@@ -49,21 +48,24 @@ int main(int argc, const char** argv){
 
   /////////////////////////////////////////////////
 	// Setup window
-	int window_width  = 800;
-	int window_height = 600;
+	int window_width         = 800;
+	int window_height        = 600;
+	const char* window_title = "RaveCave";
 	sf::ContextSettings sf_settings;
 	sf_settings.depthBits         = 24;
 	sf_settings.antialiasingLevel =  4;
 	sf_settings.stencilBits       =  8;
-	sf::RenderWindow sfapp(sf::VideoMode(window_width,window_height,32),
-	                       "RaveCave", sf::Style::Default, sf_settings);
+	sf::Window window(sf::VideoMode(window_width,window_height,32),
+	                        window_title, sf::Style::Default, sf_settings);
 	Ogre::NameValuePairList window_options;
 	//window_options["vsync"] = "true";
-	window_options["externalWindowHandle"] = Ogre::StringConverter::toString(sfapp.getSystemHandle());
+	window_options["externalWindowHandle"] = Ogre::StringConverter::toString(window.getSystemHandle());
 	window_options["currentGlContext"] = "True";
-Ogre::RenderWindow* app   = root->createRenderWindow("RaveCave", window_width, window_height,
-                                                     false, &window_options);
-	app->setVisible(true);
+	Ogre::RenderWindow* render_target = root->createRenderWindow(window_title,
+	                                                             window_width, window_height,
+	                                                             false, &window_options
+	                                                            );
+	render_target->setVisible(true);
 
 	/////////////////////////////////////////////////
 	// Setup scene
@@ -85,20 +87,24 @@ Ogre::RenderWindow* app   = root->createRenderWindow("RaveCave", window_width, w
 	Ogre::SceneNode* node_ogre = scene->getRootSceneNode()->createChildSceneNode();
 	node_ogre->attachObject(entity_ogre);
 
-	Ogre::Viewport* vp   = app->addViewport(camera);
+	Ogre::Viewport* vp   = render_target->addViewport(camera);
 
 	/////////////////////////////////////////////////
-	// Startup main loop
+	// Main loop
 	int frame_counter = 0;
 	sf::Clock frame_timer;
 	sf::Clock fps_timer;
-	while(sfapp.isOpen()){
+	while(window.isOpen()){
 		sf::Event e;
-		while(sfapp.pollEvent(e)){
+		while(window.pollEvent(e)){
 			switch(e.type){
 			case sf::Event::Closed:
-				sfapp.close();
+				window.close();
 				break;
+			case sf::Event::Resized:
+				window_width  = e.size.width;
+				window_height = e.size.height;
+				render_target->resize(window_width, window_height);
 			default: break;
 			}
 		}
