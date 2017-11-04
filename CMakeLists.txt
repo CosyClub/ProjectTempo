@@ -45,6 +45,13 @@ set(TEMPO_OGRE_INCLUDE_DIR
 set(TEMPO_OGRE_LIBRARY_DIR
 	"${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/lib;"
 	"${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/Dependencies/lib"
+	)
+
+set(TEMPO_SFML_DIR
+	"${TEMPO_EXTLIBS_DIR}/sfml-2.4.2"
+)
+set(TEMPO_SFML_INCLUDE_DIR
+	"${TEMPO_SFML_DIR}/include"
 )
 
 add_subdirectory(${TEMPO_EXTLIBS_DIR})

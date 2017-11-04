@@ -1,3 +1,4 @@
-# Ignore the extracted ogre source
+# Ignore the extracted source directories
 ogre-1.10.9
 FreeImage-3.17.0
+SFML-2.4.2

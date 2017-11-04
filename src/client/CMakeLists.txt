@@ -3,20 +3,20 @@ link_directories("${TEMPO_LIB_DIR}")
 
 add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/main.cpp
-	)
+)
 
 set_target_properties(client PROPERTIES OUTPUT_NAME "RaveCave")
 
 #http://wiki.ogre3d.org/StaticLinking
 #target_compile_definitions(OrgeDemo OGRE_STATIC_LIB)
-#target_include_directories(client PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
+target_include_directories(client PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_OGRE_INCLUDE_DIR})
 
-#target_link_libraries(client sfml-system)
-#target_link_libraries(client sfml-window)
-#target_link_libraries(client sfml-graphics)
-#target_link_libraries(client sfml-network)
-#target_link_libraries(client sfml-audio)
+target_link_libraries(client sfml-system)
+target_link_libraries(client sfml-window)
+target_link_libraries(client sfml-graphics)
+target_link_libraries(client sfml-network)
+target_link_libraries(client sfml-audio)
 
 # :TODO: have way to configure debug vs release - no _d for release
 set(TEMPO_OGRE_LIB_SUFFIX "Static_d")
