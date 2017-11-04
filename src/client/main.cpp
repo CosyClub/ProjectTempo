@@ -5,9 +5,6 @@
 /// \brief Contains entry point for Ogre3d Demo
 ////////////////////////////////////////////////////////////////////////////
 
-// Minimal application code adapted from:
-// http://wiki.ogre3d.org/MinimalApplication
-
 #include <cstdio>
 #include <cmath>
 #include <cstdlib>
@@ -21,22 +18,77 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window.hpp>
 
-int main(int argc, const char** argv){
+/////////////////////////////////////////////////////////////////////
+/// \brief Struct containing top level objects related to the running of
+/// the application
+/////////////////////////////////////////////////////////////////////
+struct Application{
+	/// \brief Root Ogre object, access point to much of the Ogre API
+	Ogre::Root* ogre;
+
+	/// \brief Main application window to which we are rendering
+	sf::Window* window;
+
+	/// \brief Render target to which Ogre is directing its rendering commands
+	/// Ogre names this badly... the RenderWindow is really wrapping the OpenGL
+	/// context created by SFML for its window
+	Ogre::RenderWindow* render_target;
+};
+
+/////////////////////////////////////////////////////////////////////
+/// \brief Performs basic setup of the application, initialising main window
+/// and Ogre such that it renders to the window
+/////////////////////////////////////////////////////////////////////
+Application initialize_application(const char* window_title,
+                                   int window_width, int window_height,
+                                   int window_style = sf::Style::Default){
+	Application app = {0};
 
 	/////////////////////////////////////////////////
 	// Create Ogre Root and add plugins
-	printf("Creating Ogre Root\n");
-	Ogre::Root* root = new Ogre::Root();
+  printf("Creating Ogre Root\n");
+  app.ogre = new Ogre::Root();
 	//root->installPlugin(new Ogre::GL3PlusPlugin());
 	//root->installPlugin(new Ogre::GLPlugin());
 	Ogre::GLRenderSystem* renderer_gl = new Ogre::GLRenderSystem();
-	root->addRenderSystem(renderer_gl);
-	root->setRenderSystem(renderer_gl);
+	app.ogre->addRenderSystem(renderer_gl);
+	app.ogre->setRenderSystem(renderer_gl);
 
 	// Now plugins are registered and engine is configured, do initialisation
-	root->initialise(false);
+	app.ogre->initialise(false);
 
-	printf("Initialised Ogre, starting application code...\n");
+	/////////////////////////////////////////////////
+	// Setup window
+	sf::ContextSettings sf_settings;
+	sf_settings.depthBits         = 24;
+	sf_settings.antialiasingLevel =  4;
+	sf_settings.stencilBits       =  8;
+	app.window = new sf::Window(sf::VideoMode(window_width,window_height,32),
+	                            window_title, window_style, sf_settings);
+
+	Ogre::NameValuePairList window_options;
+	//window_options["vsync"] = "true";
+	window_options["externalWindowHandle"] = Ogre::StringConverter::toString(
+		   app.window->getSystemHandle()
+	);
+	window_options["currentGlContext"] = "True";
+	app.render_target = app.ogre->createRenderWindow(window_title,
+	                                                 window_width, window_height,
+	                                                 false, &window_options
+	                                                 );
+	app.render_target->setVisible(true);
+
+	return app;
+}
+
+void destroy_application(Application& app){
+	delete app.window;
+	delete app.ogre;
+	app = {0};
+}
+
+int main(int argc, const char** argv){
+	Application app = initialize_application("RaveCave", 800, 600);
 
 	/////////////////////////////////////////////////
 	// Setup resources
@@ -46,30 +98,9 @@ int main(int argc, const char** argv){
 	                              true);
 	resources.initialiseAllResourceGroups();
 
-  /////////////////////////////////////////////////
-	// Setup window
-	int window_width         = 800;
-	int window_height        = 600;
-	const char* window_title = "RaveCave";
-	sf::ContextSettings sf_settings;
-	sf_settings.depthBits         = 24;
-	sf_settings.antialiasingLevel =  4;
-	sf_settings.stencilBits       =  8;
-	sf::Window window(sf::VideoMode(window_width,window_height,32),
-	                        window_title, sf::Style::Default, sf_settings);
-	Ogre::NameValuePairList window_options;
-	//window_options["vsync"] = "true";
-	window_options["externalWindowHandle"] = Ogre::StringConverter::toString(window.getSystemHandle());
-	window_options["currentGlContext"] = "True";
-	Ogre::RenderWindow* render_target = root->createRenderWindow(window_title,
-	                                                             window_width, window_height,
-	                                                             false, &window_options
-	                                                            );
-	render_target->setVisible(true);
-
 	/////////////////////////////////////////////////
 	// Setup scene
-	Ogre::SceneManager* scene = root->createSceneManager(Ogre::ST_GENERIC);
+	Ogre::SceneManager* scene = app.ogre->createSceneManager(Ogre::ST_GENERIC);
 	scene->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
 	Ogre::SceneNode* node_light = scene->getRootSceneNode()->createChildSceneNode();
 	Ogre::Light* light = scene->createLight("MainLight");
@@ -87,24 +118,22 @@ int main(int argc, const char** argv){
 	Ogre::SceneNode* node_ogre = scene->getRootSceneNode()->createChildSceneNode();
 	node_ogre->attachObject(entity_ogre);
 
-	Ogre::Viewport* vp   = render_target->addViewport(camera);
+	Ogre::Viewport* vp   = app.render_target->addViewport(camera);
 
 	/////////////////////////////////////////////////
 	// Main loop
 	int frame_counter = 0;
 	sf::Clock frame_timer;
 	sf::Clock fps_timer;
-	while(window.isOpen()){
+	while(app.window->isOpen()){
 		sf::Event e;
-		while(window.pollEvent(e)){
+		while(app.window->pollEvent(e)){
 			switch(e.type){
 			case sf::Event::Closed:
-				window.close();
+				app.window->close();
 				break;
 			case sf::Event::Resized:
-				window_width  = e.size.width;
-				window_height = e.size.height;
-				render_target->resize(window_width, window_height);
+				app.render_target->resize(e.size.width, e.size.height);
 			default: break;
 			}
 		}
@@ -117,7 +146,7 @@ int main(int argc, const char** argv){
 		node_camera->setPosition(cam_x, 0, cam_z);
 		camera->lookAt(0,0,0);
 
-		root->renderOneFrame();
+		app.ogre->renderOneFrame();
 
 		++frame_counter;
 		if(fps_timer.getElapsedTime().asSeconds() > 0.5f){
@@ -131,7 +160,7 @@ int main(int argc, const char** argv){
 	/////////////////////////////////////////////////
 	// Shutdown
 	printf("Cleaning up...\n");
-	delete root;
+	destroy_application(app);
 	printf("Exiting\n");
 	return 0;
 }
