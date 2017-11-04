@@ -16,7 +16,10 @@
 #include <OgreGLRenderSystem.h>
 
 #include <SFML/System/Clock.hpp>
-#include <SFML/Window.hpp>
+
+#include <SDL.h>
+
+#include <tempo/config.hpp>
 
 /////////////////////////////////////////////////////////////////////
 /// \brief Struct containing top level objects related to the running of
@@ -27,7 +30,10 @@ struct Application{
 	Ogre::Root* ogre;
 
 	/// \brief Main application window to which we are rendering
-	sf::Window* window;
+	SDL_Window* window;
+
+	/// \brief The OpenGL context for the main application window
+	SDL_GLContext gl_context;
 
 	/// \brief Render target to which Ogre is directing its rendering commands
 	/// Ogre names this badly... the RenderWindow is really wrapping the OpenGL
@@ -35,13 +41,19 @@ struct Application{
 	Ogre::RenderWindow* render_target;
 };
 
+bool operator==(const Application& a, const Application& b){
+	return
+		a.ogre          == b.ogre   &&
+		a.window        == b.window &&
+		a.render_target == b.render_target;
+}
+
 /////////////////////////////////////////////////////////////////////
 /// \brief Performs basic setup of the application, initialising main window
 /// and Ogre such that it renders to the window
 /////////////////////////////////////////////////////////////////////
 Application initialize_application(const char* window_title,
-                                   int window_width, int window_height,
-                                   int window_style = sf::Style::Default){
+                                   int window_width, int window_height){
 	Application app = {0};
 
 	/////////////////////////////////////////////////
@@ -59,36 +71,63 @@ Application initialize_application(const char* window_title,
 
 	/////////////////////////////////////////////////
 	// Setup window
-	sf::ContextSettings sf_settings;
-	sf_settings.depthBits         = 24;
-	sf_settings.antialiasingLevel =  4;
-	sf_settings.stencilBits       =  8;
-	app.window = new sf::Window(sf::VideoMode(window_width,window_height,32),
-	                            window_title, window_style, sf_settings);
+	printf("Initialising SDL...\n");
+	if(!SDL_WasInit(SDL_INIT_VIDEO) && SDL_Init(SDL_INIT_VIDEO) != 0){
+		printf("Failed to initialize SDL, error: %s\n", SDL_GetError());
+		return {0};
+	}
+	printf("Creating window...\n");
+	app.window = SDL_CreateWindow(window_title,
+	                              SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+	                              window_width, window_height,
+	                              SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+	                             );
+	if(app.window == NULL){
+		printf("Failed initialise SDL window, error: %s\n", SDL_GetError());
+		return {0};
+	}
+
+	app.gl_context = SDL_GL_CreateContext(app.window);
+	SDL_GL_MakeCurrent(app.window, app.gl_context);
 
 	Ogre::NameValuePairList window_options;
+	#ifdef TEMPO_OS_WINDOWS
+	//Windows always has to be the special one...
+	SDL_SysWMinfo wmInfo;
+	SDL_VERSION(&wmInfo.version);
+	SDL_GetWMInfo(&wmInfo);
+
+	size_t winHandle = reinterpret_cast<size_t>(wmInfo.window);
+	size_t winGlContext = reinterpret_cast<size_t>(wmInfo.hglrc);
+
+	window_options["externalWindowHandle"] = StringConverter::toString(winHandle);
+	window_options["externalGLContext"   ] = StringConverter::toString(winGlContext);
+	#else
+	window_options["currentGLContext"] = "true";
+	#endif
+
 	//window_options["vsync"] = "true";
-	window_options["externalWindowHandle"] = Ogre::StringConverter::toString(
-		   app.window->getSystemHandle()
-	);
-	window_options["currentGlContext"] = "True";
 	app.render_target = app.ogre->createRenderWindow(window_title,
 	                                                 window_width, window_height,
 	                                                 false, &window_options
-	                                                 );
+	                                                );
 	app.render_target->setVisible(true);
 
 	return app;
 }
 
 void destroy_application(Application& app){
-	delete app.window;
+	SDL_DestroyWindow(app.window);
 	delete app.ogre;
 	app = {0};
 }
 
 int main(int argc, const char** argv){
 	Application app = initialize_application("RaveCave", 800, 600);
+	if(app == (Application){0}){
+		printf("Application initialisation failed, exiting\n");
+		return 1;
+	}
 
 	/////////////////////////////////////////////////
 	// Setup resources
@@ -126,29 +165,36 @@ int main(int argc, const char** argv){
 	sf::Clock frame_timer;
 	sf::Clock fps_timer;
 	sf::Clock dt_timer;
-	while(app.window->isOpen()){
+	bool running = true;
+	while(running){
 		float dt = dt_timer.getElapsedTime().asSeconds();
 		dt_timer.restart();
-		sf::Event e;
-		while(app.window->pollEvent(e)){
+		SDL_Event e;
+		while(SDL_PollEvent(&e)){
 			switch(e.type){
-			case sf::Event::Closed:
-				app.window->close();
+			case SDL_WINDOWEVENT:
+				switch(e.window.event){
+				case SDL_WINDOWEVENT_CLOSE:
+					running = false;
+					break;
+				case SDL_WINDOWEVENT_RESIZED:
+					app.render_target->resize(e.window.data1, e.window.data2);
+					break;
+				default: break;
+				}
 				break;
-			case sf::Event::Resized:
-				app.render_target->resize(e.size.width, e.size.height);
-			case sf::Event::KeyReleased:
-				switch(e.key.code){
-				case sf::Keyboard::R:
+			case SDL_KEYUP:
+				switch(e.key.keysym.sym){
+				case SDLK_r:
 					light->setDiffuseColour(1,0,0);
 					break;
-				case sf::Keyboard::G:
+				case SDLK_g:
 					light->setDiffuseColour(0,1,0);
 					break;
-				case sf::Keyboard::B:
+				case SDLK_b:
 					light->setDiffuseColour(0,0,1);
 					break;
-				case sf::Keyboard::W:
+				case SDLK_w:
 					light->setDiffuseColour(1,1,1);
 					break;
 				}
@@ -166,6 +212,7 @@ int main(int argc, const char** argv){
 		node_ogre->rotate(Ogre::Vector3(0,1,0), Ogre::Radian(dt * 1.0f));
 
 		app.ogre->renderOneFrame();
+		SDL_GL_SwapWindow(app.window);
 
 		++frame_counter;
 		if(fps_timer.getElapsedTime().asSeconds() > 0.5f){
