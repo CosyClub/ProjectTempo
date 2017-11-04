@@ -101,7 +101,7 @@ int main(int argc, const char** argv){
 	/////////////////////////////////////////////////
 	// Setup scene
 	Ogre::SceneManager* scene = app.ogre->createSceneManager(Ogre::ST_GENERIC);
-	scene->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+	scene->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
 	Ogre::SceneNode* node_light = scene->getRootSceneNode()->createChildSceneNode();
 	Ogre::Light* light = scene->createLight("MainLight");
 	node_light->attachObject(light);
@@ -125,7 +125,10 @@ int main(int argc, const char** argv){
 	int frame_counter = 0;
 	sf::Clock frame_timer;
 	sf::Clock fps_timer;
+	sf::Clock dt_timer;
 	while(app.window->isOpen()){
+		float dt = dt_timer.getElapsedTime().asSeconds();
+		dt_timer.restart();
 		sf::Event e;
 		while(app.window->pollEvent(e)){
 			switch(e.type){
@@ -134,17 +137,33 @@ int main(int argc, const char** argv){
 				break;
 			case sf::Event::Resized:
 				app.render_target->resize(e.size.width, e.size.height);
+			case sf::Event::KeyReleased:
+				switch(e.key.code){
+				case sf::Keyboard::R:
+					light->setDiffuseColour(1,0,0);
+					break;
+				case sf::Keyboard::G:
+					light->setDiffuseColour(0,1,0);
+					break;
+				case sf::Keyboard::B:
+					light->setDiffuseColour(0,0,1);
+					break;
+				case sf::Keyboard::W:
+					light->setDiffuseColour(1,1,1);
+					break;
+				}
+				break;
 			default: break;
 			}
 		}
 
-		float rot_factor = frame_timer.getElapsedTime().asSeconds() * 1.5f;
-		float cam_dist   = 150 + (100 * sin(rot_factor / 3.0f));
-		float cam_x = cam_dist * sin(rot_factor);
-		float cam_z = cam_dist * cos(rot_factor);
+		float rot_factor = frame_timer.getElapsedTime().asSeconds() * 2.0f;
+		float light_x = 200 * sin(rot_factor);
+		float light_z = 200 * cos(rot_factor);
 
-		node_camera->setPosition(cam_x, 0, cam_z);
-		camera->lookAt(0,0,0);
+		node_light->setPosition(light_x, 0, light_z);
+
+		node_ogre->rotate(Ogre::Vector3(0,1,0), Ogre::Radian(dt * 1.0f));
 
 		app.ogre->renderOneFrame();
 
