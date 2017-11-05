@@ -12,7 +12,7 @@ then
 		# Build utils
 		sudo apt install cmake
 		# Ogre3d
-		sudo apt install xaw3dg xorg-dev libz-dev
+		sudo apt install xaw3dg xorg-dev libz-dev libgl1-mesa-dev libglu1-mesa-dev
 elif [ `command -v yum` ]
 then
 		echo "Broken on Centos at the moment..."
