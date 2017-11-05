@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# See:
+# http://wiki.ogre3d.org/Prerequisites?tikiversion=Linux
+
 set -e
 
 echo "This script is about to install a some packages..."
