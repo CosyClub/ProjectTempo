@@ -1,0 +1,4 @@
+# Ignore compiled libraries
+*.a
+*.lib
+*.pdb

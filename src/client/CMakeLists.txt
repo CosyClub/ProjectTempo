@@ -1,4 +1,5 @@
 link_directories("${TEMPO_OGRE_LIBRARY_DIR}")
+link_directories("${TEMPO_LIB_DIR}")
 
 add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/main.cpp
@@ -32,6 +33,8 @@ target_link_libraries(client ${OPENGL_gl_LIBRARY})
 target_link_libraries(client ${OPENGL_glu_LIBRARY})
 
 target_link_libraries(client zzip)
+
+target_link_libraries(client FreeImage)
 
 if(MSVC)
 	target_link_libraries(client zlibstaticd)

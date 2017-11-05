@@ -33,4 +33,12 @@ execute_process(COMMAND cmake
 # Build Ogre
 execute_process(COMMAND cmake --build
 	"${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/"
-)
+	)
+
+##########################################
+# FreeImage
+##########################################
+# Extract archive
+execute_process(COMMAND cmake -E tar xf FreeImage-3.17.0.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+# Build libraries
+add_subdirectory(FreeImage-3.17.0)
