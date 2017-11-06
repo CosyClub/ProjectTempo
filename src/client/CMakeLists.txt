@@ -12,6 +12,8 @@ target_include_directories(client PRIVATE ${TEMPO_OGRE_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_SDL2_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
 
+target_link_libraries(client lib_tempo)
+
 target_link_libraries(client sfml-system)
 target_link_libraries(client sfml-network)
 target_link_libraries(client sfml-audio)
@@ -34,7 +36,6 @@ target_link_libraries(client ${OPENGL_gl_LIBRARY} )
 target_link_libraries(client ${OPENGL_glu_LIBRARY})
 
 target_link_libraries(client zzip)
-
 target_link_libraries(client FreeImage)
 
 if(MSVC)
