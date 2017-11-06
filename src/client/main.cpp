@@ -47,6 +47,7 @@ bool operator==(const Application& a, const Application& b){
 		a.window        == b.window &&
 		a.render_target == b.render_target;
 }
+bool operator!=(const Application& a, const Application& b){ return !(a == b); }
 
 /////////////////////////////////////////////////////////////////////
 /// \brief Performs basic setup of the application, initialising main window
