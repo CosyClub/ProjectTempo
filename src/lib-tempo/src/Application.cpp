@@ -11,10 +11,10 @@
 #include <OgreGLPlugin.h>
 #include <OgreGLRenderSystem.h>
 
-#include <tempo/Config.hpp>
+#include <tempo/config.hpp>
 #include <tempo/Application.hpp>
 
-#include <SDL_syswm.h> 
+#include <SDL_syswm.h>
 
 namespace tempo{
 	bool operator==(const Application& a, const Application& b){
@@ -26,8 +26,7 @@ namespace tempo{
 
 	bool operator!=(const Application& a, const Application& b){ return !(a == b); }
 
-	Application initialize_application(const char* window_title,
-	                                   int window_width, int window_height){
+	Application initialize_application(const char* window_title, int window_width, int window_height){
 		Application app = {0};
 
 		/////////////////////////////////////////////////
@@ -50,8 +49,9 @@ namespace tempo{
 			printf("Failed to initialize SDL, error: %s\n", SDL_GetError());
 			return {0};
 		}
-		
-#ifdef TEMPO_OS_WINDOWS
+
+		printf("Creating window...\n");
+		#ifdef TEMPO_OS_WINDOWS
 		//Windows always has to be the special one...
 
 		app.render_target = app.ogre->createRenderWindow(window_title,
@@ -63,10 +63,7 @@ namespace tempo{
 		app.render_target->getCustomAttribute("WINDOW", &window_handle);
 
 		app.window = SDL_CreateWindowFrom(window_handle);
-
-#else
-
-		printf("Creating window...\n");
+		#else
 		app.window = SDL_CreateWindow(window_title,
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 			window_width, window_height,
@@ -89,9 +86,7 @@ namespace tempo{
 			window_width, window_height,
 			false, &window_options
 		);
-#endif
-
-		
+		#endif
 
 		app.render_target->setVisible(true);
 
