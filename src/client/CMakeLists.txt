@@ -7,8 +7,6 @@ add_executable(client
 
 set_target_properties(client PROPERTIES OUTPUT_NAME "RaveCave")
 
-#http://wiki.ogre3d.org/StaticLinking
-#target_compile_definitions(OrgeDemo OGRE_STATIC_LIB)
 target_include_directories(client PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_OGRE_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_SDL2_INCLUDE_DIR})
