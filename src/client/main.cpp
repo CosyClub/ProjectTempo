@@ -14,12 +14,11 @@
 
 #include <SFML/System/Clock.hpp>
 
-#include <tempo/config.hpp>
 #include <tempo/Application.hpp>
 
 int main(int argc, const char** argv){
 	tempo::Application app = tempo::initialize_application("RaveCave", 800, 600);
-	if(app == (tempo::Application){0}){
+	if(app.ogre == nullptr || app.window == nullptr || app.render_target == nullptr){
 		printf("Application initialisation failed, exiting\n");
 		return 1;
 	}

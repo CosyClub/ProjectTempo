@@ -11,7 +11,10 @@
 #include <OgreGLPlugin.h>
 #include <OgreGLRenderSystem.h>
 
+#include <tempo/Config.hpp>
 #include <tempo/Application.hpp>
+
+#include <SDL_syswm.h> 
 
 namespace tempo{
 	bool operator==(const Application& a, const Application& b){
@@ -47,41 +50,49 @@ namespace tempo{
 			printf("Failed to initialize SDL, error: %s\n", SDL_GetError());
 			return {0};
 		}
+		
+#ifdef TEMPO_OS_WINDOWS
+		//Windows always has to be the special one...
+
+		app.render_target = app.ogre->createRenderWindow(window_title,
+			window_width, window_height,
+			false
+		);
+
+		void* window_handle;
+		app.render_target->getCustomAttribute("WINDOW", &window_handle);
+
+		app.window = SDL_CreateWindowFrom(window_handle);
+
+#else
+
 		printf("Creating window...\n");
 		app.window = SDL_CreateWindow(window_title,
-		                              SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		                              window_width, window_height,
-		                              SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
-		                              );
-		if(app.window == NULL){
+			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+			window_width, window_height,
+			SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+		);
+		if (app.window == NULL) {
 			printf("Failed initialise SDL window, error: %s\n", SDL_GetError());
-			return {0};
+			return { 0 };
 		}
 
 		app.gl_context = SDL_GL_CreateContext(app.window);
 		SDL_GL_MakeCurrent(app.window, app.gl_context);
 
 		Ogre::NameValuePairList window_options;
-#ifdef TEMPO_OS_WINDOWS
-		//Windows always has to be the special one...
-		SDL_SysWMinfo wmInfo;
-		SDL_VERSION(&wmInfo.version);
-		SDL_GetWMInfo(&wmInfo);
 
-		size_t winHandle = reinterpret_cast<size_t>(wmInfo.window);
-		size_t winGlContext = reinterpret_cast<size_t>(wmInfo.hglrc);
-
-		window_options["externalWindowHandle"] = StringConverter::toString(winHandle);
-		window_options["externalGLContext"   ] = StringConverter::toString(winGlContext);
-#else
 		window_options["currentGLContext"] = "true";
-#endif
 
 		//window_options["vsync"] = "true";
 		app.render_target = app.ogre->createRenderWindow(window_title,
-		                                                 window_width, window_height,
-		                                                 false, &window_options
-		                                                 );
+			window_width, window_height,
+			false, &window_options
+		);
+#endif
+
+		
+
 		app.render_target->setVisible(true);
 
 		return app;

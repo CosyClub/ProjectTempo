@@ -12,6 +12,7 @@
 
 #include <Ogre.h>
 #include <SDL.h>
+#undef main // SDL likes to define main
 
 namespace tempo{
 	/////////////////////////////////////////////////////////////////////
