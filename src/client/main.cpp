@@ -151,8 +151,8 @@ int main(int argc, const char** argv){
 
                 long t = clock.getElapsedTime().asMicroseconds();
                 if (t > TIME - offset){
-                        std::cout << offset << std::endl;
-                        //offset = t - (TIME - offset);
+                        //std::cout << offset << std::endl;
+                        offset = t - (TIME - offset);
                         tick.play();
                         clock.restart();
                         int dir = rand() % 2; // between 0 and 1
@@ -163,6 +163,7 @@ int main(int argc, const char** argv){
                         else{
                             node_player->translate(0, 0, amount);
                         }
+                        Ogre::Vector3 pos = node_player->getPosition();
                 }
 
 		root->renderOneFrame();
