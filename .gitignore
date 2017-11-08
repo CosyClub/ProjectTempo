@@ -5,3 +5,15 @@
 
 # Ignore cmake build dir
 build/
+
+CMakeFiles/
+
+extlibs/
+
+CMakeCache\.txt
+
+Ogre\.log
+
+cmake_install\.cmake
+
+Makefile
