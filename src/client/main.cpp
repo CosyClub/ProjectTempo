@@ -12,6 +12,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <string>
+#include <iostream>
 
 #include <Ogre.h>
 #include <OgreGL3PlusPlugin.h>
@@ -20,7 +21,7 @@
 
 #include <SFML/Audio.hpp>
 
-#define BPM 120
+#define BPM 174
 #define DELTA 150
 #define NETOFFSET 30 * 1000
 #define SIZE 1000
@@ -109,12 +110,18 @@ int main(int argc, const char** argv){
 
         //Sound
         sf::SoundBuffer tickbuffer;
+        sf::SoundBuffer songbuffer;
         tickbuffer.loadFromFile("resources/sound/tick.ogg");
+        songbuffer.loadFromFile("resources/sound/focus.ogg");
         sf::Sound tick;
+        sf::Sound song;
         tick.setBuffer(tickbuffer);
+        song.setBuffer(songbuffer);
 
         //Clock
         sf::Clock clock;
+        song.play();
+        long offset = 0;
         
         //Movement hack
         srand(time(NULL));
@@ -142,17 +149,20 @@ int main(int argc, const char** argv){
 		camera->lookAt(0,0,0);
                 
 
-                if (clock.getElapsedTime().asMicroseconds() > TIME){
-                    tick.play();
-                    clock.restart();
-                    int dir = rand() % 2;
-                    int amount = (rand() % 2) * 2 - 1;
-                    if (dir){
-                        node_player->translate(amount, 0, 0);
-                    }
-                    else{
-                        node_player->translate(0, 0, amount);
-                    }
+                long t = clock.getElapsedTime().asMicroseconds();
+                if (t > TIME - offset){
+                        std::cout << offset << std::endl;
+                        //offset = t - (TIME - offset);
+                        tick.play();
+                        clock.restart();
+                        int dir = rand() % 2; // between 0 and 1
+                        int amount = (rand() % 2) * 2 - 1; //-1 or 1
+                        if (dir){
+                            node_player->translate(amount, 0, 0);
+                        }
+                        else{
+                            node_player->translate(0, 0, amount);
+                        }
                 }
 
 		root->renderOneFrame();
