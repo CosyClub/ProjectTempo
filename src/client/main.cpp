@@ -63,9 +63,18 @@ int main(int argc, const char** argv){
 	node_camera->attachObject(camera);
 	node_camera->setPosition(0, 0, 140);
 
-	Ogre::Entity* entity_ogre = scene->createEntity("meshes/ogrehead.mesh");
+	Ogre::Entity* entity_ogre = scene->createEntity("meshes/floor.mesh");
 	Ogre::SceneNode* node_ogre = scene->getRootSceneNode()->createChildSceneNode();
+    node_ogre->setScale(10, 0.05, 10);
 	node_ogre->attachObject(entity_ogre);
+
+    Ogre::BillboardSet* Bset = scene->createBillboardSet();
+    Bset->setMaterialName("rectangleSprite");
+    Ogre::Billboard* playerBoard = Bset->createBillboard(0, 0, 0);
+    playerBoard->setColour(Ogre::ColourValue::Red);
+	Ogre::SceneNode* node_player = scene->getRootSceneNode()->createChildSceneNode();
+	node_player->attachObject(Bset);
+    
 
 	Ogre::Viewport* vp   = app->addViewport(camera);
 
@@ -84,7 +93,7 @@ int main(int argc, const char** argv){
 		float cam_x = cam_dist * sin(rot_factor);
 		float cam_z = cam_dist * cos(rot_factor);
 
-		node_camera->setPosition(cam_x, 0, cam_z);
+		node_camera->setPosition(10, 5, 10);
 		camera->lookAt(0,0,0);
 
 		root->renderOneFrame();
