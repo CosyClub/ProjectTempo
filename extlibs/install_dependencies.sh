@@ -16,6 +16,8 @@ then
 		sudo apt install cmake
 		# Ogre3d
 		sudo apt install xaw3dg xorg-dev libz-dev libgl1-mesa-dev libglu1-mesa-dev
+		# SFML
+		sudo apt install libudev-dev libopenal-dev libvorbis-dev libflac-dev
 elif [ `command -v yum` ]
 then
 		echo "Broken on Centos at the moment..."
@@ -35,6 +37,9 @@ then
 		pacman -S cmake base-devel
 		# Ogre
 		pacman -S mesa glu
+		# SFML
+		pacman -S flac openal flac libvorbis libx11 libxrandr libjpeg glew
+
 else
 		echo "Failed to find a suitable package manager with which to install dependencies"
 		exit 1
