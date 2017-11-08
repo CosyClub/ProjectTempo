@@ -50,6 +50,8 @@ if(UNIX)
 	target_link_libraries(client Xrandr)
 	target_link_libraries(client dl)
 	target_link_libraries(client pthread)
+	target_link_libraries(client sfml-audio)
+	target_link_libraries(client sfml-system)
 endif(UNIX)
 
 # Ensure running from visual studio works correctly (finds resources for the binary)

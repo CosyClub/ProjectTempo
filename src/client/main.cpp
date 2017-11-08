@@ -20,7 +20,7 @@
 
 #include <SFML/Audio.hpp>
 
-#define BPM 140
+#define BPM 120
 #define DELTA 150
 #define NETOFFSET 30 * 1000
 #define SIZE 1000
@@ -109,12 +109,15 @@ int main(int argc, const char** argv){
 
         //Sound
         sf::SoundBuffer tickbuffer;
-        tickbuffer.loadFromFile("res/tick.ogg");
+        tickbuffer.loadFromFile("resources/sound/tick.ogg");
         sf::Sound tick;
         tick.setBuffer(tickbuffer);
 
         //Clock
         sf::Clock clock;
+        
+        //Movement hack
+        srand(time(NULL));
 
         //Viewport
 	Ogre::Viewport* vp   = app->addViewport(camera);
@@ -130,18 +133,27 @@ int main(int argc, const char** argv){
 	Ogre::Timer fps_timer;
 	while(!app->isClosed()){
 		float rot_factor = (Ogre::Real)frame_timer.getMicroseconds() / 6000000.0f;
-		float cam_dist   = 5;
+		float cam_dist   = 10;
 		float cam_x = cam_dist * sin(rot_factor);
 		float cam_z = cam_dist * cos(rot_factor);
-
-                if (clock.getElapsedTime().asMicroseconds() > TIME){
-                    tick.play();
-                    clock.restart();
-                }
 
 		node_camera->setPosition(cam_x, 5, cam_z);
 		//node_camera->setPosition(10, 5, 10);
 		camera->lookAt(0,0,0);
+                
+
+                if (clock.getElapsedTime().asMicroseconds() > TIME){
+                    tick.play();
+                    clock.restart();
+                    int dir = rand() % 2;
+                    int amount = (rand() % 2) * 2 - 1;
+                    if (dir){
+                        node_player->translate(amount, 0, 0);
+                    }
+                    else{
+                        node_player->translate(0, 0, amount);
+                    }
+                }
 
 		root->renderOneFrame();
 
