@@ -70,8 +70,11 @@ int main(int argc, const char** argv){
 
     Ogre::BillboardSet* Bset = scene->createBillboardSet();
     Bset->setMaterialName("rectangleSprite");
+    Bset->setDefaultDimensions(4, 4);
+    //Bset->setBillboardType(Ogre::BBT_PERPENDICULAR_SELF);
     Ogre::Billboard* playerBoard = Bset->createBillboard(0, 0, 0);
     playerBoard->setColour(Ogre::ColourValue::Red);
+
 	Ogre::SceneNode* node_player = scene->getRootSceneNode()->createChildSceneNode();
 	node_player->attachObject(Bset);
     
