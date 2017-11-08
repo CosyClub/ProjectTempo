@@ -63,21 +63,35 @@ int main(int argc, const char** argv){
 	node_camera->attachObject(camera);
 	node_camera->setPosition(0, 0, 140);
 
+
 	Ogre::Entity* entity_floor = scene->createEntity("meshes/floor.mesh");
 	Ogre::SceneNode* node_floor = scene->getRootSceneNode()->createChildSceneNode();
-  node_floor->setScale(10, 0.05, 10);
+        node_floor->setScale(10, 0.05, 10);
 	node_floor->attachObject(entity_floor);
 
-    Ogre::BillboardSet* Bset = scene->createBillboardSet();
-    Bset->setMaterialName("rectangleSprite");
-    Bset->setDefaultDimensions(1, 1);
-    Bset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
-    Bset->setCommonDirection(Ogre::Vector3(0, 1, 0));
-    Ogre::Billboard* player = Bset->createBillboard(0, 2, 0);
-    //player->setRotation(Ogre::Radian(M_PI / 4));
-    player->setColour(Ogre::ColourValue::Red);
+
+        Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
+        //x1->setPosition(1, 0, 0);
+        //y1->setPosition(0, 1, 0);
+        //z1->setPosition(0, 0, 1);
+        Ogre::Entity* y1 = scene->createEntity("y1", Ogre::SceneManager::PT_SPHERE);
+        Ogre::Entity* z1 = scene->createEntity("z1", Ogre::SceneManager::PT_SPHERE);
+        Ogre::SceneNode* helpers = scene->getRootSceneNode()->createChildSceneNode();
+        helpers->attachObject(x1);
+        helpers->attachObject(y1);
+        helpers->attachObject(z1);
+
+        Ogre::BillboardSet* Bset = scene->createBillboardSet();
+        Bset->setMaterialName("rectangleSprite");
+        Bset->setDefaultDimensions(0.5, 1.5);
+        Bset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
+        Bset->setCommonDirection(Ogre::Vector3(0, 1, 0));
+        Ogre::Billboard* player = Bset->createBillboard(0, 0.75, 0);
+        //player->setRotation(Ogre::Radian(M_PI / 4));
+        player->setColour(Ogre::ColourValue::Red);
 
 	Ogre::SceneNode* node_player = scene->getRootSceneNode()->createChildSceneNode();
+        node_player->setPosition(0.5, 0, 0.5);
 	node_player->attachObject(Bset);
 
 
@@ -94,11 +108,12 @@ int main(int argc, const char** argv){
 	Ogre::Timer fps_timer;
 	while(!app->isClosed()){
 		float rot_factor = (Ogre::Real)frame_timer.getMicroseconds() / 6000000.0f;
-		float cam_dist   = 15 + (10 * sin(rot_factor / 3.0f));
+		float cam_dist   = 5;
 		float cam_x = cam_dist * sin(rot_factor);
 		float cam_z = cam_dist * cos(rot_factor);
 
 		node_camera->setPosition(cam_x, 5, cam_z);
+		//node_camera->setPosition(10, 5, 10);
 		camera->lookAt(0,0,0);
 
 		root->renderOneFrame();
