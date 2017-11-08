@@ -18,6 +18,17 @@
 #include <OgreGLPlugin.h>
 #include <OgreGLRenderSystem.h>
 
+#include <SFML/Audio.hpp>
+
+#define BPM 140
+#define DELTA 150
+#define NETOFFSET 30 * 1000
+#define SIZE 1000
+#define GRID 100
+#define TIME 60000000 / BPM
+#define LOWERBOUND (DELTA * 1000)
+#define UPPERBOUND TIME - (DELTA * 1000)
+
 int main(int argc, const char** argv){
 
 	/////////////////////////////////////////////////
@@ -63,13 +74,14 @@ int main(int argc, const char** argv){
 	node_camera->attachObject(camera);
 	node_camera->setPosition(0, 0, 140);
 
-
+        //Dancefloor
 	Ogre::Entity* entity_floor = scene->createEntity("meshes/floor.mesh");
 	Ogre::SceneNode* node_floor = scene->getRootSceneNode()->createChildSceneNode();
         node_floor->setScale(10, 0.05, 10);
 	node_floor->attachObject(entity_floor);
 
 
+        //Dummy objects
         Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
         //x1->setPosition(1, 0, 0);
         //y1->setPosition(0, 1, 0);
@@ -81,6 +93,7 @@ int main(int argc, const char** argv){
         helpers->attachObject(y1);
         helpers->attachObject(z1);
 
+        //Player
         Ogre::BillboardSet* Bset = scene->createBillboardSet();
         Bset->setMaterialName("rectangleSprite");
         Bset->setDefaultDimensions(0.5, 1.5);
@@ -94,7 +107,16 @@ int main(int argc, const char** argv){
         node_player->setPosition(0.5, 0, 0.5);
 	node_player->attachObject(Bset);
 
+        //Sound
+        sf::SoundBuffer tickbuffer;
+        tickbuffer.loadFromFile("res/tick.ogg");
+        sf::Sound tick;
+        tick.setBuffer(tickbuffer);
 
+        //Clock
+        sf::Clock clock;
+
+        //Viewport
 	Ogre::Viewport* vp   = app->addViewport(camera);
 
 	/////////////////////////////////////////////////
@@ -111,6 +133,11 @@ int main(int argc, const char** argv){
 		float cam_dist   = 5;
 		float cam_x = cam_dist * sin(rot_factor);
 		float cam_z = cam_dist * cos(rot_factor);
+
+                if (clock.getElapsedTime().asMicroseconds() > TIME){
+                    tick.play();
+                    clock.restart();
+                }
 
 		node_camera->setPosition(cam_x, 5, cam_z);
 		//node_camera->setPosition(10, 5, 10);
