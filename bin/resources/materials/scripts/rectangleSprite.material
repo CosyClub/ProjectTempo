@@ -5,7 +5,7 @@ material rectangleSprite
     pass
     {
       lighting off
-      depth_write off
+      depth_write on
       texture_unit
       {
         texture materials/textures/rectangle.png
