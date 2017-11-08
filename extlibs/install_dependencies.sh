@@ -38,7 +38,7 @@ then
 		# Ogre
 		pacman -S mesa glu
 		# SFML
-		pacman -S flac openal flac libvorbis libx11 libxrandr
+		pacman -S openal flac libvorbis libx11 libxrandr
 
 else
 		echo "Failed to find a suitable package manager with which to install dependencies"
