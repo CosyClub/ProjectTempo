@@ -70,10 +70,12 @@ int main(int argc, const char** argv){
 
     Ogre::BillboardSet* Bset = scene->createBillboardSet();
     Bset->setMaterialName("rectangleSprite");
-    Bset->setDefaultDimensions(4, 4);
-    //Bset->setBillboardType(Ogre::BBT_PERPENDICULAR_SELF);
-    Ogre::Billboard* playerBoard = Bset->createBillboard(0, 0, 0);
-    playerBoard->setColour(Ogre::ColourValue::Red);
+    Bset->setDefaultDimensions(1, 1);
+    Bset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
+    Bset->setCommonDirection(Ogre::Vector3(0, 1, 0));
+    Ogre::Billboard* player = Bset->createBillboard(0, 2, 0);
+    //player->setRotation(Ogre::Radian(M_PI / 4));
+    player->setColour(Ogre::ColourValue::Red);
 
 	Ogre::SceneNode* node_player = scene->getRootSceneNode()->createChildSceneNode();
 	node_player->attachObject(Bset);
@@ -91,12 +93,12 @@ int main(int argc, const char** argv){
 	Ogre::Timer frame_timer;
 	Ogre::Timer fps_timer;
 	while(!app->isClosed()){
-		float rot_factor = (Ogre::Real)frame_timer.getMicroseconds() / 600000.0f;
-		float cam_dist   = 150 + (100 * sin(rot_factor / 3.0f));
+		float rot_factor = (Ogre::Real)frame_timer.getMicroseconds() / 6000000.0f;
+		float cam_dist   = 15 + (10 * sin(rot_factor / 3.0f));
 		float cam_x = cam_dist * sin(rot_factor);
 		float cam_z = cam_dist * cos(rot_factor);
 
-		node_camera->setPosition(10, 5, 10);
+		node_camera->setPosition(cam_x, 5, cam_z);
 		camera->lookAt(0,0,0);
 
 		root->renderOneFrame();
