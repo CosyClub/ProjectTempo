@@ -164,6 +164,11 @@ int main(int argc, const char** argv){
                             node_player->translate(0, 0, amount);
                         }
                         Ogre::Vector3 pos = node_player->getPosition();
+                        if (pos.x < -5) pos.x = -4.5;
+                        if (pos.x >  5) pos.x =  4.5;
+                        if (pos.z < -5) pos.z = -4.5;
+                        if (pos.z >  5) pos.z =  4.5;
+                        node_player->setPosition(pos);
                 }
 
 		root->renderOneFrame();
