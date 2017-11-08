@@ -2,3 +2,6 @@
 *.a
 *.lib
 *.pdb
+*.exp
+*.so
+*.so.*

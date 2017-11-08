@@ -45,6 +45,27 @@ set(TEMPO_OGRE_INCLUDE_DIR
 set(TEMPO_OGRE_LIBRARY_DIR
 	"${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/lib;"
 	"${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/Dependencies/lib"
+	)
+
+set(TEMPO_SFML_DIR
+	"${TEMPO_EXTLIBS_DIR}/SFML-2.4.2"
+)
+set(TEMPO_SFML_INCLUDE_DIR
+	"${TEMPO_SFML_DIR}/include"
+)
+
+set(TEMPO_SDL2_DIR
+	"${TEMPO_EXTLIBS_DIR}/SDL2-2.0.7"
+)
+set(TEMPO_SDL2_INCLUDE_DIR
+	"${TEMPO_SDL2_DIR}/include"
+)
+
+set(TEMPO_LIB_TEMPO_DIR
+	"${CMAKE_CURRENT_LIST_DIR}/src/lib-tempo"
+	)
+set(TEMPO_LIB_TEMPO_INCLUDE_DIR
+	"${TEMPO_LIB_TEMPO_DIR}/include"
 )
 
 add_subdirectory(${TEMPO_EXTLIBS_DIR})
