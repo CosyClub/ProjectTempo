@@ -5,3 +5,17 @@
 
 # Ignore cmake build dir
 build/
+
+CMakeFiles/
+
+extlibs/
+
+CMakeCache\.txt
+
+Ogre\.log
+
+cmake_install\.cmake
+
+Makefile
+
+bin/SDL2ConfigVersion\.cmake

@@ -33,7 +33,7 @@ execute_process(COMMAND cmake
 # Build Ogre
 execute_process(COMMAND cmake --build
 	"${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/"
-	)
+)
 
 ##########################################
 # FreeImage
@@ -42,3 +42,21 @@ execute_process(COMMAND cmake --build
 execute_process(COMMAND cmake -E tar xf FreeImage-3.17.0.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 # Build libraries
 add_subdirectory(FreeImage-3.17.0)
+
+##########################################
+# SFML
+##########################################
+# Extract archive
+execute_process(COMMAND cmake -E tar xf SFML-2.4.2.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+# Build libraries
+set(SFML_BUILD_EXAMPLES OFF)
+set(SFML_BUILD_DOCS     OFF)
+add_subdirectory(SFML-2.4.2)
+
+##########################################
+# SDL2
+##########################################
+# Extract archive
+execute_process(COMMAND cmake -E tar xf SDL2-2.0.7.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+# Build libraries
+add_subdirectory(SDL2-2.0.7)

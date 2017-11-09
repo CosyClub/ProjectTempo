@@ -5,35 +5,35 @@
 /// \brief Contains entry point for Ogre3d Demo
 ////////////////////////////////////////////////////////////////////////////
 
-// Minimal application code adapted from:
-// http://wiki.ogre3d.org/MinimalApplication
-
 #include <cstdio>
 #include <cmath>
 #include <cstdlib>
 #include <string>
+#include <iostream>
 
 #include <Ogre.h>
-#include <OgreGL3PlusPlugin.h>
-#include <OgreGLPlugin.h>
-#include <OgreGLRenderSystem.h>
+
+#include <SFML/Audio.hpp>
+#include <SFML/System/Clock.hpp>
+
+#include <tempo/Application.hpp>
+
+#define BPM 174
+#define DELTA 150
+#define FDELTA DELTA / 1000.0f
+#define NETOFFSET 30 * 1000
+#define SIZE 1000
+#define GRID 100
+#define TIME 60000000 / BPM
+#define LOWERBOUND (DELTA * 1000)
+#define UPPERBOUND TIME - (DELTA * 1000)
 
 int main(int argc, const char** argv){
-
-	/////////////////////////////////////////////////
-	// Create Ogre Root and add plugins
-	printf("Creating Ogre Root\n");
-	Ogre::Root* root = new Ogre::Root();
-	//root->installPlugin(new Ogre::GL3PlusPlugin());
-	//root->installPlugin(new Ogre::GLPlugin());
-	Ogre::GLRenderSystem* renderer_gl = new Ogre::GLRenderSystem();
-	root->addRenderSystem(renderer_gl);
-	root->setRenderSystem(renderer_gl);
-
-	// Now plugins are registered and engine is configured, do initialization
-	root->initialise(false);
-
-	printf("Initialised Ogre, starting application code...\n");
+	tempo::Application app = tempo::initialize_application("RaveCave", 800, 600);
+	if(app.ogre == nullptr || app.window == nullptr || app.render_target == nullptr){
+		printf("Application initialisation failed, exiting\n");
+		return 1;
+	}
 
 	/////////////////////////////////////////////////
 	// Setup resources
@@ -44,13 +44,9 @@ int main(int argc, const char** argv){
 	resources.initialiseAllResourceGroups();
 
 	/////////////////////////////////////////////////
-	// Setup window and scene
-	Ogre::NameValuePairList window_options;
-	//window_options["vsync"] = "true";
-	Ogre::RenderWindow* app   = root->createRenderWindow("OgreDemo", 800, 600, false, &window_options);
-	Ogre::SceneManager* scene = root->createSceneManager(Ogre::ST_GENERIC);
-
-	scene->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+	// Setup scene
+	Ogre::SceneManager* scene = app.ogre->createSceneManager(Ogre::ST_GENERIC);
+	scene->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
 	Ogre::SceneNode* node_light = scene->getRootSceneNode()->createChildSceneNode();
 	Ogre::Light* light = scene->createLight("MainLight");
 	node_light->attachObject(light);
@@ -63,43 +59,199 @@ int main(int argc, const char** argv){
 	node_camera->attachObject(camera);
 	node_camera->setPosition(0, 0, 140);
 
-	Ogre::Entity* entity_ogre = scene->createEntity("meshes/ogrehead.mesh");
-	Ogre::SceneNode* node_ogre = scene->getRootSceneNode()->createChildSceneNode();
-	node_ogre->attachObject(entity_ogre);
+	//Dancefloor
+	Ogre::Entity* entity_floor = scene->createEntity("meshes/floor.mesh");
+	Ogre::SceneNode* node_floor = scene->getRootSceneNode()->createChildSceneNode();
+	node_floor->setScale(10, 0.05, 10);
+	node_floor->attachObject(entity_floor);
 
-	Ogre::Viewport* vp   = app->addViewport(camera);
+
+	//Dummy objects
+	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
+	//x1->setPosition(1, 0, 0);
+	//y1->setPosition(0, 1, 0);
+	//z1->setPosition(0, 0, 1);
+	Ogre::Entity* y1 = scene->createEntity("y1", Ogre::SceneManager::PT_SPHERE);
+	Ogre::Entity* z1 = scene->createEntity("z1", Ogre::SceneManager::PT_SPHERE);
+	Ogre::SceneNode* helpers = scene->getRootSceneNode()->createChildSceneNode();
+	helpers->attachObject(x1);
+	helpers->attachObject(y1);
+	helpers->attachObject(z1);
+
+	//Player
+	Ogre::BillboardSet* Pset = scene->createBillboardSet();
+	Pset->setMaterialName("rectangleSprite");
+	Pset->setDefaultDimensions(0.5, 1.5);
+	Pset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
+	Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
+
+	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
+	player->setColour(Ogre::ColourValue::Red);
+	Ogre::SceneNode* node_player = scene->getRootSceneNode()->createChildSceneNode();
+	node_player->setPosition(0.5, 0, 0.5);
+	node_player->attachObject(Pset);
+
+        //Ai
+	Ogre::BillboardSet* Aset = scene->createBillboardSet();
+	Aset->setMaterialName("rectangleSprite");
+	Aset->setDefaultDimensions(0.4, 1.3);
+	Aset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
+	Aset->setCommonDirection(Ogre::Vector3(0, 1, 0));
+
+	Ogre::Billboard* ai = Aset->createBillboard(0, 0.75, 0);
+	ai->setColour(Ogre::ColourValue::Blue);
+	Ogre::SceneNode* node_ai = scene->getRootSceneNode()->createChildSceneNode();
+	node_ai->setPosition(3.5, 0, 3.5);
+	node_ai->attachObject(Aset);
+
+	//Sound
+	sf::SoundBuffer tickbuffer;
+	sf::SoundBuffer songbuffer;
+	tickbuffer.loadFromFile("resources/sound/tick.ogg");
+	songbuffer.loadFromFile("resources/sound/focus.ogg");
+	sf::Sound tick;
+	sf::Sound song;
+	tick.setBuffer(tickbuffer);
+	song.setBuffer(songbuffer);
+
+	//Clock
+	sf::Clock clock;
+	song.play();
+	long offset = 0;
+
+	//Movement hack
+	srand(time(NULL));
+
+	//Viewport
+	Ogre::Viewport* vp = app.render_target->addViewport(camera);
 
 	/////////////////////////////////////////////////
-	// Setup input handling
-
-
-	/////////////////////////////////////////////////
-	// Start game, will block until frame listener returns false
+	// Main loop
+	sf::Clock game_time;
+	sf::Clock fps_timer;
+	bool running = true;
 	int frame_counter = 0;
-	Ogre::Timer frame_timer;
-	Ogre::Timer fps_timer;
-	while(!app->isClosed()){
-		float rot_factor = (Ogre::Real)frame_timer.getMicroseconds() / 600000.0f;
-		float cam_dist   = 150 + (100 * sin(rot_factor / 3.0f));
-		float cam_x = cam_dist * sin(rot_factor);
-		float cam_z = cam_dist * cos(rot_factor);
+	bool moved_this_beat = false;
 
-		node_camera->setPosition(cam_x, 0, cam_z);
+	int combo = 0;
+	while(running){
+		long t = clock.getElapsedTime().asMicroseconds();
+		if (t > TIME - offset){
+			offset = t - (TIME - offset);
+			tick.play();
+			clock.restart();
+
+			if(moved_this_beat){
+				++combo;
+			}
+
+                        int dir = rand() % 2; // between 0 and 1 
+                        int amount = (rand() % 2) * 2 - 1; //-1 or 1 
+                        if (dir){ 
+                          node_ai->translate(amount, 0, 0); 
+                        } 
+                        else{ 
+                          node_ai->translate(0, 0, amount); 
+                        } 
+
+			moved_this_beat = false;
+		}
+
+		float seconds_until_beat = (TIME - t) / 1000000.0f;
+		float seconds_since_beat = (TIME / 1000000.0f) - seconds_until_beat;
+
+		// Value between 0 and 1 indicating progress towards next beat, where 0 means we've
+		// just had last beat and 1 means we've just hit next beat
+		float beat_progress = (seconds_since_beat / (TIME / 1000000.0f));
+
+		//printf("Time till next tick: %8f, since last: %8f, beat progress: %8f\n",
+		//       seconds_until_beat, seconds_since_beat, beat_progress);
+
+		SDL_Event e;
+		while(SDL_PollEvent(&e)){
+			switch(e.type){
+			case SDL_WINDOWEVENT:
+				switch(e.window.event){
+				case SDL_WINDOWEVENT_CLOSE:
+					running = false;
+					break;
+				case SDL_WINDOWEVENT_RESIZED:
+					app.render_target->resize(e.window.data1, e.window.data2);
+					break;
+				default: break;
+				}
+				break;
+			case SDL_KEYDOWN:
+				if(!moved_this_beat && (seconds_until_beat < FDELTA || seconds_since_beat < FDELTA)){
+					switch(e.key.keysym.sym){
+
+                                        //Arrows
+					case SDLK_LEFT:  node_player->translate(-1, 0,  0); moved_this_beat = true; break;
+					case SDLK_RIGHT: node_player->translate( 1, 0,  0); moved_this_beat = true; break;
+					case SDLK_UP:    node_player->translate( 0, 0, -1); moved_this_beat = true; break;
+					case SDLK_DOWN:  node_player->translate( 0, 0,  1); moved_this_beat = true; break;
+                                        
+                                        //wasd
+					case SDLK_a:  node_player->translate(-1, 0,  0); moved_this_beat = true; break;
+					case SDLK_d: node_player->translate( 1, 0,  0); moved_this_beat = true; break;
+					case SDLK_w:    node_player->translate( 0, 0, -1); moved_this_beat = true; break;
+					case SDLK_s:  node_player->translate( 0, 0,  1); moved_this_beat = true; break;
+
+                                        //wasd
+					case SDLK_h:  node_player->translate(-1, 0,  0); moved_this_beat = true; break;
+					case SDLK_l: node_player->translate( 1, 0,  0); moved_this_beat = true; break;
+					case SDLK_k:    node_player->translate( 0, 0, -1); moved_this_beat = true; break;
+					case SDLK_j:  node_player->translate( 0, 0,  1); moved_this_beat = true; break;
+					default: break;
+					}
+					break;
+				}
+                                else{
+                                        float miss = std::min(seconds_until_beat - FDELTA, seconds_since_beat + FDELTA);
+                                        std::cout << "Missed beat by " << miss << " Seconds" << std::endl;
+                                }
+			}
+		}      
+
+		float cam_motion_delta = sin(beat_progress) * 0.3f;
+		node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
 		camera->lookAt(0,0,0);
 
-		root->renderOneFrame();
+		float light_intensity = 2 / (exp(beat_progress));
+		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
+
+		// Ensure player is within world bounds
+		Ogre::Vector3 pos = node_player->getPosition();
+		if (pos.x < -5) pos.x = -4.5;
+		if (pos.x >  5) pos.x =  4.5;
+		if (pos.z < -5) pos.z = -4.5;
+		if (pos.z >  5) pos.z =  4.5;
+		node_player->setPosition(pos);
+
+                //AI as well
+		pos = node_ai->getPosition();
+		if (pos.x < -5) pos.x = -4.5;
+		if (pos.x >  5) pos.x =  4.5;
+		if (pos.z < -5) pos.z = -4.5;
+		if (pos.z >  5) pos.z =  4.5;
+		node_ai->setPosition(pos);
+
+		app.ogre->renderOneFrame();
+		//SDL_GL_SwapWindow(app.window);
 
 		++frame_counter;
-		if(fps_timer.getMicroseconds() > 500000){
-			float seconds = fps_timer.getMicroseconds() / 1000000.0f;
+		if(fps_timer.getElapsedTime().asSeconds() > 0.5f){
+			float seconds = fps_timer.getElapsedTime().asSeconds();
 			printf("FPS: %i\n", (int)(frame_counter / seconds));
-			fps_timer.reset();
+			fps_timer.restart();
 			frame_counter = 0;
 		}
 	}
 
+	/////////////////////////////////////////////////
+	// Shutdown
 	printf("Cleaning up...\n");
-	delete root;
+	tempo::destroy_application(app);
 	printf("Exiting\n");
 	return 0;
 }
