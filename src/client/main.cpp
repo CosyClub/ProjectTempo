@@ -163,10 +163,18 @@ int main(int argc, const char** argv){
 			case SDL_KEYDOWN:
 				if(!moved_this_beat && (seconds_until_beat < FDELTA || seconds_since_beat < FDELTA)){
 					switch(e.key.keysym.sym){
+
+                                        //Arrows
 					case SDLK_LEFT:  node_player->translate(-1, 0,  0); moved_this_beat = true; break;
 					case SDLK_RIGHT: node_player->translate( 1, 0,  0); moved_this_beat = true; break;
 					case SDLK_UP:    node_player->translate( 0, 0, -1); moved_this_beat = true; break;
 					case SDLK_DOWN:  node_player->translate( 0, 0,  1); moved_this_beat = true; break;
+                                        
+                                        //wasd
+					case SDLK_a:  node_player->translate(-1, 0,  0); moved_this_beat = true; break;
+					case SDLK_d: node_player->translate( 1, 0,  0); moved_this_beat = true; break;
+					case SDLK_w:    node_player->translate( 0, 0, -1); moved_this_beat = true; break;
+					case SDLK_s:  node_player->translate( 0, 0,  1); moved_this_beat = true; break;
 					default: break;
 					}
 					break;
