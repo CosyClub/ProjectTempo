@@ -112,9 +112,6 @@ int main(int argc, const char** argv){
 	//Viewport
 	Ogre::Viewport* vp = app.render_target->addViewport(camera);
 
-	node_camera->setPosition(0, 10, 15);
-	camera->lookAt(0,0,0);
-
 	/////////////////////////////////////////////////
 	// Main loop
 	sf::Clock game_time;
@@ -122,6 +119,8 @@ int main(int argc, const char** argv){
 	bool running = true;
 	int frame_counter = 0;
 	bool moved_this_beat = false;
+
+	int combo = 0;
 	while(running){
 		long t = clock.getElapsedTime().asMicroseconds();
 
@@ -163,13 +162,21 @@ int main(int argc, const char** argv){
 			}
 		}
 
-		float light_intensity = 2 / (exp(beat_progress*0.45f));
+		float cam_motion_delta = sin(beat_progress) * 0.3f;
+		node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
+		camera->lookAt(0,0,0);
+
+		float light_intensity = 2 / (exp(beat_progress));
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
 
 		if (t > TIME - offset){
 			offset = t - (TIME - offset);
 			tick.play();
 			clock.restart();
+
+			if(moved_this_beat){
+				++combo;
+			}
 
 			moved_this_beat = false;
 
