@@ -124,6 +124,17 @@ int main(int argc, const char** argv){
 	int combo = 0;
 	while(running){
 		long t = clock.getElapsedTime().asMicroseconds();
+		if (t > TIME - offset){
+			offset = t - (TIME - offset);
+			tick.play();
+			clock.restart();
+
+			if(moved_this_beat){
+				++combo;
+			}
+
+			moved_this_beat = false;
+		}
 
 		float seconds_until_beat = (TIME - t) / 1000000.0f;
 		float seconds_since_beat = (TIME / 1000000.0f) - seconds_until_beat;
@@ -173,27 +184,6 @@ int main(int argc, const char** argv){
 
 		float light_intensity = 2 / (exp(beat_progress));
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
-
-		if (t > TIME - offset){
-			offset = t - (TIME - offset);
-			tick.play();
-			clock.restart();
-
-			if(moved_this_beat){
-				++combo;
-			}
-
-			moved_this_beat = false;
-
-			/*int dir = rand() % 2; // between 0 and 1
-			int amount = (rand() % 2) * 2 - 1; //-1 or 1
-			if (dir){
-				node_player->translate(amount, 0, 0);
-			}
-			else{
-				node_player->translate(0, 0, amount);
-				}*/
-		}
 
 		// Ensure player is within world bounds
 		Ogre::Vector3 pos = node_player->getPosition();
