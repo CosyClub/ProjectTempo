@@ -112,21 +112,28 @@ int main(int argc, const char** argv){
 	//Viewport
 	Ogre::Viewport* vp = app.render_target->addViewport(camera);
 
+	node_camera->setPosition(0, 10, 15);
+	camera->lookAt(0,0,0);
+
 	/////////////////////////////////////////////////
 	// Main loop
-	sf::Clock frame_timer;
+	sf::Clock game_time;
 	sf::Clock fps_timer;
-	sf::Clock dt_timer;
 	bool running = true;
 	int frame_counter = 0;
+	bool moved_this_beat = false;
 	while(running){
-		//float dt = dt_timer.getElapsedTime().asSeconds();
-		//dt_timer.restart();
+		long t = clock.getElapsedTime().asMicroseconds();
 
-		float rot_factor = (Ogre::Real)frame_timer.getElapsedTime().asSeconds() * 0.5f;
-		float cam_dist   = 10;
-		float cam_x = cam_dist * sin(rot_factor);
-		float cam_z = cam_dist * cos(rot_factor);
+		float seconds_until_beat = (TIME - t) / 1000000.0f;
+		float seconds_since_beat = (TIME / 1000000.0f) - seconds_until_beat;
+
+		// Value between 0 and 1 indicating progress towards next beat, where 0 means we've
+		// just had last beat and 1 means we've just hit next beat
+		float beat_progress = (seconds_since_beat / (TIME / 1000000.0f));
+
+		//printf("Time till next tick: %8f, since last: %8f, beat progress: %8f\n",
+		//       seconds_until_beat, seconds_since_beat, beat_progress);
 
 		SDL_Event e;
 		while(SDL_PollEvent(&e)){
@@ -142,51 +149,47 @@ int main(int argc, const char** argv){
 				default: break;
 				}
 				break;
-			case SDL_KEYUP:
-				switch(e.key.keysym.sym){
-				case SDLK_r:
-					light->setDiffuseColour(1,0,0);
-					break;
-				case SDLK_g:
-					light->setDiffuseColour(0,1,0);
-					break;
-				case SDLK_b:
-					light->setDiffuseColour(0,0,1);
-					break;
-				case SDLK_w:
-					light->setDiffuseColour(1,1,1);
+			case SDL_KEYDOWN:
+				if(!moved_this_beat && (seconds_until_beat < 0.10f || seconds_since_beat < 0.10f)){
+					switch(e.key.keysym.sym){
+					case SDLK_LEFT:  node_player->translate(-1, 0,  0); moved_this_beat = true; break;
+					case SDLK_RIGHT: node_player->translate( 1, 0,  0); moved_this_beat = true; break;
+					case SDLK_UP:    node_player->translate( 0, 0, -1); moved_this_beat = true; break;
+					case SDLK_DOWN:  node_player->translate( 0, 0,  1); moved_this_beat = true; break;
+					default: break;
+					}
 					break;
 				}
-				break;
-			default: break;
 			}
 		}
 
-		node_camera->setPosition(cam_x, 5, cam_z);
-		//node_camera->setPosition(10, 5, 10);
-		camera->lookAt(0,0,0);
+		float light_intensity = 2 / (exp(beat_progress*0.45f));
+		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
 
-		long t = clock.getElapsedTime().asMicroseconds();
 		if (t > TIME - offset){
-			//std::cout << offset << std::endl;
 			offset = t - (TIME - offset);
 			tick.play();
 			clock.restart();
-			int dir = rand() % 2; // between 0 and 1
+
+			moved_this_beat = false;
+
+			/*int dir = rand() % 2; // between 0 and 1
 			int amount = (rand() % 2) * 2 - 1; //-1 or 1
 			if (dir){
 				node_player->translate(amount, 0, 0);
 			}
 			else{
 				node_player->translate(0, 0, amount);
-			}
-			Ogre::Vector3 pos = node_player->getPosition();
-			if (pos.x < -5) pos.x = -4.5;
-			if (pos.x >  5) pos.x =  4.5;
-			if (pos.z < -5) pos.z = -4.5;
-			if (pos.z >  5) pos.z =  4.5;
-			node_player->setPosition(pos);
+				}*/
 		}
+
+		// Ensure player is within world bounds
+		Ogre::Vector3 pos = node_player->getPosition();
+		if (pos.x < -5) pos.x = -4.5;
+		if (pos.x >  5) pos.x =  4.5;
+		if (pos.z < -5) pos.z = -4.5;
+		if (pos.z >  5) pos.z =  4.5;
+		node_player->setPosition(pos);
 
 		app.ogre->renderOneFrame();
 		SDL_GL_SwapWindow(app.window);
@@ -206,4 +209,4 @@ int main(int argc, const char** argv){
 	tempo::destroy_application(app);
 	printf("Exiting\n");
 	return 0;
-	}
+}
