@@ -79,18 +79,30 @@ int main(int argc, const char** argv){
 	helpers->attachObject(z1);
 
 	//Player
-	Ogre::BillboardSet* Bset = scene->createBillboardSet();
-	Bset->setMaterialName("rectangleSprite");
-	Bset->setDefaultDimensions(0.5, 1.5);
-	Bset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
-	Bset->setCommonDirection(Ogre::Vector3(0, 1, 0));
-	Ogre::Billboard* player = Bset->createBillboard(0, 0.75, 0);
-	//player->setRotation(Ogre::Radian(M_PI / 4));
-	player->setColour(Ogre::ColourValue::Red);
+	Ogre::BillboardSet* Pset = scene->createBillboardSet();
+	Pset->setMaterialName("rectangleSprite");
+	Pset->setDefaultDimensions(0.5, 1.5);
+	Pset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
+	Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
 
+	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
+	player->setColour(Ogre::ColourValue::Red);
 	Ogre::SceneNode* node_player = scene->getRootSceneNode()->createChildSceneNode();
 	node_player->setPosition(0.5, 0, 0.5);
-	node_player->attachObject(Bset);
+	node_player->attachObject(Pset);
+
+        //Ai
+	Ogre::BillboardSet* Aset = scene->createBillboardSet();
+	Aset->setMaterialName("rectangleSprite");
+	Aset->setDefaultDimensions(0.4, 1.3);
+	Aset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
+	Aset->setCommonDirection(Ogre::Vector3(0, 1, 0));
+
+	Ogre::Billboard* ai = Aset->createBillboard(0, 0.75, 0);
+	ai->setColour(Ogre::ColourValue::Blue);
+	Ogre::SceneNode* node_ai = scene->getRootSceneNode()->createChildSceneNode();
+	node_ai->setPosition(3.5, 0, 3.5);
+	node_ai->attachObject(Aset);
 
 	//Sound
 	sf::SoundBuffer tickbuffer;
@@ -132,6 +144,15 @@ int main(int argc, const char** argv){
 			if(moved_this_beat){
 				++combo;
 			}
+
+                        int dir = rand() % 2; // between 0 and 1 
+                        int amount = (rand() % 2) * 2 - 1; //-1 or 1 
+                        if (dir){ 
+                          node_ai->translate(amount, 0, 0); 
+                        } 
+                        else{ 
+                          node_ai->translate(0, 0, amount); 
+                        } 
 
 			moved_this_beat = false;
 		}
@@ -175,6 +196,12 @@ int main(int argc, const char** argv){
 					case SDLK_d: node_player->translate( 1, 0,  0); moved_this_beat = true; break;
 					case SDLK_w:    node_player->translate( 0, 0, -1); moved_this_beat = true; break;
 					case SDLK_s:  node_player->translate( 0, 0,  1); moved_this_beat = true; break;
+
+                                        //wasd
+					case SDLK_h:  node_player->translate(-1, 0,  0); moved_this_beat = true; break;
+					case SDLK_l: node_player->translate( 1, 0,  0); moved_this_beat = true; break;
+					case SDLK_k:    node_player->translate( 0, 0, -1); moved_this_beat = true; break;
+					case SDLK_j:  node_player->translate( 0, 0,  1); moved_this_beat = true; break;
 					default: break;
 					}
 					break;
@@ -184,7 +211,7 @@ int main(int argc, const char** argv){
                                         std::cout << "Missed beat by " << miss << " Seconds" << std::endl;
                                 }
 			}
-		}
+		}      
 
 		float cam_motion_delta = sin(beat_progress) * 0.3f;
 		node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
@@ -201,8 +228,16 @@ int main(int argc, const char** argv){
 		if (pos.z >  5) pos.z =  4.5;
 		node_player->setPosition(pos);
 
+                //AI as well
+		pos = node_ai->getPosition();
+		if (pos.x < -5) pos.x = -4.5;
+		if (pos.x >  5) pos.x =  4.5;
+		if (pos.z < -5) pos.z = -4.5;
+		if (pos.z >  5) pos.z =  4.5;
+		node_ai->setPosition(pos);
+
 		app.ogre->renderOneFrame();
-		SDL_GL_SwapWindow(app.window);
+		//SDL_GL_SwapWindow(app.window);
 
 		++frame_counter;
 		if(fps_timer.getElapsedTime().asSeconds() > 0.5f){
