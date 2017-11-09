@@ -20,6 +20,7 @@
 
 #define BPM 174
 #define DELTA 150
+#define FDELTA DELTA / 1000.0f
 #define NETOFFSET 30 * 1000
 #define SIZE 1000
 #define GRID 100
@@ -149,7 +150,7 @@ int main(int argc, const char** argv){
 				}
 				break;
 			case SDL_KEYDOWN:
-				if(!moved_this_beat && (seconds_until_beat < 0.10f || seconds_since_beat < 0.10f)){
+				if(!moved_this_beat && (seconds_until_beat < FDELTA || seconds_since_beat < FDELTA)){
 					switch(e.key.keysym.sym){
 					case SDLK_LEFT:  node_player->translate(-1, 0,  0); moved_this_beat = true; break;
 					case SDLK_RIGHT: node_player->translate( 1, 0,  0); moved_this_beat = true; break;
@@ -159,6 +160,10 @@ int main(int argc, const char** argv){
 					}
 					break;
 				}
+                                else{
+                                        float miss = std::min(seconds_until_beat - FDELTA, seconds_since_beat + FDELTA);
+                                        std::cout << "Missed beat by " << miss << " Seconds" << std::endl;
+                                }
 			}
 		}
 
