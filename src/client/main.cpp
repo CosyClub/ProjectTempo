@@ -57,12 +57,12 @@ int main(int argc, const char** argv){
 	camera->setAutoAspectRatio(true);
 	Ogre::SceneNode* node_camera = scene->getRootSceneNode()->createChildSceneNode();
 	node_camera->attachObject(camera);
-	node_camera->setPosition(0, 0, 140);
+	node_camera->setPosition(0, 0, 30);
 
 	//Dancefloor
 	Ogre::Entity* entity_floor = scene->createEntity("meshes/floor.mesh");
 	Ogre::SceneNode* node_floor = scene->getRootSceneNode()->createChildSceneNode();
-	node_floor->setScale(10, 0.05, 10);
+	node_floor->setScale(1, 1, 1);
 	node_floor->attachObject(entity_floor);
 
 
@@ -88,7 +88,7 @@ int main(int argc, const char** argv){
 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
 	player->setColour(Ogre::ColourValue::Red);
 	Ogre::SceneNode* node_player = scene->getRootSceneNode()->createChildSceneNode();
-	node_player->setPosition(0.5, 0, 0.5);
+	node_player->setPosition(0, 0, 0);
 	node_player->attachObject(Pset);
 
         //Ai
@@ -101,7 +101,7 @@ int main(int argc, const char** argv){
 	Ogre::Billboard* ai = Aset->createBillboard(0, 0.75, 0);
 	ai->setColour(Ogre::ColourValue::Blue);
 	Ogre::SceneNode* node_ai = scene->getRootSceneNode()->createChildSceneNode();
-	node_ai->setPosition(3.5, 0, 3.5);
+	node_ai->setPosition(3, 0, 3);
 	node_ai->attachObject(Aset);
 
 	//Sound
@@ -217,23 +217,40 @@ int main(int argc, const char** argv){
 		node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
 		camera->lookAt(0,0,0);
 
+	// This code moves the camera to a point where the entire floor is visible.
+		camera->setPosition(node_floor->getParentSceneNode()->_getDerivedPosition());
+
+		Ogre::Real nearPlane = camera->getNearClipDistance();
+		Ogre::Radian theta = camera->getFOVy() * .5;
+		// get minimum dimension from aspect
+		Ogre::Real aspectRatio = camera->getAspectRatio();
+		if (aspectRatio < 1.0f)
+			theta *= aspectRatio;
+
+		Ogre::Real distance = (entity_floor->getBoundingRadius() / Ogre::Math::Sin(theta)) + nearPlane;
+
+		// move the camera back along its negative direction (+Z)
+		camera->moveRelative(Ogre::Vector3(0, 0, 0.2*distance));
+
+	//End of Camera move code
+
 		float light_intensity = 2 / (exp(beat_progress));
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
 
 		// Ensure player is within world bounds
 		Ogre::Vector3 pos = node_player->getPosition();
-		if (pos.x < -5) pos.x = -4.5;
-		if (pos.x >  5) pos.x =  4.5;
-		if (pos.z < -5) pos.z = -4.5;
-		if (pos.z >  5) pos.z =  4.5;
+		if (pos.x < -7) pos.x = -7;
+		if (pos.x >  7) pos.x = 7;
+		if (pos.z < -7) pos.z = -7;
+		if (pos.z >  7) pos.z = 7;
 		node_player->setPosition(pos);
 
                 //AI as well
 		pos = node_ai->getPosition();
-		if (pos.x < -5) pos.x = -4.5;
-		if (pos.x >  5) pos.x =  4.5;
-		if (pos.z < -5) pos.z = -4.5;
-		if (pos.z >  5) pos.z =  4.5;
+		if (pos.x < -7) pos.x = -7;
+		if (pos.x >  7) pos.x = 7;
+		if (pos.z < -7) pos.z = -7;
+		if (pos.z >  7) pos.z = 7;
 		node_ai->setPosition(pos);
 
 		app.ogre->renderOneFrame();
