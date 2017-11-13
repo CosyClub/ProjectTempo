@@ -26,7 +26,6 @@ namespace tempo
         {
                 cache_time();
                 sf::Time delta = t - time;
-                std::cout << "Time delta was " << delta.asMicroseconds() << std::endl;
                 time = t;
                 song->skip(delta);
         }
@@ -77,15 +76,17 @@ namespace tempo
         //private
         void Clock::cache_time()
         {
-                sf::Time delta = timer.getElapsedTime();
-                timer.restart();
-                time = time + delta;
+                time = time + timer.restart();
         }
         
         void Clock::update_beat()
         {       
-                sf::Time delta = next_beat - last_beat;
-                last_beat = next_beat;
-                next_beat = last_beat + delta;
+		cache_time();
+		while (next_beat < time)
+		{
+			sf::Time delta = next_beat - last_beat;
+                	last_beat = next_beat;
+                	next_beat = last_beat + delta;
+		}
         }
 }
