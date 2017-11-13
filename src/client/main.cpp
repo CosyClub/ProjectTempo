@@ -135,6 +135,8 @@ int main(int argc, const char** argv){
 	int frame_counter = 0;
 	bool moved_this_beat = false;
 
+    clock.sync_time(&mainsong);
+
 	int combo = 0;
 	while(running){
 		if (clock.passed_beat()){

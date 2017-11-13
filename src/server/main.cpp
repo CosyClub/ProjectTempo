@@ -90,8 +90,6 @@ int main(int argc, const char** argv) {
     // Start up timeSyncThread
     std::thread timeSyncThread (thread_timeSyncListener, &clock); 
 
-    timeSyncThread.join();
-
     while (true) {
         if (clock.passed_beat()) {
             std::cout << "Server Beat Passed (" << clock.get_time().asSeconds()
