@@ -34,7 +34,7 @@ void thread_timeSyncer(tempo::Clock *clock, sf::TcpSocket *client) {
     sf::Time t1 = clock->get_time();
 
     // Wait a bit
-    std::this_thread::sleep_for (std::chrono::milliseconds(TIMESYNC_DELTA));
+    std::this_thread::sleep_for(std::chrono::milliseconds(TIMESYNC_DELTA));
     
     // Store the current time, and send all the times back
     sf::Time t2 = clock->get_time();
@@ -112,6 +112,7 @@ int main(int argc, const char** argv) {
             std::cout << "Server Beat Passed (" << clock.get_time().asSeconds()
                       << ")" << std::endl;
         }
+	std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
 
 	return 0;

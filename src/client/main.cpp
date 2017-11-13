@@ -99,7 +99,7 @@ int main(int argc, const char** argv){
 	node_player->setPosition(0, 0, 0);
 	node_player->attachObject(Pset);
 
-    //Ai
+	//Ai
 	Ogre::BillboardSet* Aset = scene->createBillboardSet();
 	Aset->setMaterialName("rectangleSprite");
 	Aset->setDefaultDimensions(0.4, 1.3);
@@ -113,7 +113,7 @@ int main(int argc, const char** argv){
 	node_ai->attachObject(Aset);
 
 	//Sound
-        tempo::Song mainsong("resources/sound/tick.ogg");
+        tempo::Song mainsong("resources/sound/focus.ogg");
 
 	//Clock
         tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
@@ -135,7 +135,7 @@ int main(int argc, const char** argv){
 	int frame_counter = 0;
 	bool moved_this_beat = false;
 
-    clock.sync_time(&mainsong);
+	clock.sync_time(&mainsong);
 
 	int combo = 0;
 	while(running){
@@ -209,7 +209,7 @@ int main(int argc, const char** argv){
 					break;
 				}
                                 else{
-                                        std::cout << std::min(clock.since_beat().asMilliseconds(), clock.since_beat().asMilliseconds()) << std::endl;
+                                        std::cout << "Missed beat by " << std::min(clock.since_beat().asMilliseconds(), clock.until_beat().asMilliseconds()) << std::endl;
                                 }
 			}
 		}      
@@ -218,7 +218,7 @@ int main(int argc, const char** argv){
 		node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
 		camera->lookAt(0,0,0);
 
-	// This code moves the camera to a point where the entire floor is visible.
+		// This code moves the camera to a point where the entire floor is visible.
 		camera->setPosition(node_floor->getParentSceneNode()->_getDerivedPosition());
 
 		Ogre::Real nearPlane = camera->getNearClipDistance();
@@ -233,7 +233,7 @@ int main(int argc, const char** argv){
 		// move the camera back along its negative direction (+Z)
 		camera->moveRelative(Ogre::Vector3(0, 0, 0.2*distance));
 
-	//End of Camera move code
+		//End of Camera move code
 
 		float light_intensity = 2 / (exp(beat_progress));
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
@@ -255,7 +255,7 @@ int main(int argc, const char** argv){
 		node_ai->setPosition(pos);
 
 		app.ogre->renderOneFrame();
-		SDL_GL_SwapWindow(app.window);
+		//SDL_GL_SwapWindow(app.window);
 
 		++frame_counter;
 		if(fps_timer.getElapsedTime().asSeconds() > 0.5f){
