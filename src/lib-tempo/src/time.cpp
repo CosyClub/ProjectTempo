@@ -1,5 +1,6 @@
 #include <tempo/config.hpp>
 #include <tempo/time.hpp>
+#include <tempo/network.hpp>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
@@ -16,8 +17,7 @@ namespace tempo
         
         sf::Time Clock::get_time()
         {
-                cache_time();
-                return time;
+                return time + timer.getElapsedTime();
         }
 
         void Clock::set_time(sf::Time t, tempo::Song *song)
@@ -31,6 +31,11 @@ namespace tempo
         void Clock::sync_time(tempo::Song *song)
         {
                 set_time(ntp_get_time(this), song);
+        }
+
+        void Clock::sync_time()
+        {
+                set_time(ntp_get_time(this));
         }
 
         bool Clock::passed_beat()
