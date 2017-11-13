@@ -17,6 +17,7 @@
 #include <SFML/System/Clock.hpp>
 
 #include <tempo/Application.hpp>
+#include <tempo/time.hpp>
 
 #define BPM 174
 #define DELTA 150
