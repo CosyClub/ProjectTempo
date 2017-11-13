@@ -15,7 +15,13 @@
 #define NET_PORT 1337 // Port that we (the server) should run on
 
 void thread_timeSyncer(sf::TcpSocket *client) {
+    // Store the current time
+    
+    // Wait a bit
+    
+    // Store the current time, and send all the times back
 
+    // Close Socket, Delete Socket Resources + Close thread
 }
 
 void thread_timeSyncListener() {
@@ -36,6 +42,7 @@ void thread_timeSyncListener() {
 		if (listener.accept(*client) == sf::Socket::Done) {
 			clientSockets.push_back(client);
 			std::thread *t = new std::thread(thread_timeSyncer, client);
+			*t.join();
 		} else {
 			// Error, cleanup the client we created
 			delete client;
@@ -48,26 +55,11 @@ void thread_timeSyncListener() {
 
 
 int main(int argc, const char** argv) {
-	/////////////////////////////////////////////////
-	// Setup Networking
-	sf::UdpSocket socket;
 
-	if (socket.bind(NET_PORT) != sf::Socket::Done) {
-		printf("Could not bind port %d, unable to start server.\n", NET_PORT);
-		return 1;
-	}
-	printf("Server is listening on port %d...", NET_PORT);
+    // Start up timeSyncThread
+    std::thread timeSyncThread (thread_timeSyncListener); 
 
-	// Recieve some stuff
-	char data[100];
-	std::size_t received;
-	sf::IpAddress sender;
-	unsigned short port;
-	if (socket.receive(data, 100, received, sender, port) != sf::Socket::Done)
-	{
-		// error...
-	}
-	printf("Received %d bytes from $d on port %d.\n", received, sender, port);
+    timeSyncThread.join();
 
 	return 0;
 }
