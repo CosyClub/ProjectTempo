@@ -15,9 +15,11 @@
 
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>
+#include <SFML/Network.hpp>
 
 #include <tempo/Application.hpp>
 
+#define NET_PORT 1337 // Port the server is running on
 #define BPM 174
 #define DELTA 150
 #define FDELTA DELTA / 1000.0f
@@ -34,6 +36,16 @@ int main(int argc, const char** argv){
 		printf("Application initialisation failed, exiting\n");
 		return 1;
 	}
+
+	/////////////////////////////////////////////////
+	// Setup Networking
+	sf::UdpSocket socket;
+
+	if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Done) {
+		// error...
+	}
+
+	unsigned short port = socket.getLocalPort();
 
 	/////////////////////////////////////////////////
 	// Setup resources
@@ -91,7 +103,7 @@ int main(int argc, const char** argv){
 	node_player->setPosition(0, 0, 0);
 	node_player->attachObject(Pset);
 
-        //Ai
+    //Ai
 	Ogre::BillboardSet* Aset = scene->createBillboardSet();
 	Aset->setMaterialName("rectangleSprite");
 	Aset->setDefaultDimensions(0.4, 1.3);
