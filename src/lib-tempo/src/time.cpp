@@ -2,6 +2,8 @@
 #include <tempo/time.hpp>
 #include <tempo/network.hpp>
 
+#include <iostream>
+
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/System/Clock.hpp>
@@ -24,6 +26,7 @@ namespace tempo
         {
                 cache_time();
                 sf::Time delta = t - time;
+                std::cout << "Time delta was " << delta.asMicroseconds() << std::endl;
                 time = t;
                 song->skip(delta);
         }
