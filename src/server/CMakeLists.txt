@@ -4,9 +4,12 @@ add_executable(server
 	${CMAKE_CURRENT_LIST_DIR}/main.cpp
 )
 
-target_include_directories(server PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
+set_target_properties(server PROPERTIES OUTPUT_NAME "RaveCave_Server")
 
-target_link_libraries(client sfml-system)
+target_include_directories(server PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
+target_include_directories(server PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
+
+target_link_libraries(server lib_tempo)
+target_link_libraries(server sfml-system)
 target_link_libraries(server sfml-network)
 
-set_target_properties(server PROPERTIES OUTPUT_NAME "RaveCave_Server")
