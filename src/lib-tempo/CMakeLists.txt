@@ -1,12 +1,14 @@
 set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Application.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/time.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/config.hpp"
 )
 
 set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/Application.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/time.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/network.cpp"
 )
 
 add_library(lib_tempo STATIC

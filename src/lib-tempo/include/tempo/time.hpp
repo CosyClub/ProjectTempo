@@ -24,6 +24,7 @@ namespace tempo{
                 Clock(sf::Time first_beat, sf::Time offset);
                 sf::Time get_time();
                 void set_time(sf::Time t);
+                void sync_time();
 
                 //beat related
                 bool passed_beat();

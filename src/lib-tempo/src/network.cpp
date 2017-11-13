@@ -1,81 +1,37 @@
 #include <tempo/config.hpp>
 #include <tempo/time.hpp>
+#include <tempo/network.hpp>
+
+#include <iostream>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
-#include <SFML/System/Clock.hpp>
 
 namespace tempo
 {
-        //public
-        Clock::Clock(sf::Time first_beat, sf::Time offset)
+        sf::Time ntp_get_time(tempo::Clock *clock)
         {
-                next_beat = first_beat;
-                delta = offset;
-        }
-        
-        sf::Time Clock::get_time()
-        {
-                cache_time();
-                return time;
-        }
-
-        void Clock::set_time(sf::Time t)
-        {
-                cache_time();
-                time = t;
-        }
-
-        bool Clock::passed_beat()
-        {
-                cache_time();
-                if (time > next_beat)
+                sf::TcpSocket socket;
+                sf::Socket::Status status = socket.connect(NET_ADDR, NTP_PORT);
+                if (status != sf::Socket::Done)
                 {
-                        update_beat();
-                        return true;
+                        std::cout << "Error binding socket" << std::endl;
                 }
-                return false;
-        }
 
-        void Clock::set_next_beat(sf::Time t)
-        {
-                cache_time();
-                next_beat = t;
-        }
+                sf::Int64 t0 = clock->get_time().asMicroseconds();
+                sf::Int64 t1;
+                sf::Int64 t2;
+                sf::Int64 t3;
 
-        bool Clock::within_delta()
-        {
-                cache_time();
-                return (until_beat() < delta || since_beat() < delta);
-        }
+                sf::Packet packet;
+                packet << t0;
+                socket.send(packet);
 
-        float Clock::beat_progress()
-        {
-                return since_beat() / (since_beat() + until_beat());
-        }
+                socket.receive(packet);
+                t3 = clock->get_time().asMicroseconds();
+                packet >> t1 >> t2;
 
-        sf::Time Clock::until_beat()
-        {
-                return next_beat - time;
-        }
-
-        sf::Time Clock::since_beat()
-        {
-                return time - last_beat;
-        }
-
-        //private
-        void Clock::cache_time()
-        {
-                sf::Time delta = timer.getElapsedTime();
-                timer.restart();
-                time = time + delta;
-        }
-        
-        void Clock::update_beat()
-        {       
-                sf::Time delta = next_beat - last_beat;
-                last_beat = next_beat;
-                next_beat = last_beat + delta;
+                sf::Int64 delay  = ((t3 - t0) - (t2 - t1)) / 2;
+                return sf::microseconds(t2 + delay);
         }
 }
