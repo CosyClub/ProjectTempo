@@ -33,11 +33,6 @@ namespace tempo
                 set_time(ntp_get_time(this), song);
         }
 
-        void Clock::sync_time()
-        {
-                set_time(ntp_get_time(this));
-        }
-
         bool Clock::passed_beat()
         {
                 cache_time();
