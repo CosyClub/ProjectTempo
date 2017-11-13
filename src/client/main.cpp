@@ -18,17 +18,12 @@
 #include <SFML/Network.hpp>
 
 #include <tempo/Application.hpp>
+#include <tempo/time.hpp>
 
 #define NET_PORT 1337 // Port the server is running on
 #define BPM 174
 #define DELTA 150
-#define FDELTA DELTA / 1000.0f
-#define NETOFFSET 30 * 1000
-#define SIZE 1000
-#define GRID 100
 #define TIME 60000000 / BPM
-#define LOWERBOUND (DELTA * 1000)
-#define UPPERBOUND TIME - (DELTA * 1000)
 
 int main(int argc, const char** argv){
 	tempo::Application app = tempo::initialize_application("RaveCave", 800, 600);
@@ -127,7 +122,8 @@ int main(int argc, const char** argv){
 	song.setBuffer(songbuffer);
 
 	//Clock
-	sf::Clock clock;
+        tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
+        clock.set_next_beat(sf::microseconds(TIME));
 	song.play();
 	long offset = 0;
 
@@ -147,11 +143,10 @@ int main(int argc, const char** argv){
 
 	int combo = 0;
 	while(running){
-		long t = clock.getElapsedTime().asMicroseconds();
-		if (t > TIME - offset){
-			offset = t - (TIME - offset);
+		if (clock.passed_beat()){
+                        /* std::cout << clock.get_time().asMilliseconds() << std::endl; */
+                        /* std::cout << clock.until_beat().asMilliseconds() << std::endl; */
 			tick.play();
-			clock.restart();
 
 			if(moved_this_beat){
 				++combo;
@@ -169,12 +164,12 @@ int main(int argc, const char** argv){
 			moved_this_beat = false;
 		}
 
-		float seconds_until_beat = (TIME - t) / 1000000.0f;
-		float seconds_since_beat = (TIME / 1000000.0f) - seconds_until_beat;
+		float seconds_until_beat = clock.until_beat().asSeconds();
+		float seconds_since_beat = clock.since_beat().asSeconds();
 
 		// Value between 0 and 1 indicating progress towards next beat, where 0 means we've
 		// just had last beat and 1 means we've just hit next beat
-		float beat_progress = (seconds_since_beat / (TIME / 1000000.0f));
+		float beat_progress = clock.beat_progress();
 
 		//printf("Time till next tick: %8f, since last: %8f, beat progress: %8f\n",
 		//       seconds_until_beat, seconds_since_beat, beat_progress);
@@ -194,7 +189,7 @@ int main(int argc, const char** argv){
 				}
 				break;
 			case SDL_KEYDOWN:
-				if(!moved_this_beat && (seconds_until_beat < FDELTA || seconds_since_beat < FDELTA)){
+				if(!moved_this_beat && clock.within_delta()){
 					switch(e.key.keysym.sym){
 
                                         //Arrows
@@ -219,8 +214,7 @@ int main(int argc, const char** argv){
 					break;
 				}
                                 else{
-                                        float miss = std::min(seconds_until_beat - FDELTA, seconds_since_beat + FDELTA);
-                                        std::cout << "Missed beat by " << miss << " Seconds" << std::endl;
+                                        std::cout << std::min(clock.since_beat().asMilliseconds(), clock.since_beat().asMilliseconds()) << std::endl;
                                 }
 			}
 		}      
@@ -266,7 +260,7 @@ int main(int argc, const char** argv){
 		node_ai->setPosition(pos);
 
 		app.ogre->renderOneFrame();
-		//SDL_GL_SwapWindow(app.window);
+		SDL_GL_SwapWindow(app.window);
 
 		++frame_counter;
 		if(fps_timer.getElapsedTime().asSeconds() > 0.5f){
