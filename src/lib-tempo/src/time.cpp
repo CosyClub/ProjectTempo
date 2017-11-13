@@ -20,10 +20,17 @@ namespace tempo
                 return time;
         }
 
-        void Clock::set_time(sf::Time t)
+        void Clock::set_time(sf::Time t, tempo::Song *song)
         {
                 cache_time();
+                sf::Time delta = t - time;
                 time = t;
+                song->skip(delta);
+        }
+
+        void Clock::sync_time(tempo::Song *song)
+        {
+                set_time(ntp_get_time(this), song);
         }
 
         bool Clock::passed_beat()
