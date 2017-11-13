@@ -25,7 +25,7 @@ namespace tempo{
                 sf::Time get_time();
                 void set_time(sf::Time t);
 
-                //beat related
+                //beat relate
                 bool passed_beat();
                 void set_next_beat(sf::Time t);
                 bool within_delta();
