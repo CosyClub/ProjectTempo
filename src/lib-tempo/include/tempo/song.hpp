@@ -17,7 +17,19 @@
 
 namespace tempo
 {
-        Song::  
+        class Song
+        {
+                public:
+                Song(std::string path);
+                void start();
+                void pause();
+                void stop();
+                void skip(sf::Time delta);
+
+                private:
+                sf::SoundBuffer buffer;
+                sf::Sound sound;
+        };
 }
 
 #endif
