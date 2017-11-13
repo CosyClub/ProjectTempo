@@ -19,6 +19,7 @@
 
 #include <tempo/Application.hpp>
 #include <tempo/time.hpp>
+#include <tempo/song.hpp>
 
 #define NET_PORT 1337 // Port the server is running on
 #define BPM 174
@@ -112,19 +113,12 @@ int main(int argc, const char** argv){
 	node_ai->attachObject(Aset);
 
 	//Sound
-	sf::SoundBuffer tickbuffer;
-	sf::SoundBuffer songbuffer;
-	tickbuffer.loadFromFile("resources/sound/tick.ogg");
-	songbuffer.loadFromFile("resources/sound/focus.ogg");
-	sf::Sound tick;
-	sf::Sound song;
-	tick.setBuffer(tickbuffer);
-	song.setBuffer(songbuffer);
+        tempo::Song mainsong("resources/sound/tick.ogg");
 
 	//Clock
         tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
         clock.set_next_beat(sf::microseconds(TIME));
-	song.play();
+	mainsong.start();
 	long offset = 0;
 
 	//Movement hack
@@ -146,7 +140,6 @@ int main(int argc, const char** argv){
 		if (clock.passed_beat()){
                         /* std::cout << clock.get_time().asMilliseconds() << std::endl; */
                         /* std::cout << clock.until_beat().asMilliseconds() << std::endl; */
-			tick.play();
 
 			if(moved_this_beat){
 				++combo;
