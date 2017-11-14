@@ -10,6 +10,8 @@
 #ifndef TEMPO_TIME_HPP
 #define TEMPO_TIME_HPP
 
+#include <tempo/song.hpp>
+
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/System/Clock.hpp>
@@ -23,9 +25,10 @@ namespace tempo{
                 //base stuff
                 Clock(sf::Time first_beat, sf::Time offset);
                 sf::Time get_time();
-                void set_time(sf::Time t);
+                void set_time(sf::Time t, tempo::Song *song);
+                void sync_time(tempo::Song *song);
 
-                //beat related
+                //beat relate
                 bool passed_beat();
                 void set_next_beat(sf::Time t);
                 bool within_delta();
