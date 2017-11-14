@@ -34,4 +34,20 @@ namespace tempo
 		sound.setPlayingOffset(sound.getPlayingOffset() + delta);
 	}
 
+	void Song::set_volume(float volume)
+	{
+		sound.setVolume(volume);
+	}
+
+	void Song::inc_volume(float volume)
+	{
+		float vol = sound.getVolume();
+		sound.setVolume(std::min(vol + volume, 100.f));
+	}
+
+	void Song::dec_volume(float volume)
+	{
+		float vol = sound.getVolume();
+		sound.setVolume(std::max(vol - volume, 0.f));
+	}
 }

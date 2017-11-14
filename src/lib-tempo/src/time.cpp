@@ -33,7 +33,7 @@ namespace tempo
 
 	void Clock::sync_time(tempo::Song *song)
 	{
-		set_time(ntp_get_time(this), song);
+		set_time(timeSyncClient(this), song);
 	}
 
 	bool Clock::passed_beat()

@@ -26,9 +26,10 @@
 #define DELTA 150
 #define TIME 60000000 / BPM
 
-int main(int argc, const char** argv){
+int main(int argc, const char** argv) 
+{
 	tempo::Application app = tempo::initialize_application("RaveCave", 800, 600);
-	if(app.ogre == nullptr || app.window == nullptr || app.render_target == nullptr){
+	if (app.ogre == nullptr || app.window == nullptr || app.render_target == nullptr) {
 		printf("Application initialisation failed, exiting\n");
 		return 1;
 	}
@@ -104,6 +105,7 @@ int main(int argc, const char** argv){
 
 	// Sound
 	tempo::Song mainsong("resources/sound/focus.ogg");
+	mainsong.set_volume(30.f);
 
 	// Clock
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
@@ -128,22 +130,20 @@ int main(int argc, const char** argv){
 	clock.sync_time(&mainsong);
 
 	int combo = 0;
-	while(running){
-		if (clock.passed_beat()){
+	while(running) {
+		if (clock.passed_beat()) {
 			/* 
-			std::cout << clock.get_time().asMilliseconds() 
-			          << std::endl; 
-			std::cout << clock.until_beat().asMilliseconds() 
-			          << std::endl;
+			std::cout << clock.get_time().asMilliseconds() << std::endl; 
+			std::cout << clock.until_beat().asMilliseconds << std::endl;
 			*/
 
-			if(moved_this_beat){
+			if (moved_this_beat) 
 				++combo;
-			}
+			
 
 			int dir = rand() % 2; // between 0 and 1 
 			int amount = (rand() % 2) * 2 - 1; //-1 or 1 
-			if (dir){ 
+			if (dir) { 
 				node_ai->translate(amount, 0, 0); 
 			} else { 
 				node_ai->translate(0, 0, amount); 
@@ -175,32 +175,41 @@ int main(int argc, const char** argv){
 				}
 				break;
 			case SDL_KEYDOWN:
-				if (!moved_this_beat && clock.within_delta()) {
-					switch (e.key.keysym.sym) {
+				// Non movement keys first
+				switch (e.key.keysym.sym) {
 
-					// Arrows
-					case SDLK_LEFT:  node_player->translate(-1, 0, 0); moved_this_beat = true; break;
-					case SDLK_RIGHT: node_player->translate(1, 0, 0); moved_this_beat = true; break;
-					case SDLK_UP:    node_player->translate(0, 0, -1); moved_this_beat = true; break;
-					case SDLK_DOWN:  node_player->translate(0, 0, 1); moved_this_beat = true; break;
+				// Volume Controls (left and right square brackets)
+				case SDLK_LEFTBRACKET:  mainsong.dec_volume(10.f); break;
+				case SDLK_RIGHTBRACKET: mainsong.inc_volume(10.f); break;
 
-					// WASD
-					case SDLK_a:  node_player->translate(-1, 0, 0); moved_this_beat = true; break;
-					case SDLK_d: node_player->translate(1, 0, 0); moved_this_beat = true; break;
-					case SDLK_w:    node_player->translate(0, 0, -1); moved_this_beat = true; break;
-					case SDLK_s:  node_player->translate(0, 0, 1); moved_this_beat = true; break;
+				// Movement Keys/Fallthrough
+				default: 
+					if (!moved_this_beat && clock.within_delta()) {
+						switch (e.key.keysym.sym) {
 
-					// WASD
-					case SDLK_h:  node_player->translate(-1, 0, 0); moved_this_beat = true; break;
-					case SDLK_l: node_player->translate(1, 0, 0); moved_this_beat = true; break;
-					case SDLK_k:    node_player->translate(0, 0, -1); moved_this_beat = true; break;
-					case SDLK_j:  node_player->translate(0, 0, 1); moved_this_beat = true; break;
-					default: break;
+						// Arrows
+						case SDLK_LEFT:  node_player->translate(-1, 0, 0); moved_this_beat = true; break;
+						case SDLK_RIGHT: node_player->translate(1, 0, 0); moved_this_beat = true; break;
+						case SDLK_UP:    node_player->translate(0, 0, -1); moved_this_beat = true; break;
+						case SDLK_DOWN:  node_player->translate(0, 0, 1); moved_this_beat = true; break;
+
+						// WASD
+						case SDLK_a: node_player->translate(-1, 0, 0); moved_this_beat = true; break;
+						case SDLK_d: node_player->translate(1, 0, 0); moved_this_beat = true; break;
+						case SDLK_w: node_player->translate(0, 0, -1); moved_this_beat = true; break;
+						case SDLK_s: node_player->translate(0, 0, 1); moved_this_beat = true; break;
+
+						// HJKL
+						case SDLK_h: node_player->translate(-1, 0, 0); moved_this_beat = true; break;
+						case SDLK_l: node_player->translate(1, 0, 0); moved_this_beat = true; break;
+						case SDLK_k: node_player->translate(0, 0, -1); moved_this_beat = true; break;
+						case SDLK_j: node_player->translate(0, 0, 1); moved_this_beat = true; break;
+						default: break;
+						}
+						//break;
+					} else {
+						std::cout << "Missed beat by " << std::min(clock.since_beat().asMilliseconds(), clock.until_beat().asMilliseconds()) << std::endl;
 					}
-					break;
-				}
-				else {
-					std::cout << "Missed beat by " << std::min(clock.since_beat().asMilliseconds(), clock.until_beat().asMilliseconds()) << std::endl;
 				}
 			}
 		}
@@ -249,7 +258,7 @@ int main(int argc, const char** argv){
 		SDL_GL_SwapWindow(app.window);
 
 		++frame_counter;
-		if(fps_timer.getElapsedTime().asSeconds() > 0.5f){
+		if(fps_timer.getElapsedTime().asSeconds() > 0.5f) {
 			float seconds = fps_timer.getElapsedTime().asSeconds();
 			printf("FPS: %i\n", (int)(frame_counter / seconds));
 			fps_timer.restart();
