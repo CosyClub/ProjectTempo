@@ -13,8 +13,6 @@
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
 
-#undef main // SDL likes to define main
-
 namespace tempo
 {
 	// Default Port for Time Sync (TS) protocol
@@ -24,10 +22,10 @@ namespace tempo
 	// Wait time for time sync protocol (millisecs)
 	#define TIMESYNC_DELTA 500
 
-	// tcpRemoteToStr - Returns string with remote host and port of a TCP 
+	// tcpRemoteToStr - Returns string with remote host and port of a TCP
 	//                  socket
 	// Arguments:
-	//         client - The TCP client socket to return the remote host and 
+	//         client - The TCP client socket to return the remote host and
 	//                  port of
 	// Returns:
 	//         A string with the remote host and port of the given TCP
@@ -36,7 +34,7 @@ namespace tempo
 		(client->getRemoteAddress().toString() + ":" + \
 			std::to_string(client->getRemotePort()))
 
-	// timeSyncClient - Syncs client's "dirty time" with server's "master 
+	// timeSyncClient - Syncs client's "dirty time" with server's "master
 	//                  time"
 	// Arguments:
 	//         clock - pointer to current client clock with "dirty time"
