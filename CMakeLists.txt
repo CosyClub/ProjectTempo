@@ -66,6 +66,13 @@ set(TEMPO_LIB_TEMPO_DIR
 	)
 set(TEMPO_LIB_TEMPO_INCLUDE_DIR
 	"${TEMPO_LIB_TEMPO_DIR}/include"
+	)
+
+set(TEMPO_ANAX_DIR
+	"${CMAKE_CURRENT_LIST_DIR}/extlibs/anax-1.1.1"
+	)
+set(TEMPO_ANAX_INCLUDE_DIR
+	"${TEMPO_ANAX_DIR}/include"
 )
 
 add_subdirectory(${TEMPO_EXTLIBS_DIR})

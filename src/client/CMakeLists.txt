@@ -11,6 +11,7 @@ target_include_directories(client PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_OGRE_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_SDL2_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
+target_include_directories(client PRIVATE ${TEMPO_ANAX_INCLUDE_DIR})
 
 target_link_libraries(client lib_tempo)
 
@@ -20,6 +21,8 @@ target_link_libraries(client sfml-audio)
 
 target_link_libraries(client SDL2)
 target_link_libraries(client SDL2main)
+
+target_link_libraries(client anax)
 
 # :TODO: have way to configure debug vs release - no _d for release
 set(TEMPO_OGRE_LIB_SUFFIX "Static_d")

@@ -21,18 +21,22 @@
 #include <tempo/time.hpp>
 #include <tempo/song.hpp>
 
+#include <anax/World.hpp>
+
 #define NET_PORT 1337 // Port the server is running on
 #define BPM 174
 #define DELTA 150
 #define TIME 60000000 / BPM
 
-int main(int argc, const char** argv) 
+int main(int argc, const char** argv)
 {
 	tempo::Application app = tempo::initialize_application("RaveCave", 800, 600);
 	if (app.ogre == nullptr || app.window == nullptr || app.render_target == nullptr) {
 		printf("Application initialisation failed, exiting\n");
 		return 1;
 	}
+
+	anax::World world;
 
 	/////////////////////////////////////////////////
 	// Setup resources
@@ -132,21 +136,21 @@ int main(int argc, const char** argv)
 	int combo = 0;
 	while(running) {
 		if (clock.passed_beat()) {
-			/* 
-			std::cout << clock.get_time().asMilliseconds() << std::endl; 
+			/*
+			std::cout << clock.get_time().asMilliseconds() << std::endl;
 			std::cout << clock.until_beat().asMilliseconds << std::endl;
 			*/
 
-			if (moved_this_beat) 
+			if (moved_this_beat)
 				++combo;
-			
 
-			int dir = rand() % 2; // between 0 and 1 
-			int amount = (rand() % 2) * 2 - 1; //-1 or 1 
-			if (dir) { 
-				node_ai->translate(amount, 0, 0); 
-			} else { 
-				node_ai->translate(0, 0, amount); 
+
+			int dir = rand() % 2; // between 0 and 1
+			int amount = (rand() % 2) * 2 - 1; //-1 or 1
+			if (dir) {
+				node_ai->translate(amount, 0, 0);
+			} else {
+				node_ai->translate(0, 0, amount);
 			}
 
 			moved_this_beat = false;
@@ -155,7 +159,7 @@ int main(int argc, const char** argv)
 		float seconds_until_beat = clock.until_beat().asSeconds();
 		float seconds_since_beat = clock.since_beat().asSeconds();
 
-		// Value between 0 and 1 indicating progress towards next beat, 
+		// Value between 0 and 1 indicating progress towards next beat,
 		// where 0 means we've just had last beat and 1 means we've just
 		// hit next beat
 		float beat_progress = clock.beat_progress();
@@ -183,7 +187,7 @@ int main(int argc, const char** argv)
 				case SDLK_RIGHTBRACKET: mainsong.inc_volume(10.f); break;
 
 				// Movement Keys/Fallthrough
-				default: 
+				default:
 					if (!moved_this_beat && clock.within_delta()) {
 						switch (e.key.keysym.sym) {
 
