@@ -14,6 +14,7 @@ namespace tempo
         Clock::Clock(sf::Time first_beat, sf::Time offset)
         {
                 next_beat = first_beat;
+		last_beat = sf::Time::Zero;
                 delta = offset;
         }
         

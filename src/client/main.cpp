@@ -255,7 +255,7 @@ int main(int argc, const char** argv){
 		node_ai->setPosition(pos);
 
 		app.ogre->renderOneFrame();
-		//SDL_GL_SwapWindow(app.window);
+		SDL_GL_SwapWindow(app.window);
 
 		++frame_counter;
 		if(fps_timer.getElapsedTime().asSeconds() > 0.5f){
