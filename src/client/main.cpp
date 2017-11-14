@@ -34,16 +34,6 @@ int main(int argc, const char** argv){
 	}
 
 	/////////////////////////////////////////////////
-	// Setup Networking
-	sf::UdpSocket socket;
-
-	if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Done) {
-		// error...
-	}
-
-	unsigned short port = socket.getLocalPort();
-
-	/////////////////////////////////////////////////
 	// Setup resources
 	Ogre::ResourceGroupManager& resources = Ogre::ResourceGroupManager::getSingleton();
 	resources.addResourceLocation("resources", "FileSystem",
@@ -67,14 +57,14 @@ int main(int argc, const char** argv){
 	node_camera->attachObject(camera);
 	node_camera->setPosition(0, 0, 30);
 
-	//Dancefloor
+	// Dancefloor
 	Ogre::Entity* entity_floor = scene->createEntity("meshes/floor.mesh");
 	Ogre::SceneNode* node_floor = scene->getRootSceneNode()->createChildSceneNode();
 	node_floor->setScale(1, 1, 1);
 	node_floor->attachObject(entity_floor);
 
 
-	//Dummy objects
+	// Dummy objects
 	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
 	//x1->setPosition(1, 0, 0);
 	//y1->setPosition(0, 1, 0);
@@ -86,7 +76,7 @@ int main(int argc, const char** argv){
 	helpers->attachObject(y1);
 	helpers->attachObject(z1);
 
-	//Player
+	// Player
 	Ogre::BillboardSet* Pset = scene->createBillboardSet();
 	Pset->setMaterialName("rectangleSprite");
 	Pset->setDefaultDimensions(0.5, 1.5);
@@ -99,7 +89,7 @@ int main(int argc, const char** argv){
 	node_player->setPosition(0, 0, 0);
 	node_player->attachObject(Pset);
 
-	//Ai
+	// Ai
 	Ogre::BillboardSet* Aset = scene->createBillboardSet();
 	Aset->setMaterialName("rectangleSprite");
 	Aset->setDefaultDimensions(0.4, 1.3);
@@ -112,19 +102,19 @@ int main(int argc, const char** argv){
 	node_ai->setPosition(3, 0, 3);
 	node_ai->attachObject(Aset);
 
-	//Sound
-        tempo::Song mainsong("resources/sound/focus.ogg");
+	// Sound
+	tempo::Song mainsong("resources/sound/focus.ogg");
 
-	//Clock
-        tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
-        clock.set_next_beat(sf::microseconds(TIME));
+	// Clock
+	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
+	clock.set_next_beat(sf::microseconds(TIME));
 	mainsong.start();
 	long offset = 0;
 
-	//Movement hack
+	// Movement hack
 	srand(time(NULL));
 
-	//Viewport
+	// Viewport
 	Ogre::Viewport* vp = app.render_target->addViewport(camera);
 
 	/////////////////////////////////////////////////
@@ -140,21 +130,24 @@ int main(int argc, const char** argv){
 	int combo = 0;
 	while(running){
 		if (clock.passed_beat()){
-                        /* std::cout << clock.get_time().asMilliseconds() << std::endl; */
-                        /* std::cout << clock.until_beat().asMilliseconds() << std::endl; */
+			/* 
+			std::cout << clock.get_time().asMilliseconds() 
+			          << std::endl; 
+			std::cout << clock.until_beat().asMilliseconds() 
+			          << std::endl;
+			*/
 
 			if(moved_this_beat){
 				++combo;
 			}
 
-                        int dir = rand() % 2; // between 0 and 1 
-                        int amount = (rand() % 2) * 2 - 1; //-1 or 1 
-                        if (dir){ 
-                          node_ai->translate(amount, 0, 0); 
-                        } 
-                        else{ 
-                          node_ai->translate(0, 0, amount); 
-                        } 
+			int dir = rand() % 2; // between 0 and 1 
+			int amount = (rand() % 2) * 2 - 1; //-1 or 1 
+			if (dir){ 
+				node_ai->translate(amount, 0, 0); 
+			} else { 
+				node_ai->translate(0, 0, amount); 
+			}
 
 			moved_this_beat = false;
 		}
@@ -162,18 +155,16 @@ int main(int argc, const char** argv){
 		float seconds_until_beat = clock.until_beat().asSeconds();
 		float seconds_since_beat = clock.since_beat().asSeconds();
 
-		// Value between 0 and 1 indicating progress towards next beat, where 0 means we've
-		// just had last beat and 1 means we've just hit next beat
+		// Value between 0 and 1 indicating progress towards next beat, 
+		// where 0 means we've just had last beat and 1 means we've just
+		// hit next beat
 		float beat_progress = clock.beat_progress();
 
-		//printf("Time till next tick: %8f, since last: %8f, beat progress: %8f\n",
-		//       seconds_until_beat, seconds_since_beat, beat_progress);
-
 		SDL_Event e;
-		while(SDL_PollEvent(&e)){
-			switch(e.type){
+		while (SDL_PollEvent(&e)) {
+			switch (e.type) {
 			case SDL_WINDOWEVENT:
-				switch(e.window.event){
+				switch (e.window.event) {
 				case SDL_WINDOWEVENT_CLOSE:
 					running = false;
 					break;
@@ -184,35 +175,35 @@ int main(int argc, const char** argv){
 				}
 				break;
 			case SDL_KEYDOWN:
-				if(!moved_this_beat && clock.within_delta()){
-					switch(e.key.keysym.sym){
+				if (!moved_this_beat && clock.within_delta()) {
+					switch (e.key.keysym.sym) {
 
-                                        //Arrows
-					case SDLK_LEFT:  node_player->translate(-1, 0,  0); moved_this_beat = true; break;
-					case SDLK_RIGHT: node_player->translate( 1, 0,  0); moved_this_beat = true; break;
-					case SDLK_UP:    node_player->translate( 0, 0, -1); moved_this_beat = true; break;
-					case SDLK_DOWN:  node_player->translate( 0, 0,  1); moved_this_beat = true; break;
-                                        
-                                        //wasd
-					case SDLK_a:  node_player->translate(-1, 0,  0); moved_this_beat = true; break;
-					case SDLK_d: node_player->translate( 1, 0,  0); moved_this_beat = true; break;
-					case SDLK_w:    node_player->translate( 0, 0, -1); moved_this_beat = true; break;
-					case SDLK_s:  node_player->translate( 0, 0,  1); moved_this_beat = true; break;
+					// Arrows
+					case SDLK_LEFT:  node_player->translate(-1, 0, 0); moved_this_beat = true; break;
+					case SDLK_RIGHT: node_player->translate(1, 0, 0); moved_this_beat = true; break;
+					case SDLK_UP:    node_player->translate(0, 0, -1); moved_this_beat = true; break;
+					case SDLK_DOWN:  node_player->translate(0, 0, 1); moved_this_beat = true; break;
 
-                                        //wasd
-					case SDLK_h:  node_player->translate(-1, 0,  0); moved_this_beat = true; break;
-					case SDLK_l: node_player->translate( 1, 0,  0); moved_this_beat = true; break;
-					case SDLK_k:    node_player->translate( 0, 0, -1); moved_this_beat = true; break;
-					case SDLK_j:  node_player->translate( 0, 0,  1); moved_this_beat = true; break;
+					// WASD
+					case SDLK_a:  node_player->translate(-1, 0, 0); moved_this_beat = true; break;
+					case SDLK_d: node_player->translate(1, 0, 0); moved_this_beat = true; break;
+					case SDLK_w:    node_player->translate(0, 0, -1); moved_this_beat = true; break;
+					case SDLK_s:  node_player->translate(0, 0, 1); moved_this_beat = true; break;
+
+					// WASD
+					case SDLK_h:  node_player->translate(-1, 0, 0); moved_this_beat = true; break;
+					case SDLK_l: node_player->translate(1, 0, 0); moved_this_beat = true; break;
+					case SDLK_k:    node_player->translate(0, 0, -1); moved_this_beat = true; break;
+					case SDLK_j:  node_player->translate(0, 0, 1); moved_this_beat = true; break;
 					default: break;
 					}
 					break;
 				}
-                                else{
-                                        std::cout << "Missed beat by " << std::min(clock.since_beat().asMilliseconds(), clock.until_beat().asMilliseconds()) << std::endl;
-                                }
+				else {
+					std::cout << "Missed beat by " << std::min(clock.since_beat().asMilliseconds(), clock.until_beat().asMilliseconds()) << std::endl;
+				}
 			}
-		}      
+		}
 
 		float cam_motion_delta = sin(beat_progress) * 0.3f;
 		node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
@@ -223,17 +214,17 @@ int main(int argc, const char** argv){
 
 		Ogre::Real nearPlane = camera->getNearClipDistance();
 		Ogre::Radian theta = camera->getFOVy() * .5;
-		// get minimum dimension from aspect
+		// Get minimum dimension from aspect
 		Ogre::Real aspectRatio = camera->getAspectRatio();
 		if (aspectRatio < 1.0f)
 			theta *= aspectRatio;
 
 		Ogre::Real distance = (entity_floor->getBoundingRadius() / Ogre::Math::Sin(theta)) + nearPlane;
 
-		// move the camera back along its negative direction (+Z)
+		// Move the camera back along its negative direction (+Z)
 		camera->moveRelative(Ogre::Vector3(0, 0, 0.2*distance));
 
-		//End of Camera move code
+		// End of Camera move code
 
 		float light_intensity = 2 / (exp(beat_progress));
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
@@ -246,7 +237,7 @@ int main(int argc, const char** argv){
 		if (pos.z >  7) pos.z = 7;
 		node_player->setPosition(pos);
 
-                //AI as well
+		 // AI as well
 		pos = node_ai->getPosition();
 		if (pos.x < -7) pos.x = -7;
 		if (pos.x >  7) pos.x = 7;
