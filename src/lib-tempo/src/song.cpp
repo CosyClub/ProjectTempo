@@ -8,27 +8,30 @@
 
 namespace tempo
 {
-        Song::Song(std::string path)
-        {
-                buffer.loadFromFile(path);
-                sound.setBuffer(buffer);
-        }
+	Song::Song(std::string path)
+	{
+		buffer.loadFromFile(path);
+		sound.setBuffer(buffer);
+	}
 
-        void Song::start()
-        {
-                sound.play();
-        }
-        void Song::pause()
-        {
-                sound.pause();
-        }
-        void Song::stop()
-        {
-                sound.stop();
-        }
-        void Song::skip(sf::Time delta)
-        {
-                sound.setPlayingOffset(sound.getPlayingOffset() + delta);
-        }
+	void Song::start()
+	{
+		sound.play();
+	}
+
+	void Song::pause()
+	{
+		sound.pause();
+	}
+
+	void Song::stop()
+	{
+		sound.stop();
+	}
+
+	void Song::skip(sf::Time delta)
+	{
+		sound.setPlayingOffset(sound.getPlayingOffset() + delta);
+	}
 
 }
