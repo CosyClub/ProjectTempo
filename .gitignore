@@ -15,3 +15,7 @@ bin/SDL2ConfigVersion\.cmake
 
 # Ignore random junk
 .*\.swp
+
+bin/compile_commands\.json
+
+compile_commands\.json
