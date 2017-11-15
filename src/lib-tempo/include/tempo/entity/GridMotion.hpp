@@ -43,7 +43,7 @@ namespace tempo{
 
 		SystemGridMotion(int nmin_x, int nmin_y, int nmax_x, int nmax_y);
 
-		void update(double dt);
+		void update(float dt);
 	};
 }
 
