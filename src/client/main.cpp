@@ -23,6 +23,7 @@
 #include <tempo/entity/Position.hpp>
 #include <tempo/entity/Render.hpp>
 #include <tempo/entity/GridMotion.hpp>
+#include <tempo/entity/GridAi.hpp>
 
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
@@ -52,9 +53,11 @@ int main(int argc, const char** argv)
 	// Setup scene
 	anax::World world;
 	tempo::SystemGridMotion system_grid_motion(-7, -7, 7, 7);
+	tempo::SystemGridAi     system_grid_ai;
 	tempo::SystemPosition   system_position;
 	tempo::SystemRender     system_render(app);
 	world.addSystem(system_grid_motion);
+	world.addSystem(system_grid_ai);
 	world.addSystem(system_position);
 	world.addSystem(system_render);
 	world.refresh();
@@ -120,6 +123,7 @@ int main(int argc, const char** argv)
 	entity_ai.addComponent<tempo::ComponentPosition>();
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentGridMotion>(3.0f, 3.0f);
+	entity_ai.addComponent<tempo::ComponentGridAi>();
 	entity_ai.activate();
 
 	// Sound
@@ -162,14 +166,7 @@ int main(int argc, const char** argv)
 			if (moved_this_beat)
 				++combo;
 
-
-			int dir = rand() % 2; // between 0 and 1
-			int amount = (rand() % 2) * 2 - 1; //-1 or 1
-			if (dir) {
-				entity_ai.getComponent<tempo::ComponentGridMotion>().moveBy(amount, 0);
-			} else {
-				entity_ai.getComponent<tempo::ComponentGridMotion>().moveBy(0, amount);
-			}
+			system_grid_ai.update();
 
 			moved_this_beat = false;
 		}

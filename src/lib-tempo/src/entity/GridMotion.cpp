@@ -50,7 +50,6 @@ namespace tempo{
 
 			if(g.current != g.target){
 				g.motion_progress += dt / 0.1f;
-				printf("dt: %7f, Motion progress: %f\n", dt, g.motion_progress);
 				if(g.motion_progress >= 1){
 					g.current = g.target;
 					g.motion_progress = 0;
@@ -60,9 +59,9 @@ namespace tempo{
 			p.position.x = Ogre::Math::lerp(g.current.x, g.target.x, g.motion_progress);
 			p.position.z = Ogre::Math::lerp(g.current.y, g.target.y, g.motion_progress);;
 
+			// hop effect
 			float a = g.motion_progress - 0.5;
 			p.position.y = (-(a*a) + 0.25f) * 2.0f;
-
 
 			if(p.position.x < this->min_x){ p.position.x = this->min_x; }
 			if(p.position.x > this->max_x){ p.position.x = this->max_x; }
