@@ -20,6 +20,8 @@
 #include <tempo/Application.hpp>
 #include <tempo/time.hpp>
 #include <tempo/song.hpp>
+#include <tempo/entity/Position.hpp>
+#include <tempo/entity/Render.hpp>
 
 #include <anax/World.hpp>
 
@@ -36,8 +38,6 @@ int main(int argc, const char** argv)
 		return 1;
 	}
 
-	anax::World world;
-
 	/////////////////////////////////////////////////
 	// Setup resources
 	Ogre::ResourceGroupManager& resources = Ogre::ResourceGroupManager::getSingleton();
@@ -48,7 +48,14 @@ int main(int argc, const char** argv)
 
 	/////////////////////////////////////////////////
 	// Setup scene
-	Ogre::SceneManager* scene = app.ogre->createSceneManager(Ogre::ST_GENERIC);
+	anax::World world;
+	tempo::SystemPosition system_position;
+	tempo::SystemRender   system_render(app);
+	world.addSystem(system_position);
+	world.addSystem(system_render);
+	world.refresh();
+
+	Ogre::SceneManager* scene = system_render.scene;
 	scene->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
 	Ogre::SceneNode* node_light = scene->getRootSceneNode()->createChildSceneNode();
 	Ogre::Light* light = scene->createLight("MainLight");
@@ -125,8 +132,8 @@ int main(int argc, const char** argv)
 
 	/////////////////////////////////////////////////
 	// Main loop
-	sf::Clock game_time;
 	sf::Clock fps_timer;
+	sf::Clock dt_timer;
 	bool running = true;
 	int frame_counter = 0;
 	bool moved_this_beat = false;
@@ -135,6 +142,9 @@ int main(int argc, const char** argv)
 
 	int combo = 0;
 	while(running) {
+		float dt = dt_timer.getElapsedTime().asSeconds();
+		dt_timer.restart();
+
 		if (clock.passed_beat()) {
 			/*
 			std::cout << clock.get_time().asMilliseconds() << std::endl;
@@ -258,7 +268,9 @@ int main(int argc, const char** argv)
 		if (pos.z >  7) pos.z = 7;
 		node_ai->setPosition(pos);
 
-		app.ogre->renderOneFrame();
+		world.refresh();
+		system_position.update(dt);
+		system_render.render(dt);
 		SDL_GL_SwapWindow(app.window);
 
 		++frame_counter;
