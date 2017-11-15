@@ -11,6 +11,7 @@
 #define TEMPO_ENTITY_GRIDAI_HPP
 
 #include <anax/System.hpp>
+#include <anax/Component.hpp>
 
 #include <tempo/entity/GridMotion.hpp>
 

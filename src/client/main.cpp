@@ -24,6 +24,7 @@
 #include <tempo/entity/Render.hpp>
 #include <tempo/entity/GridMotion.hpp>
 #include <tempo/entity/GridAi.hpp>
+#include <tempo/entity/PlayerInput.hpp>
 
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
@@ -49,17 +50,29 @@ int main(int argc, const char** argv)
 	                              true);
 	resources.initialiseAllResourceGroups();
 
+	// Sound
+	tempo::Song mainsong("resources/sound/focus.ogg");
+	mainsong.set_volume(30.f);
+
+	// Clock
+	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
+	clock.set_next_beat(sf::microseconds(TIME));
+	mainsong.start();
+	long offset = 0;
+
 	/////////////////////////////////////////////////
 	// Setup scene
 	anax::World world;
-	tempo::SystemGridMotion system_grid_motion(-7, -7, 7, 7);
-	tempo::SystemGridAi     system_grid_ai;
-	tempo::SystemPosition   system_position;
-	tempo::SystemRender     system_render(app);
+	tempo::SystemGridMotion  system_grid_motion(-7, -7, 7, 7);
+	tempo::SystemGridAi      system_grid_ai;
+	tempo::SystemPosition    system_position;
+	tempo::SystemPlayerInput system_player_input(clock);
+	tempo::SystemRender      system_render(app);
 	world.addSystem(system_grid_motion);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_position);
 	world.addSystem(system_render);
+	world.addSystem(system_player_input);
 	world.refresh();
 
 	Ogre::SceneManager* scene = system_render.scene;
@@ -99,17 +112,19 @@ int main(int argc, const char** argv)
 	helpers->attachObject(z1);
 
 	// Player
+	anax::Entity entity_player = world.createEntity();
 	Ogre::BillboardSet* Pset = scene->createBillboardSet();
 	Pset->setMaterialName("rectangleSprite");
 	Pset->setDefaultDimensions(0.5, 1.5);
 	Pset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
 	Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
-
 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
 	player->setColour(Ogre::ColourValue::Red);
-	Ogre::SceneNode* node_player = scene->getRootSceneNode()->createChildSceneNode();
-	node_player->setPosition(0, 0, 0);
-	node_player->attachObject(Pset);
+	entity_player.addComponent<tempo::ComponentPosition>();
+	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
+	entity_player.addComponent<tempo::ComponentGridMotion>(0.0f, 0.0f);
+	entity_player.addComponent<tempo::ComponentPlayerInput>();
+	entity_player.activate();
 
 	// Ai
 	anax::Entity entity_ai = world.createEntity();
@@ -126,16 +141,6 @@ int main(int argc, const char** argv)
 	entity_ai.addComponent<tempo::ComponentGridAi>();
 	entity_ai.activate();
 
-	// Sound
-	tempo::Song mainsong("resources/sound/focus.ogg");
-	mainsong.set_volume(30.f);
-
-	// Clock
-	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
-	clock.set_next_beat(sf::microseconds(TIME));
-	mainsong.start();
-	long offset = 0;
-
 	// Movement hack
 	srand(time(NULL));
 
@@ -148,11 +153,9 @@ int main(int argc, const char** argv)
 	sf::Clock dt_timer;
 	bool running = true;
 	int frame_counter = 0;
-	bool moved_this_beat = false;
 
 	clock.sync_time(&mainsong);
 
-	int combo = 0;
 	while(running) {
 		float dt = dt_timer.getElapsedTime().asSeconds();
 		dt_timer.restart();
@@ -163,12 +166,9 @@ int main(int argc, const char** argv)
 			std::cout << clock.until_beat().asMilliseconds << std::endl;
 			*/
 
-			if (moved_this_beat)
-				++combo;
-
 			system_grid_ai.update();
 
-			moved_this_beat = false;
+			system_player_input.advanceBeat();
 		}
 
 		float seconds_until_beat = clock.until_beat().asSeconds();
@@ -181,53 +181,26 @@ int main(int argc, const char** argv)
 
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
-			switch (e.type) {
-			case SDL_WINDOWEVENT:
-				switch (e.window.event) {
-				case SDL_WINDOWEVENT_CLOSE:
-					running = false;
+			if(!system_player_input.handleInput(e)){
+				switch (e.type) {
+				case SDL_WINDOWEVENT:
+					switch (e.window.event) {
+					case SDL_WINDOWEVENT_CLOSE:
+						running = false;
+						break;
+					case SDL_WINDOWEVENT_RESIZED:
+						app.render_target->resize(e.window.data1, e.window.data2);
+						break;
+					default: break;
+					}
 					break;
-				case SDL_WINDOWEVENT_RESIZED:
-					app.render_target->resize(e.window.data1, e.window.data2);
-					break;
-				default: break;
-				}
-				break;
-			case SDL_KEYDOWN:
-				// Non movement keys first
-				switch (e.key.keysym.sym) {
-
-				// Volume Controls (left and right square brackets)
-				case SDLK_LEFTBRACKET:  mainsong.dec_volume(10.f); break;
-				case SDLK_RIGHTBRACKET: mainsong.inc_volume(10.f); break;
-
-				// Movement Keys/Fallthrough
-				default:
-					if (!moved_this_beat && clock.within_delta()) {
-						switch (e.key.keysym.sym) {
-
-						// Arrows
-						case SDLK_LEFT:  node_player->translate(-1, 0, 0); moved_this_beat = true; break;
-						case SDLK_RIGHT: node_player->translate(1, 0, 0); moved_this_beat = true; break;
-						case SDLK_UP:    node_player->translate(0, 0, -1); moved_this_beat = true; break;
-						case SDLK_DOWN:  node_player->translate(0, 0, 1); moved_this_beat = true; break;
-
-						// WASD
-						case SDLK_a: node_player->translate(-1, 0, 0); moved_this_beat = true; break;
-						case SDLK_d: node_player->translate(1, 0, 0); moved_this_beat = true; break;
-						case SDLK_w: node_player->translate(0, 0, -1); moved_this_beat = true; break;
-						case SDLK_s: node_player->translate(0, 0, 1); moved_this_beat = true; break;
-
-						// HJKL
-						case SDLK_h: node_player->translate(-1, 0, 0); moved_this_beat = true; break;
-						case SDLK_l: node_player->translate(1, 0, 0); moved_this_beat = true; break;
-						case SDLK_k: node_player->translate(0, 0, -1); moved_this_beat = true; break;
-						case SDLK_j: node_player->translate(0, 0, 1); moved_this_beat = true; break;
-						default: break;
-						}
-						//break;
-					} else {
-						std::cout << "Missed beat by " << std::min(clock.since_beat().asMilliseconds(), clock.until_beat().asMilliseconds()) << std::endl;
+				case SDL_KEYDOWN:
+					// Non movement keys first
+					switch (e.key.keysym.sym) {
+						// Volume Controls (left and right square brackets)
+					case SDLK_LEFTBRACKET:  mainsong.dec_volume(10.f); break;
+					case SDLK_RIGHTBRACKET: mainsong.inc_volume(10.f); break;
+					default: break;
 					}
 				}
 			}
@@ -256,14 +229,6 @@ int main(int argc, const char** argv)
 
 		float light_intensity = 2 / (exp(beat_progress));
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
-
-		// Ensure player is within world bounds
-		Ogre::Vector3 pos = node_player->getPosition();
-		if (pos.x < -7) pos.x = -7;
-		if (pos.x >  7) pos.x = 7;
-		if (pos.z < -7) pos.z = -7;
-		if (pos.z >  7) pos.z = 7;
-		node_player->setPosition(pos);
 
 		world.refresh();
 		system_grid_motion.update(dt);
