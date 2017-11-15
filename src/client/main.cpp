@@ -22,6 +22,7 @@
 #include <tempo/song.hpp>
 #include <tempo/entity/Position.hpp>
 #include <tempo/entity/Render.hpp>
+#include <tempo/entity/GridMotion.hpp>
 
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
@@ -50,8 +51,10 @@ int main(int argc, const char** argv)
 	/////////////////////////////////////////////////
 	// Setup scene
 	anax::World world;
-	tempo::SystemPosition system_position;
-	tempo::SystemRender   system_render(app);
+	tempo::SystemGridMotion system_grid_motion(-7, -7, 7, 7);
+	tempo::SystemPosition   system_position;
+	tempo::SystemRender     system_render(app);
+	world.addSystem(system_grid_motion);
 	world.addSystem(system_position);
 	world.addSystem(system_render);
 	world.refresh();
@@ -106,17 +109,18 @@ int main(int argc, const char** argv)
 	node_player->attachObject(Pset);
 
 	// Ai
+	anax::Entity entity_ai = world.createEntity();
 	Ogre::BillboardSet* Aset = scene->createBillboardSet();
 	Aset->setMaterialName("rectangleSprite");
 	Aset->setDefaultDimensions(0.4, 1.3);
 	Aset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
 	Aset->setCommonDirection(Ogre::Vector3(0, 1, 0));
-
 	Ogre::Billboard* ai = Aset->createBillboard(0, 0.75, 0);
 	ai->setColour(Ogre::ColourValue::Blue);
-	Ogre::SceneNode* node_ai = scene->getRootSceneNode()->createChildSceneNode();
-	node_ai->setPosition(3, 0, 3);
-	node_ai->attachObject(Aset);
+	entity_ai.addComponent<tempo::ComponentPosition>();
+	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
+	entity_ai.addComponent<tempo::ComponentGridMotion>(3.0f, 3.0f);
+	entity_ai.activate();
 
 	// Sound
 	tempo::Song mainsong("resources/sound/focus.ogg");
@@ -162,9 +166,9 @@ int main(int argc, const char** argv)
 			int dir = rand() % 2; // between 0 and 1
 			int amount = (rand() % 2) * 2 - 1; //-1 or 1
 			if (dir) {
-				node_ai->translate(amount, 0, 0);
+				entity_ai.getComponent<tempo::ComponentGridMotion>().moveBy(amount, 0);
 			} else {
-				node_ai->translate(0, 0, amount);
+				entity_ai.getComponent<tempo::ComponentGridMotion>().moveBy(0, amount);
 			}
 
 			moved_this_beat = false;
@@ -264,15 +268,8 @@ int main(int argc, const char** argv)
 		if (pos.z >  7) pos.z = 7;
 		node_player->setPosition(pos);
 
-		 // AI as well
-		pos = node_ai->getPosition();
-		if (pos.x < -7) pos.x = -7;
-		if (pos.x >  7) pos.x = 7;
-		if (pos.z < -7) pos.z = -7;
-		if (pos.z >  7) pos.z = 7;
-		node_ai->setPosition(pos);
-
 		world.refresh();
+		system_grid_motion.update(dt);
 		system_position.update(dt);
 		system_render.render(dt);
 		SDL_GL_SwapWindow(app.window);
