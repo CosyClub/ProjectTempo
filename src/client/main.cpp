@@ -24,6 +24,7 @@
 #include <tempo/entity/Render.hpp>
 
 #include <anax/World.hpp>
+#include <anax/Entity.hpp>
 
 #define NET_PORT 1337 // Port the server is running on
 #define BPM 174
@@ -70,10 +71,13 @@ int main(int argc, const char** argv)
 	node_camera->setPosition(0, 0, 30);
 
 	// Dancefloor
-	Ogre::Entity* entity_floor = scene->createEntity("meshes/floor.mesh");
-	Ogre::SceneNode* node_floor = scene->getRootSceneNode()->createChildSceneNode();
+	anax::Entity entity_floor = world.createEntity();
+	Ogre::Entity* mesh_floor = scene->createEntity("meshes/floor.mesh");
+	entity_floor.addComponent<tempo::ComponentPosition>(0.0f, 0.0f, 0.0f);
+	Ogre::SceneNode* node_floor = entity_floor.addComponent<tempo::ComponentRender>(scene).node;
 	node_floor->setScale(1, 1, 1);
-	node_floor->attachObject(entity_floor);
+	node_floor->attachObject(mesh_floor);
+	entity_floor.activate();
 
 
 	// Dummy objects
@@ -242,7 +246,7 @@ int main(int argc, const char** argv)
 		if (aspectRatio < 1.0f)
 			theta *= aspectRatio;
 
-		Ogre::Real distance = (entity_floor->getBoundingRadius() / Ogre::Math::Sin(theta)) + nearPlane;
+		Ogre::Real distance = (mesh_floor->getBoundingRadius() / Ogre::Math::Sin(theta)) + nearPlane;
 
 		// Move the camera back along its negative direction (+Z)
 		camera->moveRelative(Ogre::Vector3(0, 0, 0.2*distance));
