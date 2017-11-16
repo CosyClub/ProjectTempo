@@ -25,6 +25,7 @@
 #include <tempo/entity/GridMotion.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerInput.hpp>
+#include <tempo/LevelManager.hpp>
 
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
@@ -87,14 +88,22 @@ int main(int argc, const char** argv)
 	node_camera->attachObject(camera);
 	node_camera->setPosition(0, 0, 30);
 
+
+	LevelManager* new_floor = new LevelManager(scene, 7);
+	new_floor->deleteTile(scene, {0,0});
+	new_floor->deleteTile(scene, {3,3});
+	new_floor->setMaterial("BrownWalls", {2,2});
+
+	auto node_floor = new_floor->getFloorNode();
+
 	// Dancefloor
-	anax::Entity entity_floor = world.createEntity();
-	Ogre::Entity* mesh_floor = scene->createEntity("meshes/floor.mesh");
-	entity_floor.addComponent<tempo::ComponentTransform>(0.0f, 0.0f, 0.0f);
-	Ogre::SceneNode* node_floor = entity_floor.addComponent<tempo::ComponentRender>(scene).node;
-	node_floor->setScale(1, 1, 1);
-	node_floor->attachObject(mesh_floor);
-	entity_floor.activate();
+	// anax::Entity entity_floor = world.createEntity();
+	// Ogre::Entity* mesh_floor = scene->createEntity("meshes/floor.mesh");
+	// entity_floor.addComponent<tempo::ComponentTransform>(0.0f, 0.0f, 0.0f);
+	// Ogre::SceneNode* node_floor = entity_floor.addComponent<tempo::ComponentRender>(scene).node;
+	// node_floor->setScale(1, 1, 1);
+	// node_floor->attachObject(mesh_floor);
+	// entity_floor.activate();
 
 
 	// Dummy objects
@@ -218,10 +227,10 @@ int main(int argc, const char** argv)
 		if (aspectRatio < 1.0f)
 			theta *= aspectRatio;
 
-		Ogre::Real distance = (mesh_floor->getBoundingRadius() / Ogre::Math::Sin(theta)) + nearPlane;
+	//	Ogre::Real distance = (mesh_floor->getBoundingRadius() / Ogre::Math::Sin(theta)) + nearPlane;
 
 		// Move the camera back along its negative direction (+Z)
-		camera->moveRelative(Ogre::Vector3(0, 0, 0.2*distance));
+		camera->moveRelative(Ogre::Vector3(0, 0, 0.2));
 
 		// End of Camera move code
 
