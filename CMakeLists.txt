@@ -9,6 +9,10 @@ set(CMAKE_MODULE_PATH
 	"${CMAKE_CURRENT_LIST_DIR}/extlibs/ogre-1.10.8/CMake/Utils"
 	"${CMAKE_CURRENT_LIST_DIR}/extlibs/ogre-1.10.8/CMake/Packages")
 
+#Support YCM completion for Raef and Anthony
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set (CMAKE_CXX_STANDARD 11)
+
 # :TODO: have some way of configuring this
 set(CMAKE_BUILD_TYPE Debug)
 
