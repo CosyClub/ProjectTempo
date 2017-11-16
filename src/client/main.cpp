@@ -20,7 +20,7 @@
 #include <tempo/Application.hpp>
 #include <tempo/time.hpp>
 #include <tempo/song.hpp>
-#include <tempo/entity/Position.hpp>
+#include <tempo/entity/Transform.hpp>
 #include <tempo/entity/Render.hpp>
 #include <tempo/entity/GridMotion.hpp>
 #include <tempo/entity/GridAi.hpp>
@@ -65,12 +65,10 @@ int main(int argc, const char** argv)
 	anax::World world;
 	tempo::SystemGridMotion  system_grid_motion(-7, -7, 7, 7);
 	tempo::SystemGridAi      system_grid_ai;
-	tempo::SystemPosition    system_position;
 	tempo::SystemPlayerInput system_player_input(clock);
 	tempo::SystemRender      system_render(app);
 	world.addSystem(system_grid_motion);
 	world.addSystem(system_grid_ai);
-	world.addSystem(system_position);
 	world.addSystem(system_render);
 	world.addSystem(system_player_input);
 	world.refresh();
@@ -92,7 +90,7 @@ int main(int argc, const char** argv)
 	// Dancefloor
 	anax::Entity entity_floor = world.createEntity();
 	Ogre::Entity* mesh_floor = scene->createEntity("meshes/floor.mesh");
-	entity_floor.addComponent<tempo::ComponentPosition>(0.0f, 0.0f, 0.0f);
+	entity_floor.addComponent<tempo::ComponentTransform>(0.0f, 0.0f, 0.0f);
 	Ogre::SceneNode* node_floor = entity_floor.addComponent<tempo::ComponentRender>(scene).node;
 	node_floor->setScale(1, 1, 1);
 	node_floor->attachObject(mesh_floor);
@@ -120,7 +118,7 @@ int main(int argc, const char** argv)
 	Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
 	player->setColour(Ogre::ColourValue::Red);
-	entity_player.addComponent<tempo::ComponentPosition>();
+	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
 	entity_player.addComponent<tempo::ComponentGridMotion>(0.0f, 0.0f);
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
@@ -135,7 +133,7 @@ int main(int argc, const char** argv)
 	Aset->setCommonDirection(Ogre::Vector3(0, 1, 0));
 	Ogre::Billboard* ai = Aset->createBillboard(0, 0.75, 0);
 	ai->setColour(Ogre::ColourValue::Blue);
-	entity_ai.addComponent<tempo::ComponentPosition>();
+	entity_ai.addComponent<tempo::ComponentTransform>();
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentGridMotion>(3.0f, 3.0f);
 	entity_ai.addComponent<tempo::ComponentGridAi>();
@@ -232,7 +230,6 @@ int main(int argc, const char** argv)
 
 		world.refresh();
 		system_grid_motion.update(dt);
-		system_position.update(dt);
 		system_render.render(dt);
 		SDL_GL_SwapWindow(app.window);
 

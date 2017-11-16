@@ -17,7 +17,7 @@
 #include <anax/Component.hpp>
 
 #include <tempo/Application.hpp>
-#include <tempo/entity/Position.hpp>
+#include <tempo/entity/Transform.hpp>
 
 namespace tempo{
 	/////////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ namespace tempo{
 	/// \brief System that manages rendering entities, as well as managing
 	/// the Ogre scene
 	/////////////////////////////////////////////////////////////////////
-	struct SystemRender : anax::System<anax::Requires<ComponentPosition, ComponentRender>> {
+	struct SystemRender : anax::System<anax::Requires<ComponentTransform, ComponentRender>> {
 		Application&        app;
 		Ogre::SceneManager* scene;
 

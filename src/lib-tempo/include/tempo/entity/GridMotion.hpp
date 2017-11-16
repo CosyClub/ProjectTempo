@@ -15,7 +15,7 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/entity/Position.hpp>
+#include <tempo/entity/Transform.hpp>
 
 namespace tempo{
 	struct ComponentGridMotion : anax::Component {
@@ -34,7 +34,7 @@ namespace tempo{
 		bool moveBy(Ogre::Real x, Ogre::Real y);
 	};
 
-	struct SystemGridMotion : anax::System<anax::Requires<ComponentPosition, ComponentGridMotion>> {
+	struct SystemGridMotion : anax::System<anax::Requires<ComponentTransform, ComponentGridMotion>> {
 		// Dimensions of grid
 		int min_x;
 		int min_y;

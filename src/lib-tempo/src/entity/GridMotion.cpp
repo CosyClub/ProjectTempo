@@ -45,28 +45,28 @@ namespace tempo{
 		auto entities = getEntities();
 
 		for(auto& entity : entities){
-			auto& p = entity.getComponent<ComponentPosition>();
-			auto& g = entity.getComponent<ComponentGridMotion>();
+			auto& trans = entity.getComponent<ComponentTransform>();
+			auto& gm    = entity.getComponent<ComponentGridMotion>();
 
-			if(g.current != g.target){
-				g.motion_progress += dt / 0.1f;
-				if(g.motion_progress >= 1){
-					g.current = g.target;
-					g.motion_progress = 0;
+			if(gm.current != gm.target){
+				gm.motion_progress += dt / 0.1f;
+				if(gm.motion_progress >= 1){
+					gm.current = gm.target;
+					gm.motion_progress = 0;
 				}
 			}
 
-			p.position.x = Ogre::Math::lerp(g.current.x, g.target.x, g.motion_progress);
-			p.position.z = Ogre::Math::lerp(g.current.y, g.target.y, g.motion_progress);;
+			trans.position.x = Ogre::Math::lerp(gm.current.x, gm.target.x, gm.motion_progress);
+			trans.position.z = Ogre::Math::lerp(gm.current.y, gm.target.y, gm.motion_progress);;
 
 			// hop effect
-			float a = g.motion_progress - 0.5;
-			p.position.y = (-(a*a) + 0.25f) * 2.0f;
+			float a = gm.motion_progress - 0.5;
+			trans.position.y = (-(a*a) + 0.25f) * 2.0f;
 
-			if(p.position.x < this->min_x){ p.position.x = this->min_x; }
-			if(p.position.x > this->max_x){ p.position.x = this->max_x; }
-			if(p.position.z < this->min_y){ p.position.z = this->min_y; }
-			if(p.position.z > this->max_y){ p.position.z = this->max_y; }
+			if(trans.position.x < this->min_x){ trans.position.x = this->min_x; }
+			if(trans.position.x > this->max_x){ trans.position.x = this->max_x; }
+			if(trans.position.z < this->min_y){ trans.position.z = this->min_y; }
+			if(trans.position.z > this->max_y){ trans.position.z = this->max_y; }
 		}
 	}
 }

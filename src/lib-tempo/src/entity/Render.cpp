@@ -30,13 +30,11 @@ namespace tempo{
 		auto entities = getEntities();
 
 		for(auto& entity : entities){
-			//printf("SystemRender   is updating entity %i\n", entity.getId());
-			auto& pos  = entity.getComponent<ComponentPosition>();
-			auto& rend = entity.getComponent<ComponentRender  >();
+			auto& trans = entity.getComponent<ComponentTransform>();
+			auto& rend  = entity.getComponent<ComponentRender  >();
 
-			//printf("Setting position to: %f, %f, %f\n", pos.position.x, pos.position.y, pos.position.z);
-
-			rend.node->setPosition(pos.position);
+			rend.node->setPosition   (trans.position);
+			rend.node->setOrientation(trans.rotation);
 		}
 
 		app.ogre->renderOneFrame();

@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////
 ///                      Part of Project Tempo                           ///
 ////////////////////////////////////////////////////////////////////////////
-/// \file Position.hpp
+/// \file Transform.hpp
 /// \author Jamie Terry
 /// \date 2017/11/14
-/// \brief Contains decleration of Position component and system
+/// \brief Contains decleration of Transform component
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef TEMPO_ENTITY_POSITION_HPP
@@ -16,26 +16,16 @@
 #include <anax/Component.hpp>
 
 namespace tempo{
-	struct ComponentPosition : anax::Component {
+	struct ComponentTransform : anax::Component {
 		/// \brief Offset from world origin to entity's local origin
 		Ogre::Vector3    position;
 
 		/// \brief Rotation of the entity about its local origin
-		//Ogre::Quaternion rotation;
+		Ogre::Quaternion rotation;
 
-		/// \brief Delta position per second
-		Ogre::Vector3    velocity;
-
-		/// \brief Delta rotation per second
-		//Ogre::Quaternion rotational_velocity;
-
-		ComponentPosition();
-		ComponentPosition(Ogre::Vector3 pos);
-		ComponentPosition(Ogre::Real x, Ogre::Real y, Ogre::Real z);
-	};
-
-	struct SystemPosition : anax::System<anax::Requires<ComponentPosition>> {
-		void update(double dt);
+		ComponentTransform();
+		ComponentTransform(Ogre::Vector3 pos);
+		ComponentTransform(Ogre::Real x, Ogre::Real y, Ogre::Real z);
 	};
 }
 
