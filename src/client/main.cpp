@@ -94,6 +94,7 @@ int main(int argc, const char** argv)
 	new_floor->deleteTile(scene, {3,3});
 	new_floor->setHeight(5, {2,2});
 	new_floor->setHeight(0.1, {2,2});
+	new_floor->setHeight(-0.5, {1,3});
 	new_floor->setHeight(5, {3,4}, 3, 1);
 	new_floor->setMaterial("BrownWalls", {2,2});
 

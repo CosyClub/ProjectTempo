@@ -9,6 +9,7 @@ class Tile{
 private:
 	std::unordered_set<EntityID_t> entities;
 	float height;
+	Position_t position;
  	Ogre::Entity* floorpiece;
  	Ogre::SceneNode* node_tile;
 
