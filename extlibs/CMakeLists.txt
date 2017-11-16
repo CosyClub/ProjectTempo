@@ -60,3 +60,17 @@ add_subdirectory(SFML-2.4.2)
 execute_process(COMMAND cmake -E tar xf SDL2-2.0.7.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 # Build libraries
 add_subdirectory(SDL2-2.0.7)
+
+##########################################
+# Anax
+##########################################
+# Extract archive
+execute_process(COMMAND cmake -E tar xf anax-1.1.1.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+# Build libraries
+add_subdirectory(anax-1.1.1)
+# Copy in generated headers
+configure_file(
+	"${CMAKE_CURRENT_BINARY_DIR}/anax-1.1.1/include/anax/Config.hpp"
+	"${TEMPO_ANAX_INCLUDE_DIR}/anax/Config.hpp"
+	COPYONLY
+)

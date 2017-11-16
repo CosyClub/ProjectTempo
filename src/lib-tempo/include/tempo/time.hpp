@@ -16,8 +16,6 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/System/Clock.hpp>
 
-#undef main // SDL likes to define main
-
 namespace tempo{
         class Clock
         {
@@ -35,7 +33,7 @@ namespace tempo{
                 float beat_progress();
                 sf::Time until_beat();
                 sf::Time since_beat();
-                
+
                 private:
                 sf::Time time;
                 sf::Clock timer;
