@@ -26,6 +26,7 @@ public:
     std::unordered_set<EntityID_t> getEntities(EntityID_t id, Position_t position);
 
     void setHeight(float height, Position_t position);
+    void setHeight(float height, Position_t position, int width, int length);
     float getHeight(Position_t position);
 };
 

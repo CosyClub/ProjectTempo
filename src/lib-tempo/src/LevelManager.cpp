@@ -37,7 +37,7 @@
 	}
 
 	bool LevelManager::placeEntity(EntityID_t id, Position_t position) {
-		tiles[position.x][position.z]->placeEntity(id);
+		return tiles[position.x][position.z]->placeEntity(id);
 	}
 
 	void LevelManager::removeEntity(EntityID_t id, Position_t position) {
@@ -50,6 +50,14 @@
 
 	void LevelManager::setHeight(float height, Position_t position) {
 		tiles[position.x][position.z]->setHeight(height);
+	}
+
+	void LevelManager::setHeight(float height, Position_t position, int width, int length) {
+		for(int i = position.x; i < width+position.x; i++){
+			for(int j = position.z; j < length+position.z; j++){
+				this->tiles[i][j]->setHeight(height);
+		   }
+	   }
 	}
 
 	float LevelManager::getHeight(Position_t position) {
