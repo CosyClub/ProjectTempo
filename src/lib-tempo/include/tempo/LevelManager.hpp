@@ -25,6 +25,8 @@ public:
 
     bool placeEntity(EntityID_t id, Position_t position);
 	void removeEntity(EntityID_t id, Position_t position);
+    std::unordered_set<EntityID_t> getEntities(EntityID_t id, Position_t position);
+
 
 };
 

@@ -43,3 +43,7 @@
 	void LevelManager::removeEntity(EntityID_t id, Position_t position) {
 		tiles[position.x][position.z]->removeEntity(id);
 	}
+
+	std::unordered_set<EntityID_t> LevelManager::getEntities(EntityID_t id, Position_t position) {
+		return tiles[position.x][position.z]->getEntities(id);
+	}

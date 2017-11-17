@@ -23,5 +23,6 @@ public:
 
 	bool placeEntity(EntityID_t id);
 	void removeEntity(EntityID_t id);
+	std::unordered_set<EntityID_t> getEntities(EntityID_t id);
 };
 #endif

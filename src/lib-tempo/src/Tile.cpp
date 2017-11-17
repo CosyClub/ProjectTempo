@@ -40,3 +40,8 @@
 		if(entities.find(id) != entities.end())
 			entities.erase(id);
 	}
+
+	std::unordered_set<EntityID_t> Tile::getEntities(EntityID_t id) {
+		std::unordered_set<EntityID_t> result(this->entities);
+		return result;
+	}
