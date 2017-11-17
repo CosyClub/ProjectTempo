@@ -56,7 +56,7 @@ int main(int argc, const char** argv)
 
 	// Clock
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
-	clock.set_next_beat(sf::microseconds(TIME));
+	clock.sync_time(&mainsong);
 	mainsong.start();
 	long offset = 0;
 
@@ -152,7 +152,6 @@ int main(int argc, const char** argv)
 	bool running = true;
 	int frame_counter = 0;
 
-	clock.sync_time(&mainsong);
 
 	while(running) {
 		float dt = dt_timer.getElapsedTime().asSeconds();
