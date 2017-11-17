@@ -47,3 +47,11 @@
 	std::unordered_set<EntityID_t> LevelManager::getEntities(EntityID_t id, Position_t position) {
 		return tiles[position.x][position.z]->getEntities(id);
 	}
+
+	void LevelManager::setHeight(float height, Position_t position) {
+		tiles[position.x][position.z]->setHeight(height);
+	}
+
+	float LevelManager::getHeight(Position_t position) {
+		return tiles[position.x][position.z]->getHeight();
+	}

@@ -92,6 +92,8 @@ int main(int argc, const char** argv)
 	LevelManager* new_floor = new LevelManager(scene, 7);
 	new_floor->deleteTile(scene, {0,0});
 	new_floor->deleteTile(scene, {3,3});
+	new_floor->setHeight(5, {2,2});
+	new_floor->setHeight(0.1, {2,2});
 	new_floor->setMaterial("BrownWalls", {2,2});
 
 	auto node_floor = new_floor->getFloorNode();

@@ -2,7 +2,7 @@
 #include <Ogre.h>
 
 
-	Tile::Tile(Ogre::SceneManager* scene, Ogre::SceneNode* floor_node, Position_t position, int height) {
+	Tile::Tile(Ogre::SceneManager* scene, Ogre::SceneNode* floor_node, Position_t position, float height) {
 		this->height = height;
 
 		floorpiece = scene->createEntity("meshes/tile.mesh");
@@ -11,7 +11,7 @@
 		node_tile->setPosition(position.x, 0, position.z);
  	}
 
-	Tile::Tile(int height) {
+	Tile::Tile(float height) {
 	  	this->height = height;
  	}
 
@@ -44,4 +44,15 @@
 	std::unordered_set<EntityID_t> Tile::getEntities(EntityID_t id) {
 		std::unordered_set<EntityID_t> result(this->entities);
 		return result;
+	}
+
+	void Tile::setHeight(float height) {
+		this->height = height;
+		if(this->node_tile) {
+			this->node_tile->setScale(1, 10*height, 1);
+		}
+	}
+
+	float Tile::getHeight() {
+		return this->height;
 	}

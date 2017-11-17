@@ -15,8 +15,6 @@ public:
 	LevelManager(Ogre::SceneManager* scene, int size);
 	LevelManager(int size);
 
-	std::vector<EntityID_t> getEntities(int x, int y);
-
 
 	Ogre::SceneNode* getFloorNode();
 	void deleteTile(Ogre::SceneManager* scene, Position_t position);
@@ -27,7 +25,8 @@ public:
 	void removeEntity(EntityID_t id, Position_t position);
     std::unordered_set<EntityID_t> getEntities(EntityID_t id, Position_t position);
 
-
+    void setHeight(float height, Position_t position);
+    float getHeight(Position_t position);
 };
 
 #endif
