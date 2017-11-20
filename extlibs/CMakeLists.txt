@@ -67,7 +67,9 @@ add_subdirectory(SDL2-2.0.7)
 # Extract archive
 execute_process(COMMAND cmake -E tar xf anax-1.1.1.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 # Build libraries
+set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(anax-1.1.1)
+set(BUILD_SHARED_LIBS  ON)
 # Copy in generated headers
 configure_file(
 	"${CMAKE_CURRENT_BINARY_DIR}/anax-1.1.1/include/anax/Config.hpp"
