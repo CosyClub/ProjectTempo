@@ -39,12 +39,12 @@ target_link_libraries(client ${OPENGL_gl_LIBRARY} )
 target_link_libraries(client ${OPENGL_glu_LIBRARY})
 
 target_link_libraries(client zzip)
-target_link_libraries(client FreeImage)
 
 if(MSVC)
 	target_link_libraries(client zlibstaticd)
 else()
 	target_link_libraries(client z)
+	target_link_libraries(client FreeImage)
 endif()
 
 if(UNIX)
