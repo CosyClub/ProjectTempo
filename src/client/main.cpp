@@ -57,7 +57,7 @@ int main(int argc, const char** argv)
 
 	// Clock
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
-	clock.set_next_beat(sf::microseconds(TIME));
+	clock.sync_time(&mainsong);
 	mainsong.start();
 	long offset = 0;
 
@@ -162,10 +162,11 @@ int main(int argc, const char** argv)
 	// Main loop
 	sf::Clock fps_timer;
 	sf::Clock dt_timer;
+	sf::Time logic_time;
+	sf::Time render_time;
 	bool running = true;
 	int frame_counter = 0;
 
-	clock.sync_time(&mainsong);
 
 	while(running) {
 		float dt = dt_timer.getElapsedTime().asSeconds();
@@ -243,13 +244,22 @@ int main(int argc, const char** argv)
 
 		world.refresh();
 		system_grid_motion.update(dt);
+		logic_time = dt_timer.getElapsedTime();
 		system_render.render(dt);
+		render_time = dt_timer.getElapsedTime() - logic_time;
 		SDL_GL_SwapWindow(app.window);
 
 		++frame_counter;
 		if(fps_timer.getElapsedTime().asSeconds() > 0.5f) {
 			float seconds = fps_timer.getElapsedTime().asSeconds();
-			printf("FPS: %i\n", (int)(frame_counter / seconds));
+			printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds),
+					                100 * (float)(
+							render_time.asMicroseconds() 
+							) / (
+					                logic_time.asMicroseconds() +
+							render_time.asMicroseconds()));
+			/* printf("Logic time  (μs): %d\n",  logic_time.asMicroseconds()); */
+			/* printf("Render time (μs): %d\n", render_time.asMicroseconds()); */
 			fps_timer.restart();
 			frame_counter = 0;
 		}
