@@ -31,6 +31,17 @@ namespace tempo {
 		return floor_node;
 	}
 
+	bool LevelManager::existsTile(Position_t position) {
+		if( position.x < 0  || position.x >= tiles.size() ||
+	    	position.z < 0  || position.z >= tiles.size() )
+			return false;
+
+		if( tiles[position.x][position.z])
+			return true;
+		else
+			return false;
+ 	}
+
 	void LevelManager::deleteTile(Ogre::SceneManager* scene, Position_t position) {
 		tiles[position.x][position.z]->deleteFloorpiece(scene);
 	}

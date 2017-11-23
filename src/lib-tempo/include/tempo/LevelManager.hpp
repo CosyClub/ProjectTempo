@@ -10,6 +10,7 @@ namespace tempo{
 	private:
 		std::vector<std::vector<Tile*>> tiles;
 		Ogre::SceneNode* floor_node;
+        bool existsTile(Position_t position);
 
 	public:
 
