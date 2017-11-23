@@ -11,6 +11,7 @@ target_include_directories(client PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_OGRE_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_SDL2_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
+target_include_directories(client PRIVATE ${TEMPO_ANAX_INCLUDE_DIR})
 
 target_link_libraries(client lib_tempo)
 
@@ -20,6 +21,8 @@ target_link_libraries(client sfml-audio)
 
 target_link_libraries(client SDL2)
 target_link_libraries(client SDL2main)
+
+target_link_libraries(client anax)
 
 # :TODO: have way to configure debug vs release - no _d for release
 set(TEMPO_OGRE_LIB_SUFFIX "Static_d")
@@ -36,12 +39,12 @@ target_link_libraries(client ${OPENGL_gl_LIBRARY} )
 target_link_libraries(client ${OPENGL_glu_LIBRARY})
 
 target_link_libraries(client zzip)
-target_link_libraries(client FreeImage)
 
 if(MSVC)
 	target_link_libraries(client zlibstaticd)
 else()
 	target_link_libraries(client z)
+	target_link_libraries(client FreeImage)
 endif()
 
 if(UNIX)

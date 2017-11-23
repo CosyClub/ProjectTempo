@@ -13,8 +13,6 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/Audio.hpp>
 
-#undef main // SDL likes to define main
-
 namespace tempo
 {
 	class Song
