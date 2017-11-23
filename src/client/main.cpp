@@ -127,7 +127,7 @@ int main(int argc, const char** argv)
 	player->setColour(Ogre::ColourValue::Red);
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
-	entity_player.addComponent<tempo::ComponentGridMotion>(0.0f, 0.0f);
+	entity_player.addComponent<tempo::ComponentGridMotion>(1.0f, 1.0f);
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
 	entity_player.activate();
 
