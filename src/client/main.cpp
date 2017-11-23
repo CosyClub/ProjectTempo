@@ -135,7 +135,8 @@ int main(int argc, const char** argv)
 	Ogre::Camera* camera = scene->createCamera("MainCamera");
 	camera->setNearClipDistance(0.01f);
 	camera->setAutoAspectRatio(true);
-	Ogre::SceneNode *node_player = entity_player.getComponent<tempo::ComponentRender>().node;
+	Ogre::SceneNode *node_player;
+	node_player = entity_player.getComponent<tempo::ComponentRender>().node;
 	Ogre::SceneNode *node_camera = node_player->createChildSceneNode();
 	node_camera->attachObject(camera);
 	node_camera->setPosition(0, 20, 10);
