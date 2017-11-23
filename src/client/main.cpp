@@ -25,6 +25,7 @@
 #include <tempo/entity/GridMotion.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerInput.hpp>
+#include <tempo/LevelManager.hpp>
 
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
@@ -85,16 +86,28 @@ int main(int argc, const char** argv)
 	camera->setAutoAspectRatio(true);
 	Ogre::SceneNode* node_camera = scene->getRootSceneNode()->createChildSceneNode();
 	node_camera->attachObject(camera);
-	node_camera->setPosition(0, 0, 30);
+	node_camera->setPosition(0, 50, 0);
+
+
+	LevelManager* new_floor = new LevelManager(scene, "../bin/resources/level1.txt");
+	//new_floor->deleteTile(scene, {0,0});
+	//new_floor->deleteTile(scene, {3,3});
+	//new_floor->setHeight(5, {2,2});
+	//new_floor->setHeight(0.1, {2,2});
+	//new_floor->setHeight(-0.5, {1,3});
+	//new_floor->setHeight(5, {3,4}, 3, 1);
+	//new_floor->setMaterial("BrownWalls", {2,2});
+
+	auto node_floor = new_floor->getFloorNode();
 
 	// Dancefloor
-	anax::Entity entity_floor = world.createEntity();
-	Ogre::Entity* mesh_floor = scene->createEntity("meshes/floor.mesh");
-	entity_floor.addComponent<tempo::ComponentTransform>(0.0f, 0.0f, 0.0f);
-	Ogre::SceneNode* node_floor = entity_floor.addComponent<tempo::ComponentRender>(scene).node;
-	node_floor->setScale(1, 1, 1);
-	node_floor->attachObject(mesh_floor);
-	entity_floor.activate();
+	// anax::Entity entity_floor = world.createEntity();
+	// Ogre::Entity* mesh_floor = scene->createEntity("meshes/floor.mesh");
+	// entity_floor.addComponent<tempo::ComponentTransform>(0.0f, 0.0f, 0.0f);
+	// Ogre::SceneNode* node_floor = entity_floor.addComponent<tempo::ComponentRender>(scene).node;
+	// node_floor->setScale(1, 1, 1);
+	// node_floor->attachObject(mesh_floor);
+	// entity_floor.activate();
 
 
 	// Dummy objects
@@ -205,26 +218,9 @@ int main(int argc, const char** argv)
 			}
 		}
 
-		float cam_motion_delta = sin(beat_progress) * 0.3f;
-		node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
-		camera->lookAt(0,0,0);
-
-		// This code moves the camera to a point where the entire floor is visible.
-		camera->setPosition(node_floor->getParentSceneNode()->_getDerivedPosition());
-
-		Ogre::Real nearPlane = camera->getNearClipDistance();
-		Ogre::Radian theta = camera->getFOVy() * .5;
-		// Get minimum dimension from aspect
-		Ogre::Real aspectRatio = camera->getAspectRatio();
-		if (aspectRatio < 1.0f)
-			theta *= aspectRatio;
-
-		Ogre::Real distance = (mesh_floor->getBoundingRadius() / Ogre::Math::Sin(theta)) + nearPlane;
-
-		// Move the camera back along its negative direction (+Z)
-		camera->moveRelative(Ogre::Vector3(0, 0, 0.2*distance));
-
-		// End of Camera move code
+		//float cam_motion_delta = sin(beat_progress) * 0.3f;
+		//node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
+		camera->lookAt(15,0,15);
 
 		float light_intensity = 2 / (exp(beat_progress));
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
