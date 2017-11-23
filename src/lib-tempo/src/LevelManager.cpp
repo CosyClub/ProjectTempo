@@ -43,7 +43,11 @@ namespace tempo {
  	}
 
 	void LevelManager::deleteTile(Ogre::SceneManager* scene, Position_t position) {
-		tiles[position.x][position.z]->deleteFloorpiece(scene);
+		if (existsTile(position)) {
+			tiles[position.x][position.z]->deleteFloorpiece(scene);
+		} else {
+			std::cout <<" Can't delete non-existent tile";
+		}
 	}
 
 	void LevelManager::createTile(Ogre::SceneManager* scene, Position_t position) {
@@ -51,23 +55,46 @@ namespace tempo {
 	}
 
 	void LevelManager::setMaterial(std::string material_name, Position_t position) {
-		tiles[position.x][position.z]->setMaterial(material_name);
+		if (existsTile(position)) {
+			tiles[position.x][position.z]->setMaterial(material_name);
+		} else {
+			std::cout <<" Can't set material to non-existent tile";
+		}
 	}
 
 	bool LevelManager::placeEntity(EntityID_t id, Position_t position) {
-		return tiles[position.x][position.z]->placeEntity(id);
+		if (existsTile(position)) {
+			return tiles[position.x][position.z]->placeEntity(id);
+		} else {
+			return false;
+			std::cout <<" Can't put entity on non-existent tile";
+		}
 	}
 
 	void LevelManager::removeEntity(EntityID_t id, Position_t position) {
-		tiles[position.x][position.z]->removeEntity(id);
+		if (existsTile(position)) {
+			tiles[position.x][position.z]->removeEntity(id);
+		} else {
+			std::cout <<" Can't remove entity from non-existent tile";
+		}
 	}
 
 	std::unordered_set<EntityID_t> LevelManager::getEntities(EntityID_t id, Position_t position) {
-		return tiles[position.x][position.z]->getEntities(id);
+		if (existsTile(position)) {
+			return tiles[position.x][position.z]->getEntities(id);
+		} else {
+			std::unordered_set<EntityID_t> empty_set;
+			return empty_set;
+			std::cout <<" Can't get entities from non-existent tile";
+		}
 	}
 
 	void LevelManager::setHeight(float height, Position_t position) {
-		tiles[position.x][position.z]->setHeight(height);
+		if (existsTile(position)) {
+			tiles[position.x][position.z]->setHeight(height);
+		} else {
+			std::cout <<" Can't set height to non-existent tile";
+		}
 	}
 
 	void LevelManager::setHeight(float height, Position_t position, int width, int length) {
@@ -79,7 +106,11 @@ namespace tempo {
 	}
 
 	float LevelManager::getHeight(Position_t position) {
-		return tiles[position.x][position.z]->getHeight();
+		if (existsTile(position)) {
+			return tiles[position.x][position.z]->getHeight();
+		} else {
+			std::cout <<" Can't get height of non-existent tile";
+		}
 	}
 
 	void LevelManager::loadLevel(Ogre::SceneManager* scene, std::string fileName, std::vector<std::vector<Tile*>> tiles) {
