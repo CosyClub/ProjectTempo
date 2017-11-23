@@ -1,5 +1,6 @@
 #include <tempo/LevelManager.hpp>
 #include <tempo/Tile.hpp>
+#include <iostream>
 
 	LevelManager::LevelManager(Ogre::SceneManager* scene, int size) : tiles(size, std::vector<Tile*>(size)) {
 		floor_node = scene->getRootSceneNode()->createChildSceneNode();
@@ -15,9 +16,14 @@
 
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j< size; j++){
-				tiles[i][j] = new Tile( 0);
+				tiles[i][j] = new Tile(0);
 			}
 		}
+	}
+
+	LevelManager::LevelManager(Ogre::SceneManager* scene, std::string fileName) : tiles(100, std::vector<Tile*>(100)) {
+
+		loadLevel(scene, fileName, tiles);
 	}
 
 	Ogre::SceneNode* LevelManager::getFloorNode(){
@@ -62,4 +68,38 @@
 
 	float LevelManager::getHeight(Position_t position) {
 		return tiles[position.x][position.z]->getHeight();
+	}
+
+	void LevelManager::loadLevel(Ogre::SceneManager* scene, std::string fileName, std::vector<std::vector<Tile*>> tiles) {
+
+		floor_node = scene->getRootSceneNode()->createChildSceneNode();
+
+		char ch;
+		std::fstream fin(fileName, std::fstream::in);
+
+		int filex = 0;
+		int filey = 0;
+
+		while (fin >> std::noskipws >> ch) {
+
+			if (ch == '\n') {
+				filex = 0;
+				filey++;
+			}
+
+			else if (ch == '0') {
+				filex++;
+			}
+
+			else if (ch == '1') {
+				tiles[filex][filey] = new Tile(scene, floor_node, { filex,filey }, 0);
+				filex++;
+			}
+
+			else if (ch == '2') {
+				tiles[filex][filey] = new Tile(scene, floor_node, { filex,filey }, 5);
+				filex++;
+			}
+
+			}
 	}

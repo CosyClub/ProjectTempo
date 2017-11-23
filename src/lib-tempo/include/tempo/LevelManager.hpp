@@ -14,6 +14,7 @@ public:
 
 	LevelManager(Ogre::SceneManager* scene, int size);
 	LevelManager(int size);
+	LevelManager(Ogre::SceneManager* scene, std::string fileName);
 
 
 	Ogre::SceneNode* getFloorNode();
@@ -28,6 +29,7 @@ public:
     void setHeight(float height, Position_t position);
     void setHeight(float height, Position_t position, int width, int length);
     float getHeight(Position_t position);
+	void loadLevel(Ogre::SceneManager* scene, std::string fileName, std::vector<std::vector<Tile*>> tiles);
 };
 
 #endif

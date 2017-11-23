@@ -10,7 +10,7 @@
 		floorpiece = scene->createEntity("meshes/tile.mesh");
 		node_tile = floor_node->createChildSceneNode();
 		node_tile->attachObject(floorpiece);
-		node_tile->setPosition(position.x, -5, position.z);
+		node_tile->setPosition(position.x, -5+height, position.z);
  	}
 
 	Tile::Tile(float height) {
