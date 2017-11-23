@@ -53,12 +53,19 @@ int main(int argc, const char** argv)
 
 	// Sound
 	tempo::Song mainsong("resources/sound/focus.ogg");
-	mainsong.set_volume(30.f);
+	mainsong.set_volume(20.f);
+
+	sf::SoundBuffer clickbuf;
+	clickbuf.loadFromFile("resources/sound/tick.ogg");
+	sf::Sound click;
+	click.setBuffer(clickbuf);
 
 	// Clock
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
-	clock.sync_time(&mainsong);
+	mainsong.set_volume(0.f);
 	mainsong.start();
+	clock.sync_time(&mainsong);
+	mainsong.set_volume(20.f);
 	long offset = 0;
 
 	/////////////////////////////////////////////////
@@ -179,6 +186,7 @@ int main(int argc, const char** argv)
 		dt_timer.restart();
 
 		if (clock.passed_beat()) {
+			click.play();
 			/*
 			std::cout << clock.get_time().asMilliseconds() << std::endl;
 			std::cout << clock.until_beat().asMilliseconds << std::endl;
