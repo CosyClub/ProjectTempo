@@ -89,7 +89,7 @@ int main(int argc, const char** argv)
 	node_camera->setPosition(0, 50, 0);
 
 
-	LevelManager* new_floor = new LevelManager(scene, "../bin/resources/level1.txt");
+	tempo::LevelManager* new_floor = new tempo::LevelManager(scene, "../bin/resources/level1.txt");
 	//new_floor->deleteTile(scene, {0,0});
 	//new_floor->deleteTile(scene, {3,3});
 	//new_floor->setHeight(5, {2,2});
@@ -237,7 +237,7 @@ int main(int argc, const char** argv)
 			float seconds = fps_timer.getElapsedTime().asSeconds();
 			printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds),
 					                100 * (float)(
-							render_time.asMicroseconds() 
+							render_time.asMicroseconds()
 							) / (
 					                logic_time.asMicroseconds() +
 							render_time.asMicroseconds()));
