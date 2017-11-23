@@ -81,12 +81,6 @@ int main(int argc, const char** argv)
 	node_light->attachObject(light);
 	node_light->setPosition(20, 80, 50);
 
-	Ogre::Camera* camera = scene->createCamera("MainCamera");
-	camera->setNearClipDistance(0.01f);
-	camera->setAutoAspectRatio(true);
-	Ogre::SceneNode* node_camera = scene->getRootSceneNode()->createChildSceneNode();
-	node_camera->attachObject(camera);
-	node_camera->setPosition(0, 50, 0);
 
 
 	LevelManager* new_floor = new LevelManager(scene, "../bin/resources/level1.txt");
@@ -137,6 +131,16 @@ int main(int argc, const char** argv)
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
 	entity_player.activate();
 
+	//camera
+	Ogre::Camera* camera = scene->createCamera("MainCamera");
+	camera->setNearClipDistance(0.01f);
+	camera->setAutoAspectRatio(true);
+	Ogre::SceneNode *node_player = entity_player.getComponent<tempo::ComponentRender>().node;
+	Ogre::SceneNode *node_camera = node_player->createChildSceneNode();
+	node_camera->attachObject(camera);
+	node_camera->setPosition(0, 20, 10);
+	camera->lookAt(0,0,0);
+
 	// Ai
 	anax::Entity entity_ai = world.createEntity();
 	Ogre::BillboardSet* Aset = scene->createBillboardSet();
@@ -147,6 +151,7 @@ int main(int argc, const char** argv)
 	Ogre::Billboard* ai = Aset->createBillboard(0, 0.75, 0);
 	ai->setColour(Ogre::ColourValue::Blue);
 	entity_ai.addComponent<tempo::ComponentTransform>();
+	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentGridMotion>(3.0f, 3.0f);
 	entity_ai.addComponent<tempo::ComponentGridAi>();
@@ -220,7 +225,6 @@ int main(int argc, const char** argv)
 
 		//float cam_motion_delta = sin(beat_progress) * 0.3f;
 		//node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
-		camera->lookAt(15,0,15);
 
 		float light_intensity = 2 / (exp(beat_progress));
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
