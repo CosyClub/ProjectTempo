@@ -16,7 +16,7 @@ namespace tempo{
 
 		LevelManager(Ogre::SceneManager* scene, int size);
 		LevelManager(int size);
-		LevelManager(Ogre::SceneManager* scene, std::string fileName);
+		LevelManager(Ogre::SceneManager* scene, const char* fileName);
 
 
 		Ogre::SceneNode* getFloorNode();
@@ -31,7 +31,7 @@ namespace tempo{
 		void setHeight(float height, Position_t position);
 		void setHeight(float height, Position_t position, int width, int length);
 		float getHeight(Position_t position);
-		void loadLevel(Ogre::SceneManager* scene, std::string fileName, std::vector<std::vector<Tile*>> tiles);
+		void loadLevel(Ogre::SceneManager* scene, const char* fileName, std::vector<std::vector<Tile*>> tiles);
 	};
 }
 

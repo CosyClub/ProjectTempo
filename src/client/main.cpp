@@ -35,6 +35,7 @@
 #define DELTA 150
 #define TIME 60000000 / BPM
 
+
 int main(int argc, const char** argv)
 {
 	tempo::Application app = tempo::initialize_application("RaveCave", 800, 600);
@@ -71,7 +72,7 @@ int main(int argc, const char** argv)
 	/////////////////////////////////////////////////
 	// Setup scene
 	anax::World world;
-	tempo::SystemGridMotion  system_grid_motion(-7, -7, 7, 7);
+	tempo::SystemGridMotion  system_grid_motion(1, 1, 34, 19);
 	tempo::SystemGridAi      system_grid_ai;
 	tempo::SystemPlayerInput system_player_input(clock);
 	tempo::SystemRender      system_render(app);
@@ -88,28 +89,9 @@ int main(int argc, const char** argv)
 	node_light->attachObject(light);
 	node_light->setPosition(20, 80, 50);
 
-
-
-	tempo::LevelManager* new_floor = new tempo::LevelManager(scene, "../bin/resources/level1.txt");
-	//new_floor->deleteTile(scene, {0,0});
-	//new_floor->deleteTile(scene, {3,3});
-	//new_floor->setHeight(5, {2,2});
-	//new_floor->setHeight(0.1, {2,2});
-	//new_floor->setHeight(-0.5, {1,3});
-	//new_floor->setHeight(5, {3,4}, 3, 1);
-	//new_floor->setMaterial("BrownWalls", {2,2});
+	tempo::LevelManager* new_floor = new tempo::LevelManager(scene, "../bin/resources/levels/levelTest.bmp");
 
 	auto node_floor = new_floor->getFloorNode();
-
-	// Dancefloor
-	// anax::Entity entity_floor = world.createEntity();
-	// Ogre::Entity* mesh_floor = scene->createEntity("meshes/floor.mesh");
-	// entity_floor.addComponent<tempo::ComponentTransform>(0.0f, 0.0f, 0.0f);
-	// Ogre::SceneNode* node_floor = entity_floor.addComponent<tempo::ComponentRender>(scene).node;
-	// node_floor->setScale(1, 1, 1);
-	// node_floor->attachObject(mesh_floor);
-	// entity_floor.activate();
-
 
 	// Dummy objects
 	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);

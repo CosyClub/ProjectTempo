@@ -1,5 +1,6 @@
 #include <tempo/LevelManager.hpp>
 #include <tempo/Tile.hpp>
+#include <sdl.h>
 #include <iostream>
 
 namespace tempo {
@@ -22,7 +23,7 @@ namespace tempo {
 		}
 	}
 
-	LevelManager::LevelManager(Ogre::SceneManager* scene, std::string fileName) : tiles(100, std::vector<Tile*>(100)) {
+	LevelManager::LevelManager(Ogre::SceneManager* scene, const char* fileName) : tiles(100, std::vector<Tile*>(100)) {
 
 		loadLevel(scene, fileName, tiles);
 	}
@@ -113,37 +114,51 @@ namespace tempo {
 		}
 	}
 
-	void LevelManager::loadLevel(Ogre::SceneManager* scene, std::string fileName, std::vector<std::vector<Tile*>> tiles) {
+	void LevelManager::loadLevel(Ogre::SceneManager* scene, const char* fileName, std::vector<std::vector<Tile*>> tiles) {
+
+		SDL_Surface* level = SDL_LoadBMP(fileName);
 
 		floor_node = scene->getRootSceneNode()->createChildSceneNode();
 
-		char ch;
-		std::fstream fin(fileName, std::fstream::in);
+		for (int y = 0; y < level->h; y++) {
+			for (int x = 0; x < level->w; x++) {
 
-		int filex = 0;
-		int filey = 0;
+				int bpp = level->format->BytesPerPixel;
+				/* Here p is the address to the pixel we want to retrieve */
+				Uint8 *p = (Uint8 *)level->pixels + y * level->pitch + x * bpp;
+				uint32_t pixel = 0;
 
-		while (fin >> std::noskipws >> ch) {
+				switch (bpp) {
+				case 1:
+					pixel = *p;
+					break;
 
-			if (ch == '\n') {
-				filex = 0;
-				filey++;
+				case 2:
+					pixel = *(uint16_t *)p;
+					break;
+
+				case 3:
+					if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+						pixel = p[0] << 16 | p[1] << 8 | p[2];
+					}
+					else {
+						pixel = p[0] | p[1] << 8 | p[2] << 16;
+					}
+					break;
+
+				case 4:
+					pixel = *(uint32_t *)p;
+					break;
+
+				default:
+					pixel = 0;       /* shouldn't happen, but avoids warnings */
+				}
+				
+				if (pixel > 0) {
+					int height = (int) (pixel - 127) / 25.6;
+					tiles[x][y] = new Tile(scene, floor_node, { x,y }, height);
+				}
 			}
-
-			else if (ch == '0') {
-				filex++;
-			}
-
-			else if (ch == '1') {
-				tiles[filex][filey] = new Tile(scene, floor_node, { filex,filey }, 0);
-				filex++;
-			}
-
-			else if (ch == '2') {
-				tiles[filex][filey] = new Tile(scene, floor_node, { filex,filey }, 5);
-				filex++;
-			}
-
 		}
 	}
 }
