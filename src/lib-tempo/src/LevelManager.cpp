@@ -1,6 +1,6 @@
 #include <tempo/LevelManager.hpp>
 #include <tempo/Tile.hpp>
-#include <sdl.h>
+#include <SDL.h>
 #include <iostream>
 
 namespace tempo {
