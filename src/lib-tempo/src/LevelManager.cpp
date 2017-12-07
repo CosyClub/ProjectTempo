@@ -153,10 +153,10 @@ namespace tempo {
 				default:
 					pixel = 0;       /* shouldn't happen, but avoids warnings */
 				}
-				
+
 				if (pixel > 0) {
 					int height = (int) (pixel - 127) / 25.6;
-					tiles[x][y] = new Tile(scene, floor_node, { x,y }, height);
+					this->tiles[x][y] = new Tile(scene, floor_node, { x,y }, height);
 				}
 			}
 		}
