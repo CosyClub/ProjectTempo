@@ -3,25 +3,48 @@
 
 namespace tempo
 {
-	void Queue::push(T elem) {
-		m.lock();
-		q.push(elem);
-		m.unlock();
-	}
-	
-	void Queue::pop() {
-		m.lock();
-		q.pop();
-		m.unlock();
-	}
-	T Queue::front() {
-		m.lock();
-		T &ref = q.front();
-		m.unlock();
-	}
-	void Queue::pop() {
-		m.lock();
-		q.pop();
-		m.unlock();
-	}
+
+template<class T>
+Queue<T>::Queue() {
+	q = new std::queue<T>;
+}
+
+template<class T>
+Queue<T>::~Queue() {
+	delete q;
+}
+
+template<class T>
+void Queue<T>::push(T elem) {
+	m.lock();
+	q->push(elem);
+	m.unlock();
+}
+
+template<class T>
+void Queue<T>::pop() {
+	m.lock();
+	q->pop();
+	m.unlock();
+}
+
+template<class T>
+T Queue<T>::front() {
+	m.lock();
+	T &ref = q->front();
+	m.unlock();
+	return ref;
+}
+
+template<class T>
+bool Queue<T>::empty() {
+	m.lock();
+	bool res = q->empty();
+	m.unlock();
+	return res;
+}
+
+template class Queue<int>;
+template class Queue<sf::Packet>;
+
 }
