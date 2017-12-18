@@ -7,40 +7,42 @@ namespace tempo
 template<class T>
 Queue<T>::Queue() {
 	q = new std::queue<T>;
+	m = new std::mutex;
 }
 
 template<class T>
 Queue<T>::~Queue() {
 	delete q;
+	delete m;
 }
 
 template<class T>
 void Queue<T>::push(T elem) {
-	m.lock();
+	m->lock();
 	q->push(elem);
-	m.unlock();
+	m->unlock();
 }
 
 template<class T>
 void Queue<T>::pop() {
-	m.lock();
+	m->lock();
 	q->pop();
-	m.unlock();
+	m->unlock();
 }
 
 template<class T>
 T Queue<T>::front() {
-	m.lock();
+	m->lock();
 	T &ref = q->front();
-	m.unlock();
+	m->unlock();
 	return ref;
 }
 
 template<class T>
 bool Queue<T>::empty() {
-	m.lock();
+	m->lock();
 	bool res = q->empty();
-	m.unlock();
+	m->unlock();
 	return res;
 }
 

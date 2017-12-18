@@ -22,7 +22,7 @@ template<class T>
 class Queue {
 
 	std::queue<T>* q;
-	std::mutex m;
+	std::mutex* m;
 	
 	public:
 	
