@@ -220,7 +220,7 @@ namespace tempo{
 			auto& gm    = entity.getComponent<ComponentGridPosition>();
 
 			if(gm.current != gm.target){
-				gm.motion_progress += dt / 0.1f;
+				gm.motion_progress += dt * 10.0f;
 				if(gm.motion_progress >= 1){
 					gm.current         = gm.target;
 					gm.motion_progress = 0;
@@ -274,7 +274,7 @@ namespace tempo{
 			// hop effect
 			float a = gm.motion_progress - 0.5;
 			// Add sinosodial hop motion
-			trans.position.y += (-(a*a) + 0.25f) * 2.0f;
+			trans.position.y += (-(a*a) + 0.25f) * gm.max_jump_height * 2.0f;
 			// Add motion to get between current tile height and target
 			trans.position.y += Ogre::Math::lerp(0.0f, delta_height, gm.motion_progress);
 		}
