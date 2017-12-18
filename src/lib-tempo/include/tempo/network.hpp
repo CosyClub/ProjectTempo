@@ -18,7 +18,7 @@ namespace tempo
 	// Default Port for Time Sync (TS) protocol
 	#define NET_PORT_TS 1337
 	// Default Address - TODO Change this
-	#define NET_ADDR "127.0.0.0"
+	#define NET_ADDR "127.0.0.1"
 	// Wait time for time sync protocol (millisecs)
 	#define TIMESYNC_DELTA 500
 
