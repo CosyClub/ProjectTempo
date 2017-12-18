@@ -71,11 +71,6 @@ namespace tempo{
 		float getHeight(int x, int y);
 
 		void loadLevel(Ogre::SceneManager* scene, const char* fileName, std::vector<std::vector<Tile*>> tiles);
-		// Dimensions of grid
-		int min_x;
-		int min_y;
-		int max_x;
-		int max_y;
 
 		void update(float dt);
 	};
