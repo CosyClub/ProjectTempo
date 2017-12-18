@@ -23,6 +23,11 @@ namespace tempo{
 		Ogre::Vector2    current;
 		Ogre::Vector2    target;
 		float            motion_progress;
+		float            max_jump_height;
+
+		/// \brief Whether this entity has claimed the target tile as its own,
+		/// thus preventing any other entity from moving into it
+		bool target_locked;
 
 		ComponentGridPosition();
 		ComponentGridPosition(Ogre::Vector2 pos);
@@ -39,7 +44,8 @@ namespace tempo{
 	private:
 		std::vector<std::vector<Tile*>> tiles;
 		Ogre::SceneNode* floor_node;
-        bool existsTile(Position_t position);
+		bool existsTile(Position_t position);
+		bool existsTile(int x, int y);
 
 	public:
 
@@ -58,7 +64,12 @@ namespace tempo{
 
 		void setHeight(float height, Position_t position);
 		void setHeight(float height, Position_t position, int width, int length);
-		float getHeight(Position_t position);
+		inline float getHeight(Position_t position){
+			// :TODO: shouldn't grid coordinates by (x,y) rather than (x,z) ?
+			return getHeight(position.x, position.z);
+		}
+		float getHeight(int x, int y);
+
 		void loadLevel(Ogre::SceneManager* scene, const char* fileName, std::vector<std::vector<Tile*>> tiles);
 		// Dimensions of grid
 		int min_x;

@@ -72,11 +72,11 @@ int main(int argc, const char** argv)
 	// Setup scene
 
 	anax::World world;
-	tempo::SystemRender      system_render(app);
+	tempo::SystemRender       system_render(app);
 	Ogre::SceneManager* scene = system_render.scene;
-	tempo::SystemLevelManager  system_grid_motion(scene, "../bin/resources/levels/levelTest.bmp");
-	tempo::SystemGridAi      system_grid_ai;
-	tempo::SystemPlayerInput system_player_input(clock);
+	tempo::SystemLevelManager system_grid_motion(scene, "../bin/resources/levels/levelTest.bmp");
+	tempo::SystemGridAi       system_grid_ai;
+	tempo::SystemPlayerInput  system_player_input(clock);
 	world.addSystem(system_grid_motion);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_render);
@@ -114,7 +114,7 @@ int main(int argc, const char** argv)
 	player->setColour(Ogre::ColourValue::Red);
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
-	entity_player.addComponent<tempo::ComponentGridPosition>(1.0f, 1.0f);
+	entity_player.addComponent<tempo::ComponentGridPosition>(2.0f, 2.0f);
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
 	entity_player.activate();
 
