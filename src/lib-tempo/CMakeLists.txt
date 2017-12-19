@@ -12,6 +12,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/GridMotion.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/GridAi.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/PlayerInput.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/Health.hpp"
 )
 
 set(TEMPO_LIB_TEMPO_SOURCE
@@ -26,6 +27,7 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/GridMotion.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/GridAi.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/PlayerInput.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/entity/Health.cpp"
 )
 
 add_library(lib_tempo STATIC
