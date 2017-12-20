@@ -16,7 +16,6 @@
 #include <tempo/entity/GridMotion.hpp>
 
 namespace tempo{
-
   struct ComponentGridAi : anax::Component {
 	  // no state needed for AI (yet)
   };

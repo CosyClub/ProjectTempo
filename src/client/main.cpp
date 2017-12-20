@@ -25,6 +25,7 @@
 #include <tempo/entity/GridMotion.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerInput.hpp>
+#include <tempo/LevelManager.hpp>
 
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
@@ -33,6 +34,7 @@
 #define BPM 174
 #define DELTA 150
 #define TIME 60000000 / BPM
+
 
 int main(int argc, const char** argv)
 {
@@ -52,18 +54,25 @@ int main(int argc, const char** argv)
 
 	// Sound
 	tempo::Song mainsong("resources/sound/focus.ogg");
-	mainsong.set_volume(30.f);
+	mainsong.set_volume(20.f);
+
+	sf::SoundBuffer clickbuf;
+	clickbuf.loadFromFile("resources/sound/tick.ogg");
+	sf::Sound click;
+	click.setBuffer(clickbuf);
 
 	// Clock
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
-	clock.sync_time(&mainsong);
+	mainsong.set_volume(0.f);
 	mainsong.start();
+	clock.sync_time(&mainsong);
+	mainsong.set_volume(20.f);
 	long offset = 0;
 
 	/////////////////////////////////////////////////
 	// Setup scene
 	anax::World world;
-	tempo::SystemGridMotion  system_grid_motion(-7, -7, 7, 7);
+	tempo::SystemGridMotion  system_grid_motion(1, 1, 34, 19);
 	tempo::SystemGridAi      system_grid_ai;
 	tempo::SystemPlayerInput system_player_input(clock);
 	tempo::SystemRender      system_render(app);
@@ -80,22 +89,9 @@ int main(int argc, const char** argv)
 	node_light->attachObject(light);
 	node_light->setPosition(20, 80, 50);
 
-	Ogre::Camera* camera = scene->createCamera("MainCamera");
-	camera->setNearClipDistance(0.01f);
-	camera->setAutoAspectRatio(true);
-	Ogre::SceneNode* node_camera = scene->getRootSceneNode()->createChildSceneNode();
-	node_camera->attachObject(camera);
-	node_camera->setPosition(0, 0, 30);
+	tempo::LevelManager* new_floor = new tempo::LevelManager(scene, "../bin/resources/levels/levelTest.bmp");
 
-	// Dancefloor
-	anax::Entity entity_floor = world.createEntity();
-	Ogre::Entity* mesh_floor = scene->createEntity("meshes/floor.mesh");
-	entity_floor.addComponent<tempo::ComponentTransform>(0.0f, 0.0f, 0.0f);
-	Ogre::SceneNode* node_floor = entity_floor.addComponent<tempo::ComponentRender>(scene).node;
-	node_floor->setScale(1, 1, 1);
-	node_floor->attachObject(mesh_floor);
-	entity_floor.activate();
-
+	auto node_floor = new_floor->getFloorNode();
 
 	// Dummy objects
 	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
@@ -120,9 +116,20 @@ int main(int argc, const char** argv)
 	player->setColour(Ogre::ColourValue::Red);
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
-	entity_player.addComponent<tempo::ComponentGridMotion>(0.0f, 0.0f);
+	entity_player.addComponent<tempo::ComponentGridMotion>(1.0f, 1.0f);
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
 	entity_player.activate();
+
+	//camera
+	Ogre::Camera* camera = scene->createCamera("MainCamera");
+	camera->setNearClipDistance(0.01f);
+	camera->setAutoAspectRatio(true);
+	Ogre::SceneNode *node_player;
+	node_player = entity_player.getComponent<tempo::ComponentRender>().node;
+	Ogre::SceneNode *node_camera = node_player->createChildSceneNode();
+	node_camera->attachObject(camera);
+	node_camera->setPosition(0, 20, 10);
+	camera->lookAt(0,0,0);
 
 	// Ai
 	anax::Entity entity_ai = world.createEntity();
@@ -134,6 +141,7 @@ int main(int argc, const char** argv)
 	Ogre::Billboard* ai = Aset->createBillboard(0, 0.75, 0);
 	ai->setColour(Ogre::ColourValue::Blue);
 	entity_ai.addComponent<tempo::ComponentTransform>();
+	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentGridMotion>(3.0f, 3.0f);
 	entity_ai.addComponent<tempo::ComponentGridAi>();
@@ -160,6 +168,7 @@ int main(int argc, const char** argv)
 		dt_timer.restart();
 
 		if (clock.passed_beat()) {
+			click.play();
 			/*
 			std::cout << clock.get_time().asMilliseconds() << std::endl;
 			std::cout << clock.until_beat().asMilliseconds << std::endl;
@@ -205,26 +214,8 @@ int main(int argc, const char** argv)
 			}
 		}
 
-		float cam_motion_delta = sin(beat_progress) * 0.3f;
-		node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
-		camera->lookAt(0,0,0);
-
-		// This code moves the camera to a point where the entire floor is visible.
-		camera->setPosition(node_floor->getParentSceneNode()->_getDerivedPosition());
-
-		Ogre::Real nearPlane = camera->getNearClipDistance();
-		Ogre::Radian theta = camera->getFOVy() * .5;
-		// Get minimum dimension from aspect
-		Ogre::Real aspectRatio = camera->getAspectRatio();
-		if (aspectRatio < 1.0f)
-			theta *= aspectRatio;
-
-		Ogre::Real distance = (mesh_floor->getBoundingRadius() / Ogre::Math::Sin(theta)) + nearPlane;
-
-		// Move the camera back along its negative direction (+Z)
-		camera->moveRelative(Ogre::Vector3(0, 0, 0.2*distance));
-
-		// End of Camera move code
+		//float cam_motion_delta = sin(beat_progress) * 0.3f;
+		//node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
 
 		float light_intensity = 2 / (exp(beat_progress));
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
@@ -241,7 +232,7 @@ int main(int argc, const char** argv)
 			float seconds = fps_timer.getElapsedTime().asSeconds();
 			printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds),
 					                100 * (float)(
-							render_time.asMicroseconds() 
+							render_time.asMicroseconds()
 							) / (
 					                logic_time.asMicroseconds() +
 							render_time.asMicroseconds()));
