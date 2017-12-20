@@ -15,7 +15,6 @@
 
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>
-#include <SFML/Network.hpp>
 
 #include <tempo/Application.hpp>
 #include <tempo/time.hpp>
