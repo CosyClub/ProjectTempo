@@ -13,14 +13,14 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/entity/GridMotion.hpp>
+#include <tempo/entity/LevelManager.hpp>
 
 namespace tempo{
   struct ComponentGridAi : anax::Component {
 	  // no state needed for AI (yet)
   };
 
-	struct SystemGridAi : anax::System<anax::Requires<ComponentGridMotion, ComponentGridAi>> {
+	struct SystemGridAi : anax::System<anax::Requires<ComponentGridPosition, ComponentGridAi>> {
 		void update();
 	};
 }

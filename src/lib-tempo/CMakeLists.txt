@@ -1,7 +1,6 @@
 set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Application.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/config.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/LevelManager.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/song.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/structures.hpp"
@@ -11,14 +10,13 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Types.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/Transform.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/Render.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/GridMotion.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/LevelManager.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/GridAi.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/PlayerInput.hpp"
 )
 
 set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/Application.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/LevelManager.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/network.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/song.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/structures.cpp"
@@ -26,7 +24,7 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/Tile.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/Transform.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/Render.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/entity/GridMotion.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/entity/LevelManager.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/GridAi.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/PlayerInput.cpp"
 )

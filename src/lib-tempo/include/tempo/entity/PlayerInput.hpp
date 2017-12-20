@@ -13,7 +13,7 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/entity/GridMotion.hpp>
+#include <tempo/entity/LevelManager.hpp>
 #include <tempo/time.hpp>
 
 #include <SDL.h>
@@ -27,7 +27,7 @@ namespace tempo{
 	  inline ComponentPlayerInput() : moved_this_beat(false) {}
   };
 
-	struct SystemPlayerInput : anax::System<anax::Requires<ComponentGridMotion, ComponentPlayerInput>> {
+	struct SystemPlayerInput : anax::System<anax::Requires<ComponentGridPosition, ComponentPlayerInput>> {
 		tempo::Clock& clock;
 
 		inline SystemPlayerInput(tempo::Clock& c) : clock(c) {}

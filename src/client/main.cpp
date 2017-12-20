@@ -22,10 +22,9 @@
 #include <tempo/song.hpp>
 #include <tempo/entity/Transform.hpp>
 #include <tempo/entity/Render.hpp>
-#include <tempo/entity/GridMotion.hpp>
+#include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerInput.hpp>
-#include <tempo/LevelManager.hpp>
 
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
@@ -71,27 +70,26 @@ int main(int argc, const char** argv)
 
 	/////////////////////////////////////////////////
 	// Setup scene
+
 	anax::World world;
-	tempo::SystemGridMotion  system_grid_motion(1, 1, 34, 19);
-	tempo::SystemGridAi      system_grid_ai;
-	tempo::SystemPlayerInput system_player_input(clock);
-	tempo::SystemRender      system_render(app);
+	tempo::SystemRender       system_render(app);
+	Ogre::SceneManager* scene = system_render.scene;
+	tempo::SystemLevelManager system_grid_motion(scene, "../bin/resources/levels/levelTest.bmp");
+	tempo::SystemGridAi       system_grid_ai;
+	tempo::SystemPlayerInput  system_player_input(clock);
 	world.addSystem(system_grid_motion);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_render);
 	world.addSystem(system_player_input);
 	world.refresh();
 
-	Ogre::SceneManager* scene = system_render.scene;
 	scene->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
 	Ogre::SceneNode* node_light = scene->getRootSceneNode()->createChildSceneNode();
 	Ogre::Light* light = scene->createLight("MainLight");
 	node_light->attachObject(light);
 	node_light->setPosition(20, 80, 50);
 
-	tempo::LevelManager* new_floor = new tempo::LevelManager(scene, "../bin/resources/levels/levelTest.bmp");
-
-	auto node_floor = new_floor->getFloorNode();
+	//auto node_floor = system_grid_motion.getFloorNode();
 
 	// Dummy objects
 	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
@@ -116,7 +114,7 @@ int main(int argc, const char** argv)
 	player->setColour(Ogre::ColourValue::Red);
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
-	entity_player.addComponent<tempo::ComponentGridMotion>(1.0f, 1.0f);
+	entity_player.addComponent<tempo::ComponentGridPosition>(2.0f, 2.0f);
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
 	entity_player.activate();
 
@@ -143,7 +141,7 @@ int main(int argc, const char** argv)
 	entity_ai.addComponent<tempo::ComponentTransform>();
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
-	entity_ai.addComponent<tempo::ComponentGridMotion>(3.0f, 3.0f);
+	entity_ai.addComponent<tempo::ComponentGridPosition>(3.0f, 3.0f);
 	entity_ai.addComponent<tempo::ComponentGridAi>();
 	entity_ai.activate();
 
