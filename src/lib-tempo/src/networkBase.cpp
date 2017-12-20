@@ -1,15 +1,11 @@
 #include <tempo/networkBase.hpp>
 
-sf::UdpSocket socket = null;
+sf::UdpSocket socket;
 	
-bool sendMessage(tempo::SystemMsgID id, sf::Packet payload) {
-	// Check if socket is open.
-	if (socket == null) {
-		return false; 
-	} else {
-		// TODO Construct message	
+bool sendMessage(tempo::SystemQID id, sf::Packet payload) {
+	// TODO Construct message	
 
-		// Send message
-		socket.send()
-	}
+	// Send message
+	//socket.send()
+	return false;
 }

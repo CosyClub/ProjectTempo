@@ -7,7 +7,7 @@
 #ifndef TEMPO_NETWORK_SERVER_HPP
 #define TEMPO_NETWORK_SERVER_HPP
 
-#include <networkBase.hpp>
+#include "networkBase.hpp"
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>

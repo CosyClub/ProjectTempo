@@ -12,6 +12,8 @@
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
 
+#include "entity/SystemQID.hpp"
+
 namespace tempo
 {
 	////////////////////////////////////////////////////////////////////////
@@ -31,13 +33,13 @@ namespace tempo
 	enum class ClientRole:unsigned short {
 		PLAYER=0,
 		SPECTATOR=1
-	}
+	};
 
 	// Struct to contain client role data, for use when a new client is
 	// requesting a new role.
 	typedef struct {
-		string name;
-	} ClientRoleData
+		char *name;
+	} ClientRoleData;
 
 	////////////////////////////////////////////////////////////////////////
 	/// Helper Macros
@@ -70,7 +72,7 @@ namespace tempo
 	//         payload - The payload to send to the message queue.
 	// Returns:
 	//         bool - true if sent, false if unable to send.
-	bool sendMessage(tempo::SystemMsgID id, sf::Packet payload);
+	bool sendMessage(tempo::SystemQID id, sf::Packet payload);
 
 }
 
