@@ -22,7 +22,7 @@ namespace tempo
 	//         clock - pointer to current client clock with "dirty time"
 	// Returns:
 	//         The correct "master time" as of call completion
-        sf::Time timeSyncClient(tempo::Clock *clock);
+	sf::Time timeSyncClient(tempo::Clock *clock);
 
 	// listenForServerUpdates
 	// WARNING: Should be run on separate thread.
