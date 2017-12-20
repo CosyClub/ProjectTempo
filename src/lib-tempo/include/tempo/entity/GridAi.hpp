@@ -20,7 +20,7 @@ namespace tempo{
 	  // no state needed for AI (yet)
   };
 
-	struct SystemGridAi : anax::System<anax::Requires<ComponentGridPosition, ComponentGridAi>> {
+	struct SystemGridAi : anax::System<anax::Requires<ComponentGridMotion, ComponentGridAi>> {
 		void update();
 	};
 }

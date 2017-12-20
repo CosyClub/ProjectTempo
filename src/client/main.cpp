@@ -115,6 +115,7 @@ int main(int argc, const char** argv)
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(2.0f, 2.0f);
+	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
 	entity_player.activate();
 
@@ -142,6 +143,7 @@ int main(int argc, const char** argv)
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentGridPosition>(3.0f, 3.0f);
+	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
 	entity_ai.activate();
 

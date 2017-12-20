@@ -23,29 +23,34 @@ namespace tempo{
 	/////////////////////////////////////////////////////////////////////
 	/// \brief Stores information regarding an entities position on the grid,
 	/// and its current motion
-	/// \todo :TODO: This should maybe be two components, one for position
-	/// information and one for motion data
 	/////////////////////////////////////////////////////////////////////
 	struct ComponentGridPosition : anax::Component {
 		///< \brief The position of the center of this entity
-		Ogre::Vector2    current;
-
-		///< \brief The target tile the entity is moving too
-		Ogre::Vector2    target;
-
-		///< \brief Value between 0 and 1 indicating the progress towards the target
-		float            motion_progress;
-
-		///< \brief How high this entity can jump, determines if it can reach tiles
-		float            max_jump_height;
-
-		/// \brief Whether this entity has claimed the target tile as its own,
-		/// thus preventing any other entity from moving into it
-		bool target_locked;
+		Ogre::Vector2    position;
 
 		ComponentGridPosition();
 		ComponentGridPosition(Ogre::Vector2 pos);
 		ComponentGridPosition(Ogre::Real x, Ogre::Real y);
+	};
+
+	/////////////////////////////////////////////////////////////////////
+	/// \brief Represents the motion of entities on the grid
+	/////////////////////////////////////////////////////////////////////
+	struct ComponentGridMotion : anax::Component {
+		ComponentGridMotion();
+
+		///< \brief The delta that this entity is trying to move by
+		Ogre::Vector2 delta;
+
+		///< \brief Value between 0 and 1 indicating the progress towards the target
+		float motion_progress;
+
+		///< \brief How high this entity can jump, determines if it can reach tiles
+		float max_jump_height;
+
+		/// \brief Whether this entity has claimed the target tile as its own,
+		/// thus preventing any other entity from moving into it
+		bool target_locked;
 
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Causes the component to represent a motion by specified amounts
@@ -59,7 +64,11 @@ namespace tempo{
 	/// Hence this system is responsible for rendering the world's tiles,
 	/// and managing the movement of entities on the grid
 	/////////////////////////////////////////////////////////////////////
-	class SystemLevelManager : public anax::System<anax::Requires<ComponentTransform, ComponentGridPosition>> {
+	class SystemLevelManager : public anax::System<anax::Requires<ComponentTransform,
+	                                                              ComponentGridPosition,
+	                                                              ComponentGridMotion
+	                                                              >>
+	{
 	private:
 		std::vector<std::vector<Tile*>> tiles;
 		Ogre::SceneNode* floor_node;
@@ -87,6 +96,10 @@ namespace tempo{
 		inline float getHeight(Position_t position){
 			// :TODO: shouldn't grid coordinates by (x,y) rather than (x,z) ?
 			return getHeight(position.x, position.z);
+		}
+		inline float getHeight(Ogre::Vector2 position){
+			// :TODO: using both Position_t and Ogre::Vector2 is getting annoying now...
+			return getHeight((int)position.x, (int)position.y);
 		}
 		float getHeight(int x, int y);
 

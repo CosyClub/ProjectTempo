@@ -25,20 +25,23 @@ namespace tempo{
 	}
 
 	ComponentGridPosition::ComponentGridPosition(Ogre::Real x, Ogre::Real y){
-		this->current = Ogre::Vector2(x,y);
-		this->target  = Ogre::Vector2(x,y);
+		this->position = Ogre::Vector2(x,y);
+	}
+
+	ComponentGridMotion::ComponentGridMotion() {
+		this->delta  = Ogre::Vector2(0,0);
 		this->motion_progress = 0;
 		this->max_jump_height = 1.0f;
 		this->target_locked = false;
 	}
 
-	bool ComponentGridPosition::moveBy(Ogre::Real x, Ogre::Real y){
+	bool ComponentGridMotion::moveBy(Ogre::Real dx, Ogre::Real dy){
 		if(this->motion_progress != 0){
 			return false;
 		}
 
-		this->target.x = this->current.x + x;
-		this->target.y = this->current.y + y;
+		this->delta.x = dx;
+		this->delta.y = dy;
 		return true;
 	}
 
@@ -216,20 +219,25 @@ namespace tempo{
 		auto entities = getEntities();
 
 		for(auto& entity : entities){
-			auto& trans = entity.getComponent<ComponentTransform>();
-			auto& gm    = entity.getComponent<ComponentGridPosition>();
+			auto& gm    = entity.getComponent<ComponentGridMotion>();
+			if(gm.delta.x == 0 && gm.delta.y == 0){ continue; }
 
-			if(gm.current != gm.target){
-				gm.motion_progress += dt * 10.0f;
-				if(gm.motion_progress >= 1){
-					gm.current         = gm.target;
-					gm.motion_progress = 0;
-					gm.target_locked   = false;
-				}
+			auto& trans = entity.getComponent<ComponentTransform>();
+			auto& pos   = entity.getComponent<ComponentGridPosition>();
+
+			// :TODO: Should entities have different movement speeds?
+			//        if so, add move_speed ComponentGridMotion and use
+			//        rather than constant value here
+			gm.motion_progress += dt * 10.0f;
+			if(gm.motion_progress >= 1){
+				pos.position += gm.delta;
+				gm.delta = Ogre::Vector2(0,0);
+				gm.motion_progress = 0;
+				gm.target_locked   = false;
 			}
 
-			float current_height = this->getHeight((int)gm.current.x, (int)gm.current.y);
-			float target_height  = this->getHeight((int)gm.target.x,  (int)gm.target.y );
+			float current_height = this->getHeight(pos.position);
+			float target_height  = this->getHeight(pos.position + gm.delta);
 			float delta_height   = target_height - current_height;
 
 			/////////////////////////////////
@@ -252,13 +260,10 @@ namespace tempo{
 
 				if(!can_make_move){
 					// Then entity should bounce back to where it came from
-					Ogre::Vector2 tmp = gm.target;
-					gm.target = gm.current;
-					gm.current = tmp;
-
+					pos.position += gm.delta;
+					gm.delta     *= -1;
 					// Swap motion progress around so we don't have a obvious jump in motion
 					gm.motion_progress = 1 - gm.motion_progress;
-
 					gm.target_locked = true;
 				} else {
 					// :TODO: claim the target tile with level manager
@@ -266,9 +271,10 @@ namespace tempo{
 				}
 			}
 
-			trans.position.x = Ogre::Math::lerp(gm.current.x, gm.target.x, gm.motion_progress);
+			// :TODO: vector lerps would be nice... (as would swizzles)
+			trans.position.x = Ogre::Math::lerp(pos.position.x, pos.position.x + gm.delta.x, gm.motion_progress);
 			trans.position.y = current_height;
-			trans.position.z = Ogre::Math::lerp(gm.current.y, gm.target.y, gm.motion_progress);;
+			trans.position.z = Ogre::Math::lerp(pos.position.y, pos.position.y + gm.delta.y, gm.motion_progress);
 
 			/////////////////////////////////
 			// hop effect

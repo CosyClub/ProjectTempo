@@ -60,7 +60,7 @@ namespace tempo{
 		auto entities = getEntities();
 
 		for(auto& entity : entities){
-			auto& motion = entity.getComponent<tempo::ComponentGridPosition>();
+			auto& motion = entity.getComponent<tempo::ComponentGridMotion>();
 			auto& input  = entity.getComponent<tempo::ComponentPlayerInput>();
 
 			if(!input.moved_this_beat){
