@@ -19,10 +19,24 @@
 #include <tempo/entity/Transform.hpp>
 
 namespace tempo{
+
+	/////////////////////////////////////////////////////////////////////
+	/// \brief Stores information regarding an entities position on the grid,
+	/// and its current motion
+	/// \todo :TODO: This should maybe be two components, one for position
+	/// information and one for motion data
+	/////////////////////////////////////////////////////////////////////
 	struct ComponentGridPosition : anax::Component {
+		///< \brief The position of the center of this entity
 		Ogre::Vector2    current;
+
+		///< \brief The target tile the entity is moving too
 		Ogre::Vector2    target;
+
+		///< \brief Value between 0 and 1 indicating the progress towards the target
 		float            motion_progress;
+
+		///< \brief How high this entity can jump, determines if it can reach tiles
 		float            max_jump_height;
 
 		/// \brief Whether this entity has claimed the target tile as its own,
@@ -40,18 +54,24 @@ namespace tempo{
 		bool moveBy(Ogre::Real x, Ogre::Real y);
 	};
 
+	/////////////////////////////////////////////////////////////////////
+	/// \brief System which has knowledge of the world's geometry.
+	/// Hence this system is responsible for rendering the world's tiles,
+	/// and managing the movement of entities on the grid
+	/////////////////////////////////////////////////////////////////////
 	class SystemLevelManager : public anax::System<anax::Requires<ComponentTransform, ComponentGridPosition>> {
 	private:
 		std::vector<std::vector<Tile*>> tiles;
 		Ogre::SceneNode* floor_node;
-		bool existsTile(Position_t position);
-		bool existsTile(int x, int y);
 
 	public:
 
 		SystemLevelManager(Ogre::SceneManager* scene, int size);
 		SystemLevelManager(int size);
 		SystemLevelManager(Ogre::SceneManager* scene, const char* fileName);
+
+		bool existsTile(Position_t position);
+		bool existsTile(int x, int y);
 
 		Ogre::SceneNode* getFloorNode();
 		void deleteTile(Ogre::SceneManager* scene, Position_t position);
