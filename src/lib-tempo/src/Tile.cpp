@@ -2,15 +2,15 @@
 #include <Ogre.h>
 
 namespace tempo{
-	Tile::Tile(Ogre::SceneManager* scene, Ogre::SceneNode* floor_node, Position_t position, float height) {
+	Tile::Tile(Ogre::SceneManager* scene, Ogre::SceneNode* floor_node, Vec2s position, float height) {
 		this->height = height;
 		this->position.x = position.x;
-		this->position.z = position.z;
+		this->position.y = position.y;
 
 		floorpiece = scene->createEntity("meshes/tile.mesh");
 		node_tile = floor_node->createChildSceneNode();
 		node_tile->attachObject(floorpiece);
-		node_tile->setPosition(position.x, -5+height, position.z);
+		node_tile->setPosition(position.x, -5+height, position.y);
 	}
 
 	Tile::Tile(float height) {
@@ -51,7 +51,7 @@ namespace tempo{
 	void Tile::setHeight(float height) {
 		this->height = height;
 		if(this->node_tile) {
-			this->node_tile->setPosition(this->position.x, -5 + height, this->position.z);
+			this->node_tile->setPosition(this->position.x, -5 + height, this->position.y);
 		}
 	}
 

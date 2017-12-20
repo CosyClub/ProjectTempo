@@ -79,7 +79,6 @@ namespace tempo{
 		if(val > high){ return high; }
 		return val;
 	}
-
 }
 
 inline constexpr real operator"" _r(long double            val){ return (real)val; }

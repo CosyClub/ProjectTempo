@@ -10,8 +10,6 @@
 #ifndef TEMPO_ENTITY_GRIDMOTION_HPP
 #define TEMPO_ENTITY_GRIDMOTION_HPP
 
-#include <OgreVector2.h>
-
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
@@ -27,11 +25,11 @@ namespace tempo{
 	/////////////////////////////////////////////////////////////////////
 	struct ComponentGridPosition : anax::Component {
 		///< \brief The position of the center of this entity
-		Ogre::Vector2    position;
+	  Vec2s position;
 
 		ComponentGridPosition();
-		ComponentGridPosition(Ogre::Vector2 pos);
-		ComponentGridPosition(Ogre::Real x, Ogre::Real y);
+		ComponentGridPosition(Vec2s pos);
+		ComponentGridPosition(int x, int y);
 	};
 
 	/////////////////////////////////////////////////////////////////////
@@ -41,7 +39,7 @@ namespace tempo{
 		ComponentGridMotion();
 
 		///< \brief The delta that this entity is trying to move by
-		Ogre::Vector2 delta;
+	  Vec2s delta;
 
 		///< \brief Value between 0 and 1 indicating the progress towards the target
 		float motion_progress;
@@ -57,7 +55,8 @@ namespace tempo{
 		/// \brief Causes the component to represent a motion by specified amounts
 		/// Only takes effect if entity is not already in motion
 		/////////////////////////////////////////////////////////////////////
-		bool moveBy(Ogre::Real x, Ogre::Real y);
+		inline bool moveBy(Vec2s delta){ return moveBy(delta.x, delta.y); }
+		bool moveBy(int dx, int dy);
 	};
 
 	/////////////////////////////////////////////////////////////////////
@@ -80,27 +79,22 @@ namespace tempo{
 		SystemLevelManager(int size);
 		SystemLevelManager(Ogre::SceneManager* scene, const char* fileName);
 
-		bool existsTile(Position_t position);
+		bool existsTile(Vec2s position);
 		bool existsTile(int x, int y);
 
 		Ogre::SceneNode* getFloorNode();
-		void deleteTile(Ogre::SceneManager* scene, Position_t position);
-		void createTile(Ogre::SceneManager* scene, Position_t position);
-		void setMaterial(std::string material_name, Position_t position);
+		void deleteTile(Ogre::SceneManager* scene, Vec2s position);
+		void createTile(Ogre::SceneManager* scene, Vec2s position);
+		void setMaterial(std::string material_name, Vec2s position);
 
-		bool placeEntity(EntityID_t id, Position_t position);
-		void removeEntity(EntityID_t id, Position_t position);
-		std::unordered_set<EntityID_t> getEntitiesOnTile(EntityID_t id, Position_t position);
+		bool placeEntity(EntityID_t id, Vec2s position);
+		void removeEntity(EntityID_t id, Vec2s position);
+		std::unordered_set<EntityID_t> getEntitiesOnTile(EntityID_t id, Vec2s position);
 
-		void setHeight(float height, Position_t position);
-		void setHeight(float height, Position_t position, int width, int length);
-		inline float getHeight(Position_t position){
-			// :TODO: shouldn't grid coordinates by (x,y) rather than (x,z) ?
-			return getHeight(position.x, position.z);
-		}
-		inline float getHeight(Ogre::Vector2 position){
-			// :TODO: using both Position_t and Ogre::Vector2 is getting annoying now...
-			return getHeight((int)position.x, (int)position.y);
+		void setHeight(float height, Vec2s position);
+		void setHeight(float height, Vec2s position, int width, int length);
+		inline float getHeight(Vec2s position){
+			return getHeight(position.x, position.y);
 		}
 		float getHeight(int x, int y);
 
