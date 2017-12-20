@@ -7,7 +7,7 @@
 #ifndef TEMPO_NETWORK_SERVER_HPP
 #define TEMPO_NETWORK_SERVER_HPP
 
-#include "networkBase.hpp"
+#include <tempo/networkBase.hpp>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
@@ -15,6 +15,16 @@
 
 namespace tempo
 {
+	typedef struct {
+		sf::Uint32 ip;
+		unsigned short port;
+	} clientConnection;
+
+	// Map of all the connected clients IP addresses and ID's
+	// Use sf::IpAddress toInt() for the key (int representation of IP addr)
+	// Assigned Client ID as the value
+	extern std::map<uint32_t, tempo::clientConnection> clients;
+	
 	// timeSyncServer
 	// WARNING: Should be run on separate thread.
 	// Server with "master time" for clients to sync to. 

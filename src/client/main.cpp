@@ -18,13 +18,13 @@
 
 #include <tempo/Application.hpp>
 #include <tempo/time.hpp>
+#include <tempo/LevelManager.hpp>
 #include <tempo/song.hpp>
 #include <tempo/entity/Transform.hpp>
 #include <tempo/entity/Render.hpp>
 #include <tempo/entity/GridMotion.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerInput.hpp>
-#include <tempo/LevelManager.hpp>
 
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>

@@ -50,7 +50,9 @@ sf::Time timeSyncClient(tempo::Clock *clock)
 
 void listenForServerUpdates(int port)
 {
-	// TODO this function
+	//if (socket.bind(port) != sf::Socket::Done) {
+	    // error...
+	//}	
 	return;
 }
 

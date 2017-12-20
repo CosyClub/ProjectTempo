@@ -19,10 +19,6 @@
 #define PLAYER_DELTA 150     // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
-//////////////////
-// Looking for Time Sync Protocol Code? Check src/libtempo in network(.cpp|.hpp)
-//////////////////
-
 int main(int argc, const char** argv) {
 
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME),

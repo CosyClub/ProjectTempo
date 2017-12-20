@@ -12,7 +12,7 @@
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
 
-#include "entity/SystemQID.hpp"
+#include <tempo/entity/SystemQID.hpp>
 
 namespace tempo
 {
@@ -30,9 +30,9 @@ namespace tempo
 	/// Client Roles
 	
 	// Enum with all possible client roles.
-	enum class ClientRole:unsigned short {
-		PLAYER=0,
-		SPECTATOR=1
+	enum ClientRole {
+		PLAYER,
+		SPECTATOR
 	};
 
 	// Struct to contain client role data, for use when a new client is
@@ -40,6 +40,16 @@ namespace tempo
 	typedef struct {
 		char *name;
 	} ClientRoleData;
+
+	////////////////////////////////////////////////////////////////////////
+	/// Connection Handshake Message ID's
+	enum HandshakeID {
+		DEFAULT,
+		HELLO,
+		HELLO_ROG,
+		ROLEREQ,
+		ROLEREQ_ROG
+	};
 
 	////////////////////////////////////////////////////////////////////////
 	/// Helper Macros
@@ -56,10 +66,6 @@ namespace tempo
 		(sock->getRemoteAddress().toString() + ":" + \
 		 std::to_string(client->getRemotePort()))
 
-
-	////////////////////////////////////////////////////////////////////////
-	/// Global Variables for networkServer.hpp and networkClient.hpp
-	extern sf::UdpSocket socket;
 
 	////////////////////////////////////////////////////////////////////////
 	/// Function Declarations

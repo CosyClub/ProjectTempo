@@ -4,6 +4,10 @@
 
 #include <iostream>
 
+
+namespace tempo
+{
+
 // ithTimeSyncCheck - Checks if the i'th time sync thread has completed
 // Arguments:
 //         sockets - Vector of time sync sockets (implied synced index)
@@ -15,11 +19,12 @@
 		((sockets.at(i)->getRemoteAddress() == sf::IpAddress::None) \
 			&& (threads.at(i)->joinable()))
 
-namespace tempo
-{
+// Create the global clients map from the header file. Used to store connected
+// clients, with their ID pointing to an IP and Port to send updates to.
+std::map<uint32_t, tempo::clientConnection> clients;
 
-// Not in header - for use in a thread by server to deal with a client so the 
-//                 main time sync thread can continue listening for more clients
+// For use in a separate thread by server to deal with a client so the main time 
+// sync thread can continue listening for more clients whilst dealing with this.
 void timeSyncHandler(tempo::Clock *clock, sf::TcpSocket *client) 
 {
 	std::cout << "Client (" << tcpRemoteToStr(client)
@@ -56,6 +61,7 @@ void timeSyncServer(tempo::Clock *clock)
 	if (listener.listen(NET_PORT_TS) != sf::Socket::Done) {
 		std::cout << "Listener socket could not open on port."
 		          << NET_PORT_TS << std::endl;
+		return;
 	}
 
 	std::vector<sf::TcpSocket*> clientSockets;
@@ -71,8 +77,7 @@ void timeSyncServer(tempo::Clock *clock)
 			std::thread *t;
 			t = new std::thread(timeSyncHandler, clock, client);
 			clientThreads.push_back(t);
-		}
-		else {
+		} else {
 			// Error, cleanup the client we created
 			std::cout << "Listener reported something, but "
 			          << "no client accepted." << std::endl;
@@ -91,9 +96,77 @@ void timeSyncServer(tempo::Clock *clock)
 	listener.close();
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+void processNewClientPacket(sf::Packet &packet, 
+                            sf::IpAddress &sender,
+                            unsigned short port,
+                            uint32_t clientID)
+{
+	int receiveID = static_cast<int>(HandshakeID::DEFAULT);
+	packet >> receiveID;
+	HandshakeID msgID = static_cast<HandshakeID>(receiveID);
+
+	switch (msgID) {
+	case HandshakeID::HELLO: {
+		// Register Client Internally
+		unsigned short clientPort = 0;
+		packet >> clientPort;
+
+		// Register Client for Delta's
+		clients[clientID].port = clientPort; 
+
+		// HELLO_ROG
+		// Send the entire level
+		break; }
+	case HandshakeID::ROLEREQ: {
+		// Create Entity for selected role from client
+		
+		// Register Role
+		
+		// Send back Entity to the client
+		
+		break; }
+	default:
+		// error, this is not a message we expect
+		break;
+	}
+}
+
 void listenForNewClients(unsigned short port)
 {
-	return;
+	uint32_t idCounter = 0;
+	
+	// Bind to port
+	sf::UdpSocket socket;
+	if (socket.bind(port) != sf::Socket::Done) {
+		std::cout << "Could not bind port %d, used or listening for new"
+		          << " clients." << std::endl;
+		return;
+	}
+
+	// Loop listening for new clients
+	while (true) {
+		sf::Packet packet;
+		sf::IpAddress sender;
+		unsigned short port;
+
+		if (socket.receive(packet, sender, port) != sf::Socket::Done) {
+			std::cout << "Error recieving something from new "
+			          << "(connecting) client." << std::endl;
+		}
+
+		clientConnection newClient = {sender.toInteger(), port};
+		if (!clients.insert(std::make_pair(idCounter, newClient)).second) {
+			// New Sender/Port 
+			idCounter++;
+		}
+
+		// TODO Process packet	
+	}
+
+	// TODO Probably should close the socket but it's a protected function
+	// so I can't.
 }
 
 void listenForClientUpdates(unsigned short port)
@@ -101,4 +174,4 @@ void listenForClientUpdates(unsigned short port)
 	return;
 }
 
-}
+} // end of namespace

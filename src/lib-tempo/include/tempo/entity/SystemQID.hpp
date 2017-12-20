@@ -25,9 +25,9 @@ namespace tempo
 	//    the network code with ID "FOOBAR", so it can recieve messages that
 	//    have the ID "FOOBAR".
 	// 
-	enum class SystemQID:unsigned short {
-		NETWORK_TEST=0,
-		ANOTHER_UNUSED_MESSAGE_DELETE_ME=1
+	enum SystemQID {
+		NETWORK_TEST,
+		ANOTHER_UNUSED_MESSAGE_DELETE_ME
 	};
 }
 
