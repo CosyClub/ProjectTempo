@@ -27,7 +27,7 @@ namespace tempo{
 	  inline ComponentPlayerInput() : moved_this_beat(false) {}
   };
 
-	struct SystemPlayerInput : anax::System<anax::Requires<ComponentGridPosition, ComponentPlayerInput>> {
+	struct SystemPlayerInput : anax::System<anax::Requires<ComponentGridMotion, ComponentPlayerInput>> {
 		tempo::Clock& clock;
 
 		inline SystemPlayerInput(tempo::Clock& c) : clock(c) {}

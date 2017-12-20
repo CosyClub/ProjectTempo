@@ -14,7 +14,7 @@ namespace tempo{
 		auto entities = getEntities();
 
 		for(auto& entity : entities){
-			auto& grid_motion = entity.getComponent<tempo::ComponentGridPosition>();
+			auto& grid_motion = entity.getComponent<tempo::ComponentGridMotion>();
 
 			int dir = rand() % 2; // between 0 and 1
 			int amount = (rand() % 2) * 2 - 1; //-1 or 1
