@@ -17,21 +17,6 @@ bool bindSocket(char socket, unsigned short port)
 	}
 }
 	
-bool sendMessage(tempo::SystemQID id, 
-                 sf::Packet payload, 
-                 bool isHandshake = false) 
-{
-	sf::Packet message;
-
-	// Construct message
-	message << id;
-	message << payload;
-
-	// Send message
-	// TODO if (isHandshake) {
-	return sock_o.send(message, NET_ADDR, NET_PORT_DT) == sf::Socket::Done;
-}
-
 sf::Packet& operator <<(sf::Packet& p1, sf::Packet& p2)
 {
 	uint8_t temp;

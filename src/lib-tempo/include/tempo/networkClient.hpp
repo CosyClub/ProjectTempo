@@ -24,6 +24,19 @@ namespace tempo
 	//         The correct "master time" as of call completion
 	sf::Time timeSyncClient(tempo::Clock *clock);
 
+	// sendMessageToServer
+	// Sends a message to the server. No guarentee of delivery given.
+	//
+	// Arguments:
+	//         id        - ID of the System Queue or Handshake message to 
+	//                     deliver the message to. {use static_cast<int>()}
+	//         payload   - The payload to send to the message queue.
+	//         isHandshake - Whether or not the message is a handshake 
+	//                     message (true) or game message (false, default).
+	// Returns:
+	//         bool - true if sent, false if unable to send.
+	bool sendMessage(tempo::SystemQID id, sf::Packet payload, 
+			 bool isHandshake);
 	// listenForServerUpdates
 	// WARNING: Should be run on separate thread.
 	// Listens and processes any updates (delta's) from the server.

@@ -5,7 +5,7 @@
 #include <iostream>
 
 namespace tempo
-{ // If we want strict spacing I'm going to have to commit the below sin (sorry)
+{
 
 sf::Time timeSyncClient(tempo::Clock *clock)
 {
@@ -47,6 +47,22 @@ sf::Time timeSyncClient(tempo::Clock *clock)
 	// Return current time
 	return sf::microseconds(t2 + delay);
 }
+
+bool sendMessage(tempo::SystemQID id, 
+                 sf::Packet payload, 
+                 bool isHandshake = false) 
+{
+	sf::Packet message;
+
+	// Construct message
+	message << id;
+	message << payload;
+
+	// Send message
+	// TODO if (isHandshake) {
+	return sock_o.send(message, NET_ADDR, NET_PORT_DT) == sf::Socket::Done;
+}
+
 
 void listenForServerUpdates(int port)
 {

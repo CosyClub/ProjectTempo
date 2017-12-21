@@ -76,20 +76,6 @@ namespace tempo
 	//         bool - true if bound, false if unable to bind.
 	bool bindSocket(char socket, unsigned short port);
 
-	// sendMessageToServer
-	// Sends a message to the server. No guarentee of delivery given.
-	//
-	// Arguments:
-	//         id        - ID of the System Queue or Handshake message to 
-	//                     deliver the message to. {use static_cast<int>()}
-	//         payload   - The payload to send to the message queue.
-	//         isHandshake - Whether or not the message is a handshake 
-	//                     message (true) or game message (false, default).
-	// Returns:
-	//         bool - true if sent, false if unable to send.
-	bool sendMessage(tempo::SystemQID id, sf::Packet payload, 
-			 bool isHandshake);
-
 
 	////////////////////////////////////////////////////////////////////////
 	/// Helper Macros
