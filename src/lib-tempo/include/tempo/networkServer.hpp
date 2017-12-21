@@ -21,6 +21,7 @@ namespace tempo
 	typedef struct {
 		sf::Uint32 ip;       // Use sf::IpAddress's toInt() method
 		unsigned short port;
+		ClientRole role; 
 	} clientConnection;
 
 	// Reserved client ID for a null client

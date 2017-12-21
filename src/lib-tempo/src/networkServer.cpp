@@ -104,9 +104,11 @@ void timeSyncServer(tempo::Clock *clock)
 // Will not check if client already exists, just add the information as a new
 // client, so it is recommended to use `if (!findClientID(ip, port)) first!
 static uint32_t idCounter = NO_CLIENT_ID + 1; 
-uint32_t addClient(sf::Uint32 ip, unsigned short port)
+uint32_t addClient(sf::Uint32 ip, 
+                   unsigned short port,
+                   ClientRole role = ClientRole::NO_ROLE)
 {
-	clientConnection newClient = {ip, port};
+	clientConnection newClient = {ip, port, role};
 	cmtx.lock();
 	clients.insert(std::make_pair(idCounter, newClient));
 	cmtx.unlock();
@@ -134,7 +136,7 @@ void handshakeHello(sf::Packet &packet, sf::IpAddress &sender)
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::HELLO_ROG);
 	rog << id; // TODO change to temporary token
-	// TODO Package entire level
+	// TODO Package entire level, eg:
 	// rog << packageLevel()
 
 	// Send response back to sender
@@ -152,12 +154,22 @@ void handshakeRoleReq(sf::Packet &packet, sf::IpAddress &sender)
 	packet >> roleData; 
 
 	// Create Entity for selected role from client
-	
+	// TODO ^The above
+
 	// Register Role
+	cmtx.lock();
+	clients[id].role = static_cast<ClientRole>(role);
+	unsigned short port = clients[id].port;
+	cmtx.unlock();
 	
-	// Send back Entity to the client
-		
-	return;
+	// Construct ROLEREQ_ROG response
+	sf::Packet rog;
+	rog << static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG);
+	// TODO Package Requested Entity, eg:
+	// rog << packagePlayer(id);
+	
+	//Send response back to sender
+	sock_h.send(rog, sender, port);
 }
 
 void processNewClientPacket(sf::Packet &packet, 
