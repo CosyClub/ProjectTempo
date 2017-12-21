@@ -19,12 +19,16 @@ namespace tempo
 	////////////////////////////////////////////////////////////////////////
 	/// Constant #define's 
 
+	// Default Address
+	#define DEFAULT_ADDR "127.0.0.1"
+	// Default Port for Incoming Socket
+        #define DEFAULT_PORT_IN  1337
+	// Default Port for the Outgoing Socket
+	#define DEFAULT_PORT_OUT 1338
+	// Default Port for Hand Shake (HS) protocol
+	#define DEFAULT_PORT_HS  1339
 	// Default Port for Time Sync (TS) protocol
-	#define NET_PORT_TS 1337
-	// Default Port for Data (DT) protocol
-	#define NET_PORT_DT 1338
-	// Default Address - TODO Change this
-	#define NET_ADDR "127.0.0.1"
+	#define DEFAULT_PORT_TS  1340
 	// Wait time for time sync protocol (millisecs)
 	#define TIMESYNC_DELTA 500
 
@@ -55,12 +59,20 @@ namespace tempo
 	
 	
 	////////////////////////////////////////////////////////////////////////
-	/// Sockets
+	/// Sockets & IP Addresses & Ports
 	extern sf::UdpSocket sock_i;  // Incoming  Socket
 	extern sf::UdpSocket sock_o;  // Outgoing  Socket
 	extern sf::UdpSocket sock_h;  // Handshake Socket (Server only)
 	// TCP Time Sync Sockets dealt with in functions dynamically
 
+	static sf::IpAddress addr_l = sf::IpAddress::getLocalAddress();
+	extern sf::IpAddress addr_r;  // Remote Address
+	extern unsigned int port_ci;  // Client Incoming Port
+	extern unsigned int port_co;  // Client Outgoing Port
+	extern unsigned int port_si;  // Server Incoming Port
+	extern unsigned int port_so;  // Server OutGoing Port
+	extern unsigned int port_sh;  // Server Hand Shake Port
+	extern unsigned int port_st;  // Server Time Sync Port
 
 	////////////////////////////////////////////////////////////////////////
 	/// Function Declarations

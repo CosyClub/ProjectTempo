@@ -11,7 +11,7 @@ sf::Time timeSyncClient(tempo::Clock *clock)
 {
 	// Create a socket to the server and connect to it
 	sf::TcpSocket socket;
-	sf::Socket::Status status = socket.connect(NET_ADDR, NET_PORT_TS);
+	sf::Socket::Status status = socket.connect(addr_r, port_st);
 	if (status != sf::Socket::Done) {
 		std::cout << "Error binding socket" << std::endl;
 		return sf::Time::Zero;
@@ -59,8 +59,11 @@ bool sendMessage(tempo::SystemQID id,
 	message << payload;
 
 	// Send message
-	// TODO if (isHandshake) {
-	return sock_o.send(message, NET_ADDR, NET_PORT_DT) == sf::Socket::Done;
+	if (isHandshake) {
+		return sock_o.send(message, addr_r, port_sh) == sf::Socket::Done;
+	} else {
+		return sock_o.send(message, addr_r, port_si) == sf::Socket::Done;
+	}
 }
 
 

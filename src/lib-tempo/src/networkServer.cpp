@@ -59,9 +59,9 @@ void timeSyncServer(tempo::Clock *clock)
 {
 	sf::TcpListener listener;
 	// Listen for a connection
-	if (listener.listen(NET_PORT_TS) != sf::Socket::Done) {
+	if (listener.listen(port_st) != sf::Socket::Done) {
 		std::cout << "Listener socket could not open on port."
-		          << NET_PORT_TS << std::endl;
+		          << port_st << std::endl;
 		return;
 	}
 

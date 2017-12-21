@@ -7,6 +7,14 @@ sf::UdpSocket sock_i;
 sf::UdpSocket sock_o;
 sf::UdpSocket sock_h;
 
+sf::IpAddress addr_r = DEFAULT_ADDR;
+unsigned int port_ci = DEFAULT_PORT_IN;
+unsigned int port_co = DEFAULT_PORT_OUT;
+unsigned int port_si = DEFAULT_PORT_IN;
+unsigned int port_so = DEFAULT_PORT_OUT;
+unsigned int port_sh = DEFAULT_PORT_HS;
+unsigned int port_st = DEFAULT_PORT_TS;
+
 bool bindSocket(char socket, unsigned short port)
 {
 	switch (socket) {
