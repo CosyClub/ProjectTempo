@@ -7,24 +7,38 @@
 #ifndef TEMPO_NETWORK_SERVER_HPP
 #define TEMPO_NETWORK_SERVER_HPP
 
+#include <mutex>
+#include <thread>
+
 #include <tempo/networkBase.hpp>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
-#include <thread>
+
 
 namespace tempo
 {
 	typedef struct {
-		sf::Uint32 ip;
+		sf::Uint32 ip;       // Use sf::IpAddress's toInt() method
 		unsigned short port;
 	} clientConnection;
 
-	// Map of all the connected clients IP addresses and ID's
-	// Use sf::IpAddress toInt() for the key (int representation of IP addr)
-	// Assigned Client ID as the value
-	extern std::map<uint32_t, tempo::clientConnection> clients;
-	
+	// Reserved client ID for a null client
+	#define NO_CLIENT_ID 0
+
+	// Map of all the connected clients IP addresses and ID's, with some
+	// handy typedefs.
+	// Notes:
+	//         - Unique assigned Client ID as the key
+	//         - clientConnection struct as the value 
+	typedef std::pair<uint32_t, tempo::clientConnection> clientpair;
+	typedef std::map<uint32_t, tempo::clientConnection>  clientmap;
+	extern clientmap clients;
+
+	// Client Map Mutex Lock for when modifying Map
+	// This should always be used when touching the clients map.
+	extern std::mutex cmtx;
+
 	// timeSyncServer
 	// WARNING: Should be run on separate thread.
 	// Server with "master time" for clients to sync to. 

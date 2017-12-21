@@ -22,6 +22,7 @@ namespace tempo
 // Create the global clients map from the header file. Used to store connected
 // clients, with their ID pointing to an IP and Port to send updates to.
 std::map<uint32_t, tempo::clientConnection> clients;
+std::mutex cmtx;
 
 // For use in a separate thread by server to deal with a client so the main time 
 // sync thread can continue listening for more clients whilst dealing with this.
@@ -98,23 +99,47 @@ void timeSyncServer(tempo::Clock *clock)
 
 ////////////////////////////////////////////////////////////////////////////////
 
+uint32_t findClientID(sf::Uint32 ip, unsigned short port)
+{
+	// Loop through clients
+	cmtx.lock();
+	for (clientpair element : clients) {
+		if (element.second.ip == ip && element.second.port == port) {
+			cmtx.unlock();
+			return element.first;
+		}
+	}
+	cmtx.unlock();
+	return NO_CLIENT_ID;
+}
+
+static uint32_t idCounter = NO_CLIENT_ID + 1; 
+uint32_t addClient(sf::Uint32 ip, unsigned short port)
+{
+	clientConnection newClient = {ip, port};
+	cmtx.lock();
+	clients.insert(std::make_pair(idCounter, newClient));
+	cmtx.unlock();
+	return idCounter++;
+}
+
 void processNewClientPacket(sf::Packet &packet, 
                             sf::IpAddress &sender,
-                            unsigned short port,
-                            uint32_t clientID)
+                            unsigned short port)
 {
 	int receiveID = static_cast<int>(HandshakeID::DEFAULT);
 	packet >> receiveID;
-	HandshakeID msgID = static_cast<HandshakeID>(receiveID);
 
-	switch (msgID) {
+	switch (static_cast<HandshakeID>(receiveID)) {
 	case HandshakeID::HELLO: {
 		// Register Client Internally
+		sf::Uint32 clientIP = sender.toInteger();
 		unsigned short clientPort = 0;
 		packet >> clientPort;
 
-		// Register Client for Delta's
-		clients[clientID].port = clientPort; 
+		if (findClientID(clientIP, clientPort) == NO_CLIENT_ID) {
+			addClient(clientIP, clientPort);
+		}
 
 		// HELLO_ROG
 		// Send the entire level
@@ -135,8 +160,6 @@ void processNewClientPacket(sf::Packet &packet,
 
 void listenForNewClients(unsigned short port)
 {
-	uint32_t idCounter = 0;
-	
 	// Bind to port
 	sf::UdpSocket socket;
 	if (socket.bind(port) != sf::Socket::Done) {
@@ -148,21 +171,15 @@ void listenForNewClients(unsigned short port)
 	// Loop listening for new clients
 	while (true) {
 		sf::Packet packet;
-		sf::IpAddress sender;
+		sf::IpAddress ip;
 		unsigned short port;
 
-		if (socket.receive(packet, sender, port) != sf::Socket::Done) {
+		if (socket.receive(packet, ip, port) != sf::Socket::Done) {
 			std::cout << "Error recieving something from new "
 			          << "(connecting) client." << std::endl;
 		}
-
-		clientConnection newClient = {sender.toInteger(), port};
-		if (!clients.insert(std::make_pair(idCounter, newClient)).second) {
-			// New Sender/Port 
-			idCounter++;
-		}
-
-		// TODO Process packet	
+	
+		processNewClientPacket(packet, ip, port);
 	}
 
 	// TODO Probably should close the socket but it's a protected function
