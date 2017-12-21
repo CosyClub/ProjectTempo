@@ -82,6 +82,21 @@ namespace tempo
 	//         bool - true if sent, false if unable to send.
 	bool sendMessage(tempo::SystemQID id, sf::Packet payload);
 
+	////////////////////////////////////////////////////////////////////////
+	/// Utility functions
+
+	// sf::Packet << sf::Packet
+	// Concatenates packets together. Adds all data from one packet to the
+	// other.
+	//
+	// Usage:
+	// 	sf::Packet p1 << sf::Packet p2
+	//
+	// Arguments:
+	// 	p1	- The packet to which the data is appended
+	// 	p2	- The packet to be appended
+	// Returns:
+	// 	None	- p1 is modified directly
 	sf::Packet& operator <<(sf::Packet& p1, sf::Packet& p2);
 
 }
