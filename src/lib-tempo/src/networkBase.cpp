@@ -11,13 +11,22 @@ bool sendMessage(tempo::SystemQID id, sf::Packet payload) {
 
 	// Construct message
 	message << id;
-	while (payload >> temp)
-	{
-		message << temp;
-	}
+	message << payload;
 
 	// Send message
 	return socket.send(message, NET_ADDR, NET_PORT_DT) == sf::Socket::Done;
+}
+
+sf::Packet& operator <<(sf::Packet& p1, sf::Packet& p2)
+{
+	uint8_t temp;
+
+	while (p2 >> temp)
+	{
+		p1 << temp;
+	}
+
+	return p1;
 }
 
 }

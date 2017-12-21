@@ -82,6 +82,8 @@ namespace tempo
 	//         bool - true if sent, false if unable to send.
 	bool sendMessage(tempo::SystemQID id, sf::Packet payload);
 
+	sf::Packet& operator <<(sf::Packet& p1, sf::Packet& p2);
+
 }
 
 #endif
