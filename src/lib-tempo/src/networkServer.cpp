@@ -113,6 +113,43 @@ uint32_t addClient(sf::Uint32 ip, unsigned short port)
 	return idCounter++;
 }
 
+void handshakeHello(sf::Packet &packet, sf::IpAddress &sender)
+{
+	// Extract information from packet
+	unsigned short port = 0;
+	packet >> port;
+	sf::Uint32 ip = sender.toInteger();
+
+	// Register Client Internally
+	uint32_t id = NO_CLIENT_ID;
+	if (findClientID(ip, port) == NO_CLIENT_ID) {
+		id = addClient(ip, port);
+	} else {
+		// TODO: Time out old client and make a new one
+		std::cout << "WARNING: Connected client tried to reconnect ("
+		          << id << ", " << ip << ":" << port << ")\r\n";
+	}
+	
+	// Construct HELLO_ROG response
+	sf::Packet rog;
+	rog << static_cast<int>(HandshakeID::HELLO_ROG);
+	// TODO Package entire level
+
+	// Send response back to sender
+	sock_h.send(rog, sender, port);
+}
+
+void handshakeRoleReq(sf::Packet &packet, sf::IpAddress &sender)
+{
+	// Create Entity for selected role from client
+	
+	// Register Role
+	
+	// Send back Entity to the client
+		
+	return;
+}
+
 void processNewClientPacket(sf::Packet &packet, 
                             sf::IpAddress &sender,
                             unsigned short port)
@@ -121,29 +158,16 @@ void processNewClientPacket(sf::Packet &packet,
 	packet >> receiveID;
 
 	switch (static_cast<HandshakeID>(receiveID)) {
-	case HandshakeID::HELLO: {
-		// Register Client Internally
-		sf::Uint32 clientIP = sender.toInteger();
-		unsigned short clientPort = 0;
-		packet >> clientPort;
-
-		if (findClientID(clientIP, clientPort) == NO_CLIENT_ID) {
-			addClient(clientIP, clientPort);
-		}
-
-		// HELLO_ROG
-		// Send the entire level
-		break; }
-	case HandshakeID::ROLEREQ: {
-		// Create Entity for selected role from client
-		
-		// Register Role
-		
-		// Send back Entity to the client
-		
-		break; }
+	case HandshakeID::HELLO:
+		handshakeHello(packet, sender);
+		break;
+	case HandshakeID::ROLEREQ:
+		handshakeRoleReq(packet, sender);
+		break;
 	default:
-		// error, this is not a message we expect
+		std::cout << "WARNING: an invalid handshake message was "
+		          << "recieved from " << sender.toString() << ":" 
+	                  << port << " ... ignoring" << std::endl;
 		break;
 	}
 }
