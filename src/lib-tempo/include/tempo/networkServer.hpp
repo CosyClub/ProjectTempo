@@ -25,6 +25,7 @@ namespace tempo
 
 	// Reserved client ID for a null client
 	#define NO_CLIENT_ID 0
+	#define THIS_IS_NOT_THE_CLIENT_YOU_ARE_LOOKING_FOR NO_CLIENT_ID
 
 	// Map of all the connected clients IP addresses and ID's, with some
 	// handy typedefs.
@@ -68,6 +69,19 @@ namespace tempo
 	// Returns:
 	//         void (is a thread)
 	void listenForClientUpdates(unsigned short port);
+
+	// findClientID
+	// Finds a client with the information given. Note that this will lock
+	// the clients map from other threads so use as sparingly as possible.
+	//
+	// Arguments:
+	//         ip   - the IP address of the client you wish to find
+	//         port - the port of the client you wish to find
+	// Returns:
+	//         The ID of the client if it exists, or NO_CLIENT_ID (also 
+	//         known as THIS_IS_NOT_THE_CLIENT_YOU_ARE_LOOKING_FOR) if no
+	//         such client exists.
+	uint32_t findClientID(sf::Uint32 ip, unsigned short port);
 }
 
 #endif

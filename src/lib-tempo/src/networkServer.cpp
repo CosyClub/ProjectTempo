@@ -99,20 +99,9 @@ void timeSyncServer(tempo::Clock *clock)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-uint32_t findClientID(sf::Uint32 ip, unsigned short port)
-{
-	// Loop through clients
-	cmtx.lock();
-	for (clientpair element : clients) {
-		if (element.second.ip == ip && element.second.port == port) {
-			cmtx.unlock();
-			return element.first;
-		}
-	}
-	cmtx.unlock();
-	return NO_CLIENT_ID;
-}
-
+// Internal, should only be used when registering new clients.
+// Will not check if client already exists, just add the information as a new
+// client, so it is recommended to use `if (!findClientID(ip, port)) first!
 static uint32_t idCounter = NO_CLIENT_ID + 1; 
 uint32_t addClient(sf::Uint32 ip, unsigned short port)
 {
@@ -190,5 +179,21 @@ void listenForClientUpdates(unsigned short port)
 {
 	return;
 }
+
+uint32_t findClientID(sf::Uint32 ip, unsigned short port)
+{
+	// Loop through clients
+	cmtx.lock();
+	for (clientpair element : clients) {
+		if (element.second.ip == ip && element.second.port == port) {
+			cmtx.unlock();
+			return element.first;
+		}
+	}
+	cmtx.unlock();
+	return NO_CLIENT_ID;
+}
+
+
 
 } // end of namespace
