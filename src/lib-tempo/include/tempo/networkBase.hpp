@@ -52,6 +52,44 @@ namespace tempo
 		ROLEREQ,
 		ROLEREQ_ROG
 	};
+	
+	
+	////////////////////////////////////////////////////////////////////////
+	/// Sockets
+	extern sf::UdpSocket sock_i;  // Incoming  Socket
+	extern sf::UdpSocket sock_o;  // Outgoing  Socket
+	extern sf::UdpSocket sock_h;  // Handshake Socket (Server only)
+	// TCP Time Sync Sockets dealt with in functions dynamically
+
+
+	////////////////////////////////////////////////////////////////////////
+	/// Function Declarations
+
+	// bindSocket
+	// Binds the game's internal UDP sockets to a given port.
+	//
+	// Arguments:
+	//         socket - Character, one of 'i', 'o' and 'h' for the incoming,
+	//                  outgoing and handshake sockets respectively.
+	//         port   - The port on which to bind the socket
+	// Returns:
+	//         bool - true if bound, false if unable to bind.
+	bool bindSocket(char socket, unsigned short port);
+
+	// sendMessageToServer
+	// Sends a message to the server. No guarentee of delivery given.
+	//
+	// Arguments:
+	//         id        - ID of the System Queue or Handshake message to 
+	//                     deliver the message to. {use static_cast<int>()}
+	//         payload   - The payload to send to the message queue.
+	//         isHandshake - Whether or not the message is a handshake 
+	//                     message (true) or game message (false, default).
+	// Returns:
+	//         bool - true if sent, false if unable to send.
+	bool sendMessage(tempo::SystemQID id, sf::Packet payload, 
+			 bool isHandshake);
+
 
 	////////////////////////////////////////////////////////////////////////
 	/// Helper Macros
@@ -68,19 +106,6 @@ namespace tempo
 		(sock->getRemoteAddress().toString() + ":" + \
 		 std::to_string(client->getRemotePort()))
 
-
-	////////////////////////////////////////////////////////////////////////
-	/// Function Declarations
-
-	// sendMessageToServer
-	// Sends a message to the server. No guarentee of delivery given.
-	//
-	// Arguments:
-	//         id      - ID of the System Queue to deliver the message to.
-	//         payload - The payload to send to the message queue.
-	// Returns:
-	//         bool - true if sent, false if unable to send.
-	bool sendMessage(tempo::SystemQID id, sf::Packet payload);
 
 	////////////////////////////////////////////////////////////////////////
 	/// Utility functions

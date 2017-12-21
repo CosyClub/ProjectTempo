@@ -88,6 +88,7 @@ void timeSyncServer(tempo::Clock *clock)
 		// Clean up finished threads
 		for (int i = 0; i < clientSockets.size(); i++) {
 			if (ithTimeSyncCheck(clientSockets, clientThreads, i)) {
+				delete clientSockets.at(i);
 				clientSockets.erase(clientSockets.begin() + i);
 				clientThreads.erase(clientThreads.begin() + i);
 			}
@@ -150,10 +151,9 @@ void processNewClientPacket(sf::Packet &packet,
 void listenForNewClients(unsigned short port)
 {
 	// Bind to port
-	sf::UdpSocket socket;
-	if (socket.bind(port) != sf::Socket::Done) {
-		std::cout << "Could not bind port %d, used or listening for new"
-		          << " clients." << std::endl;
+	if (!bindSocket('h', port)) {
+		std::cout << "Could not bind port %d, used or listening for "
+		          << "new clients." << std::endl;
 		return;
 	}
 
@@ -163,7 +163,7 @@ void listenForNewClients(unsigned short port)
 		sf::IpAddress ip;
 		unsigned short port;
 
-		if (socket.receive(packet, ip, port) != sf::Socket::Done) {
+		if (sock_h.receive(packet, ip, port) != sf::Socket::Done) {
 			std::cout << "Error recieving something from new "
 			          << "(connecting) client." << std::endl;
 		}

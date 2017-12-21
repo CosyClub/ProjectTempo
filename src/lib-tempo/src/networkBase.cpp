@@ -3,18 +3,33 @@
 namespace tempo
 {
 
-sf::UdpSocket socket;
+sf::UdpSocket sock_i;
+sf::UdpSocket sock_o;
+sf::UdpSocket sock_h;
+
+bool bindSocket(char socket, unsigned short port)
+{
+	switch (socket) {
+		case 'i': return sock_i.bind(port) == sf::Socket::Done;
+		case 'o': return sock_o.bind(port) == sf::Socket::Done;
+		case 'h': return sock_h.bind(port) == sf::Socket::Done;
+		default:  return false;
+	}
+}
 	
-bool sendMessage(tempo::SystemQID id, sf::Packet payload) {
+bool sendMessage(tempo::SystemQID id, 
+                 sf::Packet payload, 
+                 bool isHandshake = false) 
+{
 	sf::Packet message;
-	uint8_t temp;
 
 	// Construct message
 	message << id;
 	message << payload;
 
 	// Send message
-	return socket.send(message, NET_ADDR, NET_PORT_DT) == sf::Socket::Done;
+	// TODO if (isHandshake) {
+	return sock_o.send(message, NET_ADDR, NET_PORT_DT) == sf::Socket::Done;
 }
 
 sf::Packet& operator <<(sf::Packet& p1, sf::Packet& p2)
