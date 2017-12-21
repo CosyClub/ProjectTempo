@@ -21,6 +21,8 @@ namespace tempo
 
 	// Default Port for Time Sync (TS) protocol
 	#define NET_PORT_TS 1337
+	// Default Port for Data (DT) protocol
+	#define NET_PORT_DT 1338
 	// Default Address - TODO Change this
 	#define NET_ADDR "127.0.0.1"
 	// Wait time for time sync protocol (millisecs)
@@ -79,6 +81,23 @@ namespace tempo
 	// Returns:
 	//         bool - true if sent, false if unable to send.
 	bool sendMessage(tempo::SystemQID id, sf::Packet payload);
+
+	////////////////////////////////////////////////////////////////////////
+	/// Utility functions
+
+	// sf::Packet << sf::Packet
+	// Concatenates packets together. Adds all data from one packet to the
+	// other.
+	//
+	// Usage:
+	// 	sf::Packet p1 << sf::Packet p2
+	//
+	// Arguments:
+	// 	p1	- The packet to which the data is appended
+	// 	p2	- The packet to be appended
+	// Returns:
+	// 	None	- p1 is modified directly
+	sf::Packet& operator <<(sf::Packet& p1, sf::Packet& p2);
 
 }
 
