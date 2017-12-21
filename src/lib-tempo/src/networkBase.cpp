@@ -28,13 +28,20 @@ bool bindSocket(char socket, unsigned short port)
 sf::Packet& operator <<(sf::Packet& p1, sf::Packet& p2)
 {
 	uint8_t temp;
-
-	while (p2 >> temp)
-	{
+	while (p2 >> temp) {
 		p1 << temp;
 	}
-
 	return p1;
+}
+	
+sf::Packet& operator <<(sf::Packet& p, const ClientRoleData& c)
+{
+	return p << c.name;
+}
+
+sf::Packet& operator >>(sf::Packet& p, ClientRoleData& c)
+{
+	return p >> c.name;	
 }
 
 }

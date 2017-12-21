@@ -132,8 +132,10 @@ void handshakeHello(sf::Packet &packet, sf::IpAddress &sender)
 	
 	// Construct HELLO_ROG response
 	sf::Packet rog;
-	rog << static_cast<int>(HandshakeID::HELLO_ROG);
+	rog << static_cast<uint32_t>(HandshakeID::HELLO_ROG);
+	rog << id; // TODO change to temporary token
 	// TODO Package entire level
+	// rog << packageLevel()
 
 	// Send response back to sender
 	sock_h.send(rog, sender, port);
@@ -141,6 +143,14 @@ void handshakeHello(sf::Packet &packet, sf::IpAddress &sender)
 
 void handshakeRoleReq(sf::Packet &packet, sf::IpAddress &sender)
 {
+	// Extract data from packet
+	uint32_t id = NO_CLIENT_ID;
+	uint32_t role = static_cast<uint32_t>(ClientRole::NO_ROLE); 
+	ClientRoleData roleData;
+	packet >> id; // TODO change to temporary tocken	
+	packet >> role;
+	packet >> roleData; 
+
 	// Create Entity for selected role from client
 	
 	// Register Role
@@ -154,7 +164,7 @@ void processNewClientPacket(sf::Packet &packet,
                             sf::IpAddress &sender,
                             unsigned short port)
 {
-	int receiveID = static_cast<int>(HandshakeID::DEFAULT);
+	uint32_t receiveID = static_cast<uint32_t>(HandshakeID::DEFAULT);
 	packet >> receiveID;
 
 	switch (static_cast<HandshakeID>(receiveID)) {

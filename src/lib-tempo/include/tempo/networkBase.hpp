@@ -37,6 +37,7 @@ namespace tempo
 	
 	// Enum with all possible client roles.
 	enum ClientRole {
+		NO_ROLE,
 		PLAYER,
 		SPECTATOR
 	};
@@ -44,7 +45,7 @@ namespace tempo
 	// Struct to contain client role data, for use when a new client is
 	// requesting a new role.
 	typedef struct {
-		char *name;
+		std::string name;
 	} ClientRoleData;
 
 	////////////////////////////////////////////////////////////////////////
@@ -96,7 +97,7 @@ namespace tempo
 	// Returns string with remote host and port of a TCP socket
 	//
 	// Arguments:
-	//         sock - The TCP socket to return the remote host and port of.
+	//         sock	- The TCP socket to return the remote host and port of.
 	// Returns:
 	//         A string with the remote host and port of the given TCP
 	//         socket in the form of "HOST:PORT"
@@ -121,6 +122,17 @@ namespace tempo
 	// Returns:
 	// 	None	- p1 is modified directly
 	sf::Packet& operator <<(sf::Packet& p1, sf::Packet& p2);
+	
+	// sf::Packet << tempo::ClientRoleData
+	// sf::Packet >> tempo::ClientRoleData
+	//
+	// Adds/Removes ClientRoleData from a Packet.
+	//
+	// Usage:
+	// 	sf::Packet p << tempo::ClientRoleData c
+	// 	sf::Packet p >> tempo::ClientRoleData c
+	sf::Packet& operator <<(sf::Packet &p, const ClientRoleData &c);
+	sf::Packet& operator >>(sf::Packet &p, ClientRoleData &c);
 
 }
 
