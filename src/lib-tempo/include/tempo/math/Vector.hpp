@@ -369,16 +369,16 @@ namespace tempo{
 	inline Vec3<T> projectOntoPlane(Vec3<T> vec, Vec3<T> norm){
 		return vec - ((dot(vec,norm) / magSq(norm)) * norm);
 	}
-}
 
-template<u32 T_DIM, typename T>
-bool operator==(const tempo::Vec<T_DIM, T>& lhs, const tempo::Vec<T_DIM, T>& rhs){
-	// float comparisions are dodgy... check if magnitude of delta is < some value
-	return tempo::magSq(lhs - rhs) <= 0.000000001_r;
-}
-template<u32 T_DIM, typename T>
-bool operator!=(const tempo::Vec<T_DIM, T>& lhs, const tempo::Vec<T_DIM, T>& rhs){
-	return !(lhs == rhs);
+	template<u32 T_DIM, typename T>
+	bool operator==(const tempo::Vec<T_DIM, T>& lhs, const tempo::Vec<T_DIM, T>& rhs){
+		// float comparisions are dodgy... check if magnitude of delta is < some value
+		return tempo::magSq(lhs - rhs) <= 0.000000001_r;
+	}
+	template<u32 T_DIM, typename T>
+	bool operator!=(const tempo::Vec<T_DIM, T>& lhs, const tempo::Vec<T_DIM, T>& rhs){
+		return !(lhs == rhs);
+	}
 }
 
 #endif

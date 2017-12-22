@@ -15,6 +15,7 @@
 
 #include <tempo/Tile.hpp>
 #include <tempo/entity/Transform.hpp>
+#include <tempo/entity/TileMask.hpp>
 #include <tempo/math/Vector.hpp>
 
 namespace tempo{
