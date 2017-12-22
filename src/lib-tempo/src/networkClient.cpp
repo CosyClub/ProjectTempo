@@ -97,36 +97,55 @@ uint32_t handshakeHello()
 	sock_o.receive(packet, sender, port);
 
 	// Extract Data
+	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
 	uint32_t id = NO_CLIENT_ID;
-	packet >> id;
-	packet >> port_si;
-	packet >> port_st;
-	// TODO Extract entire level data and initialise level
+	packet >> msg;
+	if (msg == static_cast<uint32_t>(HandshakeID::HELLO_ROG)) {
+		packet >> id;
+		packet >> port_si;
+		packet >> port_st;
+		// TODO Extract entire level data and initialise level
+	} else {
+		std::cout << "The server was rude to us when we said HELLO"
+		          << std::endl;
+		return 0;
+	}
+
 
 	return id;
 }
 
-void handshakeRoleReq(uint32_t id, ClientRole roleID, ClientRoleData &roleData)
+bool handshakeRoleReq(uint32_t id, ClientRole roleID, ClientRoleData &roleData)
 {
-	if (sock_o.getLocalPort() == 0) {
-		if (!bindSocket('o', port_co)) {
-			std::cout << "Could not bind socket on port " << port_co
-			          << " to connect to server." << std::endl;
-			return;
-		}
-	}
-	
 	// Package up payload
+	sf::Packet packet;
+	packet << static_cast<uint32_t>(HandshakeID::ROLEREQ);
+	packet << id;
+	packet << roleID;
+	packet << roleData;
 	
 	// Send ROLEREQ
+	sock_o.send(packet, addr_r, port_sh);
 	
 	// Receive ROLEREQ_ROG
+	sf::IpAddress sender;
+	unsigned short port;
+	sock_o.receive(packet, sender, port);
 	
 	// Extract Data
+	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
+	if (msg == static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG)) {
+		// TODO Extract entity/response from ROLEREQ_ROG
+	} else {
+		std::cout << "The server was rude to us when we requested a "
+		          << "role." << std::endl;
+		return false;
+	}
 	
+	return true;
 }
 	
-void connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData)
+bool connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData)
 {
 	// Bind outgoing port if not bound
 	if (sock_o.getLocalPort() == 0) {
@@ -134,7 +153,7 @@ void connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData)
 			std::cout << "Could not bind socket on port " << port_co
 			          << " to connect to and sync with server." 
 			          << std::endl;
-			return;
+			return false;
 		}
 	}
 
@@ -143,13 +162,17 @@ void connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData)
 		std::cout << "Looks like the listener thread hasn't started, "
 		          << "or didn't bind it's socket correctly. Will not "
 		          << "connect to server without this!" << std::endl;
-		return;
+		return false;
 	}
 
 	uint32_t id = handshakeHello();
-	handshakeRoleReq(id, roleID, roleData);
+	if (id == NO_CLIENT_ID) {
+		std::cout << "The server didn't like us saying HELLO!" 
+		          << std::endl;
+		return false;
+	}
 
-	return;
+	return handshakeRoleReq(id, roleID, roleData);
 }
 
 

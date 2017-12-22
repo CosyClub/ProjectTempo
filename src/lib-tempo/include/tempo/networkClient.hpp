@@ -66,7 +66,7 @@ namespace tempo
 	//                    null inputs assume no role data requied.
 	// Returns:
 	//         void - nothing is returned. Note side effects above.
-	void connectToAndSyncWithServer(ClientRole roleID, 
+	bool connectToAndSyncWithServer(ClientRole roleID, 
 	                                ClientRoleData &roleData);
 
 }
