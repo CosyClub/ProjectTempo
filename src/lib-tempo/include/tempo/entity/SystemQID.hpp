@@ -26,8 +26,14 @@ namespace tempo
 	//    have the ID "FOOBAR".
 	// 
 	enum SystemQID {
+		QID_RESERVED_BOTTOM,
+		//Start of non-reserved zone
+		
 		NETWORK_TEST,
-		ANOTHER_UNUSED_MESSAGE_DELETE_ME
+		ANOTHER_UNUSED_MESSAGE_DELETE_ME,
+
+		//End of non-reserved zone
+		QID_RESERVED_TOP
 	};
 }
 
