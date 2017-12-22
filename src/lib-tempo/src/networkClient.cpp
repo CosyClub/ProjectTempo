@@ -75,18 +75,25 @@ void listenForServerUpdates(int port)
 	return;
 }
 
-int connectToServer(sf::IpAddress *ipAddress, 
-                    unsigned short port,
-                    unsigned short ourPort)
+uint32_t connectToServer()
 {
-	// TODO this function
+	if (sock_o.getLocalPort() == 0) {
+		if (!bindSocket('o', port_co)) {
+			std::cout << "Could not bind socket on port " << port_co
+			          << " to connect to server." << std::endl;
+			return 0;
+		}
+	}
+
+	// TODO Write this bit
+
 	return 0;
 }
 
-int requestRole(tempo::ClientRole roleID, tempo::ClientRoleData *roleData)
+void requestRole(ClientRole roleID, ClientRoleData &roleData)
 {
 	// TODO this function
-	return 0;
+	return;
 }
 	
 }

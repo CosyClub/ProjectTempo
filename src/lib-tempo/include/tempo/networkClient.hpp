@@ -35,8 +35,8 @@ namespace tempo
 	//                     message (true) or game message (false, default).
 	// Returns:
 	//         bool - true if sent, false if unable to send.
-	bool sendMessage(tempo::SystemQID id, sf::Packet payload, 
-			 bool isHandshake);
+	bool sendMessage(SystemQID id, sf::Packet payload, bool isHandshake);
+
 	// listenForServerUpdates
 	// WARNING: Should be run on separate thread.
 	// Listens and processes any updates (delta's) from the server.
@@ -50,34 +50,29 @@ namespace tempo
 	// connectToServer
 	// First part of connecting a client to a remote server. The client
 	// should be listening for server updates before this is run. This call
-	// will establish the connection and return the level state. Delta's
-	// may also be sent by the server but should not be applied until the
-	// level has been initailised.
+	// will establish the connection and initialise the level state. Delta's
+	// may also be sent by the server but should not be applied until this
+	// function call has finished.
 	//
-	// Arguments:
-	//         ipAddress - Pointer to an SFML IP Address object, containing
-	//                     the IP address of the server to connect to.
-	//         port      - Port of the server we wish to connect to.
-	//         ourPort   - Port in which we, the client, are listening for
-	//                     server updates on.
 	// Returns:
-	//         TODO Level data
-	int connectToServer(sf::IpAddress *ipAddress, 
-	                    unsigned short port,
-	                    unsigned short ourPort);
+	//        The ClientID/Token to request a role with, or 0 on failure. 
+	uint32_t connectToServer();
 
 	// requestRolep
-	// Should be run one connectToServer has been run, and the level
-	// initialised and ready for the player to play/spectate/do whatevr they
-	// request to do in their role.
+	// Should be run once connectToServer has been run, and game is ready 
+	// for the player to carry out their requested role. The server will
+	// create the required entity for the role and send it to the client.
+	// This function will then orchestrate the creation of this entity, so
+	// the game will be in a ready to play state upon completion.
 	//
 	// Arguments:
-	//         roleID   - Client's requested role from the server
+	//         roleID   - Client's requested role from the server.
 	//         roleData - Point to client's requested role data (if any)
-	//                    null inputs assume no role data requied
+	//                    null inputs assume no role data requied.
 	// Returns:
-	//         TODO The requested client entity
-	int requestRole(tempo::ClientRole roleID, tempo::ClientRoleData *roleData);
+	//         void - nothing is returned. Player entity will be added to 
+	//                the ECS, and the game will be in a playable state.
+	void requestRole(ClientRole roleID, ClientRoleData &roleData);
 
 }
 

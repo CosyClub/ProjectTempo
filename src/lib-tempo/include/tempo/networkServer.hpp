@@ -53,23 +53,20 @@ namespace tempo
 
 	// listenForNewClients
 	// WARNING: Should be run on separate thread.
-	// Listens for and orchestrates initialisation of new clients
+	// Listens for and orchestrates initialisation of new clients on 
+	// `port_sh`.
 	//
-	// Arguments:
-	//         port - The port to listen on
 	// Returns:
 	//         void (is a thread)
-	void listenForNewClients(unsigned short port);
+	void listenForNewClients();
 
 	// listenForClientUpdates
 	// WARNING: Should be run on separate thread.
-	// Listens and processes any incoming client updates.
+	// Listens and processes any incoming client updates on `port_si`.
 	//
-	// Arguments:
-	//         port - The port ot listen for client updates from.
 	// Returns:
 	//         void (is a thread)
-	void listenForClientUpdates(unsigned short port);
+	void listenForClientUpdates();
 
 	// findClientID
 	// Finds a client with the information given. Note that this will lock

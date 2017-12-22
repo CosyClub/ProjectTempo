@@ -194,10 +194,10 @@ void processNewClientPacket(sf::Packet &packet,
 	}
 }
 
-void listenForNewClients(unsigned short port)
+void listenForNewClients()
 {
 	// Bind to port
-	if (!bindSocket('h', port)) {
+	if (!bindSocket('h', port_sh)) {
 		std::cout << "Could not bind port %d, used or listening for "
 		          << "new clients." << std::endl;
 		return;
@@ -221,8 +221,9 @@ void listenForNewClients(unsigned short port)
 	// so I can't.
 }
 
-void listenForClientUpdates(unsigned short port)
+void listenForClientUpdates()
 {
+	// TODO Write function
 	return;
 }
 
