@@ -223,7 +223,15 @@ void listenForNewClients()
 
 void listenForClientUpdates()
 {
+	// Bind to port
+	if (!bindSocket('i', port_si)) {
+		std::cout << "Could not bind port %d, used or listening for "
+		          << "client updates." << std::endl;
+		return;
+	}
+	
 	// TODO Write function
+	
 	return;
 }
 
