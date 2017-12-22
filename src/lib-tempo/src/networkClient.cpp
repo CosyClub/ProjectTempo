@@ -67,15 +67,46 @@ bool sendMessage(tempo::SystemQID id,
 }
 
 
-void listenForServerUpdates(int port)
+void listenForServerUpdates()
 {
-	//if (socket.bind(port) != sf::Socket::Done) {
-	    // error...
-	//}	
+	// Bind to port
+	if (!bindSocket('i', port_ci)) {
+		std::cout << "Could not bind port %d, used to listen for "
+		          << "server updates." << std::endl;
+		return;
+	}
+
+	// TODO Implement me!
+
 	return;
 }
 
-uint32_t connectToServer()
+uint32_t handshakeHello()
+{
+	// Package up payload
+	sf::Packet packet;
+	packet << static_cast<uint32_t>(HandshakeID::HELLO);
+	packet << port_ci;
+
+	// Send HELLO
+	sock_o.send(packet, addr_r, port_sh);
+
+	// Recieve HELLO_ROG
+	sf::IpAddress sender;
+	unsigned short port;
+	sock_o.receive(packet, sender, port);
+
+	// Extract Data
+	uint32_t id = NO_CLIENT_ID;
+	packet >> id;
+	packet >> port_si;
+	packet >> port_st;
+	// TODO Extract entire level data and initialise level
+
+	return id;
+}
+
+void handshakeRoleReq(uint32_t id, ClientRole roleID, ClientRoleData &roleData)
 {
 	if (sock_o.getLocalPort() == 0) {
 		if (!bindSocket('o', port_co)) {
@@ -84,16 +115,36 @@ uint32_t connectToServer()
 			return 0;
 		}
 	}
-
-	// TODO Write this bit
-
-	return 0;
-}
-
-void requestRole(ClientRole roleID, ClientRoleData &roleData)
-{
-	// TODO this function
+	
+	// TODO Implement me!
+	
 	return;
 }
 	
+void connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData)
+{
+	// Bind outgoing port if not bound
+	if (sock_o.getLocalPort() == 0) {
+		if (!bindSocket('o', port_co)) {
+			std::cout << "Could not bind socket on port " << port_co
+			          << " to connect to and sync with server." 
+			          << std::endl;
+			return;
+		}
+	}
+
+	// Ensure server update lisener has started - i.e. it's socket is open
+	if (sock_i.getLocalPort() == 0) {
+		std::cout << "Looks like the listener thread hasn't started, "
+		          << "or didn't bind it's socket correctly. Will not "
+		          << "connect to server without this!" << std:endl;
+		return;
+	}
+
+	uint32_t id = handshakeHello();
+
+	return;
+}
+
+
 }

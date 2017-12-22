@@ -136,6 +136,8 @@ void handshakeHello(sf::Packet &packet, sf::IpAddress &sender)
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::HELLO_ROG);
 	rog << id; // TODO change to temporary token
+	rog << port_si;
+	rog << port_st;
 	// TODO Package entire level, eg:
 	// rog << packageLevel()
 
@@ -198,7 +200,7 @@ void listenForNewClients()
 {
 	// Bind to port
 	if (!bindSocket('h', port_sh)) {
-		std::cout << "Could not bind port %d, used or listening for "
+		std::cout << "Could not bind port %d, used to listen for "
 		          << "new clients." << std::endl;
 		return;
 	}
@@ -225,12 +227,12 @@ void listenForClientUpdates()
 {
 	// Bind to port
 	if (!bindSocket('i', port_si)) {
-		std::cout << "Could not bind port %d, used or listening for "
+		std::cout << "Could not bind port %d, used to listen for "
 		          << "client updates." << std::endl;
 		return;
 	}
 	
-	// TODO Write function
+	// TODO Implement me!
 	
 	return;
 }

@@ -21,12 +21,12 @@ namespace tempo
 
 	// Default Address
 	#define DEFAULT_ADDR "127.0.0.1"
-	// Default Port for Incoming Socket
-        #define DEFAULT_PORT_IN  1337
-	// Default Port for the Outgoing Socket
-	#define DEFAULT_PORT_OUT 1338
 	// Default Port for Hand Shake (HS) protocol
-	#define DEFAULT_PORT_HS  1339
+	#define DEFAULT_PORT_HS  1337
+	// Default Port for Incoming Socket
+        #define DEFAULT_PORT_IN  1338
+	// Default Port for the Outgoing Socket
+	#define DEFAULT_PORT_OUT 1339
 	// Default Port for Time Sync (TS) protocol
 	#define DEFAULT_PORT_TS  1340
 	// Wait time for time sync protocol (millisecs)

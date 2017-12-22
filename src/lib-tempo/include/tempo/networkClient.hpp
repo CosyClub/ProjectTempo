@@ -39,40 +39,35 @@ namespace tempo
 
 	// listenForServerUpdates
 	// WARNING: Should be run on separate thread.
-	// Listens and processes any updates (delta's) from the server.
+	// Listens and processes any updates (delta's) from the server on 
+	// `port_ci`.
 	//
-	// Arguments:
-	//         port - the port to listen for updates on.
 	// Returns:
 	//         void (is a thread)
-	void listenForServerUpdates(int port);
+	void listenForServerUpdates();
 
-	// connectToServer
-	// First part of connecting a client to a remote server. The client
-	// should be listening for server updates before this is run. This call
-	// will establish the connection and initialise the level state. Delta's
-	// may also be sent by the server but should not be applied until this
-	// function call has finished.
+	// connectToAndSyncWithServer
+	// WARNING: This requires the listenForServerUpdates thread to have
+	//          started succesfully before being run.
+	// Connects to the server on addr_r:port_sh, syncs the entire level and 
+	// then requests the given role.
 	//
-	// Returns:
-	//        The ClientID/Token to request a role with, or 0 on failure. 
-	uint32_t connectToServer();
-
-	// requestRolep
-	// Should be run once connectToServer has been run, and game is ready 
-	// for the player to carry out their requested role. The server will
-	// create the required entity for the role and send it to the client.
-	// This function will then orchestrate the creation of this entity, so
-	// the game will be in a ready to play state upon completion.
+	// Side Effects:
+	//  - This function will initialise the entire level to the same state 
+	//    as the server. The client will be registered for updates which 
+	//    should be actioned when this function returns.
+	//  - The server will create the required entity for the requesting role 
+	//    and send it to the client. This function will then orchestrate the 
+	//    creation of this entity.
 	//
 	// Arguments:
 	//         roleID   - Client's requested role from the server.
 	//         roleData - Point to client's requested role data (if any)
 	//                    null inputs assume no role data requied.
 	// Returns:
-	//         void - nothing is returned. Player entity will be added to 
-	//                the ECS, and the game will be in a playable state.
-	void requestRole(ClientRole roleID, ClientRoleData &roleData);
+	//         void - nothing is returned. Note side effects above.
+	void connectToAndSyncWithServer(ClientRole roleID, 
+	                                ClientRoleData &roleData);
 
 }
 
