@@ -37,43 +37,6 @@
 
 int main(int argc, const char** argv)
 {
-	//tempo::TileMask mask = {0};
-	//mask[0][0] = 1;
-	//mask[3][3] = 1;
-	//mask[3][4] = 1;
-	//mask[4][3] = 1;
-	//mask[5][3] = 1;
-
-	/*tempo::TileMask mask = TEMPO_MAKE_TILEMASK(1,0,0,0,0,0,0,
-	                                           0,0,0,0,0,0,0,
-	                                           0,0,0,0,0,0,0,
-	                                           0,0,0,1,1,1,0,
-	                                           0,0,0,1,0,0,0,
-	                                           0,1,0,0,0,0,0,
-	                                           0,0,0,0,0,0,0);*/
-
-	tempo::TileMask mask = TEMPO_MAKE_TILEMASK(1,1,1,1,1,1,1,
-	                                           1,1,1,1,1,1,1,
-	                                           1,1,1,1,1,1,1,
-	                                           1,1,1,1,1,1,1,
-	                                           1,1,1,1,1,1,1,
-	                                           1,1,1,1,1,1,1,
-	                                           1,1,1,1,1,1,1);
-
-	tempo::print(mask);
-	printf("\n");
-	tempo::print(mask.getTranslated(0,0));
-	printf("\n");
-	tempo::print(mask.getTranslated(1,0));
-	printf("\n");
-	tempo::print(mask.getTranslated(2,0));
-	printf("\n");
-	tempo::print(mask.getTranslated(-1,3));
-	printf("\n");
-	tempo::print(mask.getTranslated(-2,-5));
-
-	return 0;
-
 	tempo::Application app = tempo::initialize_application("RaveCave", 800, 600);
 	if (app.ogre == nullptr || app.window == nullptr || app.render_target == nullptr) {
 		printf("Application initialisation failed, exiting\n");
