@@ -7,13 +7,13 @@ sf::UdpSocket sock_i;
 sf::UdpSocket sock_o;
 sf::UdpSocket sock_h;
 
-sf::IpAddress addr_r = DEFAULT_ADDR;
-unsigned int port_ci = DEFAULT_PORT_IN;
-unsigned int port_co = DEFAULT_PORT_OUT;
-unsigned int port_si = DEFAULT_PORT_IN;
-unsigned int port_so = DEFAULT_PORT_OUT;
-unsigned int port_sh = DEFAULT_PORT_HS;
-unsigned int port_st = DEFAULT_PORT_TS;
+sf::IpAddress addr_r = "0.0.0.0";
+unsigned int port_ci = 0;
+unsigned int port_co = 0;  // Should be set within the Client or Server 
+unsigned int port_sh = 0;  // at runtime. This way user input/config files
+unsigned int port_si = 0;  // can be used to set address/ports dynamically.
+unsigned int port_so = 0;  
+unsigned int port_st = 0;
 
 bool bindSocket(char socket, unsigned short port)
 {

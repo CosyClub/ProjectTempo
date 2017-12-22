@@ -77,9 +77,9 @@ namespace tempo
 	extern sf::IpAddress addr_r;  // Remote Address
 	extern unsigned int port_ci;  // Client Incoming Port
 	extern unsigned int port_co;  // Client Outgoing Port
+	extern unsigned int port_sh;  // Server Hand Shake Port (Primary Port)
 	extern unsigned int port_si;  // Server Incoming Port
 	extern unsigned int port_so;  // Server OutGoing Port
-	extern unsigned int port_sh;  // Server Hand Shake Port
 	extern unsigned int port_st;  // Server Time Sync Port
 
 	////////////////////////////////////////////////////////////////////////
