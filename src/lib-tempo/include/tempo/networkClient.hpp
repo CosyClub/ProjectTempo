@@ -24,47 +24,50 @@ namespace tempo
 	//         The correct "master time" as of call completion
 	sf::Time timeSyncClient(tempo::Clock *clock);
 
+	// sendMessageToServer
+	// Sends a message to the server. No guarentee of delivery given.
+	//
+	// Arguments:
+	//         id        - ID of the System Queue or Handshake message to 
+	//                     deliver the message to. {use static_cast<int>()}
+	//         payload   - The payload to send to the message queue.
+	//         isHandshake - Whether or not the message is a handshake 
+	//                     message (true) or game message (false, default).
+	// Returns:
+	//         bool - true if sent, false if unable to send.
+	bool sendMessage(SystemQID id, sf::Packet payload, bool isHandshake);
+
 	// listenForServerUpdates
 	// WARNING: Should be run on separate thread.
-	// Listens and processes any updates (delta's) from the server.
+	// Listens and processes any updates (delta's) from the server on 
+	// `port_ci`.
 	//
-	// Arguments:
-	//         port - the port to listen for updates on.
 	// Returns:
 	//         void (is a thread)
-	void listenForServerUpdates(int port);
+	void listenForServerUpdates();
 
-	// connectToServer
-	// First part of connecting a client to a remote server. The client
-	// should be listening for server updates before this is run. This call
-	// will establish the connection and return the level state. Delta's
-	// may also be sent by the server but should not be applied until the
-	// level has been initailised.
+	// connectToAndSyncWithServer
+	// WARNING: This requires the listenForServerUpdates thread to have
+	//          started succesfully before being run.
+	// Connects to the server on addr_r:port_sh, syncs the entire level and 
+	// then requests the given role.
+	//
+	// Side Effects:
+	//  - This function will initialise the entire level to the same state 
+	//    as the server. The client will be registered for updates which 
+	//    should be actioned when this function returns.
+	//  - The server will create the required entity for the requesting role 
+	//    and send it to the client. This function will then orchestrate the 
+	//    creation of this entity.
 	//
 	// Arguments:
-	//         ipAddress - Pointer to an SFML IP Address object, containing
-	//                     the IP address of the server to connect to.
-	//         port      - Port of the server we wish to connect to.
-	//         ourPort   - Port in which we, the client, are listening for
-	//                     server updates on.
-	// Returns:
-	//         TODO Level data
-	int connectToServer(sf::IpAddress *ipAddress, 
-	                    unsigned short port,
-	                    unsigned short ourPort);
-
-	// requestRolep
-	// Should be run one connectToServer has been run, and the level
-	// initialised and ready for the player to play/spectate/do whatevr they
-	// request to do in their role.
-	//
-	// Arguments:
-	//         roleID   - Client's requested role from the server
+	//         roleID   - Client's requested role from the server.
 	//         roleData - Point to client's requested role data (if any)
-	//                    null inputs assume no role data requied
+	//                    null inputs assume no role data requied.
 	// Returns:
-	//         TODO The requested client entity
-	int requestRole(tempo::ClientRole roleID, tempo::ClientRoleData *roleData);
+	//         void - nothing is returned. Note side effects above.
+	bool connectToAndSyncWithServer(ClientRole roleID, 
+	                                ClientRoleData &roleData);
 
 }
 
