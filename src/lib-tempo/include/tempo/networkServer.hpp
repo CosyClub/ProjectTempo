@@ -24,10 +24,6 @@ namespace tempo
 		ClientRole role; 
 	} clientConnection;
 
-	// Reserved client ID for a null client
-	#define NO_CLIENT_ID 0
-	#define THIS_IS_NOT_THE_CLIENT_YOU_ARE_LOOKING_FOR NO_CLIENT_ID
-
 	// Map of all the connected clients IP addresses and ID's, with some
 	// handy typedefs.
 	// Notes:

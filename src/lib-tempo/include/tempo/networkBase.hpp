@@ -29,11 +29,18 @@ namespace tempo
 	#define DEFAULT_PORT_OUT 1339
 	// Default Port for Time Sync (TS) protocol
 	#define DEFAULT_PORT_TS  1340
+
 	// Wait time for time sync protocol (millisecs)
 	#define TIMESYNC_DELTA 500
 
+	// Reserved client ID for a null client
+	#define NO_CLIENT_ID 0
+	#define THIS_IS_NOT_THE_CLIENT_YOU_ARE_LOOKING_FOR NO_CLIENT_ID
+
 	////////////////////////////////////////////////////////////////////////
-	/// Client Roles
+	/// Client ID & Roles
+	
+	static uint32_t clientID = NO_CLIENT_ID;
 	
 	// Enum with all possible client roles.
 	enum ClientRole {

@@ -112,13 +112,18 @@ void handshakeRoleReq(uint32_t id, ClientRole roleID, ClientRoleData &roleData)
 		if (!bindSocket('o', port_co)) {
 			std::cout << "Could not bind socket on port " << port_co
 			          << " to connect to server." << std::endl;
-			return 0;
+			return;
 		}
 	}
 	
-	// TODO Implement me!
+	// Package up payload
 	
-	return;
+	// Send ROLEREQ
+	
+	// Receive ROLEREQ_ROG
+	
+	// Extract Data
+	
 }
 	
 void connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData)
@@ -137,11 +142,12 @@ void connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData)
 	if (sock_i.getLocalPort() == 0) {
 		std::cout << "Looks like the listener thread hasn't started, "
 		          << "or didn't bind it's socket correctly. Will not "
-		          << "connect to server without this!" << std:endl;
+		          << "connect to server without this!" << std::endl;
 		return;
 	}
 
 	uint32_t id = handshakeHello();
+	handshakeRoleReq(id, roleID, roleData);
 
 	return;
 }
