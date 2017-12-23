@@ -13,6 +13,7 @@
 #include <SFML/System/Time.hpp>
 
 #include <tempo/entity/SystemQID.hpp>
+#include <tempo/networkQueue.hpp>
 
 namespace tempo
 {
@@ -95,6 +96,16 @@ namespace tempo
 	// Returns:
 	//         bool - true if bound, false if unable to bind.
 	bool bindSocket(char socket, unsigned short port);
+
+	// sortPacket
+	// Takes a message packet, and then sorts it into the correct queue
+	//
+	// Arguments:
+	// 	packet	- The packet that needs to be sent to the relevant queue
+	// Returns:
+	// 	bool - true iff packet sorted correctly, false 
+	// 	otherwise.
+	bool sortPacket(sf::Packet p);
 
 
 	////////////////////////////////////////////////////////////////////////
