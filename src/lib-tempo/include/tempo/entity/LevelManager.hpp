@@ -71,13 +71,15 @@ namespace tempo{
 	{
 	private:
 		std::vector<std::vector<Tile*>> tiles;
+		std::vector<Vec2s> player_spawn_zone;
+		uint32_t spawn_zones = 0;
 		Ogre::SceneNode* floor_node;
 
 	public:
 
 		SystemLevelManager(Ogre::SceneManager* scene, int size);
 		SystemLevelManager(int size);
-		SystemLevelManager(Ogre::SceneManager* scene, const char* fileName);
+		SystemLevelManager(Ogre::SceneManager* scene, const char* heightMap, const char* zoneMap);
 
 		bool existsTile(Vec2s position);
 		bool existsTile(int x, int y);
@@ -98,7 +100,8 @@ namespace tempo{
 		}
 		float getHeight(int x, int y);
 
-		void loadLevel(Ogre::SceneManager* scene, const char* fileName, std::vector<std::vector<Tile*>> tiles);
+		void loadLevel(Ogre::SceneManager* scene, const char* fileName);
+		void loadZones(const char* fileNames);
 
 		void update(float dt);
 	};

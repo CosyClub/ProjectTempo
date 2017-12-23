@@ -64,9 +64,11 @@ namespace tempo{
 		}
 	}
 
-	SystemLevelManager::SystemLevelManager(Ogre::SceneManager* scene, const char* fileName) : tiles(100, std::vector<Tile*>(100)) {
+	SystemLevelManager::SystemLevelManager(Ogre::SceneManager* scene, const char* heightMap, const char* zoneMap) : tiles(100, std::vector<Tile*>(100)), player_spawn_zone(100*100) {
 
-		loadLevel(scene, fileName, tiles);
+		loadLevel(scene, heightMap);
+		loadZones(zoneMap);
+
 	}
 
 	Ogre::SceneNode* SystemLevelManager::getFloorNode(){
@@ -159,14 +161,11 @@ namespace tempo{
 		}
 	}
 
-	void SystemLevelManager::loadLevel(Ogre::SceneManager* scene, const char* fileName, std::vector<std::vector<Tile*>> tiles) {
+	void SystemLevelManager::loadLevel(Ogre::SceneManager* scene, const char* fileName) {
 
 		SDL_Surface* level = SDL_LoadBMP(fileName);
 
 		floor_node = scene->getRootSceneNode()->createChildSceneNode();
-
-		float max_height = 0;
-		float min_height = 100000;
 
 		for (int y = 0; y < level->h; y++) {
 			for (int x = 0; x < level->w; x++) {
@@ -206,12 +205,35 @@ namespace tempo{
 				if (pixel > 0) {
 					int height = (int) (pixel - 127) / 25.6;
 					this->tiles[x][y] = new Tile(scene, floor_node, { x,y }, height);
-					if(max_height < height) { max_height = height; }
-					if(min_height > height) { min_height = height; }
 				}
 			}
 		}
-		printf("Max level height: %f, min: %f\n", max_height, min_height);
+	}
+
+
+	void SystemLevelManager::loadZones(const char* fileName) {
+
+		SDL_Surface* level = SDL_LoadBMP(fileName);
+
+		for (int y = 0; y < level->h; y++) {
+			for (int x = 0; x < level->w; x++) {
+
+				int bpp = level->format->BytesPerPixel;
+				/* Here p is the address to the pixel we want to retrieve */
+				Uint8 *p = (Uint8 *)level->pixels + y * level->pitch + x * bpp;
+				uint32_t pixel = 0;
+
+				pixel = p[0] | p[1] << 8 | p[2] << 16;
+
+				//std::cout << (int) p[0]<<" "<<(int) p[1]<<" "<< (int) p[2]<<std::endl;
+
+				if (p[1] > 250) {
+					this->player_spawn_zone[spawn_zones] = {x,y};
+					spawn_zones++;
+				}
+			}
+		}
+
 	}
 
 	void SystemLevelManager::update(float dt){

@@ -74,7 +74,7 @@ int main(int argc, const char** argv)
 	anax::World world;
 	tempo::SystemRender       system_render(app);
 	Ogre::SceneManager* scene = system_render.scene;
-	tempo::SystemLevelManager system_grid_motion(scene, "../bin/resources/levels/levelTest.bmp");
+	tempo::SystemLevelManager system_grid_motion(scene, "../bin/resources/levels/levelTest.bmp", "../bin/resources/levels/zonesTest.bmp");
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemPlayerInput  system_player_input(clock);
 	world.addSystem(system_grid_motion);
