@@ -1,5 +1,9 @@
 #include <tempo/networkBase.hpp>
 
+#include <tempo/entity/SystemQID.hpp>
+#include <tempo/networkQueue.hpp>
+#include <tempo/structures.hpp>
+
 namespace tempo
 {
 
@@ -23,6 +27,30 @@ bool bindSocket(char socket, unsigned short port)
 		case 'h': return sock_h.bind(port) == sf::Socket::Done;
 		default:  return false;
 	}
+}
+
+bool sortPacket(sf::Packet p)
+{
+	int id; //Should be a tempo::systemQID but they're the same
+	tempo::SystemQID qid;
+
+	//Get ID
+	p >> id;
+
+	//convert
+	qid = tempo::SystemQID(id);
+
+	//Basic checking
+	if (id <= tempo::QID_RESERVED_BOTTOM || id >= tempo::QID_RESERVED_TOP)
+	{
+		return false;
+	}
+
+	//Sort into queue
+	tempo::Queue<sf::Packet>* q = tempo::get_system_queue(qid);
+	q->push(p);
+
+	return true;
 }
 	
 sf::Packet& operator <<(sf::Packet& p1, sf::Packet& p2)
