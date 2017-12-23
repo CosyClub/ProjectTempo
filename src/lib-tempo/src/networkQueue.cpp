@@ -1,9 +1,4 @@
 #include <tempo/config.hpp>
-#include <tempo/networkQueue.hpp>
-
-#include <tempo/entity/SystemQID.hpp>
-
-#include <SFML/Network.hpp>
 
 namespace tempo
 {

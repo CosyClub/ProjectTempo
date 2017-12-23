@@ -1,8 +1,7 @@
-#include <tempo/config.hpp>
-#include <tempo/time.hpp>
 #include <tempo/networkClient.hpp>
 
 #include <iostream>
+#include <thread>
 
 namespace tempo
 {

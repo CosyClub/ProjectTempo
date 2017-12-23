@@ -7,11 +7,11 @@
 #ifndef TEMPO_NETWORK_QUEUE_HPP
 #define TEMPO_NETWORK_QUEUE_HPP
 
+#include <tempo/networkQueue.hpp>
 #include <tempo/structures.hpp>
 #include <tempo/entity/SystemQID.hpp>
 
 #include <SFML/Network.hpp>
-
 
 namespace tempo
 {

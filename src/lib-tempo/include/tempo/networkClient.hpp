@@ -7,11 +7,12 @@
 #ifndef TEMPO_NETWORK_CLIENT_HPP
 #define TEMPO_NETWORK_CLIENT_HPP
 
+#include <tempo/config.hpp>
 #include <tempo/networkBase.hpp>
+#include <tempo/time.hpp>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
-#include <thread>
 
 namespace tempo
 {

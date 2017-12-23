@@ -1,9 +1,6 @@
-#include <tempo/config.hpp>
-#include <tempo/time.hpp>
 #include <tempo/networkServer.hpp>
 
 #include <iostream>
-
 
 namespace tempo
 {

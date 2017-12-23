@@ -11,10 +11,10 @@
 #include <thread>
 
 #include <tempo/networkBase.hpp>
+#include <tempo/time.hpp>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
-
 
 namespace tempo
 {

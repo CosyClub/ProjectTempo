@@ -7,8 +7,8 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/networkServer.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/song.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/structures.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/time.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Tile.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/time.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Types.hpp"
 	
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/GridAi.hpp"
@@ -26,8 +26,8 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/networkServer.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/song.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/structures.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/time.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/Tile.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/time.cpp"
 	
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/GridAi.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/LevelManager.cpp"
