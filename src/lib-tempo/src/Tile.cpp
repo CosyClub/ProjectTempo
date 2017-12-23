@@ -33,21 +33,6 @@ namespace tempo{
 		}
 	}
 
-	bool Tile::placeEntity(EntityID_t id) {
-		auto result = entities.insert(id);
-		return result.second;
-	}
-
-	void Tile::removeEntity(EntityID_t id) {
-		if(entities.find(id) != entities.end())
-			entities.erase(id);
-	}
-
-	std::unordered_set<EntityID_t> Tile::getEntities(EntityID_t id) {
-		std::unordered_set<EntityID_t> result(this->entities);
-		return result;
-	}
-
 	void Tile::setHeight(float height) {
 		this->height = height;
 		if(this->node_tile) {

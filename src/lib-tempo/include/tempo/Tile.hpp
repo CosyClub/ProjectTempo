@@ -9,7 +9,6 @@
 namespace tempo{
 	class Tile{
 	private:
-		std::unordered_set<EntityID_t> entities;
 		float height;
 		Vec2s position;
 		Ogre::Entity* floorpiece;
@@ -23,10 +22,6 @@ namespace tempo{
 		void deleteFloorpiece(Ogre::SceneManager* scene);
 		void createFloorpiece(Ogre::SceneManager* scene);
 		void setMaterial(std::string material_name);
-
-		bool placeEntity(EntityID_t id);
-		void removeEntity(EntityID_t id);
-		std::unordered_set<EntityID_t> getEntities(EntityID_t id);
 
 		void setHeight(float height);
 		float getHeight();

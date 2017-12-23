@@ -16,36 +16,57 @@
 #undef main // SDL likes to define main
 
 namespace tempo{
-	ComponentGridPosition::ComponentGridPosition() : ComponentGridPosition(0,0){
+	/////////////////////////////////////////////////////////////
+	// ComponentGridPosition
+	ComponentGridPosition::ComponentGridPosition(SystemLevelManager& level, Vec2s pos, TileMask mask) :
+		ComponentGridPosition(level, pos.x, pos.y, mask){
 		// empty body
 	}
 
-	ComponentGridPosition::ComponentGridPosition(Vec2s pos) : ComponentGridPosition(pos.x, pos.y){
-		// empty body
-	}
-
-	ComponentGridPosition::ComponentGridPosition(int x, int y){
+	ComponentGridPosition::ComponentGridPosition(SystemLevelManager& level, int x, int y, TileMask mask){
+		// level not currently used -> but when we want to do more efficient lookup
+		// structure we need to insert entity in it based off of its position
 		this->position = {x,y};
+		this->mask     = mask;
 	}
 
-	ComponentGridMotion::ComponentGridMotion() {
-		this->delta  = {0,0};
+	TileMask ComponentGridPosition::isCollidingWith(const ComponentGridPosition& other){
+		return this->mask.isCollidingWith(other.mask, other.position - this->position);
+	}
+
+	/////////////////////////////////////////////////////////////
+	// ComponentGridMotion
+	ComponentGridMotion::ComponentGridMotion(float max_jump_height){
+		this->delta           = {0,0};
 		this->motion_progress = 0;
 		this->max_jump_height = 1.0f;
-		this->target_locked = false;
+		this->target_locked   = false;
 	}
 
-	bool ComponentGridMotion::moveBy(int dx, int dy){
-		if(this->motion_progress != 0){
-			return false;
-		}
+	bool ComponentGridMotion::beginMovement(int dx, int dy){
+		if(this->motion_progress != 0){ return false; }
 
 		this->delta.x = dx;
 		this->delta.y = dy;
 		return true;
 	}
 
-	SystemLevelManager::SystemLevelManager(Ogre::SceneManager* scene, int size) : tiles(size, std::vector<Tile*>(size)) {
+	const Vec2s& ComponentGridMotion::getCurrentMovement(){
+		return this->delta;
+	}
+
+	bool ComponentGridMotion::isMoving(){
+		return this->motion_progress >= 0.0f;
+	}
+
+	bool ComponentGridMotion::isMovementLocked(){
+		return this->target_locked;
+	}
+
+	/////////////////////////////////////////////////////////////
+	// SystemLevelManager
+	SystemLevelManager::SystemLevelManager(Ogre::SceneManager* scene, int size)
+		: tiles(size, std::vector<Tile*>(size)) {
 		floor_node = scene->getRootSceneNode()->createChildSceneNode();
 
 		for(int i = 0; i < size; i++){
@@ -105,33 +126,6 @@ namespace tempo{
 			tiles[position.x][position.y]->setMaterial(material_name);
 		} else {
 			std::cout <<" Can't set material to non-existent tile";
-		}
-	}
-
-	bool SystemLevelManager::placeEntity(EntityID_t id, Vec2s position) {
-		if (existsTile(position)) {
-			return tiles[position.x][position.y]->placeEntity(id);
-		} else {
-			return false;
-			std::cout <<" Can't put entity on non-existent tile";
-		}
-	}
-
-	void SystemLevelManager::removeEntity(EntityID_t id, Vec2s position) {
-		if (existsTile(position)) {
-			tiles[position.x][position.y]->removeEntity(id);
-		} else {
-			std::cout <<" Can't remove entity from non-existent tile";
-		}
-	}
-
-	std::unordered_set<EntityID_t> SystemLevelManager::getEntitiesOnTile(EntityID_t id, Vec2s position) {
-		if (existsTile(position)) {
-			return tiles[position.x][position.y]->getEntities(id);
-		} else {
-			std::unordered_set<EntityID_t> empty_set;
-			return empty_set;
-			std::cout <<" Can't get entities from non-existent tile";
 		}
 	}
 
@@ -225,16 +219,18 @@ namespace tempo{
 			// :TODO: Should entities have different movement speeds?
 			//        if so, add move_speed ComponentGridMotion and use
 			//        rather than constant value here
+			//
+			// :TODO: If we support entities jumping multiple tiles then this
+			// needs to be changed to consider that too...
 			if(gm.delta != Vec2s::Origin){
 				gm.motion_progress += dt * 10.0f;
 				if(gm.motion_progress >= 1){
-					pos.position += gm.delta;
-					gm.delta = {0,0};
-					gm.motion_progress = 0;
-					gm.target_locked   = false;
+					pos.position       += gm.delta;
+					gm.delta           =  {0,0};
+					gm.motion_progress =  0;
+					gm.target_locked   =  false;
 				}
 			}
-
 
 			float current_height = this->getHeight(pos.position);
 			float target_height  = this->getHeight(pos.position + gm.delta);
@@ -245,7 +241,7 @@ namespace tempo{
 			// This depends on:
 			// - Delta height between tiles
 			// - If target tile is already occupied by another entity
-			if(gm.motion_progress >= 0.5f && !gm.target_locked){
+			if(gm.motion_progress >= 0.5f && !gm.isMovementLocked()){
 				bool can_make_move = true;
 
 				// Check height difference

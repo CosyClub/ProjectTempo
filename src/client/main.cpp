@@ -74,10 +74,10 @@ int main(int argc, const char** argv)
 	anax::World world;
 	tempo::SystemRender       system_render(app);
 	Ogre::SceneManager* scene = system_render.scene;
-	tempo::SystemLevelManager system_grid_motion(scene, "../bin/resources/levels/levelTest.bmp");
+	tempo::SystemLevelManager system_level(scene, "../bin/resources/levels/levelTest.bmp");
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemPlayerInput  system_player_input(clock);
-	world.addSystem(system_grid_motion);
+	world.addSystem(system_level);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_render);
 	world.addSystem(system_player_input);
@@ -89,7 +89,7 @@ int main(int argc, const char** argv)
 	node_light->attachObject(light);
 	node_light->setPosition(20, 80, 50);
 
-	//auto node_floor = system_grid_motion.getFloorNode();
+	//auto node_floor = system_level.getFloorNode();
 
 	// Dummy objects
 	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
@@ -114,7 +114,7 @@ int main(int argc, const char** argv)
 	player->setColour(Ogre::ColourValue::Red);
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
-	entity_player.addComponent<tempo::ComponentGridPosition>(2, 2);
+	entity_player.addComponent<tempo::ComponentGridPosition>(system_level, 2, 2);
 	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
 	entity_player.activate();
@@ -142,7 +142,7 @@ int main(int argc, const char** argv)
 	entity_ai.addComponent<tempo::ComponentTransform>();
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
-	entity_ai.addComponent<tempo::ComponentGridPosition>(3, 3);
+	entity_ai.addComponent<tempo::ComponentGridPosition>(system_level, 3, 3);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
 	entity_ai.activate();
@@ -221,7 +221,7 @@ int main(int argc, const char** argv)
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
 
 		world.refresh();
-		system_grid_motion.update(dt);
+		system_level.update(dt);
 		logic_time = dt_timer.getElapsedTime();
 		system_render.render(dt);
 		render_time = dt_timer.getElapsedTime() - logic_time;
