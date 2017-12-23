@@ -11,7 +11,6 @@
 
 #include <tempo/entity/LevelManager.hpp>
 #include <iostream>
-#include <time.h>
 
 #include <SDL.h>
 #undef main // SDL likes to define main
@@ -60,16 +59,24 @@ namespace tempo{
 
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j< size; j++){
-				tiles[i][j] = new Tile(0);
+				tiles[i][j] = new Tile({i,j}, 0);
 			}
 		}
 	}
 
-	SystemLevelManager::SystemLevelManager(Ogre::SceneManager* scene, const char* heightMap, const char* zoneMap) : tiles(100, std::vector<Tile*>(100)), player_spawn_zone(100*100) {
+	// SystemLevelManager::SystemLevelManager(Ogre::SceneManager* scene, sf::Packet packet) {
+	// 	char *heightMap, *zoneMap;
+	// 	SystemLevelManager(scene, heightMap, zoneMap);
+	// }
 
+	SystemLevelManager::SystemLevelManager(Ogre::SceneManager* scene, const char* heightMap, const char* zoneMap) : tiles(100, std::vector<Tile*>(100)), player_spawn_zone(100*100) {
 		loadLevel(scene, heightMap);
 		loadZones(zoneMap);
+	}
 
+	SystemLevelManager::SystemLevelManager(const char* heightMap, const char* zoneMap) : tiles(100, std::vector<Tile*>(100)), player_spawn_zone(100*100) {
+		//loadLevel(heightMap);
+		loadZones(zoneMap);
 	}
 
 	Ogre::SceneNode* SystemLevelManager::getFloorNode(){
@@ -176,36 +183,33 @@ namespace tempo{
 				Uint8 *p = (Uint8 *)level->pixels + y * level->pitch + x * bpp;
 				uint32_t pixel = 0;
 
-				switch (bpp) {
-				case 1:
-					pixel = *p;
-					break;
-
-				case 2:
-					pixel = *(uint16_t *)p;
-					break;
-
-				case 3:
-					if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-						pixel = p[0] << 16 | p[1] << 8 | p[2];
-					}
-					else {
-						pixel = p[0] | p[1] << 8 | p[2] << 16;
-					}
-					break;
-
-				case 4:
-					pixel = *(uint32_t *)p;
-					break;
-
-				default:
-					pixel = 0;       /* shouldn't happen, but avoids warnings */
-				}
-
+				pixel = *p;
 
 				if (pixel > 0) {
 					int height = (int) (pixel - 127) / 25.6;
 					this->tiles[x][y] = new Tile(scene, floor_node, { x,y }, height);
+				}
+			}
+		}
+	}
+
+	void SystemLevelManager::loadLevel(const char* fileName) {
+
+		SDL_Surface* level = SDL_LoadBMP(fileName);
+
+		for (int y = 0; y < level->h; y++) {
+			for (int x = 0; x < level->w; x++) {
+
+				int bpp = level->format->BytesPerPixel;
+				/* Here p is the address to the pixel we want to retrieve */
+				Uint8 *p = (Uint8 *)level->pixels + y * level->pitch + x * bpp;
+				uint32_t pixel = 0;
+
+				pixel = *p;
+
+				if (pixel > 0) {
+					int height = (int) (pixel - 127) / 25.6;
+					this->tiles[x][y] = new Tile({ x,y }, height);
 				}
 			}
 		}

@@ -16,6 +16,8 @@
 #include <tempo/Tile.hpp>
 #include <tempo/entity/Transform.hpp>
 #include <tempo/math/Vector.hpp>
+//#include <tempo/networkClient.hpp>
+#include <time.h>
 
 namespace tempo{
 
@@ -80,6 +82,7 @@ namespace tempo{
 		SystemLevelManager(Ogre::SceneManager* scene, int size);
 		SystemLevelManager(int size);
 		SystemLevelManager(Ogre::SceneManager* scene, const char* heightMap, const char* zoneMap);
+		SystemLevelManager(const char* heightMap, const char* zoneMap);
 
 		bool existsTile(Vec2s position);
 		bool existsTile(int x, int y);
@@ -101,6 +104,8 @@ namespace tempo{
 		float getHeight(int x, int y);
 
 		void loadLevel(Ogre::SceneManager* scene, const char* fileName);
+		void loadLevel(const char* fileName);
+
 
 		void loadZones(const char* fileNames);
 		Vec2s spawn();
