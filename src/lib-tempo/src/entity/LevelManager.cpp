@@ -11,6 +11,7 @@
 
 #include <tempo/entity/LevelManager.hpp>
 #include <iostream>
+#include <time.h>
 
 #include <SDL.h>
 #undef main // SDL likes to define main
@@ -234,6 +235,12 @@ namespace tempo{
 			}
 		}
 
+	}
+
+	Vec2s SystemLevelManager::spawn() {
+		srand (time(NULL));
+		uint32_t random_location = rand() % spawn_zones;
+		return player_spawn_zone[random_location];
 	}
 
 	void SystemLevelManager::update(float dt){

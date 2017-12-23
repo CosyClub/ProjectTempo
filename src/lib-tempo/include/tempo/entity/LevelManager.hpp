@@ -101,7 +101,9 @@ namespace tempo{
 		float getHeight(int x, int y);
 
 		void loadLevel(Ogre::SceneManager* scene, const char* fileName);
+
 		void loadZones(const char* fileNames);
+		Vec2s spawn();
 
 		void update(float dt);
 	};
