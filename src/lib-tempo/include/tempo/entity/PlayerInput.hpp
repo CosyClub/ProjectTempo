@@ -13,7 +13,7 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/entity/GridMotion.hpp>
+#include <tempo/entity/LevelManager.hpp>
 #include <tempo/time.hpp>
 
 #include <SDL.h>
