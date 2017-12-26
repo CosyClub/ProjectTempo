@@ -73,9 +73,10 @@ int main(int argc, const char** argv)
 	// Setup scene
 
 	anax::World world;
+	tempo::SystemRender      system_render(app);
+	Ogre::SceneManager* scene = system_render.scene;
 	tempo::SystemGridAi      system_grid_ai;
 	tempo::SystemPlayerInput system_player_input(clock);
-	tempo::SystemRender      system_render(app);
 	tempo::SystemHealth      system_health;
 	tempo::SystemLevelManager system_grid_motion(scene, "../bin/resources/levels/levelTest.bmp", "../bin/resources/levels/zonesTest.bmp");
 	world.addSystem(system_grid_motion);
