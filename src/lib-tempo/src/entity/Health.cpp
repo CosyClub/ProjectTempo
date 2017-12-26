@@ -7,8 +7,20 @@ namespace tempo {
 		this->current_health = entity_health;
 	}
 
+	void ComponentHealth::HealthUpdate(int delta_health){
+
+		if ((this->current_health) + delta_health > (this->max_health)){
+			this->current_health = this->max_health;
+		}
+
+		else{
+			this->current_health += delta_health;
+		}
+
+	}
+
 	void SystemHealth::HealthUpdate(int delta_health) {
-		
+
 		auto entities = getEntities();
 
 		for (auto& entity : entities) {
@@ -32,5 +44,5 @@ namespace tempo {
 		}
 
 	}
-		
+
 }

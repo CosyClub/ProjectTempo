@@ -14,10 +14,12 @@ namespace tempo {
 
 		ComponentHealth(int entity_health);
 
+		void HealthUpdate(int delta_health);
+
 	};
 
 	struct SystemHealth : anax::System<anax::Requires<ComponentHealth>> {
-		
+
 		void HealthUpdate(int delta_health);
 
 	};
