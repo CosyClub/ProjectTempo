@@ -11,6 +11,7 @@
 #include <tempo/entity/PlayerInput.hpp>
 
 anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_grid_motion);
-anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene);
+anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int x, int y);
+anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int x, int y, std::string mesh_name);
 
 #endif
