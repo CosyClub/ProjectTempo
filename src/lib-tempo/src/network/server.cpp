@@ -1,4 +1,4 @@
-#include <tempo/networkServer.hpp>
+#include <tempo/network/server.hpp>
 
 #include <iostream>
 

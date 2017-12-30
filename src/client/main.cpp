@@ -15,7 +15,7 @@
 #include <Ogre.h>
 
 #include <tempo/Application.hpp>
-#include <tempo/networkClient.hpp>
+#include <tempo/network/client.hpp>
 #include <tempo/song.hpp>
 #include <tempo/time.hpp>
 #include <tempo/entity/Transform.hpp>

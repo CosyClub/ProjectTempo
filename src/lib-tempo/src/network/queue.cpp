@@ -1,4 +1,4 @@
-#include <tempo/config.hpp>
+#include <tempo/network/queue.hpp>
 
 namespace tempo
 {

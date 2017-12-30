@@ -2,10 +2,6 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Application.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/config.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/model.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/networkBase.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/networkClient.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/networkQueue.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/networkServer.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/song.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/structures.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Tile.hpp"
@@ -17,15 +13,16 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/PlayerInput.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/Render.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/Transform.hpp"
+	
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/base.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/client.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/queue.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/server.hpp"
 )
 
 set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/Application.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/model.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/networkBase.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/networkClient.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/networkQueue.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/networkServer.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/song.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/structures.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/Tile.cpp"
@@ -36,6 +33,11 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/PlayerInput.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/Render.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/Transform.cpp"
+	
+	"${CMAKE_CURRENT_LIST_DIR}/src/network/base.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/network/client.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/network/queue.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/network/server.cpp"
 )
 
 add_library(lib_tempo STATIC

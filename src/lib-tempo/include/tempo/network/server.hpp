@@ -10,8 +10,8 @@
 #include <mutex>
 #include <thread>
 
-#include <tempo/networkBase.hpp>
 #include <tempo/time.hpp>
+#include <tempo/network/base.hpp>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>

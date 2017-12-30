@@ -11,7 +11,7 @@
 #include <vector>
 
 #include <tempo/time.hpp>
-#include <tempo/networkServer.hpp>
+#include <tempo/network/server.hpp>
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
 

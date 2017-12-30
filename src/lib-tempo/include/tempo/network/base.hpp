@@ -13,7 +13,7 @@
 #include <SFML/System/Time.hpp>
 
 #include <tempo/entity/SystemQID.hpp>
-#include <tempo/networkQueue.hpp>
+#include <tempo/network/queue.hpp>
 
 namespace tempo
 {

@@ -1,7 +1,7 @@
-#include <tempo/networkBase.hpp>
+#include <tempo/network/base.hpp>
 
 #include <tempo/entity/SystemQID.hpp>
-#include <tempo/networkQueue.hpp>
+#include <tempo/network/queue.hpp>
 #include <tempo/structures.hpp>
 
 namespace tempo

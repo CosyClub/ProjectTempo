@@ -1,4 +1,4 @@
-#include <tempo/networkClient.hpp>
+#include <tempo/network/client.hpp>
 
 #include <iostream>
 #include <thread>
