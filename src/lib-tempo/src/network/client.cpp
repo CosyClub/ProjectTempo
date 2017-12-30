@@ -70,12 +70,26 @@ void listenForServerUpdates()
 {
 	// Bind to port
 	if (!bindSocket('i', port_ci)) {
-		std::cout << "Could not bind port %d, used to listen for "
-		          << "server updates." << std::endl;
+		std::cout << "Could not bind port " << port_ci << ", used to "
+		          << "listen for server updates." << std::endl;
 		return;
 	}
 
-	// TODO Implement me!
+	std::cout << "Server Update Listener Started..." << std::endl;
+
+	sf::IpAddress ip;
+	unsigned short port;
+	while (true) {
+		sf::Packet packet;
+		if (sock_i.receive(packet, ip, port) != sf::Socket::Done) {
+			std::cout << "Error recieving server update. Ignoring."
+			          << std::endl;
+			continue;
+		}
+
+		// Sort packet into respective system.
+		sortPacket(packet);
+	}
 
 	return;
 }

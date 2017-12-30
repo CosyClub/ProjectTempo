@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <tempo/network/queue.hpp>
+
 namespace tempo
 {
 
@@ -214,7 +216,9 @@ void listenForNewClients()
 
 		if (sock_h.receive(packet, ip, port) != sf::Socket::Done) {
 			std::cout << "Error recieving something from new "
-			          << "(connecting) client." << std::endl;
+			          << "(connecting) client. Ignoring." 
+			          << std::endl;
+			continue;
 		}
 	
 		processNewClientPacket(packet, ip, port);
@@ -236,8 +240,20 @@ void listenForClientUpdates()
 	}
 	
 	std::cout << "Client Update Listener Started..." << std::endl;
-	
-	// TODO Implement me!
+
+	sf::IpAddress ip;
+	unsigned short port;
+	while (true) {
+		sf::Packet packet;
+		if (sock_i.receive(packet, ip, port) != sf::Socket::Done) {
+			std::cout << "Error recieving client update. Ignoring."
+			          << std::endl;
+			continue;
+		}
+
+		// Sort packet into respective system.
+		sortPacket(packet);
+	}
 	
 	return;
 }
