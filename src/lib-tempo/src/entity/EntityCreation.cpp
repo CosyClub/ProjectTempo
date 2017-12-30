@@ -62,26 +62,3 @@ anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int x
 	return entity_object;
 
 }
-
-anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int x, int y, std::string mesh_name){
-
-  //TODO:: Add HealthComponent
-  //TODO:: Add Entity to Specific Tile
-
-  anax::Entity entity_object = world.createEntity();
-  std::string filename = "meshes/" + mesh_name + ".mesh";
-  Ogre::Entity* entity_mesh = scene->createEntity(filename);
-  entity_object.addComponent<tempo::ComponentTransform>();
-	entity_object.addComponent<tempo::ComponentRender>(scene).node->attachObject(entity_mesh);
-	entity_object.addComponent<tempo::ComponentGridPosition>(x, y);
-  entity_object.addComponent<tempo::ComponentGridMotion>();
-
-  //TEMP:: Mesh used was too big
-  Ogre::SceneNode* node_object = entity_object.getComponent<tempo::ComponentRender>().node;
-  node_object->setScale(.5,.5,.5);
-
-	entity_object.activate();
-
-  return entity_object;
-
-}
