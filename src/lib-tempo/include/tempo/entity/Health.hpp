@@ -27,16 +27,8 @@ namespace tempo {
 
 	};
 
-	struct ComponentRenderHealth : anax::Component {
-		Ogre::SceneNode* node;
 
-
-		ComponentRenderHealth(Ogre::SceneManager* scene);
-		~ComponentRenderHealth();
-	};
-
-
-	struct RenderHealth : anax::System<anax::Requires<ComponentHealth, ComponentRenderHealth>> {
+	struct RenderHealth : anax::System<anax::Requires<ComponentHealth, ComponentRender>> {
 		void HealthBarUpdate();
 	};
 

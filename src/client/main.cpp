@@ -129,13 +129,12 @@ int main(int argc, const char** argv)
 
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
-	//entity_player.getComponent<tempo::ComponentRender>();
+	entity_player.getComponent<tempo::ComponentRender>().AddHealthBar(scene);
 	// rend.node->attachObject(Healthset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
 	entity_player.addComponent<tempo::ComponentHealth>(1000);
-	entity_player.addComponent<tempo::ComponentRenderHealth>(scene);
 	entity_player.activate();
 
 	//camera

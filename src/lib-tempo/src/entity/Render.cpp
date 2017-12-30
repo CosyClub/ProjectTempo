@@ -12,7 +12,18 @@
 namespace tempo{
 	ComponentRender::ComponentRender(Ogre::SceneManager* scene){
 		this->node = scene->getRootSceneNode()->createChildSceneNode();
-		this->scene = scene;
+	}
+
+	void ComponentRender::AddHealthBar(Ogre::SceneManager* scene){
+		Ogre::BillboardSet* Healthset = scene->createBillboardSet();
+		Healthset->setMaterialName("rectangleSprite");
+		Healthset->setDefaultDimensions(0.5, 0.5);
+		Healthset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
+		Healthset->setCommonDirection(Ogre::Vector3(0, 1, 0));
+		Ogre::Billboard* health = Healthset->createBillboard(0.5, 2, 0);
+		health->setColour(Ogre::ColourValue::Green);
+
+		this->node->attachObject(Healthset);
 	}
 
 	ComponentRender::~ComponentRender(){

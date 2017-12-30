@@ -29,6 +29,7 @@ namespace tempo{
 
 
 		ComponentRender(Ogre::SceneManager* scene);
+		void AddHealthBar(Ogre::SceneManager* scene);
 		~ComponentRender();
 	};
 
