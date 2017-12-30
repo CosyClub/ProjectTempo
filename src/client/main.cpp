@@ -109,7 +109,10 @@ int main(int argc, const char** argv)
 	anax::Entity entity_player = newPlayer(world, scene, system_grid_motion);
 
 	// Ai
-	anax::Entity entity_ai = newAI(world,scene);
+	anax::Entity entity_ai = newAI(world,scene, 5, 5);
+
+	//Destroyables
+	anax::Entity entity_stool = newDestroyable(world,scene, 2, 2, "Cube");
 
 	//camera
 	Ogre::Camera* camera = scene->createCamera("MainCamera");
