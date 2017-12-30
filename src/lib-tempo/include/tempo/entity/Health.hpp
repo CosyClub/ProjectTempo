@@ -21,6 +21,7 @@ namespace tempo {
 	struct SystemHealth : anax::System<anax::Requires<ComponentHealth>> {
 
 		void HealthUpdate(int delta_health);
+		void CheckHealth();
 
 	};
 

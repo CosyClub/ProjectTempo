@@ -17,6 +17,12 @@ namespace tempo {
 			this->current_health += delta_health;
 		}
 
+		printf("Entity has %d Health Points.\n", this->current_health);
+
+		if((this->current_health <= 0)){
+			printf("\nEntity has just been killed.\n");
+		}
+
 	}
 
 	void SystemHealth::HealthUpdate(int delta_health) {
@@ -43,6 +49,20 @@ namespace tempo {
 			}
 		}
 
+	}
+
+	void SystemHealth::CheckHealth() {
+		auto entities = getEntities();
+
+		for (auto& entity : entities) {
+			auto& h = entity.getComponent<ComponentHealth>();
+			int id = entity.getId();
+
+			if ((h.current_health <= 0)){
+				printf("\nEntity ID: %d has just been killed. \n", id);
+				entity.kill();
+			}
+		}
 	}
 
 }
