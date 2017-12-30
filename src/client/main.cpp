@@ -49,8 +49,8 @@ int main(int argc, const char** argv)
 	// Setup resources
 	Ogre::ResourceGroupManager& resources = Ogre::ResourceGroupManager::getSingleton();
 	resources.addResourceLocation("resources", "FileSystem",
-	                              Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-	                              true);
+		Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		true);
 	resources.initialiseAllResourceGroups();
 
 	// Sound
@@ -112,7 +112,7 @@ int main(int argc, const char** argv)
 	anax::Entity entity_ai = newAI(world,scene, 5, 5);
 
 	//Destroyables
-	anax::Entity entity_stool = newDestroyable(world,scene, 2, 2, "Cube");
+	anax::Entity entity_destroyable = newDestroyable(world,scene, 2, 2, "Cube");
 
 	//camera
 	Ogre::Camera* camera = scene->createCamera("MainCamera");
@@ -123,7 +123,7 @@ int main(int argc, const char** argv)
 	Ogre::SceneNode *node_camera = node_player->createChildSceneNode();
 	node_camera->attachObject(camera);
 	node_camera->setPosition(0, 20, 10);
-	camera->lookAt(0,0,0);
+	camera->lookAt(0, 0, 0);
 
 	// Movement hack
 	srand(time(NULL));
@@ -141,7 +141,7 @@ int main(int argc, const char** argv)
 	int frame_counter = 0;
 
 
-	while(running) {
+	while (running) {
 		float dt = dt_timer.getElapsedTime().asSeconds();
 		dt_timer.restart();
 
@@ -167,7 +167,7 @@ int main(int argc, const char** argv)
 
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
-			if(!system_player_input.handleInput(e)){
+			if (!system_player_input.handleInput(e)) {
 				switch (e.type) {
 				case SDL_WINDOWEVENT:
 					switch (e.window.event) {
@@ -206,14 +206,14 @@ int main(int argc, const char** argv)
 		SDL_GL_SwapWindow(app.window);
 
 		++frame_counter;
-		if(fps_timer.getElapsedTime().asSeconds() > 0.5f) {
+		if (fps_timer.getElapsedTime().asSeconds() > 0.5f) {
 			float seconds = fps_timer.getElapsedTime().asSeconds();
 			printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds),
-					                100 * (float)(
-							render_time.asMicroseconds()
-							) / (
-					                logic_time.asMicroseconds() +
-							render_time.asMicroseconds()));
+				100 * (float)(
+					render_time.asMicroseconds()
+					) / (
+						logic_time.asMicroseconds() +
+						render_time.asMicroseconds()));
 			/* printf("Logic time  (μs): %d\n",  logic_time.asMicroseconds()); */
 			/* printf("Render time (μs): %d\n", render_time.asMicroseconds()); */
 			fps_timer.restart();
