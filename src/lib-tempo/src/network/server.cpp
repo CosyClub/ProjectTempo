@@ -61,6 +61,8 @@ void timeSyncServer(tempo::Clock *clock)
 		          << port_st << std::endl;
 		return;
 	}
+	
+	std::cout << "Time Sync Listener Started..." << std::endl;
 
 	std::vector<sf::TcpSocket*> clientSockets;
 	std::vector<std::thread*> clientThreads;
@@ -202,6 +204,8 @@ void listenForNewClients()
 		return;
 	}
 
+	std::cout << "New Client Listener Started..." << std::endl;
+
 	// Loop listening for new clients
 	while (true) {
 		sf::Packet packet;
@@ -220,6 +224,8 @@ void listenForNewClients()
 	// so I can't.
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 void listenForClientUpdates()
 {
 	// Bind to port
@@ -229,10 +235,14 @@ void listenForClientUpdates()
 		return;
 	}
 	
+	std::cout << "Client Update Listener Started..." << std::endl;
+	
 	// TODO Implement me!
 	
 	return;
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 uint32_t findClientID(sf::Uint32 ip, unsigned short port)
 {

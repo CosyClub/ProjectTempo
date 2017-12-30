@@ -31,12 +31,6 @@ int main(int argc, const char** argv) {
 	tempo::port_so = DEFAULT_PORT_OUT;
 	tempo::port_st = DEFAULT_PORT_TS;	
 
-	// Bind sockets
-	tempo::bindSocket('h', tempo::port_sh);
-	tempo::bindSocket('i', tempo::port_si);
-	tempo::bindSocket('o', tempo::port_so);
-	// Time Sync Socket bound within Time Sync Thread
-	
 	// Start up timeSyncThread
 	std::thread timeSyncThread (tempo::timeSyncServer, &clock); 
 
