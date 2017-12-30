@@ -65,4 +65,40 @@ namespace tempo {
 		}
 	}
 
+	ComponentRenderHealth::ComponentRenderHealth(Ogre::SceneManager* scene){
+		this->node = scene->getRootSceneNode()->createChildSceneNode();
+
+		Ogre::BillboardSet* Healthset = scene->createBillboardSet();
+		Healthset->setMaterialName("rectangleSprite");
+		Healthset->setDefaultDimensions(0.5, 0.5);
+		Healthset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
+		Healthset->setCommonDirection(Ogre::Vector3(0, 1, 0));
+		Ogre::Billboard* health = Healthset->createBillboard(0.5, 2, 0);
+		health->setColour(Ogre::ColourValue::Green);
+
+		this->node->attachObject(Healthset);
+	}
+
+	ComponentRenderHealth::~ComponentRenderHealth(){
+		this->node->getCreator()->destroySceneNode(this->node);
+	}
+
+
+	void RenderHealth::HealthBarUpdate() {
+		auto entities = getEntities();
+
+		for(auto& entity : entities){
+			auto& h = entity.getComponent<ComponentHealth>();
+			auto& rend  = entity.getComponent<ComponentRenderHealth>();
+
+			rend.node->setScale(h.current_health/ (double) h.max_health,1,1);
+
+			// h.max_health
+			// h.current_health;
+			//
+			//rend.Healthset->setDefaultDimensions(0.5 , 0.5);
+		}
+
+	}
+
 }

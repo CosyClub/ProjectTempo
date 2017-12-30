@@ -3,6 +3,8 @@
 
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
+#include <tempo/entity/Render.hpp>
+#include <Ogre.h>
 
 namespace tempo {
 
@@ -23,6 +25,19 @@ namespace tempo {
 		void HealthUpdate(int delta_health);
 		void CheckHealth();
 
+	};
+
+	struct ComponentRenderHealth : anax::Component {
+		Ogre::SceneNode* node;
+
+
+		ComponentRenderHealth(Ogre::SceneManager* scene);
+		~ComponentRenderHealth();
+	};
+
+
+	struct RenderHealth : anax::System<anax::Requires<ComponentHealth, ComponentRenderHealth>> {
+		void HealthBarUpdate();
 	};
 
 }

@@ -12,6 +12,7 @@
 namespace tempo{
 	ComponentRender::ComponentRender(Ogre::SceneManager* scene){
 		this->node = scene->getRootSceneNode()->createChildSceneNode();
+		this->scene = scene;
 	}
 
 	ComponentRender::~ComponentRender(){
