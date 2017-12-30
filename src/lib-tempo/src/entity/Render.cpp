@@ -23,7 +23,9 @@ namespace tempo{
 		Ogre::Billboard* health = Healthset->createBillboard(0.5, 2, 0);
 		health->setColour(Ogre::ColourValue::Green);
 
-		this->node->attachObject(Healthset);
+		this->healthBarnode = this->node->createChildSceneNode();
+
+		this->healthBarnode->attachObject(Healthset);
 	}
 
 	ComponentRender::~ComponentRender(){

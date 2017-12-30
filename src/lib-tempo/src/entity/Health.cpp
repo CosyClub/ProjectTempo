@@ -73,7 +73,7 @@ namespace tempo {
 			auto& rend  = entity.getComponent<ComponentRender>();
 
 
-			//rend.node->detachObject(short unsigned int)0);
+			rend.healthBarnode->setScale((double) h.current_health / h.max_health,1,1);
 
 			// h.max_health
 			// h.current_health;
