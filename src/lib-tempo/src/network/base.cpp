@@ -22,9 +22,27 @@ unsigned int port_st = 0;
 bool bindSocket(char socket, unsigned short port)
 {
 	switch (socket) {
-		case 'i': return sock_i.bind(port) == sf::Socket::Done;
-		case 'o': return sock_o.bind(port) == sf::Socket::Done;
-		case 'h': return sock_h.bind(port) == sf::Socket::Done;
+		case 'i': 
+			if (sock_i.getLocalPort() == 0) {
+				return sock_i.bind(port) == sf::Socket::Done;
+			} else {
+				return sock_i.getLocalPort() == port;
+			}
+		
+		case 'o': 
+			if (sock_o.getLocalPort() == 0) {
+				return sock_o.bind(port) == sf::Socket::Done;
+			} else {
+				return sock_o.getLocalPort() == port;
+			}
+		
+		case 'h': 
+			if (sock_h.getLocalPort() == 0) {
+				return sock_h.bind(port) == sf::Socket::Done;
+			} else {
+				return sock_h.getLocalPort() == port;
+			}
+		
 		default:  return false;
 	}
 }

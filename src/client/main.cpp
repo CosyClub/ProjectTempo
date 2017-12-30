@@ -60,16 +60,17 @@ int main(int argc, const char** argv)
 	sf::Sound click;
 	click.setBuffer(clickbuf);
 
+	/////////////////////////////////////////////////
 	// Networking
 	// Set up remote address, local ports and remote handshake port
 	sf::IpAddress addr_r = DEFAULT_ADDR;
-	unsigned int port_ci = DEFAULT_PORT_IN;
-	unsigned int port_co = DEFAULT_PORT_OUT;
-	unsigned int port_sh = DEFAULT_PORT_HS;
+	tempo::port_ci = DEFAULT_PORT_IN;
+	tempo::port_co = DEFAULT_PORT_OUT;
+	tempo::port_sh = DEFAULT_PORT_HS;
 
 	// Bind sockets
-	tempo::bindSocket('i', port_ci);
-	tempo::bindSocket('o', port_co);
+	tempo::bindSocket('i', tempo::port_ci);
+	tempo::bindSocket('o', tempo::port_co);
 
 	// Start Listener Thread to catch server updates after connecting
 	std::thread listener (tempo::listenForServerUpdates); 	
@@ -81,7 +82,7 @@ int main(int argc, const char** argv)
 	// Connect to server and handshake information
 	tempo::connectToAndSyncWithServer(role, roleData);
 
-	// Clock & Time Synd Song
+	// Clock & Time Sync Song
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
 	mainsong.set_volume(0.f);
 	mainsong.start();

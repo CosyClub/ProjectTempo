@@ -94,7 +94,9 @@ namespace tempo
 	//                  outgoing and handshake sockets respectively.
 	//         port   - The port on which to bind the socket
 	// Returns:
-	//         bool - true if bound, false if unable to bind.
+	//         bool - true if bound, false if unable to bind (port already
+	//                in use elsewhere in system, or socket is already bound
+	//                to another port.
 	bool bindSocket(char socket, unsigned short port);
 
 	// sortPacket

@@ -197,8 +197,8 @@ void listenForNewClients()
 {
 	// Bind to port
 	if (!bindSocket('h', port_sh)) {
-		std::cout << "Could not bind port %d, used to listen for "
-		          << "new clients." << std::endl;
+		std::cout << "Could not bind port " << port_sh << ", used to "
+		          << "listen for new clients." << std::endl;
 		return;
 	}
 
@@ -224,8 +224,8 @@ void listenForClientUpdates()
 {
 	// Bind to port
 	if (!bindSocket('i', port_si)) {
-		std::cout << "Could not bind port %d, used to listen for "
-		          << "client updates." << std::endl;
+		std::cout << "Could not bind port " << port_si << ", used to "
+		          << "listen for client updates." << std::endl;
 		return;
 	}
 	
