@@ -117,11 +117,12 @@ uint32_t handshakeHello()
 		packet >> id;
 		packet >> port_si;
 		packet >> port_st;
+		//
 		// TODO Extract entire level data and initialise level
+		//
 	} else {
-		std::cout << "The server was rude to us when we said HELLO"
+		std::cout << "The server was rude to us when we said hello. >:("
 		          << std::endl;
-		return 0;
 	}
 
 
@@ -147,11 +148,14 @@ bool handshakeRoleReq(uint32_t id, ClientRole roleID, ClientRoleData &roleData)
 	
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
+	packet >> msg;
 	if (msg == static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG)) {
-		// TODO Extract entity/response from ROLEREQ_ROG
+		//
+		//TODO Extract entity/response from ROLEREQ_ROG
+		//
 	} else {
 		std::cout << "The server was rude to us when we requested a "
-		          << "role." << std::endl;
+		          << "role. >:(" << std::endl;
 		return false;
 	}
 	

@@ -62,11 +62,20 @@ int main(int argc, const char** argv)
 
 	/////////////////////////////////////////////////
 	// Networking
+	
 	// Set up remote address, local ports and remote handshake port
+	// Note, IF statement is to change ports for local development, bit
+	// hacky and should be removed in due course!
 	sf::IpAddress addr_r = DEFAULT_ADDR;
-	tempo::port_ci = DEFAULT_PORT_IN;
-	tempo::port_co = DEFAULT_PORT_OUT;
+	if (addr_r == DEFAULT_ADDR) {
+		tempo::port_ci = DEFAULT_PORT_IN+10;
+		tempo::port_co = DEFAULT_PORT_OUT+10;
+	} else {
+		tempo::port_ci = DEFAULT_PORT_IN;
+		tempo::port_co = DEFAULT_PORT_OUT;
+	}
 	tempo::port_sh = DEFAULT_PORT_HS;
+	// Other server ports aquired dynamically on handshake
 
 	// Bind sockets
 	tempo::bindSocket('i', tempo::port_ci);

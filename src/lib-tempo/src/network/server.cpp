@@ -116,21 +116,24 @@ uint32_t addClient(sf::Uint32 ip,
 	return idCounter++;
 }
 
-void handshakeHello(sf::Packet &packet, sf::IpAddress &sender)
+void handshakeHello(sf::Packet &packet,
+                    sf::IpAddress &sender,
+                    unsigned short port)
 {
 	// Extract information from packet
-	unsigned short port = 0;
-	packet >> port;
+	unsigned short updatePort = 0;
+	packet >> updatePort;
 	sf::Uint32 ip = sender.toInteger();
 
 	// Register Client Internally
 	uint32_t id = NO_CLIENT_ID;
-	if (findClientID(ip, port) == NO_CLIENT_ID) {
-		id = addClient(ip, port);
+	if (findClientID(ip, updatePort) == NO_CLIENT_ID) {
+		id = addClient(ip, updatePort);
 	} else {
 		// TODO: Time out old client and make a new one
 		std::cout << "WARNING: Connected client tried to reconnect ("
-		          << id << ", " << ip << ":" << port << ")\r\n";
+		          << id << ", " << ip << ":" << updatePort << ")" 
+		          << std::endl;
 	}
 	
 	// Construct HELLO_ROG response
@@ -146,7 +149,9 @@ void handshakeHello(sf::Packet &packet, sf::IpAddress &sender)
 	sock_h.send(rog, sender, port);
 }
 
-void handshakeRoleReq(sf::Packet &packet, sf::IpAddress &sender)
+void handshakeRoleReq(sf::Packet &packet,
+                      sf::IpAddress &sender, 
+                      unsigned short port)
 {
 	// Extract data from packet
 	uint32_t id = NO_CLIENT_ID;
@@ -162,7 +167,6 @@ void handshakeRoleReq(sf::Packet &packet, sf::IpAddress &sender)
 	// Register Role
 	cmtx.lock();
 	clients[id].role = static_cast<ClientRole>(role);
-	unsigned short port = clients[id].port;
 	cmtx.unlock();
 	
 	// Construct ROLEREQ_ROG response
@@ -184,10 +188,12 @@ void processNewClientPacket(sf::Packet &packet,
 
 	switch (static_cast<HandshakeID>(receiveID)) {
 	case HandshakeID::HELLO:
-		handshakeHello(packet, sender);
+		std::cout << "New client (" << sender.toString() << ":" << port
+		          << ") Connecting!" << std::endl; 
+		handshakeHello(packet, sender, port);
 		break;
 	case HandshakeID::ROLEREQ:
-		handshakeRoleReq(packet, sender);
+		handshakeRoleReq(packet, sender, port);
 		break;
 	default:
 		std::cout << "WARNING: an invalid handshake message was "
