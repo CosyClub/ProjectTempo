@@ -105,6 +105,9 @@ int main(int argc, const char** argv)
 	helpers->attachObject(y1);
 	helpers->attachObject(z1);
 
+	//testing
+	EntityCreationData* entitytest = newEntity(1, {2,2});
+
 	// Player
 	anax::Entity entity_player = newPlayer(world, scene, system_grid_motion);
 

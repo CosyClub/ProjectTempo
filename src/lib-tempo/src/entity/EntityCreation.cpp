@@ -1,5 +1,34 @@
 #include <tempo/entity/EntityCreation.hpp>
 
+EntityCreationData* newEntity(int type_id, Vec2s pos){
+
+	EntityCreationData* entity = new EntityCreationData;
+	entity->type_id = type_id;
+	entity->position = pos;
+
+	switch (entity->type_id){
+		case 1:
+			entity->entity_type.player.some_data_for_player = 1;
+			printf("\n\n\n\n%d\n\n\n\n\n", entity->entity_type.player.some_data_for_player);
+			break;
+		case 2:
+			entity->entity_type.ai.some_data_for_ai = 2;
+			printf("\n\n\n\n%d\n\n\n\n\n", entity->entity_type.ai.some_data_for_ai);
+			break;
+		case 3:
+			entity->entity_type.destroyable.some_data_for_destroyable = 3;
+			printf("\n\n\n\n%d\n\n\n\n\n", entity->entity_type.destroyable.some_data_for_destroyable);
+			break;
+		case 4:
+			entity->entity_type.nondestroyable.some_data_for_nondestroyable = 4;
+			printf("\n\n\n\n%d\n\n\n\n\n", entity->entity_type.nondestroyable.some_data_for_nondestroyable);
+			break;
+		default: printf("Missed all\n");
+	}
+
+	return entity;
+}
+
 anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_grid_motion) {
 
 	//TODO:: Add Entity to Specific Tile
