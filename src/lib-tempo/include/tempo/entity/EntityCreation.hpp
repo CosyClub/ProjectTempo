@@ -10,6 +10,13 @@
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerInput.hpp>
 
+enum EID {
+	EID_PLAYER,
+	EID_AI,
+	EID_DES,
+	EID_NONDES,
+};
+
 typedef struct {
   int some_data_for_player;
 } Player_t;
@@ -34,12 +41,16 @@ typedef union {
 } Entity_Type;
 
 typedef struct {
-  int type_id;
+  EID type_id;
   Vec2s position;
   Entity_Type entity_type;
 } EntityCreationData;
 
 EntityCreationData* newEntity(int type_id, Vec2s pos);
+
+sf::Packet& operator <<(sf::Packet& packet, const EntityCreationData& data);
+sf::Packet& operator <<(sf::Packet& packet, const Entity_Type& type);
+sf::Packet& operator <<(sf::Packet& packet, const Vec2s& vec);
 
 anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_grid_motion);
 anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int x, int y);

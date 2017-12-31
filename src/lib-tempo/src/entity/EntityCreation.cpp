@@ -1,32 +1,60 @@
 #include <tempo/entity/EntityCreation.hpp>
 
-EntityCreationData* newEntity(int type_id, Vec2s pos){
+EntityCreationData* newEntity(EID type_id, Vec2s pos){
 
 	EntityCreationData* entity = new EntityCreationData;
 	entity->type_id = type_id;
 	entity->position = pos;
 
 	switch (entity->type_id){
-		case 1:
-			entity->entity_type.player.some_data_for_player = 1;
+		case EID_PLAYER:
+			entity->entity_type.player.some_data_for_player = EID_PLAYER;
 			printf("\n\n\n\n%d\n\n\n\n\n", entity->entity_type.player.some_data_for_player);
 			break;
-		case 2:
-			entity->entity_type.ai.some_data_for_ai = 2;
+		case EID_AI:
+			entity->entity_type.ai.some_data_for_ai = EID_AI;
 			printf("\n\n\n\n%d\n\n\n\n\n", entity->entity_type.ai.some_data_for_ai);
 			break;
-		case 3:
-			entity->entity_type.destroyable.some_data_for_destroyable = 3;
+		case EID_DES:
+			entity->entity_type.destroyable.some_data_for_destroyable = EID_DES;
 			printf("\n\n\n\n%d\n\n\n\n\n", entity->entity_type.destroyable.some_data_for_destroyable);
 			break;
-		case 4:
-			entity->entity_type.nondestroyable.some_data_for_nondestroyable = 4;
+		case EID_NONDES:
+			entity->entity_type.nondestroyable.some_data_for_nondestroyable = EID_NONDES;
 			printf("\n\n\n\n%d\n\n\n\n\n", entity->entity_type.nondestroyable.some_data_for_nondestroyable);
 			break;
 		default: printf("Missed all\n");
 	}
 
 	return entity;
+}
+
+sf::Packet& operator <<(sf::Packet& packet, const EntityCreationData& data)
+{
+	packet << data.type_id;
+	packet << data.position;
+	packet << data.entity_type;
+	return packet;
+}
+
+sf::Packet& operator <<(sf::Packet& packet, const Entity_Type& type)
+{
+	uint8_t *data = (uint8_t*)(&type);
+
+	for (int I = 0; I < sizeof(Entity_Type); I++)
+	{
+		packet << data[I];
+	}
+
+	return packet;
+}
+
+sf::Packet& operator <<(sf::Packet& packet, const Vec2s& vec)
+{
+	packet << vec.elements[0];
+	packet << vec.elements[1];
+
+	return packet;
 }
 
 anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_grid_motion) {
