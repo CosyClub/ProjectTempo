@@ -10,6 +10,29 @@
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerInput.hpp>
 
+struct EntityCreationData {
+  int type_id;
+  Vec2s position;
+  union EntityType {
+
+    struct Player_t {
+      int some_data_for_player;
+    };
+
+    struct AI_t {
+      int some_data_for_ai;
+    };
+
+    struct Destroyable_t {
+      int some_data_for_destroyable;
+    };
+
+    struct NonDestroyable_t {
+      int some_data_for_nondestroyable;
+    };
+  };
+};
+
 anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_grid_motion);
 anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int x, int y);
 anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int x, int y, std::string mesh_name);
