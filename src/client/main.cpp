@@ -114,6 +114,9 @@ int main(int argc, const char** argv)
 	//Destroyables
 	anax::Entity entity_destroyable = newDestroyable(world,scene, 2, 2, "Cube");
 
+	//NonDestroyables
+	anax::Entity entity_nondestroyable = newNonDestroyable(world,scene, 5, 5, "Cube");
+
 	//camera
 	Ogre::Camera* camera = scene->createCamera("MainCamera");
 	camera->setNearClipDistance(0.01f);
