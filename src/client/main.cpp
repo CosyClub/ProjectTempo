@@ -10,25 +10,26 @@
 #include <cstdlib>
 #include <string>
 #include <iostream>
+#include <thread>
 
 #include <Ogre.h>
 
-#include <SFML/Audio.hpp>
-#include <SFML/System/Clock.hpp>
-
 #include <tempo/Application.hpp>
-#include <tempo/time.hpp>
+#include <tempo/network/client.hpp>
 #include <tempo/song.hpp>
+#include <tempo/time.hpp>
 #include <tempo/entity/Transform.hpp>
 #include <tempo/entity/Render.hpp>
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerInput.hpp>
 
+#include <SFML/Audio.hpp>
+#include <SFML/System/Clock.hpp>
+
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
 
-#define NET_PORT 1337 // Port the server is running on
 #define BPM 174
 #define DELTA 150
 #define TIME 60000000 / BPM
@@ -59,7 +60,38 @@ int main(int argc, const char** argv)
 	sf::Sound click;
 	click.setBuffer(clickbuf);
 
-	// Clock
+	/////////////////////////////////////////////////
+	// Networking
+	
+	// Set up remote address, local ports and remote handshake port
+	// Note, IF statement is to change ports for local development, bit
+	// hacky and should be removed in due course!
+	sf::IpAddress addr_r = DEFAULT_ADDR;
+	if (addr_r == DEFAULT_ADDR) {
+		tempo::port_ci = DEFAULT_PORT_IN+10;
+		tempo::port_co = DEFAULT_PORT_OUT+10;
+	} else {
+		tempo::port_ci = DEFAULT_PORT_IN;
+		tempo::port_co = DEFAULT_PORT_OUT;
+	}
+	tempo::port_sh = DEFAULT_PORT_HS;
+	// Other server ports aquired dynamically on handshake
+
+	// Bind sockets
+	tempo::bindSocket('i', tempo::port_ci);
+	tempo::bindSocket('o', tempo::port_co);
+
+	// Start Listener Thread to catch server updates after connecting
+	std::thread listener (tempo::listenForServerUpdates); 	
+
+	// Establish role
+	tempo::ClientRole role = tempo::ClientRole::PLAYER;
+	tempo::ClientRoleData roleData = {"Bilbo Baggins"};
+
+	// Connect to server and handshake information
+	tempo::connectToAndSyncWithServer(role, roleData);
+
+	// Clock & Time Sync Song
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
 	mainsong.set_volume(0.f);
 	mainsong.start();
