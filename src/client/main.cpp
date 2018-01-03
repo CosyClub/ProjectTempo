@@ -115,7 +115,8 @@ int main(int argc, const char** argv)
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_level, 2, 2);
-	entity_player.addComponent<tempo::ComponentGridMotion>();
+	auto& comp_player_motion = entity_player.addComponent<tempo::ComponentGridMotion>();
+	comp_player_motion.max_jump_distance = 2.1f;
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
 	entity_player.activate();
 

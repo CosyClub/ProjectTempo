@@ -52,6 +52,9 @@ namespace tempo{
 		default: return false; break;
 		}
 
+		dx *= 2;
+		dy *= 2;
+
 		if(!clock.within_delta()){
 			std::cout << "Missed beat by " << std::min(clock.since_beat().asMilliseconds(), clock.until_beat().asMilliseconds()) << std::endl;
 			return true;

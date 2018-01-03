@@ -36,15 +36,23 @@ namespace tempo{
 
 	/////////////////////////////////////////////////////////////
 	// ComponentGridMotion
-	ComponentGridMotion::ComponentGridMotion(float max_jump_height){
-		this->delta           = {0,0};
-		this->motion_progress = 0;
-		this->max_jump_height = 1.0f;
-		this->target_locked   = false;
+	ComponentGridMotion::ComponentGridMotion(float max_jump_distance,
+	                                         float movement_speed,
+	                                         float max_jump_height){
+		this->delta             = {0,0};
+		this->motion_progress   = 0;
+		this->max_jump_height   = max_jump_height;
+		this->max_jump_distance = max_jump_distance;
+		this->movement_speed    = movement_speed;
+		this->target_locked     = false;
 	}
 
 	bool ComponentGridMotion::beginMovement(int dx, int dy){
 		if(this->motion_progress != 0){ return false; }
+
+		if((dx*dx + dy*dy) > (this->max_jump_distance * this->max_jump_distance)){
+			return false;
+		}
 
 		this->delta.x = dx;
 		this->delta.y = dy;
@@ -216,14 +224,8 @@ namespace tempo{
 			auto& pos   = entity.getComponent<ComponentGridPosition>();
 			auto& gm    = entity.getComponent<ComponentGridMotion>();
 
-			// :TODO: Should entities have different movement speeds?
-			//        if so, add move_speed ComponentGridMotion and use
-			//        rather than constant value here
-			//
-			// :TODO: If we support entities jumping multiple tiles then this
-			// needs to be changed to consider that too...
 			if(gm.delta != Vec2s::Origin){
-				gm.motion_progress += dt * 10.0f;
+				gm.motion_progress += (dt * gm.movement_speed) / (float)tempo::length(gm.delta);
 				if(gm.motion_progress >= 1){
 					pos.position       += gm.delta;
 					gm.delta           =  {0,0};

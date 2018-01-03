@@ -62,9 +62,11 @@ namespace tempo{
 		/// no motion in progress.
 		/// \param max_jump_height - How high this entity can jump as a part
 		/// of a single hop
-		/// \todo -> should large entities be able to jump multiple tiles at once?
 		/////////////////////////////////////////////////////////////////////
-		ComponentGridMotion(float max_jump_height = 1.5f);
+		ComponentGridMotion(float max_jump_distance = 1.1f,
+		                    float movement_speed    = 10.0f,
+		                    float max_jump_height   = 1.5f
+		                   );
 
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Causes the component to represent a motion by specified amounts
@@ -95,15 +97,21 @@ namespace tempo{
 		/// rather than all the way back to the start?
 		/////////////////////////////////////////////////////////////////////
 		bool isMovementLocked();
+
+		///< \brief How high this entity can jump, determines if it can reach tiles
+		float max_jump_height;
+
+		///< \brief Maximum distance (in tiles) this entity can move in a single jump
+		float max_jump_distance;
+
+		///< \brief Number of tiles this entity can move per second
+		float movement_speed;
 	private:
 		///< \brief The delta that this entity is trying to move by
 	  Vec2s delta;
 
 		///< \brief Value between 0 and 1 indicating the progress towards the target
 		float motion_progress;
-
-		///< \brief How high this entity can jump, determines if it can reach tiles
-		float max_jump_height;
 
 		/// \brief Whether this entity has claimed the target tile as its own,
 		/// thus preventing any other entity from moving into it
