@@ -1,8 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
-/// \file main.cpp
-/// \author Jamie Terry
-/// \date 2017/10/30
-/// \brief Contains entry point for Ogre3d Demo
+/// main.cpp
+///
+/// Contains entry point for Ogre3d Demo
 ////////////////////////////////////////////////////////////////////////////
 
 #include <cstdio>
@@ -129,7 +128,7 @@ int main(int argc, const char** argv)
 
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
-	entity_player.getComponent<tempo::ComponentRender>().AddHealthBar(scene);
+	entity_player.getComponent<tempo::ComponentRender>().AddHealthBar();
 	// rend.node->attachObject(Healthset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
@@ -159,7 +158,7 @@ int main(int argc, const char** argv)
 	ai->setColour(Ogre::ColourValue::Blue);
 	entity_ai.addComponent<tempo::ComponentTransform>();
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
-	entity_ai.getComponent<tempo::ComponentRender>().AddHealthBar(scene);
+	entity_ai.getComponent<tempo::ComponentRender>().AddHealthBar();
 	entity_ai.addComponent<tempo::ComponentGridPosition>(3, 3);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
@@ -233,8 +232,10 @@ int main(int argc, const char** argv)
 			}
 		}
 
-		system_health.HealthUpdate(-1);
+		system_health.HealthUpdate(-5);
 		render_health.HealthBarUpdate();
+
+		system_health.CheckHealth();
 		//float cam_motion_delta = sin(beat_progress) * 0.3f;
 		//node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
 
