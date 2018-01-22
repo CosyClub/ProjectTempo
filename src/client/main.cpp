@@ -263,10 +263,10 @@ int main(int argc, const char** argv)
 			}
 		}
 
-		system_health.HealthUpdate(-5);
+		
 		render_health.HealthBarUpdate();
-
 		system_health.CheckHealth();
+		
 		//float cam_motion_delta = sin(beat_progress) * 0.3f;
 		//node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
 
