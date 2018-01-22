@@ -1,8 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
-/// \file main.cpp
-/// \author Jamie Terry
-/// \date 2017/10/30
-/// \brief Contains entry point for Ogre3d Demo
+/// main.cpp
+///
+/// Contains entry point for Ogre3d Demo
 ////////////////////////////////////////////////////////////////////////////
 
 #include <cstdio>
@@ -23,6 +22,7 @@
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerInput.hpp>
+#include <tempo/entity/Health.hpp>
 
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>
@@ -103,15 +103,19 @@ int main(int argc, const char** argv)
 	// Setup scene
 
 	anax::World world;
-	tempo::SystemRender       system_render(app);
+	tempo::SystemRender      system_render(app);
 	Ogre::SceneManager* scene = system_render.scene;
+	tempo::SystemGridAi      system_grid_ai;
+	tempo::SystemPlayerInput system_player_input(clock);
+	tempo::SystemHealth      system_health;
+	tempo::RenderHealth      render_health;
 	tempo::SystemLevelManager system_grid_motion(scene, "../bin/resources/levels/levelTest.bmp", "../bin/resources/levels/zonesTest.bmp");
-	tempo::SystemGridAi       system_grid_ai;
-	tempo::SystemPlayerInput  system_player_input(clock);
 	world.addSystem(system_grid_motion);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_render);
 	world.addSystem(system_player_input);
+	world.addSystem(system_health);
+	world.addSystem(render_health);
 	world.refresh();
 
 	scene->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
@@ -143,11 +147,24 @@ int main(int argc, const char** argv)
 	Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
 	player->setColour(Ogre::ColourValue::Red);
+
+
+	// Ogre::BillboardSet* Healthset = scene->createBillboardSet();
+	// Healthset->setMaterialName("rectangleSprite");
+	// Healthset->setDefaultDimensions(0.5, 0.5);
+	// Healthset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
+	// Healthset->setCommonDirection(Ogre::Vector3(0, 1, 0));
+	// Ogre::Billboard* health = Healthset->createBillboard(0.5, 2, 0);
+	// health->setColour(Ogre::ColourValue::Green);
+
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
+	entity_player.getComponent<tempo::ComponentRender>().AddHealthBar();
+	// rend.node->attachObject(Healthset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
+	entity_player.addComponent<tempo::ComponentHealth>(1000);
 	entity_player.activate();
 
 	//camera
@@ -172,10 +189,11 @@ int main(int argc, const char** argv)
 	ai->setColour(Ogre::ColourValue::Blue);
 	entity_ai.addComponent<tempo::ComponentTransform>();
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
-	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
+	entity_ai.getComponent<tempo::ComponentRender>().AddHealthBar();
 	entity_ai.addComponent<tempo::ComponentGridPosition>(3, 3);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
+	entity_ai.addComponent<tempo::ComponentHealth>(700);
 	entity_ai.activate();
 
 	// Movement hack
@@ -245,6 +263,10 @@ int main(int argc, const char** argv)
 			}
 		}
 
+		
+		render_health.HealthBarUpdate();
+		system_health.CheckHealth();
+		
 		//float cam_motion_delta = sin(beat_progress) * 0.3f;
 		//node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
 
