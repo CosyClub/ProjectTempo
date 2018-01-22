@@ -263,7 +263,7 @@ namespace tempo{
 				for(auto& collision_candidate : grid_positions.getEntities()){
 					auto& pos_candidate = collision_candidate.getComponent<ComponentGridPosition>();
 
-					if(pos_candidate.ethereal){ continue; }
+					if(pos_candidate.ethereal && pos.ethereal){ continue; }
 
 					Vec2s candidate_delta = pos_candidate.position - target_tile;
 					//printf("Found candidate: %i, %i\n", candidate_delta.x, candidate_delta.y);
