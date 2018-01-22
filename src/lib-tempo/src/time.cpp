@@ -1,6 +1,6 @@
 #include <tempo/config.hpp>
 #include <tempo/time.hpp>
-#include <tempo/network.hpp>
+#include <tempo/network/client.hpp>
 
 #include <iostream>
 
