@@ -9,6 +9,7 @@
 
 #include <OgreMath.h>
 
+#include <anax/World.hpp>
 #include <tempo/entity/LevelManager.hpp>
 #include <iostream>
 
@@ -18,16 +19,17 @@
 namespace tempo{
 	/////////////////////////////////////////////////////////////
 	// ComponentGridPosition
-	ComponentGridPosition::ComponentGridPosition(SystemLevelManager& level, Vec2s pos, TileMask mask) :
-		ComponentGridPosition(level, pos.x, pos.y, mask){
+	ComponentGridPosition::ComponentGridPosition(SystemLevelManager& level, Vec2s pos, TileMask mask, bool is_ethereal) :
+		ComponentGridPosition(level, pos.x, pos.y, mask, is_ethereal){
 		// empty body
 	}
 
-	ComponentGridPosition::ComponentGridPosition(SystemLevelManager& level, int x, int y, TileMask mask){
+	ComponentGridPosition::ComponentGridPosition(SystemLevelManager& level, int x, int y, TileMask mask, bool is_ethereal){
 		// level not currently used -> but when we want to do more efficient lookup
 		// structure we need to insert entity in it based off of its position
 		this->position = {x,y};
 		this->mask     = mask;
+		this->ethereal = is_ethereal;
 	}
 
 	TileMask ComponentGridPosition::isCollidingWith(const ComponentGridPosition& other){
@@ -73,7 +75,7 @@ namespace tempo{
 
 	/////////////////////////////////////////////////////////////
 	// SystemLevelManager
-	SystemLevelManager::SystemLevelManager(Ogre::SceneManager* scene, int size)
+	SystemLevelManager::SystemLevelManager(anax::World& world, Ogre::SceneManager* scene, int size)
 		: tiles(size, std::vector<Tile*>(size)) {
 		floor_node = scene->getRootSceneNode()->createChildSceneNode();
 
@@ -84,7 +86,7 @@ namespace tempo{
 		}
 	}
 
-	SystemLevelManager::SystemLevelManager(int size) : tiles(size, std::vector<Tile*>(size)) {
+	SystemLevelManager::SystemLevelManager(anax::World& world, int size) : tiles(size, std::vector<Tile*>(size)) {
 
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j< size; j++){
@@ -93,7 +95,9 @@ namespace tempo{
 		}
 	}
 
-	SystemLevelManager::SystemLevelManager(Ogre::SceneManager* scene, const char* fileName) : tiles(100, std::vector<Tile*>(100)) {
+	SystemLevelManager::SystemLevelManager(anax::World& world, Ogre::SceneManager* scene, const char* fileName) : tiles(100, std::vector<Tile*>(100)) {
+
+		world.addSystem(this->grid_positions);
 
 		loadLevel(scene, fileName, tiles);
 	}
@@ -234,8 +238,10 @@ namespace tempo{
 				}
 			}
 
+			Vec2s target_tile = pos.position + gm.delta;
+
 			float current_height = this->getHeight(pos.position);
-			float target_height  = this->getHeight(pos.position + gm.delta);
+			float target_height  = this->getHeight(target_tile);
 			float delta_height   = target_height - current_height;
 
 			/////////////////////////////////
@@ -251,7 +257,21 @@ namespace tempo{
 					can_make_move = false;
 				}
 
-				// :TODO: add check for another entity already occupying the target tile
+				// :TODO:OPT: this might be quite slow - for each entity
+				// check all others, might want to build quadtree / 2d boolean array
+				// -> but we only do this check once per move - so might be okay - PROFILE!
+				for(auto& collision_candidate : grid_positions.getEntities()){
+					auto& pos_candidate = collision_candidate.getComponent<ComponentGridPosition>();
+
+					if(pos_candidate.ethereal){ continue; }
+
+					Vec2s candidate_delta = pos_candidate.position - target_tile;
+					//printf("Found candidate: %i, %i\n", candidate_delta.x, candidate_delta.y);
+
+					if(pos.mask.isCollidingWith(pos_candidate.mask, candidate_delta)){
+						can_make_move = false;
+					}
+				}
 
 				// :TODO: If multiple entities try to jump into same tile simultaneously
 				// should they both bounce back? Should first one moving get priority?

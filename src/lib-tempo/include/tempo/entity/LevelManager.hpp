@@ -36,12 +36,29 @@ namespace tempo{
 
 		///< \brief Mask of the tile's that this entity occupies
 		TileMask mask;
+
+		///< \brief A tile may be occupied by either:
+		/// - A single non-ethereal entity
+		/// - Many ethereal entities
+		/// This allows, for example, players to move through each other,
+		/// but not through collapsed walls/enemies etc.
+		bool ethereal;
 	public:
 		inline const Vec2s&    getPosition(){ return this->position; }
 		inline const TileMask& getTileMask(){ return this->mask;     }
+		inline const bool      isEthereal (){ return this->ethereal; }
 
-		ComponentGridPosition(SystemLevelManager& manager, Vec2s pos = {0,0}, TileMask = tempo::tileMask1by1);
-		ComponentGridPosition(SystemLevelManager& manager, int x, int y,      TileMask = tempo::tileMask1by1);
+		ComponentGridPosition(SystemLevelManager& manager,
+		                      Vec2s pos        = {0,0},
+		                      TileMask         = tempo::tileMask1by1,
+		                      bool is_ethereal = true
+		                     );
+
+		ComponentGridPosition(SystemLevelManager& manager,
+		                      int x, int y,
+		                      TileMask         = tempo::tileMask1by1,
+		                      bool is_ethereal = true
+		                     );
 
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Returns the mask of tiles that are occupied by both this and the
@@ -132,11 +149,14 @@ namespace tempo{
 		std::vector<std::vector<Tile*>> tiles;
 		Ogre::SceneNode* floor_node;
 
-	public:
+		class GridPositions : public anax::System<anax::Requires<ComponentGridPosition>>{
+		};
+		GridPositions grid_positions;
 
-		SystemLevelManager(Ogre::SceneManager* scene, int size);
-		SystemLevelManager(int size);
-		SystemLevelManager(Ogre::SceneManager* scene, const char* fileName);
+	public:
+		SystemLevelManager(anax::World& world, Ogre::SceneManager* scene, int size);
+		SystemLevelManager(anax::World& world, int size);
+		SystemLevelManager(anax::World& world, Ogre::SceneManager* scene, const char* fileName);
 
 		bool existsTile(Vec2s position);
 		bool existsTile(int x, int y);

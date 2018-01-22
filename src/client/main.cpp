@@ -74,7 +74,7 @@ int main(int argc, const char** argv)
 	anax::World world;
 	tempo::SystemRender       system_render(app);
 	Ogre::SceneManager* scene = system_render.scene;
-	tempo::SystemLevelManager system_level(scene, "../bin/resources/levels/levelTest.bmp");
+	tempo::SystemLevelManager system_level(world, scene, "../bin/resources/levels/levelTest.bmp");
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemPlayerInput  system_player_input(clock);
 	world.addSystem(system_level);
@@ -116,7 +116,6 @@ int main(int argc, const char** argv)
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_level, 2, 2);
 	auto& comp_player_motion = entity_player.addComponent<tempo::ComponentGridMotion>();
-	comp_player_motion.max_jump_distance = 2.1f;
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
 	entity_player.activate();
 
@@ -143,7 +142,7 @@ int main(int argc, const char** argv)
 	entity_ai.addComponent<tempo::ComponentTransform>();
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
-	entity_ai.addComponent<tempo::ComponentGridPosition>(system_level, 3, 3);
+	entity_ai.addComponent<tempo::ComponentGridPosition>(system_level, 3, 3, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
 	entity_ai.activate();
