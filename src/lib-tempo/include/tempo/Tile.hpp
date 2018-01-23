@@ -17,7 +17,7 @@ namespace tempo{
 	public:
 
 		Tile(Ogre::SceneManager* scene,Ogre::SceneNode* floor_node, Vec2s position, float height);
-		Tile(float height);
+		Tile(Vec2s position, float height);
 
 		void deleteFloorpiece(Ogre::SceneManager* scene);
 		void createFloorpiece(Ogre::SceneManager* scene);

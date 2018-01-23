@@ -1,8 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
-/// \file main.cpp
-/// \author Jamie Terry
-/// \date 2017/10/30
-/// \brief Contains entry point for Ogre3d Demo
+/// main.cpp
+///
+/// Contains entry point for Ogre3d Demo
 ////////////////////////////////////////////////////////////////////////////
 
 #include <cstdio>
@@ -10,26 +9,27 @@
 #include <cstdlib>
 #include <string>
 #include <iostream>
+#include <thread>
 
 #include <Ogre.h>
 
-#include <SFML/Audio.hpp>
-#include <SFML/System/Clock.hpp>
-#include <SFML/Network.hpp>
-
 #include <tempo/Application.hpp>
-#include <tempo/time.hpp>
+#include <tempo/network/client.hpp>
 #include <tempo/song.hpp>
+#include <tempo/time.hpp>
 #include <tempo/entity/Transform.hpp>
 #include <tempo/entity/Render.hpp>
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerInput.hpp>
+#include <tempo/entity/Health.hpp>
+
+#include <SFML/Audio.hpp>
+#include <SFML/System/Clock.hpp>
 
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
 
-#define NET_PORT 1337 // Port the server is running on
 #define BPM 174
 #define DELTA 150
 #define TIME 60000000 / BPM
@@ -60,7 +60,38 @@ int main(int argc, const char** argv)
 	sf::Sound click;
 	click.setBuffer(clickbuf);
 
-	// Clock
+	/////////////////////////////////////////////////
+	// Networking
+
+	// Set up remote address, local ports and remote handshake port
+	// Note, IF statement is to change ports for local development, bit
+	// hacky and should be removed in due course!
+	sf::IpAddress addr_r = DEFAULT_ADDR;
+	if (addr_r == DEFAULT_ADDR) {
+		tempo::port_ci = DEFAULT_PORT_IN+10;
+		tempo::port_co = DEFAULT_PORT_OUT+10;
+	} else {
+		tempo::port_ci = DEFAULT_PORT_IN;
+		tempo::port_co = DEFAULT_PORT_OUT;
+	}
+	tempo::port_sh = DEFAULT_PORT_HS;
+	// Other server ports aquired dynamically on handshake
+
+	// Bind sockets
+	tempo::bindSocket('i', tempo::port_ci);
+	tempo::bindSocket('o', tempo::port_co);
+
+	// Start Listener Thread to catch server updates after connecting
+	std::thread listener (tempo::listenForServerUpdates);
+
+	// Establish role
+	tempo::ClientRole role = tempo::ClientRole::PLAYER;
+	tempo::ClientRoleData roleData = {"Bilbo Baggins"};
+
+	// Connect to server and handshake information
+	tempo::connectToAndSyncWithServer(role, roleData);
+
+	// Clock & Time Sync Song
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
 	mainsong.set_volume(0.f);
 	mainsong.start();
@@ -72,15 +103,22 @@ int main(int argc, const char** argv)
 	// Setup scene
 
 	anax::World world;
-	tempo::SystemRender       system_render(app);
+	tempo::SystemRender      system_render(app);
 	Ogre::SceneManager* scene = system_render.scene;
-	tempo::SystemLevelManager system_level(world, scene, "../bin/resources/levels/levelTest.bmp");
+	tempo::SystemLevelManager system_level(world, scene,
+	                                       "../bin/resources/levels/levelTest.bmp",
+	                                       "../bin/resources/levels/zonesTest.bmp"
+	                                      );
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemPlayerInput  system_player_input(clock);
+	tempo::SystemHealth       system_health;
+	tempo::RenderHealth       render_health;
 	world.addSystem(system_level);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_render);
 	world.addSystem(system_player_input);
+	world.addSystem(system_health);
+	world.addSystem(render_health);
 	world.refresh();
 
 	scene->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
@@ -112,11 +150,24 @@ int main(int argc, const char** argv)
 	Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
 	player->setColour(Ogre::ColourValue::Red);
+
+
+	// Ogre::BillboardSet* Healthset = scene->createBillboardSet();
+	// Healthset->setMaterialName("rectangleSprite");
+	// Healthset->setDefaultDimensions(0.5, 0.5);
+	// Healthset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
+	// Healthset->setCommonDirection(Ogre::Vector3(0, 1, 0));
+	// Ogre::Billboard* health = Healthset->createBillboard(0.5, 2, 0);
+	// health->setColour(Ogre::ColourValue::Green);
+
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
-	entity_player.addComponent<tempo::ComponentGridPosition>(system_level, 2, 2);
+	entity_player.addComponent<tempo::ComponentGridPosition>(system_level, system_level.spawn());
 	auto& comp_player_motion = entity_player.addComponent<tempo::ComponentGridMotion>();
+	entity_player.getComponent<tempo::ComponentRender>().AddHealthBar();
+	// rend.node->attachObject(Healthset);
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
+	entity_player.addComponent<tempo::ComponentHealth>(1000);
 	entity_player.activate();
 
 	//camera
@@ -140,11 +191,11 @@ int main(int argc, const char** argv)
 	Ogre::Billboard* ai = Aset->createBillboard(0, 0.75, 0);
 	ai->setColour(Ogre::ColourValue::Blue);
 	entity_ai.addComponent<tempo::ComponentTransform>();
-	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
-	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentGridPosition>(system_level, 3, 3, tempo::tileMask1by1, false);
+	entity_ai.getComponent<tempo::ComponentRender>().AddHealthBar();
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
+	entity_ai.addComponent<tempo::ComponentHealth>(700);
 	entity_ai.activate();
 
 	// Movement hack
@@ -213,6 +264,10 @@ int main(int argc, const char** argv)
 				}
 			}
 		}
+
+
+		render_health.HealthBarUpdate();
+		system_health.CheckHealth();
 
 		//float cam_motion_delta = sin(beat_progress) * 0.3f;
 		//node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);

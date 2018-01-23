@@ -17,6 +17,8 @@
 #include <tempo/entity/Transform.hpp>
 #include <tempo/entity/TileMask.hpp>
 #include <tempo/math/Vector.hpp>
+//#include <tempo/networkClient.hpp>
+#include <time.h>
 
 namespace tempo{
 	class SystemLevelManager;
@@ -147,6 +149,8 @@ namespace tempo{
 	{
 	private:
 		std::vector<std::vector<Tile*>> tiles;
+		std::vector<Vec2s> player_spawn_zone;
+		uint32_t spawn_zones = 0;
 		Ogre::SceneNode* floor_node;
 
 		class GridPositions : public anax::System<anax::Requires<ComponentGridPosition>>{
@@ -154,9 +158,10 @@ namespace tempo{
 		GridPositions grid_positions;
 
 	public:
-		SystemLevelManager(anax::World& world, Ogre::SceneManager* scene, int size);
-		SystemLevelManager(anax::World& world, int size);
-		SystemLevelManager(anax::World& world, Ogre::SceneManager* scene, const char* fileName);
+		SystemLevelManager(anax::World&, Ogre::SceneManager* scene, int size);
+		SystemLevelManager(anax::World&, int size);
+		SystemLevelManager(anax::World&, Ogre::SceneManager* scene, const char* heightMap, const char* zoneMap);
+		SystemLevelManager(anax::World&, const char* heightMap, const char* zoneMap);
 
 		bool existsTile(Vec2s position);
 		bool existsTile(int x, int y);
@@ -173,7 +178,12 @@ namespace tempo{
 		}
 		float getHeight(int x, int y);
 
-		void loadLevel(Ogre::SceneManager* scene, const char* fileName, std::vector<std::vector<Tile*>> tiles);
+		void loadLevel(Ogre::SceneManager* scene, const char* fileName);
+		void loadLevel(const char* fileName);
+
+
+		void loadZones(const char* fileNames);
+		Vec2s spawn();
 
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Handles moving entities with a GridMotionComponent

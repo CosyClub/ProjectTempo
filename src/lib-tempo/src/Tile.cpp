@@ -13,8 +13,10 @@ namespace tempo{
 		node_tile->setPosition(position.x, -5+height, position.y);
 	}
 
-	Tile::Tile(float height) {
+	Tile::Tile(Vec2s position, float height) {
 		this->height = height;
+		this->position.x = position.x;
+		this->position.y = position.y;
 	}
 
 	void Tile::deleteFloorpiece(Ogre::SceneManager* scene) {
