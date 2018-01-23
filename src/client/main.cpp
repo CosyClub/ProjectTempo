@@ -192,6 +192,7 @@ int main(int argc, const char** argv)
 	ai->setColour(Ogre::ColourValue::Blue);
 	entity_ai.addComponent<tempo::ComponentTransform>();
 	entity_ai.addComponent<tempo::ComponentGridPosition>(system_level, 3, 3, tempo::tileMask1by1, false);
+	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.getComponent<tempo::ComponentRender>().AddHealthBar();
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
