@@ -91,6 +91,58 @@ sf::Packet& operator >>(sf::Packet& packet, Vec2s& vec)
 	return packet;
 }
 
+anax::Entity newEntity(EntityCreationData data, anax::World& world,
+                       Ogre::SceneManager* scene,
+                       tempo::SystemLevelManager system_gm)
+{
+	anax::Entity return_entity;
+
+	EID type_id = data.type_id;
+	Vec2s pos = data.position;
+
+	switch (type_id){
+		case EID_PLAYER:
+			{
+			Player_t p = data.entity_type.player;
+			return_entity = newPlayer(world, scene,
+			                          system_gm
+			                         );
+			break;
+			}
+		case EID_AI:
+			{
+			AI_t a = data.entity_type.ai;
+			return_entity = newAI(world, scene,
+			                      pos.x,
+			                      pos.y
+			                     );
+			break;
+			}
+		case EID_DES:
+			{
+			Destroyable_t d = data.entity_type.destroyable;
+			return_entity = newDestroyable(world, scene,
+			                               pos.x,
+					               pos.y,
+					               d.mesh_name
+			                              );
+			break;
+			}
+		case EID_NONDES:
+			{
+			NonDestroyable_t n = data.entity_type.nondestroyable;
+			return_entity = newNonDestroyable(world, scene,
+			                                  pos.x,
+			                                  pos.y,
+			                                  n.mesh_name
+			                                 );
+			break;
+			}
+	}
+
+	return return_entity;
+}
+
 anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_grid_motion) {
 
 	//TODO:: Add Entity to Specific Tile

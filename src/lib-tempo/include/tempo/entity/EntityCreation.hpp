@@ -30,14 +30,15 @@ typedef struct {
 } AI_t;
 
 typedef struct {
-	int some_data_for_destroyable;
+	std::string mesh_name;
 } Destroyable_t;
 
 typedef struct {
-	int some_data_for_nondestroyable;
+	std::string mesh_name;
 } NonDestroyable_t;
 
 typedef union {
+	int null;
 	Player_t player;
 	AI_t ai;
 	Destroyable_t destroyable;
@@ -59,6 +60,11 @@ sf::Packet& operator <<(sf::Packet& packet, const Vec2s& vec);
 sf::Packet& operator >>(sf::Packet& packet, EntityCreationData& data);
 sf::Packet& operator >>(sf::Packet& packet, Entity_Type& type);
 sf::Packet& operator >>(sf::Packet& packet, Vec2s& vec);
+
+anax::Entity newEntity(EntityCreationData data,
+                       anax::World& world,
+                       Ogre::SceneManager* scene,
+                       tempo::SystemLevelManager system_gm);
 
 anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_grid_motion);
 anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int x, int y);
