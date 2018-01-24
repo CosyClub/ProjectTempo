@@ -11,6 +11,8 @@
 #ifndef TEMPO_ENTITY_LEVELRENDERER_HPP
 #define TEMPO_ENTITY_LEVELRENDERER_HPP
 
+#include <Ogre.h>
+
 namespace tempo{
 
 	// Forward declarations
