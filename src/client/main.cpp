@@ -20,6 +20,7 @@
 #include <tempo/entity/Transform.hpp>
 #include <tempo/entity/Render.hpp>
 #include <tempo/entity/LevelManager.hpp>
+#include <tempo/entity/LevelRenderer.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerLocal.hpp>
 #include <tempo/entity/Health.hpp>
@@ -101,11 +102,10 @@ int main(int argc, const char** argv)
 
 	/////////////////////////////////////////////////
 	// Setup scene
-
 	anax::World world;
 	tempo::SystemRender      system_render(app);
 	Ogre::SceneManager* scene = system_render.scene;
-	tempo::SystemLevelManager system_level(world, scene,
+	tempo::SystemLevelManager system_level(world,
 	                                       "../bin/resources/levels/levelTest.bmp",
 	                                       "../bin/resources/levels/zonesTest.bmp"
 	                                      );
@@ -122,25 +122,13 @@ int main(int argc, const char** argv)
 	world.addSystem(render_health);
 	world.refresh();
 
+	tempo::LevelRenderer level_renderer(scene, scene->getRootSceneNode(), &system_level);
+
 	scene->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
 	Ogre::SceneNode* node_light = scene->getRootSceneNode()->createChildSceneNode();
 	Ogre::Light* light = scene->createLight("MainLight");
 	node_light->attachObject(light);
 	node_light->setPosition(20, 80, 50);
-
-	//auto node_floor = system_level.getFloorNode();
-
-	// Dummy objects
-	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
-	//x1->setPosition(1, 0, 0);
-	//y1->setPosition(0, 1, 0);
-	//z1->setPosition(0, 0, 1);
-	Ogre::Entity* y1 = scene->createEntity("y1", Ogre::SceneManager::PT_SPHERE);
-	Ogre::Entity* z1 = scene->createEntity("z1", Ogre::SceneManager::PT_SPHERE);
-	Ogre::SceneNode* helpers = scene->getRootSceneNode()->createChildSceneNode();
-	helpers->attachObject(x1);
-	helpers->attachObject(y1);
-	helpers->attachObject(z1);
 
 	// Player
 	anax::Entity entity_player = world.createEntity();
@@ -151,7 +139,6 @@ int main(int argc, const char** argv)
 	Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
 	player->setColour(Ogre::ColourValue::Red);
-
 
 	// Ogre::BillboardSet* Healthset = scene->createBillboardSet();
 	// Healthset->setMaterialName("rectangleSprite");
