@@ -37,7 +37,11 @@ namespace tempo{
 			update >> instance_id >> dx >> dy;
 
 			// TODO This is horrifyingly bad and should be removed ASAP
-			if (id_map.find(instance_id) == id_map.end()) continue;
+			if (id_map.find(instance_id) == id_map.end()) {
+				std::cout << "Entity " << instance_id << "tried "
+				          << "to move, but we don't have entity for that."
+				continue;
+			}
 
 			anax::Entity entity = id_map.find(instance_id)->second;
 			auto& input = entity.getComponent<tempo::ComponentPlayerRemote>();

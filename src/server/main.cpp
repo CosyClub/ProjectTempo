@@ -51,6 +51,7 @@ int main(int argc, const char** argv) {
 	                                       );
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemHealth       system_health;
+	
 	world.addSystem(system_level);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_health);
