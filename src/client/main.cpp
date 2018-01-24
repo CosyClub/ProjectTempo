@@ -106,19 +106,19 @@ int main(int argc, const char** argv)
 	helpers->attachObject(z1);
 
 	//testing
-	EntityCreationData* entitytest = newEntity(1, {2,2});
+	/* tempo::EntityCreationData* entitytest = tempo::newEntity(1, {2,2}); */
 
 	// Player
-	anax::Entity entity_player = newPlayer(world, scene, system_grid_motion);
+	anax::Entity entity_player = tempo::newPlayer(world, scene, system_grid_motion);
 
 	// Ai
-	anax::Entity entity_ai = newAI(world,scene, 5, 5);
+	anax::Entity entity_ai = tempo::newAI(world,scene, 5, 5);
 
 	//Destroyables
-	anax::Entity entity_destroyable = newDestroyable(world,scene, 2, 2, "Cube");
+	anax::Entity entity_destroyable = tempo::newDestroyable(world,scene, 2, 2, "Cube");
 
 	//NonDestroyables
-	anax::Entity entity_nondestroyable = newNonDestroyable(world,scene, 5, 5, "Cube");
+	anax::Entity entity_nondestroyable = tempo::newNonDestroyable(world,scene, 5, 5, "Cube");
 
 	//camera
 	Ogre::Camera* camera = scene->createCamera("MainCamera");
