@@ -215,8 +215,8 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, E
 	Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
 	player->setColour(Ogre::ColourValue::Red);
-
-	entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
+	
+		entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene, "TODO").node->attachObject(Pset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());

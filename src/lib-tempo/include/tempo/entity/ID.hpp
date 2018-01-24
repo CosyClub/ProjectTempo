@@ -12,11 +12,13 @@
 
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
+#include <map>
 
 namespace tempo{
 
 extern int globalIDCounter;
-
+extern std::map<int, anax::Entity> id_map;
+	
 struct ComponentID : anax::Component {
 	int instance_id;
 	int type_id;
@@ -29,6 +31,16 @@ struct ComponentID : anax::Component {
 
 	//possibly unnecessary
 	~ComponentID();
+};
+
+struct SystemID : anax::System<anax::Requires<ComponentID>> {
+
+	SystemID();
+	~SystemID();
+
+	anax::Entity get(int instance_id);
+	void OnEntityAdded(anax::Entity& e);
+	void OnEntityRemoved(anax::Entity& e);
 };
 
 }
