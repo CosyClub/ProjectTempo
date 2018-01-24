@@ -75,53 +75,24 @@ namespace tempo{
 
 	/////////////////////////////////////////////////////////////
 	// SystemLevelManager
-	SystemLevelManager::SystemLevelManager(anax::World& world, Ogre::SceneManager* scene, int size)
-		: tiles(size, std::vector<Tile*>(size)) {
-
-		world.addSystem(this->grid_positions);
-		floor_node = scene->getRootSceneNode()->createChildSceneNode();
-
-		for(int i = 0; i < size; i++){
-			for(int j = 0; j< size; j++){
-				tiles[i][j] = new Tile(scene, floor_node, {i,j}, 0);
-			}
-		}
-	}
-
 	SystemLevelManager::SystemLevelManager(anax::World& world, int size)
-		: tiles(size, std::vector<Tile*>(size)) {
+		: tile_heights(size, std::vector<float>(size)) {
 		world.addSystem(this->grid_positions);
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j< size; j++){
-				tiles[i][j] = new Tile({i,j}, 0);
+				tile_heights[i][j] = NO_TILE;
 			}
 		}
 	}
-
-		// SystemLevelManager::SystemLevelManager(Ogre::SceneManager* scene, sf::Packet packet) {
-	// 	char *heightMap, *zoneMap;
-	// 	SystemLevelManager(scene, heightMap, zoneMap);
-	// }
 
 	SystemLevelManager::SystemLevelManager(anax::World& world,
-	                                       Ogre::SceneManager* scene,
 	                                       const char* heightMap,
 	                                       const char* zoneMap)
-		: tiles(100, std::vector<Tile*>(100)), player_spawn_zone(100*100) {
+		: tile_heights(100, std::vector<float>(100)),
+		  player_spawn_zone(100*100) {
 		world.addSystem(this->grid_positions);
-		loadLevel(scene, heightMap);
+		loadLevel(heightMap);
 		loadZones(zoneMap);
-	}
-
-	SystemLevelManager::SystemLevelManager(anax::World& world, const char* heightMap, const char* zoneMap)
-		: tiles(100, std::vector<Tile*>(100)), player_spawn_zone(100*100) {
-		world.addSystem(this->grid_positions);
-		//loadLevel(heightMap);
-		loadZones(zoneMap);
-	}
-
-	Ogre::SceneNode* SystemLevelManager::getFloorNode(){
-		return floor_node;
 	}
 
 	bool SystemLevelManager::existsTile(Vec2s position) {
@@ -129,39 +100,27 @@ namespace tempo{
  	}
 
 	bool SystemLevelManager::existsTile(int x, int y) {
-		if( x < 0  || x >= tiles.size() ||
-	    	y < 0  || y >= tiles.size() )
+		if( x < 0  || x >= tile_heights.size() ||
+	    	y < 0  || y >= tile_heights.size() )
 			return false;
 
-		if( tiles[x][y])
+		if( tile_heights[x][y] != NO_TILE)
 			return true;
 		else
 			return false;
  	}
 
-	void SystemLevelManager::deleteTile(Ogre::SceneManager* scene, Vec2s position) {
-		if (existsTile(position)) {
-			tiles[position.x][position.y]->deleteFloorpiece(scene);
-		} else {
-			std::cout <<" Can't delete non-existent tile";
-		}
+	void SystemLevelManager::deleteTile(Vec2s position) {
+		tile_heights[position.x][position.y] = NO_TILE;
 	}
 
-	void SystemLevelManager::createTile(Ogre::SceneManager* scene, Vec2s position) {
-		tiles[position.x][position.y]->createFloorpiece(scene);
-	}
-
-	void SystemLevelManager::setMaterial(std::string material_name, Vec2s position) {
-		if (existsTile(position)) {
-			tiles[position.x][position.y]->setMaterial(material_name);
-		} else {
-			std::cout <<" Can't set material to non-existent tile";
-		}
+	void SystemLevelManager::createTile(Vec2s position) {
+		tile_heights[position.x][position.y] = 0;
 	}
 
 	void SystemLevelManager::setHeight(float height, Vec2s position) {
 		if (existsTile(position)) {
-			tiles[position.x][position.y]->setHeight(height);
+			tile_heights[position.x][position.y] = height;
 		} else {
 			std::cout <<" Can't set height to non-existent tile";
 		}
@@ -170,40 +129,16 @@ namespace tempo{
 	void SystemLevelManager::setHeight(float height, Vec2s position, int width, int length) {
 		for(int i = position.x; i < width+position.x; i++){
 			for(int j = position.y; j < length+position.y; j++){
-				this->tiles[i][j]->setHeight(height);
+				this->tile_heights[i][j] = height;
 			}
 		}
 	}
 
 	float SystemLevelManager::getHeight(int x, int y) {
 		if (existsTile(x, y)) {
-			return tiles[x][y]->getHeight();
+			return tile_heights[x][y];
 		} else {
 			std::cout <<" Can't get height of non-existent tile";
-		}
-	}
-
-	void SystemLevelManager::loadLevel(Ogre::SceneManager* scene, const char* fileName) {
-
-		SDL_Surface* level = SDL_LoadBMP(fileName);
-
-		floor_node = scene->getRootSceneNode()->createChildSceneNode();
-
-		for (int y = 0; y < level->h; y++) {
-			for (int x = 0; x < level->w; x++) {
-
-				int bpp = level->format->BytesPerPixel;
-				/* Here p is the address to the pixel we want to retrieve */
-				Uint8 *p = (Uint8 *)level->pixels + y * level->pitch + x * bpp;
-				uint32_t pixel = 0;
-
-				pixel = *p;
-
-				if (pixel > 0) {
-					int height = (int) (pixel - 127) / 25.6;
-					this->tiles[x][y] = new Tile(scene, floor_node, { x,y }, height);
-				}
-			}
 		}
 	}
 
@@ -223,12 +158,13 @@ namespace tempo{
 
 				if (pixel > 0) {
 					int height = (int) (pixel - 127) / 25.6;
-					this->tiles[x][y] = new Tile({ x,y }, height);
+					this->tile_heights[x][y] = height;
+				} else {
+					this->tile_heights[x][y] = NO_TILE;
 				}
 			}
 		}
 	}
-
 
 	void SystemLevelManager::loadZones(const char* fileName) {
 

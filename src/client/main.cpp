@@ -20,6 +20,7 @@
 #include <tempo/entity/Transform.hpp>
 #include <tempo/entity/Render.hpp>
 #include <tempo/entity/LevelManager.hpp>
+#include <tempo/entity/LevelRenderer.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerInput.hpp>
 #include <tempo/entity/Health.hpp>
@@ -101,11 +102,10 @@ int main(int argc, const char** argv)
 
 	/////////////////////////////////////////////////
 	// Setup scene
-
 	anax::World world;
 	tempo::SystemRender      system_render(app);
 	Ogre::SceneManager* scene = system_render.scene;
-	tempo::SystemLevelManager system_level(world, scene,
+	tempo::SystemLevelManager system_level(world, scene->createSceneNode(),
 	                                       "../bin/resources/levels/levelTest.bmp",
 	                                       "../bin/resources/levels/zonesTest.bmp"
 	                                      );
@@ -120,6 +120,8 @@ int main(int argc, const char** argv)
 	world.addSystem(system_health);
 	world.addSystem(render_health);
 	world.refresh();
+
+	LevelRenderer level_renderer(scene, system_level);
 
 	scene->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
 	Ogre::SceneNode* node_light = scene->getRootSceneNode()->createChildSceneNode();
