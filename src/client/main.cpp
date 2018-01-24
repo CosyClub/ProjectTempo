@@ -129,20 +129,6 @@ int main(int argc, const char** argv)
 	node_light->attachObject(light);
 	node_light->setPosition(20, 80, 50);
 
-	//auto node_floor = system_level.getFloorNode();
-
-	// Dummy objects
-	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
-	//x1->setPosition(1, 0, 0);
-	//y1->setPosition(0, 1, 0);
-	//z1->setPosition(0, 0, 1);
-	Ogre::Entity* y1 = scene->createEntity("y1", Ogre::SceneManager::PT_SPHERE);
-	Ogre::Entity* z1 = scene->createEntity("z1", Ogre::SceneManager::PT_SPHERE);
-	Ogre::SceneNode* helpers = scene->getRootSceneNode()->createChildSceneNode();
-	helpers->attachObject(x1);
-	helpers->attachObject(y1);
-	helpers->attachObject(z1);
-
 	// Player
 	anax::Entity entity_player = world.createEntity();
 	Ogre::BillboardSet* Pset = scene->createBillboardSet();
