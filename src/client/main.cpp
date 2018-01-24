@@ -150,7 +150,7 @@ int main(int argc, const char** argv)
 	/* tempo::EntityCreationData* entitytest = tempo::newEntity(1, {2,2}); */
 
 	// Player
-	anax::Entity entity_player = tempo::newPlayer(world, scene, 0, tempo::EID_PLAYER, system_grid_motion);
+	anax::Entity entity_player = tempo::newPlayer(world, scene, 0, tempo::EID_PLAYER, system_level);
 
 	// Ai
 	anax::Entity entity_ai = tempo::newAI(world,scene, 1, tempo::EID_AI, 5, 5);

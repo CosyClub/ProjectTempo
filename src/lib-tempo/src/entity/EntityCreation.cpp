@@ -106,7 +106,7 @@ EntityCreationData dumpEntty(anax::Entity e)
 	{
 		case EID_PLAYER:
 			{
-			position = e.getComponent<ComponentGridPosition>().position;
+			position = e.getComponent<ComponentGridPosition>().getPosition();
 			Player_t p;
 			p.foo = 0;
 			Entity_Type t = (Entity_Type) {.player = p};
@@ -116,7 +116,7 @@ EntityCreationData dumpEntty(anax::Entity e)
 			}
 		case EID_AI:
 			{
-			position = e.getComponent<ComponentGridPosition>().position;
+			position = e.getComponent<ComponentGridPosition>().getPosition();
 			AI_t a;
 			a.foo = 0;
 			Entity_Type t = (Entity_Type) {.ai = a};
@@ -126,7 +126,7 @@ EntityCreationData dumpEntty(anax::Entity e)
 			}
 		case EID_DES:
 			{
-			position = e.getComponent<ComponentGridPosition>().position;
+			position = e.getComponent<ComponentGridPosition>().getPosition();
 			Destroyable_t d;
 			memset(&(d.mesh_name), 0, 100);
 			memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(d.mesh_name), 100);
@@ -137,7 +137,7 @@ EntityCreationData dumpEntty(anax::Entity e)
 			}
 		case EID_NONDES:
 			{
-			position = e.getComponent<ComponentGridPosition>().position;
+			position = e.getComponent<ComponentGridPosition>().getPosition();
 			NonDestroyable_t n;
 			memset(&(n.mesh_name), 0, 100);
 			memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(n.mesh_name), 100);
