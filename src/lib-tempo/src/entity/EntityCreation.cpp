@@ -60,6 +60,37 @@ sf::Packet& operator <<(sf::Packet& packet, const Vec2s& vec)
 	return packet;
 }
 
+sf::Packet& operator >>(sf::Packet& packet, EntityCreationData& data)
+{
+	int tmp;
+
+	packet >> tmp;
+	data.type_id = (EID)tmp;
+	packet >> data.position;
+	packet >> data.entity_type;
+	return packet;
+}
+
+sf::Packet& operator >>(sf::Packet& packet, Entity_Type& type)
+{
+	uint8_t *data = (uint8_t*)(&type);
+
+	for (int I = 0; I < sizeof(Entity_Type); I++)
+	{
+		packet >> data[I];
+	}
+
+	return packet;
+}
+
+sf::Packet& operator >>(sf::Packet& packet, Vec2s& vec)
+{
+	packet >> vec.elements[0];
+	packet >> vec.elements[1];
+
+	return packet;
+}
+
 anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_grid_motion) {
 
 	//TODO:: Add Entity to Specific Tile

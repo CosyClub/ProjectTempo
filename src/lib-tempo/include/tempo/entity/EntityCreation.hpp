@@ -56,6 +56,10 @@ sf::Packet& operator <<(sf::Packet& packet, const EntityCreationData& data);
 sf::Packet& operator <<(sf::Packet& packet, const Entity_Type& type);
 sf::Packet& operator <<(sf::Packet& packet, const Vec2s& vec);
 
+sf::Packet& operator >>(sf::Packet& packet, EntityCreationData& data);
+sf::Packet& operator >>(sf::Packet& packet, Entity_Type& type);
+sf::Packet& operator >>(sf::Packet& packet, Vec2s& vec);
+
 anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_grid_motion);
 anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int x, int y);
 anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int x, int y, std::string mesh_name);
