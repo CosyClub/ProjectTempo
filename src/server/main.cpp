@@ -11,10 +11,17 @@
 #include <vector>
 
 #include <tempo/time.hpp>
+
+#include <tempo/entity/GridAi.hpp>
+
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>
+
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
+
+#include <anax/World.hpp>
+#include <anax/Entity.hpp>
 
 #define BPM 174              // Beats per minutes
 #define PLAYER_DELTA 150     // Delta around a beat a player can hit (millisecs)
@@ -31,13 +38,17 @@ int main(int argc, const char** argv) {
 	tempo::port_so = DEFAULT_PORT_OUT;
 	tempo::port_st = DEFAULT_PORT_TS;	
 
-	// Start up timeSyncThread
+	//////////////////////////////////
+	// Set up ECS
+	anax::World world;	
+	
+	// Create Systems
+	tempo::SystemGridAi system_grid_ai;	
+
+	//////////////////////////////////
+	// Thread Startup
 	std::thread timeSyncThread (tempo::timeSyncServer, &clock); 
-
-	// Start up listenForNewClientsThread
 	std::thread newClientsThread (tempo::listenForNewClients);
-
-	// Start up listenForClientUpdatesThread
 	std::thread clientUpdatesThread (tempo::listenForClientUpdates);
 
 	// Main loop, with beat printouts

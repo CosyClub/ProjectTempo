@@ -11,7 +11,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/GridAi.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/Health.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/LevelManager.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/PlayerInput.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/PlayerLocal.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/Render.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/Transform.hpp"
 	
@@ -32,7 +32,7 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/GridAi.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/Health.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/LevelManager.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/entity/PlayerInput.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/entity/PlayerLocal.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/Render.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/Transform.cpp"
 	

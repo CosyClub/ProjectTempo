@@ -16,7 +16,7 @@
 #include <tempo/Tile.hpp>
 #include <tempo/entity/Transform.hpp>
 #include <tempo/math/Vector.hpp>
-//#include <tempo/networkClient.hpp>
+
 #include <time.h>
 
 namespace tempo{

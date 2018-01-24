@@ -21,7 +21,7 @@
 #include <tempo/entity/Render.hpp>
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/GridAi.hpp>
-#include <tempo/entity/PlayerInput.hpp>
+#include <tempo/entity/PlayerLocal.hpp>
 #include <tempo/entity/Health.hpp>
 
 #include <SFML/Audio.hpp>
@@ -106,14 +106,14 @@ int main(int argc, const char** argv)
 	tempo::SystemRender      system_render(app);
 	Ogre::SceneManager* scene = system_render.scene;
 	tempo::SystemGridAi      system_grid_ai;
-	tempo::SystemPlayerInput system_player_input(clock);
+	tempo::SystemPlayerLocal system_player_local(clock);
 	tempo::SystemHealth      system_health;
 	tempo::RenderHealth      render_health;
 	tempo::SystemLevelManager system_grid_motion(scene, "../bin/resources/levels/levelTest.bmp", "../bin/resources/levels/zonesTest.bmp");
 	world.addSystem(system_grid_motion);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_render);
-	world.addSystem(system_player_input);
+	world.addSystem(system_player_local);
 	world.addSystem(system_health);
 	world.addSystem(render_health);
 	world.refresh();
@@ -163,7 +163,7 @@ int main(int argc, const char** argv)
 	// rend.node->attachObject(Healthset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
-	entity_player.addComponent<tempo::ComponentPlayerInput>();
+	entity_player.addComponent<tempo::ComponentPlayerLocal>();
 	entity_player.addComponent<tempo::ComponentHealth>(1000);
 	entity_player.activate();
 
@@ -225,7 +225,7 @@ int main(int argc, const char** argv)
 
 			system_grid_ai.update();
 
-			system_player_input.advanceBeat();
+			system_player_local.advanceBeat();
 		}
 
 		float seconds_until_beat = clock.until_beat().asSeconds();
@@ -238,7 +238,7 @@ int main(int argc, const char** argv)
 
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
-			if(!system_player_input.handleInput(e)){
+			if(!system_player_local.handleInput(e)){
 				switch (e.type) {
 				case SDL_WINDOWEVENT:
 					switch (e.window.event) {
