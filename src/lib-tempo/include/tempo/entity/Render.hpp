@@ -1,10 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////
 ///                      Part of Project Tempo                           ///
 ////////////////////////////////////////////////////////////////////////////
-/// \file Render.hpp
-/// \author Jamie Terry
-/// \date 2017/11/14
-/// \brief Declares the the Render component and system
+/// Render.hpp
+///
+/// Declares the the Render component and system
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef TEMPO_ENTITY_RENDER_HPP
@@ -26,9 +25,23 @@ namespace tempo{
 	struct ComponentRender : anax::Component {
 		Ogre::SceneNode* node;
 		std::string path;
+		Ogre::SceneManager* scene;
+
+		//Required for Entity health bars
+		Ogre::SceneNode* healthBarnode;
+		Ogre::Billboard* healthBillboard;
 
 		ComponentRender(Ogre::SceneManager* scene, std::string path);
 		~ComponentRender();
+
+		// AddHealthBar
+		// Add Health bar to entity to show current health
+		//
+		// Arguments:
+		//          none
+		// Returns:
+		//          void
+		void AddHealthBar();
 	};
 
 	/////////////////////////////////////////////////////////////////////

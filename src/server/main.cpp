@@ -11,7 +11,8 @@
 #include <vector>
 
 #include <tempo/time.hpp>
-#include <tempo/network.hpp>
+#include <tempo/network/base.hpp>
+#include <tempo/network/server.hpp>
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
 
@@ -19,18 +20,27 @@
 #define PLAYER_DELTA 150     // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
-//////////////////
-// Looking for Time Sync Protocol Code? Check src/libtempo in network(.cpp|.hpp)
-//////////////////
-
 int main(int argc, const char** argv) {
 
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME),
 	                                  sf::milliseconds(PLAYER_DELTA));
 
+	// Set up remote address, local ports and remote handshake port
+	tempo::port_sh = DEFAULT_PORT_HS;
+	tempo::port_si = DEFAULT_PORT_IN;
+	tempo::port_so = DEFAULT_PORT_OUT;
+	tempo::port_st = DEFAULT_PORT_TS;	
+
 	// Start up timeSyncThread
 	std::thread timeSyncThread (tempo::timeSyncServer, &clock); 
 
+	// Start up listenForNewClientsThread
+	std::thread newClientsThread (tempo::listenForNewClients);
+
+	// Start up listenForClientUpdatesThread
+	std::thread clientUpdatesThread (tempo::listenForClientUpdates);
+
+	// Main loop, with beat printouts
 	while (true) {
 		if (clock.passed_beat()) {
 			std::cout << "Server Beat Passed (" 

@@ -65,7 +65,7 @@ namespace tempo{
 
 			if(!input.moved_this_beat){
 				input.moved_this_beat = true;
-				motion.moveBy(dx, dy);
+				motion.beginMovement(dx, dy);
 			}
 		}
 	}

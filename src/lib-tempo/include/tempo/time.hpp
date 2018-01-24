@@ -16,7 +16,8 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/System/Clock.hpp>
 
-namespace tempo{
+namespace tempo 
+{
         class Clock
         {
                 public:

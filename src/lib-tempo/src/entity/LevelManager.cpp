@@ -9,6 +9,7 @@
 
 #include <OgreMath.h>
 
+#include <anax/World.hpp>
 #include <tempo/entity/LevelManager.hpp>
 #include <iostream>
 
@@ -16,27 +17,42 @@
 #undef main // SDL likes to define main
 
 namespace tempo{
-	ComponentGridPosition::ComponentGridPosition() : ComponentGridPosition(0,0){
+	/////////////////////////////////////////////////////////////
+	// ComponentGridPosition
+	ComponentGridPosition::ComponentGridPosition(SystemLevelManager& level, Vec2s pos, TileMask mask, bool is_ethereal) :
+		ComponentGridPosition(level, pos.x, pos.y, mask, is_ethereal){
 		// empty body
 	}
 
-	ComponentGridPosition::ComponentGridPosition(Vec2s pos) : ComponentGridPosition(pos.x, pos.y){
-		// empty body
-	}
-
-	ComponentGridPosition::ComponentGridPosition(int x, int y){
+	ComponentGridPosition::ComponentGridPosition(SystemLevelManager& level, int x, int y, TileMask mask, bool is_ethereal){
+		// level not currently used -> but when we want to do more efficient lookup
+		// structure we need to insert entity in it based off of its position
 		this->position = {x,y};
+		this->mask     = mask;
+		this->ethereal = is_ethereal;
 	}
 
-	ComponentGridMotion::ComponentGridMotion() {
-		this->delta  = {0,0};
-		this->motion_progress = 0;
-		this->max_jump_height = 1.0f;
-		this->target_locked = false;
+	TileMask ComponentGridPosition::isCollidingWith(const ComponentGridPosition& other){
+		return this->mask.isCollidingWith(other.mask, other.position - this->position);
 	}
 
-	bool ComponentGridMotion::moveBy(int dx, int dy){
-		if(this->motion_progress != 0){
+	/////////////////////////////////////////////////////////////
+	// ComponentGridMotion
+	ComponentGridMotion::ComponentGridMotion(float max_jump_distance,
+	                                         float movement_speed,
+	                                         float max_jump_height){
+		this->delta             = {0,0};
+		this->motion_progress   = 0;
+		this->max_jump_height   = max_jump_height;
+		this->max_jump_distance = max_jump_distance;
+		this->movement_speed    = movement_speed;
+		this->target_locked     = false;
+	}
+
+	bool ComponentGridMotion::beginMovement(int dx, int dy){
+		if(this->motion_progress != 0){ return false; }
+
+		if((dx*dx + dy*dy) > (this->max_jump_distance * this->max_jump_distance)){
 			return false;
 		}
 
@@ -45,42 +61,38 @@ namespace tempo{
 		return true;
 	}
 
-	SystemLevelManager::SystemLevelManager(Ogre::SceneManager* scene, int size) : tiles(size, std::vector<Tile*>(size)) {
-		floor_node = scene->getRootSceneNode()->createChildSceneNode();
+	const Vec2s& ComponentGridMotion::getCurrentMovement(){
+		return this->delta;
+	}
 
+	bool ComponentGridMotion::isMoving(){
+		return this->motion_progress >= 0.0f;
+	}
+
+	bool ComponentGridMotion::isMovementLocked(){
+		return this->target_locked;
+	}
+
+	/////////////////////////////////////////////////////////////
+	// SystemLevelManager
+	SystemLevelManager::SystemLevelManager(anax::World& world, int size)
+		: tile_heights(size, std::vector<float>(size)) {
+		world.addSystem(this->grid_positions);
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j< size; j++){
-				tiles[i][j] = new Tile(scene, floor_node, {i,j}, 0);
+				tile_heights[i][j] = NO_TILE;
 			}
 		}
 	}
 
-	SystemLevelManager::SystemLevelManager(int size) : tiles(size, std::vector<Tile*>(size)) {
-
-		for(int i = 0; i < size; i++){
-			for(int j = 0; j< size; j++){
-				tiles[i][j] = new Tile({i,j}, 0);
-			}
-		}
-	}
-
-	// SystemLevelManager::SystemLevelManager(Ogre::SceneManager* scene, sf::Packet packet) {
-	// 	char *heightMap, *zoneMap;
-	// 	SystemLevelManager(scene, heightMap, zoneMap);
-	// }
-
-	SystemLevelManager::SystemLevelManager(Ogre::SceneManager* scene, const char* heightMap, const char* zoneMap) : tiles(100, std::vector<Tile*>(100)), player_spawn_zone(100*100) {
-		loadLevel(scene, heightMap);
+	SystemLevelManager::SystemLevelManager(anax::World& world,
+	                                       const char* heightMap,
+	                                       const char* zoneMap)
+		: tile_heights(100, std::vector<float>(100)),
+		  player_spawn_zone(100*100) {
+		world.addSystem(this->grid_positions);
+		loadLevel(heightMap);
 		loadZones(zoneMap);
-	}
-
-	SystemLevelManager::SystemLevelManager(const char* heightMap, const char* zoneMap) : tiles(100, std::vector<Tile*>(100)), player_spawn_zone(100*100) {
-		//loadLevel(heightMap);
-		loadZones(zoneMap);
-	}
-
-	Ogre::SceneNode* SystemLevelManager::getFloorNode(){
-		return floor_node;
 	}
 
 	bool SystemLevelManager::existsTile(Vec2s position) {
@@ -88,66 +100,24 @@ namespace tempo{
  	}
 
 	bool SystemLevelManager::existsTile(int x, int y) {
-		if( x < 0  || x >= tiles.size() ||
-	    	y < 0  || y >= tiles.size() )
+		if( x < 0  || x >= tile_heights.size() ||
+	    	y < 0  || y >= tile_heights.size() )
 			return false;
 
-		if( tiles[x][y])
-			return true;
-		else
-			return false;
+		return tile_heights[x][y] != NO_TILE;
  	}
 
-	void SystemLevelManager::deleteTile(Ogre::SceneManager* scene, Vec2s position) {
-		if (existsTile(position)) {
-			tiles[position.x][position.y]->deleteFloorpiece(scene);
-		} else {
-			std::cout <<" Can't delete non-existent tile";
-		}
+	void SystemLevelManager::deleteTile(Vec2s position) {
+		tile_heights[position.x][position.y] = NO_TILE;
 	}
 
-	void SystemLevelManager::createTile(Ogre::SceneManager* scene, Vec2s position) {
-		tiles[position.x][position.y]->createFloorpiece(scene);
-	}
-
-	void SystemLevelManager::setMaterial(std::string material_name, Vec2s position) {
-		if (existsTile(position)) {
-			tiles[position.x][position.y]->setMaterial(material_name);
-		} else {
-			std::cout <<" Can't set material to non-existent tile";
-		}
-	}
-
-	bool SystemLevelManager::placeEntity(EntityID_t id, Vec2s position) {
-		if (existsTile(position)) {
-			return tiles[position.x][position.y]->placeEntity(id);
-		} else {
-			return false;
-			std::cout <<" Can't put entity on non-existent tile";
-		}
-	}
-
-	void SystemLevelManager::removeEntity(EntityID_t id, Vec2s position) {
-		if (existsTile(position)) {
-			tiles[position.x][position.y]->removeEntity(id);
-		} else {
-			std::cout <<" Can't remove entity from non-existent tile";
-		}
-	}
-
-	std::unordered_set<EntityID_t> SystemLevelManager::getEntitiesOnTile(EntityID_t id, Vec2s position) {
-		if (existsTile(position)) {
-			return tiles[position.x][position.y]->getEntities(id);
-		} else {
-			std::unordered_set<EntityID_t> empty_set;
-			return empty_set;
-			std::cout <<" Can't get entities from non-existent tile";
-		}
+	void SystemLevelManager::createTile(Vec2s position) {
+		tile_heights[position.x][position.y] = 0;
 	}
 
 	void SystemLevelManager::setHeight(float height, Vec2s position) {
 		if (existsTile(position)) {
-			tiles[position.x][position.y]->setHeight(height);
+			tile_heights[position.x][position.y] = height;
 		} else {
 			std::cout <<" Can't set height to non-existent tile";
 		}
@@ -156,40 +126,16 @@ namespace tempo{
 	void SystemLevelManager::setHeight(float height, Vec2s position, int width, int length) {
 		for(int i = position.x; i < width+position.x; i++){
 			for(int j = position.y; j < length+position.y; j++){
-				this->tiles[i][j]->setHeight(height);
+				this->tile_heights[i][j] = height;
 			}
 		}
 	}
 
 	float SystemLevelManager::getHeight(int x, int y) {
 		if (existsTile(x, y)) {
-			return tiles[x][y]->getHeight();
+			return tile_heights[x][y];
 		} else {
 			std::cout <<" Can't get height of non-existent tile";
-		}
-	}
-
-	void SystemLevelManager::loadLevel(Ogre::SceneManager* scene, const char* fileName) {
-
-		SDL_Surface* level = SDL_LoadBMP(fileName);
-
-		floor_node = scene->getRootSceneNode()->createChildSceneNode();
-
-		for (int y = 0; y < level->h; y++) {
-			for (int x = 0; x < level->w; x++) {
-
-				int bpp = level->format->BytesPerPixel;
-				/* Here p is the address to the pixel we want to retrieve */
-				Uint8 *p = (Uint8 *)level->pixels + y * level->pitch + x * bpp;
-				uint32_t pixel = 0;
-
-				pixel = *p;
-
-				if (pixel > 0) {
-					int height = (int) (pixel - 127) / 25.6;
-					this->tiles[x][y] = new Tile(scene, floor_node, { x,y }, height);
-				}
-			}
 		}
 	}
 
@@ -197,6 +143,14 @@ namespace tempo{
 
 		SDL_Surface* level = SDL_LoadBMP(fileName);
 
+		// Clear out any existing tiles
+		for(int x = 0; x < tile_heights.size(); ++x){
+			for(int y = 0; y < tile_heights[x].size(); ++y){
+				tile_heights[x][y] = NO_TILE;
+			}
+		}
+
+		// Load the new tiles
 		for (int y = 0; y < level->h; y++) {
 			for (int x = 0; x < level->w; x++) {
 
@@ -209,12 +163,11 @@ namespace tempo{
 
 				if (pixel > 0) {
 					int height = (int) (pixel - 127) / 25.6;
-					this->tiles[x][y] = new Tile({ x,y }, height);
+					this->tile_heights[x][y] = height;
 				}
 			}
 		}
 	}
-
 
 	void SystemLevelManager::loadZones(const char* fileName) {
 
@@ -247,6 +200,13 @@ namespace tempo{
 		return player_spawn_zone[random_location];
 	}
 
+	Vec2s SystemLevelManager::getWorldSize(){
+		Vec2s result;
+		result.x = tile_heights.size();
+		result.y = tile_heights[0].size();
+		return result;
+	}
+
 	void SystemLevelManager::update(float dt){
 		auto entities = getEntities();
 
@@ -255,22 +215,20 @@ namespace tempo{
 			auto& pos   = entity.getComponent<ComponentGridPosition>();
 			auto& gm    = entity.getComponent<ComponentGridMotion>();
 
-			// :TODO: Should entities have different movement speeds?
-			//        if so, add move_speed ComponentGridMotion and use
-			//        rather than constant value here
 			if(gm.delta != Vec2s::Origin){
-				gm.motion_progress += dt * 10.0f;
+				gm.motion_progress += (dt * gm.movement_speed) / (float)tempo::length(gm.delta);
 				if(gm.motion_progress >= 1){
-					pos.position += gm.delta;
-					gm.delta = {0,0};
-					gm.motion_progress = 0;
-					gm.target_locked   = false;
+					pos.position       += gm.delta;
+					gm.delta           =  {0,0};
+					gm.motion_progress =  0;
+					gm.target_locked   =  false;
 				}
 			}
 
+			Vec2s target_tile = pos.position + gm.delta;
 
 			float current_height = this->getHeight(pos.position);
-			float target_height  = this->getHeight(pos.position + gm.delta);
+			float target_height  = this->getHeight(target_tile);
 			float delta_height   = target_height - current_height;
 
 			/////////////////////////////////
@@ -278,7 +236,7 @@ namespace tempo{
 			// This depends on:
 			// - Delta height between tiles
 			// - If target tile is already occupied by another entity
-			if(gm.motion_progress >= 0.5f && !gm.target_locked){
+			if(gm.motion_progress >= 0.5f && !gm.isMovementLocked()){
 				bool can_make_move = true;
 
 				// Check height difference
@@ -286,7 +244,21 @@ namespace tempo{
 					can_make_move = false;
 				}
 
-				// :TODO: add check for another entity already occupying the target tile
+				// :TODO:OPT: this might be quite slow - for each entity
+				// check all others, might want to build quadtree / 2d boolean array
+				// -> but we only do this check once per move - so might be okay - PROFILE!
+				for(auto& collision_candidate : grid_positions.getEntities()){
+					auto& pos_candidate = collision_candidate.getComponent<ComponentGridPosition>();
+
+					if(pos_candidate.ethereal && pos.ethereal){ continue; }
+
+					Vec2s candidate_delta = pos_candidate.position - target_tile;
+					//printf("Found candidate: %i, %i\n", candidate_delta.x, candidate_delta.y);
+
+					if(pos.mask.isCollidingWith(pos_candidate.mask, candidate_delta)){
+						can_make_move = false;
+					}
+				}
 
 				// :TODO: If multiple entities try to jump into same tile simultaneously
 				// should they both bounce back? Should first one moving get priority?
