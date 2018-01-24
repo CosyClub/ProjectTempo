@@ -62,7 +62,7 @@ int main(int argc, const char** argv)
 
 	/////////////////////////////////////////////////
 	// Networking
-	
+
 	// Set up remote address, local ports and remote handshake port
 	// Note, IF statement is to change ports for local development, bit
 	// hacky and should be removed in due course!
@@ -82,7 +82,7 @@ int main(int argc, const char** argv)
 	tempo::bindSocket('o', tempo::port_co);
 
 	// Start Listener Thread to catch server updates after connecting
-	std::thread listener (tempo::listenForServerUpdates); 	
+	std::thread listener (tempo::listenForServerUpdates);
 
 	// Establish role
 	tempo::ClientRole role = tempo::ClientRole::PLAYER;
@@ -105,12 +105,16 @@ int main(int argc, const char** argv)
 	anax::World world;
 	tempo::SystemRender      system_render(app);
 	Ogre::SceneManager* scene = system_render.scene;
-	tempo::SystemGridAi      system_grid_ai;
-	tempo::SystemPlayerLocal system_player_local(clock);
-	tempo::SystemHealth      system_health;
-	tempo::RenderHealth      render_health;
-	tempo::SystemLevelManager system_grid_motion(scene, "../bin/resources/levels/levelTest.bmp", "../bin/resources/levels/zonesTest.bmp");
-	world.addSystem(system_grid_motion);
+	tempo::SystemLevelManager system_level(world, scene,
+	                                       "../bin/resources/levels/levelTest.bmp",
+	                                       "../bin/resources/levels/zonesTest.bmp"
+	                                      );
+	tempo::SystemGridAi       system_grid_ai;
+	tempo::SystemPlayerLocal  system_player_local(clock);
+	tempo::SystemHealth       system_health;
+	tempo::RenderHealth       render_health;
+	
+	world.addSystem(system_level);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_render);
 	world.addSystem(system_player_local);
@@ -124,7 +128,7 @@ int main(int argc, const char** argv)
 	node_light->attachObject(light);
 	node_light->setPosition(20, 80, 50);
 
-	//auto node_floor = system_grid_motion.getFloorNode();
+	//auto node_floor = system_level.getFloorNode();
 
 	// Dummy objects
 	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
@@ -159,10 +163,10 @@ int main(int argc, const char** argv)
 
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
+	entity_player.addComponent<tempo::ComponentGridPosition>(system_level, system_level.spawn());
+	auto& comp_player_motion = entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.getComponent<tempo::ComponentRender>().AddHealthBar();
 	// rend.node->attachObject(Healthset);
-	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
-	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentPlayerLocal>();
 	entity_player.addComponent<tempo::ComponentHealth>(1000);
 	entity_player.activate();
@@ -188,9 +192,9 @@ int main(int argc, const char** argv)
 	Ogre::Billboard* ai = Aset->createBillboard(0, 0.75, 0);
 	ai->setColour(Ogre::ColourValue::Blue);
 	entity_ai.addComponent<tempo::ComponentTransform>();
+	entity_ai.addComponent<tempo::ComponentGridPosition>(system_level, 3, 3, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.getComponent<tempo::ComponentRender>().AddHealthBar();
-	entity_ai.addComponent<tempo::ComponentGridPosition>(3, 3);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
 	entity_ai.addComponent<tempo::ComponentHealth>(700);
@@ -263,10 +267,10 @@ int main(int argc, const char** argv)
 			}
 		}
 
-		
+
 		render_health.HealthBarUpdate();
 		system_health.CheckHealth();
-		
+
 		//float cam_motion_delta = sin(beat_progress) * 0.3f;
 		//node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
 
@@ -274,7 +278,7 @@ int main(int argc, const char** argv)
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
 
 		world.refresh();
-		system_grid_motion.update(dt);
+		system_level.update(dt);
 		logic_time = dt_timer.getElapsedTime();
 		system_render.render(dt);
 		render_time = dt_timer.getElapsedTime() - logic_time;

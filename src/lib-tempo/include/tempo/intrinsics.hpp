@@ -55,7 +55,7 @@ typedef  intptr_t    sptr;
 namespace tempo{
 	/// \brief Base class for types which should not be able to be copied
 	struct NonCopyable{
-		NonCopyable(){}
+		inline NonCopyable(){}
 	private:
 		NonCopyable(const NonCopyable& other)            = delete;
 		NonCopyable& operator=(const NonCopyable& other) = delete;

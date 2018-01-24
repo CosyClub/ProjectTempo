@@ -7,14 +7,13 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Tile.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/time.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Types.hpp"
-	
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/GridAi.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/Health.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/LevelManager.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/PlayerLocal.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/Render.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/Transform.hpp"
-	
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/TileMask.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/Transform.hpp"	
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/base.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/client.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/queue.hpp"
@@ -28,14 +27,13 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/structures.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/Tile.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/time.cpp"
-	
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/GridAi.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/Health.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/LevelManager.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/PlayerLocal.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/Render.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/entity/TileMask.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/Transform.cpp"
-	
 	"${CMAKE_CURRENT_LIST_DIR}/src/network/base.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/network/client.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/network/queue.cpp"

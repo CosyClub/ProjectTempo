@@ -12,7 +12,7 @@
 
 #include <tempo/time.hpp>
 
-#include <tempo/entity/GridAi.hpp>
+//#include <tempo/entity/GridAi.hpp>
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>
@@ -43,7 +43,7 @@ int main(int argc, const char** argv) {
 	anax::World world;	
 	
 	// Create Systems
-	tempo::SystemGridAi system_grid_ai;	
+	/* tempo::SystemGridAi system_grid_ai; */	
 
 	//////////////////////////////////
 	// Thread Startup
