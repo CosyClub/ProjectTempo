@@ -16,6 +16,8 @@
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
 
+#include <anax/World.hpp>
+
 namespace tempo
 {
 	typedef struct {
@@ -54,7 +56,7 @@ namespace tempo
 	//
 	// Returns:
 	//         void (is a thread)
-	void listenForNewClients();
+	void listenForNewClients(anax::World *world);
 
 	// listenForClientUpdates
 	// WARNING: Should be run on separate thread.

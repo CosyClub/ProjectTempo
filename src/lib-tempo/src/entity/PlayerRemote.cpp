@@ -39,7 +39,7 @@ namespace tempo{
 			// TODO This is horrifyingly bad and should be removed ASAP
 			if (id_map.find(instance_id) == id_map.end()) {
 				std::cout << "Entity " << instance_id << "tried "
-				          << "to move, but we don't have entity for that."
+				          << "to move, but we don't have entity for that.";
 				continue;
 			}
 

@@ -1,15 +1,8 @@
 #ifndef TEMPO_ENTITY_ENTITYCREATION_HPP
 #define TEMPO_ENTITY_ENTITYCREATION_HPP
 
-#include <anax/World.hpp>
-
-#include <Ogre.h>
-
-#include <tempo/entity/Render.hpp>
-#include <tempo/entity/ID.hpp>
-#include <tempo/entity/LevelManager.hpp>
-#include <tempo/entity/GridAi.hpp>
-#include <tempo/entity/PlayerLocal.hpp>
+#include <tempo/math/Vector.hpp>
+#include <SFML/Network.hpp>
 
 namespace tempo
 {
@@ -53,8 +46,6 @@ typedef struct {
 	Entity_Type entity_type;
 } EntityCreationData;
 
-EntityCreationData* newEntity(int type_id, Vec2s pos);
-
 sf::Packet& operator <<(sf::Packet& packet, const EntityCreationData& data);
 sf::Packet& operator <<(sf::Packet& packet, const Entity_Type& type);
 sf::Packet& operator <<(sf::Packet& packet, const Vec2s& vec);
@@ -62,16 +53,6 @@ sf::Packet& operator <<(sf::Packet& packet, const Vec2s& vec);
 sf::Packet& operator >>(sf::Packet& packet, EntityCreationData& data);
 sf::Packet& operator >>(sf::Packet& packet, Entity_Type& type);
 sf::Packet& operator >>(sf::Packet& packet, Vec2s& vec);
-
-anax::Entity newEntity(EntityCreationData data,
-                       anax::World& world,
-                       Ogre::SceneManager* scene,
-                       tempo::SystemLevelManager system_gm);
-
-anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, tempo::SystemLevelManager system_grid_motion);
-anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y);
-anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, std::string mesh_name);
-anax::Entity newNonDestroyable(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, std::string mesh_name);
 
 }
 

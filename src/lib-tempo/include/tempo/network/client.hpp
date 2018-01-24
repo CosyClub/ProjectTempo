@@ -9,7 +9,11 @@
 
 #include <tempo/config.hpp>
 #include <tempo/time.hpp>
+#include <tempo/entity/LevelManager.hpp>
 #include <tempo/network/base.hpp>
+
+#include <anax/World.hpp>
+#include <Ogre.h>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
@@ -65,10 +69,18 @@ namespace tempo
 	//         roleID   - Client's requested role from the server.
 	//         roleData - Point to client's requested role data (if any)
 	//                    null inputs assume no role data requied.
+	//         world    - Anax world to put entities from the server in.
+	//         scene    - Ogre scene manager for the things that need to be
+	//                    rendered from the server.
+	//         system_gm - The Level Manager System for the client for the
+	//                    entities recieved from the server.
 	// Returns:
 	//         void - nothing is returned. Note side effects above.
 	bool connectToAndSyncWithServer(ClientRole roleID, 
-	                                ClientRoleData &roleData);
+	                                ClientRoleData &roleData,
+	                                anax::World& world,
+                                        Ogre::SceneManager *scene,
+                                        tempo::SystemLevelManager system_gm);
 
 }
 

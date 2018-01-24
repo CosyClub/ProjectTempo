@@ -1,8 +1,10 @@
 #include <tempo/network/server.hpp>
+#include <tempo/network/queue.hpp>
+
+#include <tempo/entity/EntityCreationServer.hpp>
 
 #include <iostream>
 
-#include <tempo/network/queue.hpp>
 
 namespace tempo
 {
@@ -118,7 +120,8 @@ uint32_t addClient(sf::Uint32 ip,
 
 void handshakeHello(sf::Packet &packet,
                     sf::IpAddress &sender,
-                    unsigned short port)
+                    unsigned short port,
+                    anax::World *world)
 {
 	// Extract information from packet
 	unsigned short updatePort = 0;
@@ -142,8 +145,10 @@ void handshakeHello(sf::Packet &packet,
 	rog << id; // TODO change to temporary token
 	rog << port_si;
 	rog << port_st;
-	// TODO Package entire level, eg:
-	// rog << packageLevel()
+	rog << static_cast<uint32_t>(world->getEntityCount());
+	for (auto& entity: world->getEntities()) {
+		rog << dumpEntity(entity);
+	}
 
 	// Send response back to sender
 	sock_h.send(rog, sender, port);
@@ -151,7 +156,8 @@ void handshakeHello(sf::Packet &packet,
 
 void handshakeRoleReq(sf::Packet &packet,
                       sf::IpAddress &sender, 
-                      unsigned short port)
+                      unsigned short port,
+                      anax::World *world)
 {
 	// Extract data from packet
 	uint32_t id = NO_CLIENT_ID;
@@ -181,7 +187,8 @@ void handshakeRoleReq(sf::Packet &packet,
 
 void processNewClientPacket(sf::Packet &packet, 
                             sf::IpAddress &sender,
-                            unsigned short port)
+                            unsigned short port,
+                            anax::World *world)
 {
 	uint32_t receiveID = static_cast<uint32_t>(HandshakeID::DEFAULT);
 	packet >> receiveID;
@@ -190,10 +197,10 @@ void processNewClientPacket(sf::Packet &packet,
 	case HandshakeID::HELLO:
 		std::cout << "New client (" << sender.toString() << ":" << port
 		          << ") Connecting!" << std::endl; 
-		handshakeHello(packet, sender, port);
+		handshakeHello(packet, sender, port, world);
 		break;
 	case HandshakeID::ROLEREQ:
-		handshakeRoleReq(packet, sender, port);
+		handshakeRoleReq(packet, sender, port, world);
 		break;
 	default:
 		std::cout << "WARNING: an invalid handshake message was "
@@ -203,7 +210,7 @@ void processNewClientPacket(sf::Packet &packet,
 	}
 }
 
-void listenForNewClients()
+void listenForNewClients(anax::World *world)
 {
 	// Bind to port
 	if (!bindSocket('h', port_sh)) {
@@ -227,7 +234,7 @@ void listenForNewClients()
 			continue;
 		}
 	
-		processNewClientPacket(packet, ip, port);
+		processNewClientPacket(packet, ip, port, world);
 	}
 
 	// TODO Probably should close the socket but it's a protected function

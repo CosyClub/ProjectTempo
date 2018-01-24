@@ -12,14 +12,12 @@
 
 #include <tempo/time.hpp>
 
-//#include <tempo/entity/GridAi.hpp>
-
-#include <tempo/network/base.hpp>
-#include <tempo/network/server.hpp>
-
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/Health.hpp>
+
+#include <tempo/network/base.hpp>
+#include <tempo/network/server.hpp>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
@@ -49,6 +47,7 @@ int main(int argc, const char** argv) {
 	                                       "../bin/resources/levels/levelTest.bmp",
 	                                       "../bin/resources/levels/zonesTest.bmp"
 	                                       );
+	// Create Systems
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemHealth       system_health;
 	
@@ -56,14 +55,14 @@ int main(int argc, const char** argv) {
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_health);
 	world.refresh();
-
-	// Create Systems
-	/* tempo::SystemGridAi system_grid_ai; */
+	
+	// YOLO
+	//anax::Entity entity_ai = tempo::newAI(world,scene, 1, tempo::EID_AI, 5, 5);
 
 	//////////////////////////////////
 	// Thread Startup
 	std::thread timeSyncThread (tempo::timeSyncServer, &clock);
-	std::thread newClientsThread (tempo::listenForNewClients);
+	std::thread newClientsThread (tempo::listenForNewClients, &world);
 	std::thread clientUpdatesThread (tempo::listenForClientUpdates);
 
 	sf::Clock dt_timer;

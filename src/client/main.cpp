@@ -18,7 +18,7 @@
 #include <tempo/song.hpp>
 #include <tempo/time.hpp>
 #include <tempo/song.hpp>
-#include <tempo/entity/EntityCreation.hpp>
+#include <tempo/entity/EntityCreationClient.hpp>
 #include <tempo/entity/Transform.hpp>
 #include <tempo/entity/Render.hpp>
 #include <tempo/entity/LevelManager.hpp>
@@ -56,13 +56,41 @@ int main(int argc, const char** argv)
 
 	// Sound
 	tempo::Song mainsong("resources/sound/focus.ogg");
-	mainsong.set_volume(20.f);
+	mainsong.set_volume(0.f);
 
 	sf::SoundBuffer clickbuf;
 	clickbuf.loadFromFile("resources/sound/tick.ogg");
 	sf::Sound click;
 	click.setBuffer(clickbuf);
 
+	// Clock
+	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
+
+	/////////////////////////////////////////////////
+	// Setup scene
+	anax::World world;
+	tempo::SystemRender           system_render(app);
+	tempo::SystemLevelManager     system_level(world,
+	                                           "../bin/resources/levels/levelTest.bmp",
+	                                           "../bin/resources/levels/zonesTest.bmp"
+	                                           );
+	tempo::SystemUpdateTransforms system_update_transforms;
+	tempo::SystemGridAi           system_grid_ai;
+	tempo::SystemPlayerLocal      system_player_local(clock);
+	tempo::SystemHealth           system_health;
+	tempo::RenderHealth           render_health;
+
+	world.addSystem(system_level);
+	world.addSystem(system_update_transforms);
+	world.addSystem(system_grid_ai);
+	world.addSystem(system_render);
+	world.addSystem(system_player_local);
+	world.addSystem(system_health);
+	world.addSystem(render_health);
+	world.refresh();
+
+	Ogre::SceneManager* scene = system_render.scene;
+	
 	/////////////////////////////////////////////////
 	// Networking
 
@@ -92,40 +120,17 @@ int main(int argc, const char** argv)
 	tempo::ClientRoleData roleData = {"Bilbo Baggins"};
 
 	// Connect to server and handshake information
-	tempo::connectToAndSyncWithServer(role, roleData);
+	tempo::connectToAndSyncWithServer(role, roleData, world, scene, system_level);
 
-	// Clock & Time Sync Song
-	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
-	mainsong.set_volume(0.f);
+	// Start and Sync Song
 	mainsong.start();
 	clock.sync_time(&mainsong);
 	mainsong.set_volume(20.f);
 	long offset = 0;
 
-	/////////////////////////////////////////////////
-	// Setup scene
-	anax::World world;
-	tempo::SystemRender           system_render(app);
-	tempo::SystemLevelManager     system_level(world,
-	                                           "../bin/resources/levels/levelTest.bmp",
-	                                           "../bin/resources/levels/zonesTest.bmp"
-	                                           );
-	tempo::SystemUpdateTransforms system_update_transforms;
-	tempo::SystemGridAi           system_grid_ai;
-	tempo::SystemPlayerLocal      system_player_local(clock);
-	tempo::SystemHealth           system_health;
-	tempo::RenderHealth           render_health;
 
-	world.addSystem(system_level);
-	world.addSystem(system_update_transforms);
-	world.addSystem(system_grid_ai);
-	world.addSystem(system_render);
-	world.addSystem(system_player_local);
-	world.addSystem(system_health);
-	world.addSystem(render_health);
-	world.refresh();
-
-	Ogre::SceneManager* scene   = system_render.scene;
+	///////////////////////
+	// Who even knows
 
 	tempo::LevelRenderer level_renderer(scene, scene->getRootSceneNode(), &system_level);
 
