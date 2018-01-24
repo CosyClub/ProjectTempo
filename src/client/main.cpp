@@ -17,6 +17,8 @@
 #include <tempo/network/client.hpp>
 #include <tempo/song.hpp>
 #include <tempo/time.hpp>
+#include <tempo/song.hpp>
+#include <tempo/entity/EntityCreation.hpp>
 #include <tempo/entity/Transform.hpp>
 #include <tempo/entity/Render.hpp>
 #include <tempo/entity/LevelManager.hpp>
@@ -24,6 +26,7 @@
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerInput.hpp>
 #include <tempo/entity/Health.hpp>
+
 
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>
@@ -48,8 +51,8 @@ int main(int argc, const char** argv)
 	// Setup resources
 	Ogre::ResourceGroupManager& resources = Ogre::ResourceGroupManager::getSingleton();
 	resources.addResourceLocation("resources", "FileSystem",
-	                              Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-	                              true);
+		Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		true);
 	resources.initialiseAllResourceGroups();
 
 	// Sound
@@ -129,33 +132,34 @@ int main(int argc, const char** argv)
 	node_light->attachObject(light);
 	node_light->setPosition(20, 80, 50);
 
+	//auto node_floor = system_grid_motion.getFloorNode();
+
+	// Dummy objects
+	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
+	//x1->setPosition(1, 0, 0);
+	//y1->setPosition(0, 1, 0);
+	//z1->setPosition(0, 0, 1);
+	Ogre::Entity* y1 = scene->createEntity("y1", Ogre::SceneManager::PT_SPHERE);
+	Ogre::Entity* z1 = scene->createEntity("z1", Ogre::SceneManager::PT_SPHERE);
+	Ogre::SceneNode* helpers = scene->getRootSceneNode()->createChildSceneNode();
+	helpers->attachObject(x1);
+	helpers->attachObject(y1);
+	helpers->attachObject(z1);
+
+	//testing
+	/* tempo::EntityCreationData* entitytest = tempo::newEntity(1, {2,2}); */
+
 	// Player
-	anax::Entity entity_player = world.createEntity();
-	Ogre::BillboardSet* Pset = scene->createBillboardSet();
-	Pset->setMaterialName("rectangleSprite");
-	Pset->setDefaultDimensions(0.5, 1.5);
-	Pset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
-	Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
-	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
-	player->setColour(Ogre::ColourValue::Red);
+	anax::Entity entity_player = tempo::newPlayer(world, scene, 0, tempo::EID_PLAYER, system_level);
 
-	// Ogre::BillboardSet* Healthset = scene->createBillboardSet();
-	// Healthset->setMaterialName("rectangleSprite");
-	// Healthset->setDefaultDimensions(0.5, 0.5);
-	// Healthset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
-	// Healthset->setCommonDirection(Ogre::Vector3(0, 1, 0));
-	// Ogre::Billboard* health = Healthset->createBillboard(0.5, 2, 0);
-	// health->setColour(Ogre::ColourValue::Green);
+	// Ai
+	anax::Entity entity_ai = tempo::newAI(world,scene, 1, tempo::EID_AI, 5, 5);
 
-	entity_player.addComponent<tempo::ComponentTransform>();
-	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
-	entity_player.addComponent<tempo::ComponentGridPosition>(system_level, system_level.spawn());
-	auto& comp_player_motion = entity_player.addComponent<tempo::ComponentGridMotion>();
-	entity_player.getComponent<tempo::ComponentRender>().AddHealthBar();
-	// rend.node->attachObject(Healthset);
-	entity_player.addComponent<tempo::ComponentPlayerInput>();
-	entity_player.addComponent<tempo::ComponentHealth>(1000);
-	entity_player.activate();
+	//Destroyables
+	anax::Entity entity_destroyable = tempo::newDestroyable(world,scene, 2, tempo::EID_DES, 2, 2, "Cube");
+
+	//NonDestroyables
+	anax::Entity entity_nondestroyable = tempo::newNonDestroyable(world,scene, 3, tempo::EID_NONDES, 5, 5, "Cube");
 
 	//camera
 	Ogre::Camera* camera = scene->createCamera("MainCamera");
@@ -166,25 +170,7 @@ int main(int argc, const char** argv)
 	Ogre::SceneNode *node_camera = node_player->createChildSceneNode();
 	node_camera->attachObject(camera);
 	node_camera->setPosition(0, 20, 10);
-	camera->lookAt(0,0,0);
-
-	// Ai
-	anax::Entity entity_ai = world.createEntity();
-	Ogre::BillboardSet* Aset = scene->createBillboardSet();
-	Aset->setMaterialName("rectangleSprite");
-	Aset->setDefaultDimensions(0.4, 1.3);
-	Aset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
-	Aset->setCommonDirection(Ogre::Vector3(0, 1, 0));
-	Ogre::Billboard* ai = Aset->createBillboard(0, 0.75, 0);
-	ai->setColour(Ogre::ColourValue::Blue);
-	entity_ai.addComponent<tempo::ComponentTransform>();
-	entity_ai.addComponent<tempo::ComponentGridPosition>(system_level, 3, 3, tempo::tileMask1by1, false);
-	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
-	entity_ai.getComponent<tempo::ComponentRender>().AddHealthBar();
-	entity_ai.addComponent<tempo::ComponentGridMotion>();
-	entity_ai.addComponent<tempo::ComponentGridAi>();
-	entity_ai.addComponent<tempo::ComponentHealth>(700);
-	entity_ai.activate();
+	camera->lookAt(0, 0, 0);
 
 	// Movement hack
 	srand(time(NULL));
@@ -202,7 +188,7 @@ int main(int argc, const char** argv)
 	int frame_counter = 0;
 
 
-	while(running) {
+	while (running) {
 		float dt = dt_timer.getElapsedTime().asSeconds();
 		dt_timer.restart();
 
@@ -228,7 +214,7 @@ int main(int argc, const char** argv)
 
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
-			if(!system_player_input.handleInput(e)){
+			if (!system_player_input.handleInput(e)) {
 				switch (e.type) {
 				case SDL_WINDOWEVENT:
 					switch (e.window.event) {
@@ -271,14 +257,14 @@ int main(int argc, const char** argv)
 		SDL_GL_SwapWindow(app.window);
 
 		++frame_counter;
-		if(fps_timer.getElapsedTime().asSeconds() > 0.5f) {
+		if (fps_timer.getElapsedTime().asSeconds() > 0.5f) {
 			float seconds = fps_timer.getElapsedTime().asSeconds();
 			printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds),
-					                100 * (float)(
-							render_time.asMicroseconds()
-							) / (
-					                logic_time.asMicroseconds() +
-							render_time.asMicroseconds()));
+				100 * (float)(
+					render_time.asMicroseconds()
+					) / (
+						logic_time.asMicroseconds() +
+						render_time.asMicroseconds()));
 			/* printf("Logic time  (μs): %d\n",  logic_time.asMicroseconds()); */
 			/* printf("Render time (μs): %d\n", render_time.asMicroseconds()); */
 			fps_timer.restart();
