@@ -24,13 +24,14 @@ namespace tempo{
 	/////////////////////////////////////////////////////////////////////
 	struct ComponentRender : anax::Component {
 		Ogre::SceneNode* node;
+		std::string path;
 		Ogre::SceneManager* scene;
 
 		//Required for Entity health bars
 		Ogre::SceneNode* healthBarnode;
 		Ogre::Billboard* healthBillboard;
 
-		ComponentRender(Ogre::SceneManager* scene);
+		ComponentRender(Ogre::SceneManager* scene, std::string path);
 		~ComponentRender();
 
 		// AddHealthBar

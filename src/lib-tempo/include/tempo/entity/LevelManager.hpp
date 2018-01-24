@@ -50,14 +50,12 @@ namespace tempo{
 		inline const TileMask& getTileMask(){ return this->mask;     }
 		inline const bool      isEthereal (){ return this->ethereal; }
 
-		ComponentGridPosition(SystemLevelManager& manager,
-		                      Vec2s pos        = {0,0},
+		ComponentGridPosition(Vec2s pos        = {0,0},
 		                      TileMask         = tempo::tileMask1by1,
 		                      bool is_ethereal = true
 		                     );
 
-		ComponentGridPosition(SystemLevelManager& manager,
-		                      int x, int y,
+		ComponentGridPosition(int x, int y,
 		                      TileMask         = tempo::tileMask1by1,
 		                      bool is_ethereal = true
 		                     );

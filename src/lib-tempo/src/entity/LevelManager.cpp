@@ -19,12 +19,12 @@
 namespace tempo{
 	/////////////////////////////////////////////////////////////
 	// ComponentGridPosition
-	ComponentGridPosition::ComponentGridPosition(SystemLevelManager& level, Vec2s pos, TileMask mask, bool is_ethereal) :
-		ComponentGridPosition(level, pos.x, pos.y, mask, is_ethereal){
+	ComponentGridPosition::ComponentGridPosition(Vec2s pos, TileMask mask, bool is_ethereal) :
+		ComponentGridPosition(pos.x, pos.y, mask, is_ethereal){
 		// empty body
 	}
 
-	ComponentGridPosition::ComponentGridPosition(SystemLevelManager& level, int x, int y, TileMask mask, bool is_ethereal){
+	ComponentGridPosition::ComponentGridPosition(int x, int y, TileMask mask, bool is_ethereal){
 		// level not currently used -> but when we want to do more efficient lookup
 		// structure we need to insert entity in it based off of its position
 		this->position = {x,y};
