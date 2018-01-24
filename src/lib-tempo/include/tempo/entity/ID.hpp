@@ -15,16 +15,17 @@
 
 namespace tempo{
 
-int globalIDCounter = 0;
+extern int globalIDCounter;
 
 struct ComponentID : anax::Component {
-	int ID;
+	int instance_id;
+	int type_id;
 
 	//only for server
-	ComponentID();
+	ComponentID(int eid);
 
 	//client
-	ComponentID(int id);
+	ComponentID(int tid, int eid);
 
 	//possibly unnecessary
 	~ComponentID();

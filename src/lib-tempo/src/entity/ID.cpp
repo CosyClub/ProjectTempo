@@ -7,19 +7,23 @@
 /// \brief Contains definition of Render system functions
 ////////////////////////////////////////////////////////////////////////////
 
-#include <tempo/entity/Render.hpp>
+#include <tempo/entity/ID.hpp>
 
 namespace tempo{
 
-ComponentID::ComponentID()
+int globalIDCounter = 0;
+
+ComponentID::ComponentID(int tid)
 {
-	ID = globalIDCounter;
+	type_id = tid;
+	instance_id = globalIDCounter;
 	globalIDCounter++;
 }
 
-ComponentID::ComponentID(int id)
+ComponentID::ComponentID(int iid, int tid)
 {
-	ID = id;
+	type_id = tid;
+	instance_id = iid;
 }
 
 ComponentID::~ComponentID(){

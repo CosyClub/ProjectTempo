@@ -99,12 +99,13 @@ anax::Entity newEntity(EntityCreationData data, anax::World& world,
 
 	EID type_id = data.type_id;
 	Vec2s pos = data.position;
+	int instance_id = data.instance_id;
 
 	switch (type_id){
 		case EID_PLAYER:
 			{
 			Player_t p = data.entity_type.player;
-			return_entity = newPlayer(world, scene,
+			return_entity = newPlayer(world, scene, instance_id, type_id,
 			                          system_gm
 			                         );
 			break;
@@ -112,7 +113,7 @@ anax::Entity newEntity(EntityCreationData data, anax::World& world,
 		case EID_AI:
 			{
 			AI_t a = data.entity_type.ai;
-			return_entity = newAI(world, scene,
+			return_entity = newAI(world, scene, instance_id, type_id,
 			                      pos.x,
 			                      pos.y
 			                     );
@@ -121,7 +122,7 @@ anax::Entity newEntity(EntityCreationData data, anax::World& world,
 		case EID_DES:
 			{
 			Destroyable_t d = data.entity_type.destroyable;
-			return_entity = newDestroyable(world, scene,
+			return_entity = newDestroyable(world, scene, instance_id, type_id,
 			                               pos.x,
 					               pos.y,
 					               d.mesh_name
@@ -131,7 +132,7 @@ anax::Entity newEntity(EntityCreationData data, anax::World& world,
 		case EID_NONDES:
 			{
 			NonDestroyable_t n = data.entity_type.nondestroyable;
-			return_entity = newNonDestroyable(world, scene,
+			return_entity = newNonDestroyable(world, scene, instance_id, type_id,
 			                                  pos.x,
 			                                  pos.y,
 			                                  n.mesh_name
@@ -143,7 +144,7 @@ anax::Entity newEntity(EntityCreationData data, anax::World& world,
 	return return_entity;
 }
 
-anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_grid_motion) {
+anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, tempo::SystemLevelManager system_grid_motion) {
 
 	//TODO:: Add Entity to Specific Tile
 
@@ -155,6 +156,8 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, tempo::Sys
 	Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
 	player->setColour(Ogre::ColourValue::Red);
+
+	entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
@@ -165,7 +168,7 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, tempo::Sys
 	return entity_player;
 }
 
-anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int x, int y) {
+anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y) {
 
 	//TODO:: Add Entity to Specific Tile
 
@@ -177,6 +180,8 @@ anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int x, int y) 
 	Aset->setCommonDirection(Ogre::Vector3(0, 1, 0));
 	Ogre::Billboard* ai = Aset->createBillboard(0, 0.75, 0);
 	ai->setColour(Ogre::ColourValue::Blue);
+
+	entity_ai.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_ai.addComponent<tempo::ComponentTransform>();
 	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y);
@@ -187,7 +192,7 @@ anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int x, int y) 
 	return entity_ai;
 }
 
-anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int x, int y, std::string mesh_name) {
+anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, std::string mesh_name) {
 
 	//TODO:: Add HealthComponent
 	//TODO:: Add Entity to Specific Tile
@@ -195,6 +200,8 @@ anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int x
 	anax::Entity entity_object = world.createEntity();
 	std::string filename = "meshes/" + mesh_name + ".mesh";
 	Ogre::Entity* entity_mesh = scene->createEntity(filename);
+
+	entity_object.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_object.addComponent<tempo::ComponentTransform>();
 	entity_object.addComponent<tempo::ComponentRender>(scene).node->attachObject(entity_mesh);
 	entity_object.addComponent<tempo::ComponentGridPosition>(x, y);
@@ -210,13 +217,15 @@ anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int x
 
 }
 
-anax::Entity newNonDestroyable(anax::World& world, Ogre::SceneManager* scene, int x, int y, std::string mesh_name) {
+anax::Entity newNonDestroyable(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, std::string mesh_name) {
 
 	//TODO:: Add Entity to Specific Tile
 
 	anax::Entity entity_object = world.createEntity();
 	std::string filename = "meshes/" + mesh_name + ".mesh";
 	Ogre::Entity* entity_mesh = scene->createEntity(filename);
+
+	entity_object.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_object.addComponent<tempo::ComponentTransform>();
 	entity_object.addComponent<tempo::ComponentRender>(scene).node->attachObject(entity_mesh);
 	entity_object.addComponent<tempo::ComponentGridPosition>(x, y);
