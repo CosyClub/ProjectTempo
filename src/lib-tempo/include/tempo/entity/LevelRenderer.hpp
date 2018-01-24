@@ -14,7 +14,7 @@
 namespace tempo{
 
 	// Forward declarations
-	class LevelManager;
+	class SystemLevelManager;
 
 	/////////////////////////////////////////////////////////////////////
 	/// \brief Class responsible for rendering the level's tiles
@@ -27,16 +27,16 @@ namespace tempo{
 		/// \param level Pointer to the level manager, if not null updateFloorNodes
 		/// will be called using the level
 		/////////////////////////////////////////////////////////////////////
-		LevelRenderer(Ogre::SceneNode* root_floor_node, LevelManager* level = nullptr);
+		LevelRenderer(Ogre::SceneManager* scene, Ogre::SceneNode* root_floor_node, SystemLevelManager* level = nullptr);
 
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Synchronises the floor node's state with that represented by
-		/// the LevelManager. This includes:
+		/// the SystemLevelManager. This includes:
 		/// - creating nodes if level has entry, but renderer doesn't
 		/// - deleting nodes if levels has no entry, but renderer does
 		/// - changing heights of nodes if height is changed in level
 		/////////////////////////////////////////////////////////////////////
-		void updateFloorNodes(LevelManager& level);
+		void updateFloorNodes(SystemLevelManager& level);
 
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Sets the material of some tile
@@ -55,6 +55,8 @@ namespace tempo{
 
 		/// \brief The root node that the floor tiles are attached to
 		Ogre::SceneNode* root_floor_node;
+
+		Ogre::SceneManager* scene;
 
 		/// \brief 2d array of scene nodes for each tile
 		std::vector<std::vector<Tile>> tile_nodes;

@@ -181,6 +181,11 @@ namespace tempo{
 		void loadLevel(Ogre::SceneManager* scene, const char* fileName);
 		void loadLevel(const char* fileName);
 
+		/////////////////////////////////////////////////////////////////////
+		/// \brief Returns the width and height of the world, IE: maximum
+		/// tile coordinate is 1 less than the returned vector in each dimension
+		/////////////////////////////////////////////////////////////////////
+		Vec2s getWorldSize();
 
 		void loadZones(const char* fileNames);
 		Vec2s spawn();

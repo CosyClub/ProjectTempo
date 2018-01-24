@@ -197,6 +197,13 @@ namespace tempo{
 		return player_spawn_zone[random_location];
 	}
 
+	Vec2s SystemLevelManager::getWorldSize(){
+		Vec2s result;
+		result.x = tile_heights.size();
+		result.y = tile_heights[0].size();
+		return result;
+	}
+
 	void SystemLevelManager::update(float dt){
 		auto entities = getEntities();
 

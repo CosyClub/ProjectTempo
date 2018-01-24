@@ -13,30 +13,32 @@
 #include <Ogre.h>
 
 namespace tempo{
-	LevelRenderer::LevelRenderer(Ogre::SceneNode* root_floor_node, LevelManager* level)
-		: root_floor_node(root_floor_node) {
-		if(level != null){
+	LevelRenderer::LevelRenderer(Ogre::SceneManager* scene, Ogre::SceneNode* root_floor_node, SystemLevelManager* level)
+		: scene(scene),
+		  root_floor_node(root_floor_node) {
+		if(level != nullptr){
 			updateFloorNodes(*level);
 		}
 	}
 
-	void LevelRenderer::updateFloorNodes(LevelManager& level){
-		for(int x = 0; x < level.getWorldWidth(); ++x){
-			for(int y = 0; y < level.getWorldHeight(); ++y){
+	void LevelRenderer::updateFloorNodes(SystemLevelManager& level){
+		Vec2s world_size = level.getWorldSize();
+		for(int x = 0; x < world_size.x; ++x){
+			for(int y = 0; y < world_size.y; ++y){
 
 				bool level_exists_tile  = level.existsTile(x,y);
 				bool render_exists_tile = tile_nodes[x][y].node != nullptr;
 
 				if(!level_exists_tile){
 					if(render_exists_tile){
-						tile_nodes[x][y].removeAndDestroyAllChildren();
-						root_floor_node->getSceneManager().destroySceneNode(tile_nodes[x][y].node);
+						scene->destroyEntity   (tile_nodes[x][y].floorpiece);
+					  scene->destroySceneNode(tile_nodes[x][y].node);
 						tile_nodes[x][y].node       = nullptr;
 						tile_nodes[x][y].floorpiece = nullptr;
 					}
 				} else { // then tile exists in level
 					if(!render_exists_tile){
-						tile_nodes[x][y].node = root_floor_node->getSceneManager().createEntity("meshes/tile.mesh");
+						tile_nodes[x][y].floorpiece = scene->createEntity("meshes/tile.mesh");
 						Ogre::SceneNode* node = root_floor_node->createChildSceneNode();
 						node->attachObject(tile_nodes[x][y].floorpiece);
 						tile_nodes[x][y].node = node;

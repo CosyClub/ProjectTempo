@@ -105,7 +105,7 @@ int main(int argc, const char** argv)
 	anax::World world;
 	tempo::SystemRender      system_render(app);
 	Ogre::SceneManager* scene = system_render.scene;
-	tempo::SystemLevelManager system_level(world, scene->createSceneNode(),
+	tempo::SystemLevelManager system_level(world,
 	                                       "../bin/resources/levels/levelTest.bmp",
 	                                       "../bin/resources/levels/zonesTest.bmp"
 	                                      );
@@ -121,7 +121,7 @@ int main(int argc, const char** argv)
 	world.addSystem(render_health);
 	world.refresh();
 
-	LevelRenderer level_renderer(scene, system_level);
+	tempo::LevelRenderer level_renderer(scene, scene->createSceneNode(), &system_level);
 
 	scene->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
 	Ogre::SceneNode* node_light = scene->getRootSceneNode()->createChildSceneNode();
