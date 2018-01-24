@@ -2,7 +2,12 @@
 ///                      Part of Project Tempo                           ///
 ////////////////////////////////////////////////////////////////////////////
 
+#include <tempo/entity/ID.hpp>
 #include <tempo/entity/PlayerLocal.hpp>
+#include <tempo/entity/SystemQID.hpp>
+
+#include <tempo/network/client.hpp>
+
 #include <iostream>
 #include <cstdio>
 
@@ -48,7 +53,7 @@ namespace tempo{
 		}
 
 		if(!clock.within_delta()){
-			std::cout << "Missed beat by " 
+			std::cout << "Local player missed beat by " 
 			          << std::min(clock.since_beat().asMilliseconds(), 
 			                      clock.until_beat().asMilliseconds()) 
 			          << std::endl;
@@ -58,12 +63,17 @@ namespace tempo{
 		auto entities = getEntities();
 
 		for(auto& entity : entities){
+			auto& id     = entity.getComponent<tempo::ComponentID>();
 			auto& motion = entity.getComponent<tempo::ComponentGridMotion>();
 			auto& input  = entity.getComponent<tempo::ComponentPlayerLocal>();
 
 			if(!input.moved_this_beat){
 				input.moved_this_beat = true;
 				motion.beginMovement(dx, dy);
+
+				sf::Packet packet;
+				packet << id.instance_id << dx << dy;
+				sendMessage(SystemQID::PLAYER_UPDATES, packet, false);
 			}
 		}
 	}

@@ -27,7 +27,6 @@
 #include <tempo/entity/PlayerLocal.hpp>
 #include <tempo/entity/Health.hpp>
 
-
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>
 
@@ -37,7 +36,6 @@
 #define BPM 174
 #define DELTA 150
 #define TIME 60000000 / BPM
-
 
 int main(int argc, const char** argv)
 {

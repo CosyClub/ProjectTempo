@@ -29,8 +29,7 @@ namespace tempo
 		QID_RESERVED_BOTTOM,
 		//Start of non-reserved zone
 		
-		NETWORK_TEST,
-		ANOTHER_UNUSED_MESSAGE_DELETE_ME,
+		PLAYER_UPDATES,
 
 		//End of non-reserved zone
 		QID_RESERVED_TOP
