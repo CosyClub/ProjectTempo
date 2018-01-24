@@ -26,6 +26,7 @@
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerLocal.hpp>
 #include <tempo/entity/Health.hpp>
+#include <tempo/entity/RenderHealth.hpp>
 
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>
@@ -104,24 +105,27 @@ int main(int argc, const char** argv)
 	/////////////////////////////////////////////////
 	// Setup scene
 	anax::World world;
-	tempo::SystemRender      system_render(app);
-	Ogre::SceneManager* scene = system_render.scene;
-	tempo::SystemLevelManager system_level(world,
-	                                       "../bin/resources/levels/levelTest.bmp",
-	                                       "../bin/resources/levels/zonesTest.bmp"
-	                                      );
-	tempo::SystemGridAi       system_grid_ai;
-	tempo::SystemPlayerLocal  system_player_local(clock);
-	tempo::SystemHealth       system_health;
-	tempo::RenderHealth       render_health;
-	
+	tempo::SystemRender           system_render(app);
+	tempo::SystemLevelManager     system_level(world,
+	                                           "../bin/resources/levels/levelTest.bmp",
+	                                           "../bin/resources/levels/zonesTest.bmp"
+	                                           );
+	tempo::SystemUpdateTransforms system_update_transforms;
+	tempo::SystemGridAi           system_grid_ai;
+	tempo::SystemPlayerLocal      system_player_local(clock);
+	tempo::SystemHealth           system_health;
+	tempo::RenderHealth           render_health;
+
 	world.addSystem(system_level);
+	world.addSystem(system_update_transforms);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_render);
 	world.addSystem(system_player_local);
 	world.addSystem(system_health);
 	world.addSystem(render_health);
 	world.refresh();
+
+	Ogre::SceneManager* scene   = system_render.scene;
 
 	tempo::LevelRenderer level_renderer(scene, scene->getRootSceneNode(), &system_level);
 
@@ -238,10 +242,6 @@ int main(int argc, const char** argv)
 			}
 		}
 
-
-		render_health.HealthBarUpdate();
-		system_health.CheckHealth();
-
 		//float cam_motion_delta = sin(beat_progress) * 0.3f;
 		//node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
 
@@ -249,7 +249,10 @@ int main(int argc, const char** argv)
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
 
 		world.refresh();
+		render_health.HealthBarUpdate();
+		system_health.CheckHealth();
 		system_level.update(dt);
+		system_update_transforms.update(system_level);
 		logic_time = dt_timer.getElapsedTime();
 		system_render.render(dt);
 		render_time = dt_timer.getElapsedTime() - logic_time;
