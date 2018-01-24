@@ -153,7 +153,6 @@ int main(int argc, const char** argv)
 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
 	player->setColour(Ogre::ColourValue::Red);
 
-
 	// Ogre::BillboardSet* Healthset = scene->createBillboardSet();
 	// Healthset->setMaterialName("rectangleSprite");
 	// Healthset->setDefaultDimensions(0.5, 0.5);

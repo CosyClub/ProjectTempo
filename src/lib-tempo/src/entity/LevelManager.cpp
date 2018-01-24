@@ -104,10 +104,7 @@ namespace tempo{
 	    	y < 0  || y >= tile_heights.size() )
 			return false;
 
-		if( tile_heights[x][y] != NO_TILE)
-			return true;
-		else
-			return false;
+		return tile_heights[x][y] != NO_TILE;
  	}
 
 	void SystemLevelManager::deleteTile(Vec2s position) {
@@ -146,6 +143,14 @@ namespace tempo{
 
 		SDL_Surface* level = SDL_LoadBMP(fileName);
 
+		// Clear out any existing tiles
+		for(int x = 0; x < tile_heights.size(); ++x){
+			for(int y = 0; y < tile_heights[x].size(); ++y){
+				tile_heights[x][y] = NO_TILE;
+			}
+		}
+
+		// Load the new tiles
 		for (int y = 0; y < level->h; y++) {
 			for (int x = 0; x < level->w; x++) {
 
@@ -159,8 +164,6 @@ namespace tempo{
 				if (pixel > 0) {
 					int height = (int) (pixel - 127) / 25.6;
 					this->tile_heights[x][y] = height;
-				} else {
-					this->tile_heights[x][y] = NO_TILE;
 				}
 			}
 		}

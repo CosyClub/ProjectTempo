@@ -36,14 +36,15 @@ namespace tempo{
 				bool render_exists_tile = tile_nodes[x][y].node != nullptr;
 
 				if(!level_exists_tile){
-					if(tile_nodes[x][y].floorpiece){
-						scene->destroyEntity   (tile_nodes[x][y].floorpiece);
-						tile_nodes[x][y].floorpiece = nullptr;
-					}
 					if(tile_nodes[x][y].node){
+						if(tile_nodes[x][y].floorpiece){
+							tile_nodes[x][y].node->detachObject(tile_nodes[x][y].floorpiece);
+							scene->destroyEntity(tile_nodes[x][y].floorpiece);
+						}
 						scene->destroySceneNode(tile_nodes[x][y].node);
-						tile_nodes[x][y].node       = nullptr;
 					}
+					tile_nodes[x][y].floorpiece = nullptr;
+					tile_nodes[x][y].node       = nullptr;
 				} else { // then tile exists in level
 					if(!render_exists_tile){
 						tile_nodes[x][y].floorpiece = scene->createEntity("meshes/tile.mesh");
