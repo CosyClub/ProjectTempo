@@ -164,6 +164,7 @@ anax::Entity newEntity(EntityCreationData data, anax::World& world,
 		case EID_PLAYER:
 			{
 			Player_t p = data.entity_type.player;
+			// int h = p.health;
 			return_entity = newPlayer(world, scene, instance_id, type_id,
 			                          system_gm
 			                         );
@@ -172,6 +173,7 @@ anax::Entity newEntity(EntityCreationData data, anax::World& world,
 		case EID_AI:
 			{
 			AI_t a = data.entity_type.ai;
+			// int h = a.health;
 			return_entity = newAI(world, scene, instance_id, type_id,
 			                      pos.x,
 			                      pos.y
@@ -181,6 +183,7 @@ anax::Entity newEntity(EntityCreationData data, anax::World& world,
 		case EID_DES:
 			{
 			Destroyable_t d = data.entity_type.destroyable;
+			// int h = d.health;
 			return_entity = newDestroyable(world, scene, instance_id, type_id,
 			                               pos.x,
 					               pos.y,
@@ -215,13 +218,15 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, E
 	Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
 	player->setColour(Ogre::ColourValue::Red);
-	
-		entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
+
+	entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene, "TODO").node->attachObject(Pset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
+	// entity_player.getComponent<tempo::ComponentRender>().AddHealthBar();
+	// entity_player.addComponent<tempo::ComponentHealth>(health);
 	entity_player.activate();
 
 	return entity_player;
@@ -243,9 +248,11 @@ anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int iid, EID t
 	entity_ai.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_ai.addComponent<tempo::ComponentTransform>();
 	entity_ai.addComponent<tempo::ComponentRender>(scene, "TODO").node->attachObject(Aset);
-	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y);
+	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
+	// entity_ai.getComponent<tempo::ComponentRender>().AddHealthBar();
+	// entity_ai.addComponent<tempo::ComponentHealth>(health);
 	entity_ai.activate();
 
 	return entity_ai;
@@ -263,8 +270,10 @@ anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int i
 	entity_object.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_object.addComponent<tempo::ComponentTransform>();
 	entity_object.addComponent<tempo::ComponentRender>(scene, mesh_name).node->attachObject(entity_mesh);
-	entity_object.addComponent<tempo::ComponentGridPosition>(x, y);
+	entity_object.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_object.addComponent<tempo::ComponentGridMotion>();
+	// entity_object.addComponent<tempo::ComponentHealth>(health);
+	// entity_object.getComponent<tempo::ComponentRender>().AddHealthBar();
 
 	//TEMP:: Mesh used was too big
 	Ogre::SceneNode* node_object = entity_object.getComponent<tempo::ComponentRender>().node;
@@ -287,7 +296,7 @@ anax::Entity newNonDestroyable(anax::World& world, Ogre::SceneManager* scene, in
 	entity_object.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_object.addComponent<tempo::ComponentTransform>();
 	entity_object.addComponent<tempo::ComponentRender>(scene, mesh_name).node->attachObject(entity_mesh);
-	entity_object.addComponent<tempo::ComponentGridPosition>(x, y);
+	entity_object.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_object.addComponent<tempo::ComponentGridMotion>();
 
 	//TEMP:: Mesh used was too big

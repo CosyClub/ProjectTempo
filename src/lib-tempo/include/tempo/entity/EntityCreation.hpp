@@ -10,6 +10,7 @@
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerInput.hpp>
+// #include <tempo/entity/Health.hpp>
 
 namespace tempo
 {
@@ -23,16 +24,19 @@ enum EID {
 
 typedef struct {
 	int foo;
+	// int health;
 	/* char  name[100]; */
 	/* float color[3]; */
 } Player_t;
 
 typedef struct {
 	int foo;
+	// int health;
 } AI_t;
 
 typedef struct {
 	char mesh_name[100];
+	// int health;
 } Destroyable_t;
 
 typedef struct {
