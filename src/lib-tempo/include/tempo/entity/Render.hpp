@@ -25,8 +25,9 @@ namespace tempo{
 	/////////////////////////////////////////////////////////////////////
 	struct ComponentRender : anax::Component {
 		Ogre::SceneNode* node;
+		std::string path;
 
-		ComponentRender(Ogre::SceneManager* scene);
+		ComponentRender(Ogre::SceneManager* scene, std::string path);
 		~ComponentRender();
 	};
 

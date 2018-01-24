@@ -22,24 +22,24 @@ enum EID {
 };
 
 typedef struct {
-	std::string name;
-	float color[3];
+	int foo;
+	/* char  name[100]; */
+	/* float color[3]; */
 } Player_t;
 
 typedef struct {
-	int some_data_for_ai;
+	int foo;
 } AI_t;
 
 typedef struct {
-	std::string mesh_name;
+	char mesh_name[100];
 } Destroyable_t;
 
 typedef struct {
-	std::string mesh_name;
+	char mesh_name[100];
 } NonDestroyable_t;
 
 typedef union {
-	int null;
 	Player_t player;
 	AI_t ai;
 	Destroyable_t destroyable;

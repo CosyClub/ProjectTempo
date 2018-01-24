@@ -15,8 +15,8 @@ int globalIDCounter = 0;
 
 ComponentID::ComponentID(int tid)
 {
-	type_id = tid;
-	instance_id = globalIDCounter;
+	this->type_id = tid;
+	this->instance_id = globalIDCounter;
 	globalIDCounter++;
 }
 

@@ -10,8 +10,9 @@
 #include <tempo/entity/Render.hpp>
 
 namespace tempo{
-	ComponentRender::ComponentRender(Ogre::SceneManager* scene){
+	ComponentRender::ComponentRender(Ogre::SceneManager* scene, std::string path){
 		this->node = scene->getRootSceneNode()->createChildSceneNode();
+		this->path = path;
 	}
 
 	ComponentRender::~ComponentRender(){

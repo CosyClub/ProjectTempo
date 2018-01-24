@@ -91,6 +91,65 @@ sf::Packet& operator >>(sf::Packet& packet, Vec2s& vec)
 	return packet;
 }
 
+
+
+EntityCreationData dumpEntty(anax::Entity e)
+{
+	EID type_id = (EID) e.getComponent<ComponentID>().type_id;
+	Vec2s position;
+	int instance_id   = e.getComponent<ComponentID>().instance_id;
+
+	/* data.type_id = type_id; */
+	/* data.instance_id = instance_id; */
+
+	switch (type_id)
+	{
+		case EID_PLAYER:
+			{
+			position = e.getComponent<ComponentGridPosition>().position;
+			Player_t p;
+			p.foo = 0;
+			Entity_Type t = (Entity_Type) {.player = p};
+			EntityCreationData data = {type_id, position, instance_id, t};
+			return data;
+			break;
+			}
+		case EID_AI:
+			{
+			position = e.getComponent<ComponentGridPosition>().position;
+			AI_t a;
+			a.foo = 0;
+			Entity_Type t = (Entity_Type) {.ai = a};
+			EntityCreationData data = {type_id, position, instance_id, t};
+			return data;
+			break;
+			}
+		case EID_DES:
+			{
+			position = e.getComponent<ComponentGridPosition>().position;
+			Destroyable_t d;
+			memset(&(d.mesh_name), 0, 100);
+			memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(d.mesh_name), 100);
+			Entity_Type t = (Entity_Type) {.destroyable = d};
+			EntityCreationData data = {type_id, position, instance_id, t};
+			return data;
+			break;
+			}
+		case EID_NONDES:
+			{
+			position = e.getComponent<ComponentGridPosition>().position;
+			NonDestroyable_t n;
+			memset(&(n.mesh_name), 0, 100);
+			memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(n.mesh_name), 100);
+			Entity_Type t = (Entity_Type) {.nondestroyable = n};
+			EntityCreationData data = {type_id, position, instance_id, t};
+			return data;
+			break;
+			}
+	}
+
+}
+
 anax::Entity newEntity(EntityCreationData data, anax::World& world,
                        Ogre::SceneManager* scene,
                        tempo::SystemLevelManager system_gm)
@@ -125,7 +184,7 @@ anax::Entity newEntity(EntityCreationData data, anax::World& world,
 			return_entity = newDestroyable(world, scene, instance_id, type_id,
 			                               pos.x,
 					               pos.y,
-					               d.mesh_name
+					               std::string(d.mesh_name)
 			                              );
 			break;
 			}
@@ -135,7 +194,7 @@ anax::Entity newEntity(EntityCreationData data, anax::World& world,
 			return_entity = newNonDestroyable(world, scene, instance_id, type_id,
 			                                  pos.x,
 			                                  pos.y,
-			                                  n.mesh_name
+			                                  std::string(n.mesh_name)
 			                                 );
 			break;
 			}
@@ -159,7 +218,7 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, E
 
 	entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_player.addComponent<tempo::ComponentTransform>();
-	entity_player.addComponent<tempo::ComponentRender>(scene).node->attachObject(Pset);
+	entity_player.addComponent<tempo::ComponentRender>(scene, "TODO").node->attachObject(Pset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentPlayerInput>();
@@ -183,7 +242,7 @@ anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int iid, EID t
 
 	entity_ai.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_ai.addComponent<tempo::ComponentTransform>();
-	entity_ai.addComponent<tempo::ComponentRender>(scene).node->attachObject(Aset);
+	entity_ai.addComponent<tempo::ComponentRender>(scene, "TODO").node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
@@ -203,7 +262,7 @@ anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int i
 
 	entity_object.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_object.addComponent<tempo::ComponentTransform>();
-	entity_object.addComponent<tempo::ComponentRender>(scene).node->attachObject(entity_mesh);
+	entity_object.addComponent<tempo::ComponentRender>(scene, mesh_name).node->attachObject(entity_mesh);
 	entity_object.addComponent<tempo::ComponentGridPosition>(x, y);
 	entity_object.addComponent<tempo::ComponentGridMotion>();
 
@@ -227,7 +286,7 @@ anax::Entity newNonDestroyable(anax::World& world, Ogre::SceneManager* scene, in
 
 	entity_object.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_object.addComponent<tempo::ComponentTransform>();
-	entity_object.addComponent<tempo::ComponentRender>(scene).node->attachObject(entity_mesh);
+	entity_object.addComponent<tempo::ComponentRender>(scene, mesh_name).node->attachObject(entity_mesh);
 	entity_object.addComponent<tempo::ComponentGridPosition>(x, y);
 	entity_object.addComponent<tempo::ComponentGridMotion>();
 
