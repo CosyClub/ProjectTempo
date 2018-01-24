@@ -13,12 +13,13 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/Tile.hpp>
 #include <tempo/entity/Transform.hpp>
 #include <tempo/entity/TileMask.hpp>
 #include <tempo/math/Vector.hpp>
 //#include <tempo/networkClient.hpp>
+
 #include <time.h>
+#include <limits>
 
 namespace tempo{
 	class SystemLevelManager;
@@ -148,28 +149,27 @@ namespace tempo{
 	                                                              >>
 	{
 	private:
-		std::vector<std::vector<Tile*>> tiles;
+	  std::vector<std::vector<float>> tile_heights;
+
 		std::vector<Vec2s> player_spawn_zone;
 		uint32_t spawn_zones = 0;
 		Ogre::SceneNode* floor_node;
 
-		class GridPositions : public anax::System<anax::Requires<ComponentGridPosition>>{
-		};
+		class GridPositions : public anax::System<anax::Requires<ComponentGridPosition>>{};
 		GridPositions grid_positions;
 
 	public:
-		SystemLevelManager(anax::World&, Ogre::SceneManager* scene, int size);
+		/// \brief Value to use as tile height to indicate it does not exist
+		static const constexpr float NO_TILE = std::numeric_limits<float>::min();
+
 		SystemLevelManager(anax::World&, int size);
-		SystemLevelManager(anax::World&, Ogre::SceneManager* scene, const char* heightMap, const char* zoneMap);
 		SystemLevelManager(anax::World&, const char* heightMap, const char* zoneMap);
 
 		bool existsTile(Vec2s position);
 		bool existsTile(int x, int y);
 
-		Ogre::SceneNode* getFloorNode();
-		void deleteTile(Ogre::SceneManager* scene, Vec2s position);
-		void createTile(Ogre::SceneManager* scene, Vec2s position);
-		void setMaterial(std::string material_name, Vec2s position);
+		void deleteTile(Vec2s position);
+		void createTile(Vec2s position);
 
 		void setHeight(float height, Vec2s position);
 		void setHeight(float height, Vec2s position, int width, int length);
@@ -181,6 +181,11 @@ namespace tempo{
 		void loadLevel(Ogre::SceneManager* scene, const char* fileName);
 		void loadLevel(const char* fileName);
 
+		/////////////////////////////////////////////////////////////////////
+		/// \brief Returns the width and height of the world, IE: maximum
+		/// tile coordinate is 1 less than the returned vector in each dimension
+		/////////////////////////////////////////////////////////////////////
+		Vec2s getWorldSize();
 
 		void loadZones(const char* fileNames);
 		Vec2s spawn();
