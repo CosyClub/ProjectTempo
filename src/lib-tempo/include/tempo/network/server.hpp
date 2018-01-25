@@ -11,6 +11,7 @@
 #include <thread>
 
 #include <tempo/time.hpp>
+#include <tempo/entity/LevelManager.hpp>
 #include <tempo/network/base.hpp>
 
 #include <SFML/Network.hpp>
@@ -54,9 +55,11 @@ namespace tempo
 	// Listens for and orchestrates initialisation of new clients on 
 	// `port_sh`.
 	//
+	// TODO: Write parameters
+	//
 	// Returns:
 	//         void (is a thread)
-	void listenForNewClients(anax::World *world);
+	void listenForNewClients(anax::World *world, SystemLevelManager system_grid_motion);
 
 	// listenForClientUpdates
 	// WARNING: Should be run on separate thread.

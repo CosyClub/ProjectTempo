@@ -161,7 +161,16 @@ int main(int argc, const char** argv)
 	helpers->attachObject(z1);
 
 	// Player
-	anax::Entity entity_player = tempo::newPlayer(world, scene, 0, tempo::EID_PLAYER, system_level);
+	/* anax::Entity entity_player = tempo::newPlayer(world, scene, 0, tempo::EID_PLAYER, system_level, 2, 2); */
+	// TODO: use better way to find out player, for now this is a search
+	anax::Entity entity_player;
+	for (auto& entity : world.getEntities()) {
+		if (entity.hasComponent<tempo::ComponentPlayerLocal>()) {
+			printf("\n\n\n\n\nFOUND A FOOKING THING\n\n\n\n\n\n");
+			entity_player = entity;
+			break;
+		}
+	}
 
 	//camera
 	Ogre::Camera* camera = scene->createCamera("MainCamera");

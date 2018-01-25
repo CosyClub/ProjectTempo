@@ -18,7 +18,7 @@ anax::Entity newEntity(EntityCreationData data,
 			{
 			Player_t p = data.entity_type.player;
 			return_entity = newPlayer(world, scene, instance_id, type_id,
-			                          system_gm
+			                          system_gm, pos.x, pos.y
 			                         );
 			break;
 			}
@@ -58,9 +58,10 @@ anax::Entity newEntity(EntityCreationData data,
 	return return_entity;
 }
 
-anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, tempo::SystemLevelManager system_grid_motion) {
+anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, tempo::SystemLevelManager system_grid_motion, int x, int y) {
 
 	//TODO:: Add Entity to Specific Tile
+	printf("\n\n\n\n\nCREATING A FOOKING THING\n\n\n\n\n\n");
 
 	anax::Entity entity_player = world.createEntity();
 	Ogre::BillboardSet* Pset = scene->createBillboardSet();
@@ -74,7 +75,8 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, E
 		entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Pset);
-	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
+	Vec2s pos = {x,y};
+	entity_player.addComponent<tempo::ComponentGridPosition>();
 	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentPlayerLocal>();
 	entity_player.activate();

@@ -136,7 +136,12 @@ uint32_t handshakeHello(anax::World& world,
 	return id;
 }
 
-bool handshakeRoleReq(uint32_t id, ClientRole roleID, ClientRoleData &roleData)
+bool handshakeRoleReq(uint32_t id, 
+                      ClientRole roleID, 
+                      ClientRoleData &roleData,
+                      anax::World& world,
+		      Ogre::SceneManager *scene,
+                      tempo::SystemLevelManager system_gm)
 {
 	// Package up payload
 	sf::Packet packet;
@@ -157,9 +162,10 @@ bool handshakeRoleReq(uint32_t id, ClientRole roleID, ClientRoleData &roleData)
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
 	packet >> msg;
 	if (msg == static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG)) {
-		//
 		//TODO Extract entity/response from ROLEREQ_ROG
-		//
+		EntityCreationData e;
+		packet >> e;
+		newEntity(e, world, scene, system_gm);
 	} else {
 		std::cout << "The server was rude to us when we requested a "
 		          << "role. >:(" << std::endl;
@@ -200,7 +206,7 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 		return false;
 	}
 
-	return handshakeRoleReq(id, roleID, roleData);
+	return handshakeRoleReq(id, roleID, roleData, world, scene, system_gm);
 }
 
 

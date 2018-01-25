@@ -157,7 +157,8 @@ void handshakeHello(sf::Packet &packet,
 void handshakeRoleReq(sf::Packet &packet,
                       sf::IpAddress &sender, 
                       unsigned short port,
-                      anax::World *world)
+                      anax::World *world,
+                      SystemLevelManager system_gm)
 {
 	// Extract data from packet
 	uint32_t id = NO_CLIENT_ID;
@@ -168,7 +169,8 @@ void handshakeRoleReq(sf::Packet &packet,
 	packet >> roleData; 
 
 	// Create Entity for selected role from client
-	// TODO ^The above
+	// Only creating players for now (spectators are not a thing)	
+	anax::Entity entity = newPlayer(*world, EID::EID_PLAYER, system_gm);
 
 	// Register Role
 	cmtx.lock();
@@ -179,7 +181,7 @@ void handshakeRoleReq(sf::Packet &packet,
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG);
 	// TODO Package Requested Entity, eg:
-	// rog << packagePlayer(id);
+	rog << dumpEntity(entity);
 	
 	//Send response back to sender
 	sock_h.send(rog, sender, port);
@@ -188,7 +190,8 @@ void handshakeRoleReq(sf::Packet &packet,
 void processNewClientPacket(sf::Packet &packet, 
                             sf::IpAddress &sender,
                             unsigned short port,
-                            anax::World *world)
+                            anax::World *world,
+                            SystemLevelManager system_gm)
 {
 	uint32_t receiveID = static_cast<uint32_t>(HandshakeID::DEFAULT);
 	packet >> receiveID;
@@ -200,7 +203,7 @@ void processNewClientPacket(sf::Packet &packet,
 		handshakeHello(packet, sender, port, world);
 		break;
 	case HandshakeID::ROLEREQ:
-		handshakeRoleReq(packet, sender, port, world);
+		handshakeRoleReq(packet, sender, port, world, system_gm);
 		break;
 	default:
 		std::cout << "WARNING: an invalid handshake message was "
@@ -210,7 +213,7 @@ void processNewClientPacket(sf::Packet &packet,
 	}
 }
 
-void listenForNewClients(anax::World *world)
+void listenForNewClients(anax::World *world, SystemLevelManager system_gm)
 {
 	// Bind to port
 	if (!bindSocket('h', port_sh)) {
@@ -234,7 +237,7 @@ void listenForNewClients(anax::World *world)
 			continue;
 		}
 	
-		processNewClientPacket(packet, ip, port, world);
+		processNewClientPacket(packet, ip, port, world, system_gm);
 	}
 
 	// TODO Probably should close the socket but it's a protected function
