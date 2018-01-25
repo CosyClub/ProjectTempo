@@ -1,4 +1,5 @@
 #include <tempo/entity/EntityCreationClient.hpp>
+#include <iostream>
 
 namespace tempo {
 
@@ -63,7 +64,7 @@ anax::Entity newEntity(EntityCreationData data,
 anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, tempo::SystemLevelManager system_grid_motion) {
 
 	//TODO:: Add Entity to Specific Tile
-	printf("\n\n\n\n\nCREATING A FOOKING THING\n\n\n\n\n\n");
+	std::cout << "created player with id" << iid << std::endl;
 
 	anax::Entity entity_player = world.createEntity();
 	Ogre::BillboardSet* Pset = scene->createBillboardSet();

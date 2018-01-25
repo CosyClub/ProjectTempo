@@ -133,6 +133,7 @@ void handshakeHello(sf::Packet &packet,
 	if (findClientID(ip, updatePort) == NO_CLIENT_ID) {
 		id = addClient(ip, updatePort);
 	} else {
+		id = findClientID(ip, updatePort);
 		// TODO: Time out old client and make a new one
 		std::cout << "WARNING: Connected client tried to reconnect ("
 		          << id << ", " << ip << ":" << updatePort << ")" 

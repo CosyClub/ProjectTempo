@@ -53,10 +53,14 @@ int main(int argc, const char** argv) {
 	// Create Systems
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemHealth       system_health;
+	tempo::SystemPlayerRemote system_player_remote(clock);
+	tempo::SystemID           system_id;
 
 	world.addSystem(system_level);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_health);
+	world.addSystem(system_player_remote);
+	world.addSystem(system_id);
 	world.refresh();
 
 	// YOLO
@@ -97,6 +101,8 @@ int main(int argc, const char** argv) {
 		world.refresh();
 		system_level.update(dt);
 		system_health.CheckHealth();
+		system_player_remote.update();
+		system_player_remote.advanceBeat();
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	}

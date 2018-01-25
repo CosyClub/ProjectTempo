@@ -1,4 +1,6 @@
 #include <tempo/entity/EntityCreation.hpp>
+#include <iostream>
+#include <string.h>
 
 namespace tempo
 {
@@ -36,6 +38,7 @@ sf::Packet& operator <<(sf::Packet& packet, const EntityCreationData& data)
 {
 	packet << data.type_id;
 	packet << data.position;
+	packet << data.instance_id;
 	packet << data.entity_type;
 	return packet;
 }
@@ -67,6 +70,7 @@ sf::Packet& operator >>(sf::Packet& packet, EntityCreationData& data)
 	packet >> tmp;
 	data.type_id = (EID)tmp;
 	packet >> data.position;
+	packet >> data.instance_id;
 	packet >> data.entity_type;
 	return packet;
 }
@@ -75,9 +79,11 @@ sf::Packet& operator >>(sf::Packet& packet, Entity_Type& type)
 {
 	uint8_t *data = (uint8_t*)(&type);
 
+	uint8_t c;
 	for (int I = 0; I < sizeof(Entity_Type); I++)
 	{
-		packet >> data[I];
+		packet >> c;
+		data[I] = c;
 	}
 
 	return packet;

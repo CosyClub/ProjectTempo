@@ -72,6 +72,7 @@ namespace tempo{
 				motion.beginMovement(dx, dy);
 
 				sf::Packet packet;
+				std::cout << "sending move message for " << id.instance_id << std::endl;
 				packet << id.instance_id << dx << dy;
 				sendMessage(SystemQID::PLAYER_UPDATES, packet, false);
 			}
