@@ -6,6 +6,7 @@
 #include <tempo/entity/ID.hpp>
 #include <tempo/entity/SystemQID.hpp>
 #include <tempo/network/queue.hpp>
+#include <tempo/network/server.hpp>
 
 #include <iostream>
 #include <cstdio>
@@ -28,7 +29,6 @@ namespace tempo{
 		if (queue->empty()) return false;
 
 		while (!queue->empty()) {
-			std::cout << "We got a thing\n";
 			sf::Packet update = queue->front();
 			queue->pop();
 			
@@ -40,7 +40,7 @@ namespace tempo{
 			// TODO This is horrifyingly bad and should be removed ASAP
 			if (id_map.find(instance_id) == id_map.end()) {
 				std::cout << "Entity " << instance_id << "tried "
-				          << "to move, but we don't have entity for that.\n";
+				          << "to move, but we don't have entity for that.";
 				continue;
 			}
 
@@ -49,17 +49,25 @@ namespace tempo{
 			auto& motion = entity.getComponent<tempo::ComponentGridMotion>();
 			// END of horrifyingly bad bit
 			
-			if(!input.moved_this_beat){
+			if (!input.moved_this_beat){
 				input.moved_this_beat = true;
 				motion.beginMovement(dx, dy);
 			}
 
-			if(!clock.within_delta()){
+			if (!clock.within_delta()){
 				std::cout << "Entity " << instance_id << " missed beat by " 
 				          << std::min(clock.since_beat().asMilliseconds(), 
 				                      clock.until_beat().asMilliseconds()) 
 				          << std::endl;
 			}
+
+			for (auto it = clients.begin(); it != map.end(); ++it) {
+				sendMessage(SystemQID::PLAYER_UPDATES,
+				            update,
+					    it->first,
+					    false);
+			}
+
 		}
 
 		return true;

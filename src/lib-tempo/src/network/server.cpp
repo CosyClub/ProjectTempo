@@ -5,7 +5,6 @@
 
 #include <iostream>
 
-
 namespace tempo
 {
 
@@ -292,5 +291,17 @@ uint32_t findClientID(sf::Uint32 ip, unsigned short port)
 }
 
 
+bool sendMessage(tempo::SystemQID id, 
+                 sf::Packet payload, 
+                 uint32_t client_id)
+{
+	sf::Packet message;
+
+	// Construct message
+	message << id;
+	message << payload;
+
+	return sock_o.send(message, sf::IpAddress(clients[client_id].ip), clients[client_id].port) == sf::Socket::Done;
+}
 
 } // end of namespace
