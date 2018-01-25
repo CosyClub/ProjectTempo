@@ -80,6 +80,7 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, E
 	entity_player.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Pset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_player.addComponent<tempo::ComponentGridMotion>();
+	id_map[iid] = entity_player;
 	entity_player.activate();
 
 	return entity_player;
@@ -104,6 +105,7 @@ anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int iid, EID t
 	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
+	id_map[iid] = entity_ai;
 	entity_ai.activate();
 
 	return entity_ai;

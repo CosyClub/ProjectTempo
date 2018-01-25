@@ -200,6 +200,17 @@ int main(int argc, const char** argv)
 
 
 	while (running) {
+
+		tempo::Queue<sf::Packet> *q = get_system_queue(tempo::SystemQID::PLAYER_UPDATES);
+		while (!q->empty())
+		{
+			sf::Packet p = q->front();
+			q->pop();
+			tempo::EntityCreationData data;
+			p >> data;
+			newEntity(data, world, scene, system_level);
+		}
+
 		float dt = dt_timer.getElapsedTime().asSeconds();
 		dt_timer.restart();
 
