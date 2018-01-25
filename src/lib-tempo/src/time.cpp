@@ -1,6 +1,5 @@
 #include <tempo/config.hpp>
 #include <tempo/time.hpp>
-#include <tempo/network/client.hpp>
 
 #include <iostream>
 
@@ -31,13 +30,6 @@ namespace tempo
 		song->skip(delta);
 		std::cout << t.asMicroseconds() << std::endl;
         }
-
-	void Clock::sync_time(tempo::Song *song)
-	{ 	
-		sf::Time t = timeSyncClient(this);
-		set_time(t, song);
-		std::cout << time.asMicroseconds() << std::endl;
-	}
 
 	bool Clock::passed_beat()
 	{
@@ -83,7 +75,7 @@ namespace tempo
 	}
 
 	void Clock::update_beat()
-	{       
+	{
 		cache_time();
 		while (next_beat < time) {
 			sf::Time delta = next_beat - last_beat;

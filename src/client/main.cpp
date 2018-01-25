@@ -14,22 +14,22 @@
 #include <Ogre.h>
 
 #include <tempo/Application.hpp>
-#include <tempo/network/client.hpp>
 #include <tempo/song.hpp>
 #include <tempo/time.hpp>
-#include <tempo/song.hpp>
 #include <tempo/entity/EntityCreationClient.hpp>
-#include <tempo/entity/Transform.hpp>
-#include <tempo/entity/Render.hpp>
+#include <tempo/entity/GridAi.hpp>
+#include <tempo/entity/Health.hpp>
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/LevelRenderer.hpp>
-#include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerLocal.hpp>
-#include <tempo/entity/Health.hpp>
+#include <tempo/entity/Render.hpp>
 #include <tempo/entity/RenderHealth.hpp>
+#include <tempo/entity/Transform.hpp>
+#include <tempo/network/client.hpp>
 
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>
+#include <SFML/System/Time.hpp>
 
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
@@ -37,6 +37,13 @@
 #define BPM 174
 #define DELTA 150
 #define TIME 60000000 / BPM
+
+void sync_time(tempo::Clock& clock, tempo::Song *song)
+{
+	sf::Time t = tempo::timeSyncClient(&clock);
+	clock.set_time(t, song);
+	std::cout << t.asMicroseconds() << std::endl;
+}
 
 int main(int argc, const char** argv)
 {
@@ -90,7 +97,7 @@ int main(int argc, const char** argv)
 	world.refresh();
 
 	Ogre::SceneManager* scene = system_render.scene;
-	
+
 	/////////////////////////////////////////////////
 	// Networking
 
@@ -124,7 +131,7 @@ int main(int argc, const char** argv)
 
 	// Start and Sync Song
 	mainsong.start();
-	clock.sync_time(&mainsong);
+	sync_time(clock, &mainsong);
 	mainsong.set_volume(20.f);
 	long offset = 0;
 

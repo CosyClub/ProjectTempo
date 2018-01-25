@@ -5,6 +5,8 @@
 /// \brief Contains entry point for RaveCave Server
 ////////////////////////////////////////////////////////////////////////////////
 
+#define AM_SERVER
+
 #include <iostream>
 #include <cstdio>
 #include <thread>
@@ -50,12 +52,12 @@ int main(int argc, const char** argv) {
 	// Create Systems
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemHealth       system_health;
-	
+
 	world.addSystem(system_level);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_health);
 	world.refresh();
-	
+
 	// YOLO
 	//anax::Entity entity_ai = tempo::newAI(world,scene, 1, tempo::EID_AI, 5, 5);
 
