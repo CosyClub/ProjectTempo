@@ -151,9 +151,6 @@ int main(int argc, const char** argv)
 
 	// Dummy objects
 	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
-	//x1->setPosition(1, 0, 0);
-	//y1->setPosition(0, 1, 0);
-	//z1->setPosition(0, 0, 1);
 	Ogre::Entity* y1 = scene->createEntity("y1", Ogre::SceneManager::PT_SPHERE);
 	Ogre::Entity* z1 = scene->createEntity("z1", Ogre::SceneManager::PT_SPHERE);
 	Ogre::SceneNode* helpers = scene->getRootSceneNode()->createChildSceneNode();
@@ -161,20 +158,8 @@ int main(int argc, const char** argv)
 	helpers->attachObject(y1);
 	helpers->attachObject(z1);
 
-	//testing
-	/* tempo::EntityCreationData* entitytest = tempo::newEntity(1, {2,2}); */
-
 	// Player
 	anax::Entity entity_player = tempo::newPlayer(world, scene, 0, tempo::EID_PLAYER, system_level);
-
-	// Ai
-	anax::Entity entity_ai = tempo::newAI(world,scene, 1, tempo::EID_AI, 5, 5);
-
-	//Destroyables
-	anax::Entity entity_destroyable = tempo::newDestroyable(world,scene, 2, tempo::EID_DES, 2, 2, "Cube");
-
-	//NonDestroyables
-	anax::Entity entity_nondestroyable = tempo::newNonDestroyable(world,scene, 3, tempo::EID_NONDES, 5, 5, "Cube");
 
 	//camera
 	Ogre::Camera* camera = scene->createCamera("MainCamera");

@@ -37,7 +37,8 @@ anax::Entity newEntity(EntityCreationData data,
 			return_entity = newDestroyable(world, scene, instance_id, type_id,
 			                               pos.x,
 					               pos.y,
-					               std::string(d.mesh_name)
+					               /* std::string(d.mesh_name) */ // TODO FIX
+					               "Cube"
 			                              );
 			break;
 			}
@@ -47,7 +48,8 @@ anax::Entity newEntity(EntityCreationData data,
 			return_entity = newNonDestroyable(world, scene, instance_id, type_id,
 			                                  pos.x,
 			                                  pos.y,
-			                                  std::string(n.mesh_name)
+			                                  /* std::string(n.mesh_name) */ // TODO FIX
+			                                  "Cube"
 			                                 );
 			break;
 			}
@@ -71,7 +73,7 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, E
 	
 		entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_player.addComponent<tempo::ComponentTransform>();
-	entity_player.addComponent<tempo::ComponentRender>(scene, "TODO").node->attachObject(Pset);
+	entity_player.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Pset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentPlayerLocal>();
@@ -95,7 +97,7 @@ anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int iid, EID t
 
 	entity_ai.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_ai.addComponent<tempo::ComponentTransform>();
-	entity_ai.addComponent<tempo::ComponentRender>(scene, "TODO").node->attachObject(Aset);
+	entity_ai.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Aset);
 	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
@@ -108,7 +110,7 @@ anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int i
 
 	//TODO:: Add HealthComponent
 	//TODO:: Add Entity to Specific Tile
-
+	
 	anax::Entity entity_object = world.createEntity();
 	std::string filename = "meshes/" + mesh_name + ".mesh";
 	Ogre::Entity* entity_mesh = scene->createEntity(filename);

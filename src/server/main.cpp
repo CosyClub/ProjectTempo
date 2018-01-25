@@ -14,6 +14,7 @@
 
 #include <tempo/time.hpp>
 
+#include <tempo/entity/EntityCreationServer.hpp>
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/Health.hpp>
@@ -59,7 +60,15 @@ int main(int argc, const char** argv) {
 	world.refresh();
 
 	// YOLO
-	//anax::Entity entity_ai = tempo::newAI(world,scene, 1, tempo::EID_AI, 5, 5);
+	anax::Entity entity_ai1 = tempo::newAI(world, 1, tempo::EID_AI, 5, 5);
+	anax::Entity entity_ai2 = tempo::newAI(world, 1, tempo::EID_AI, 3, 3);
+	anax::Entity entity_ai3 = tempo::newAI(world, 1, tempo::EID_AI, 8, 8);
+	
+	//Destroyables
+	anax::Entity entity_destroyable = tempo::newDestroyable(world, 2, tempo::EID_DES, 2, 2, "Cube");
+
+	//NonDestroyables
+	anax::Entity entity_nondestroyable = tempo::newNonDestroyable(world, 3, tempo::EID_NONDES, 5, 5, "Cube");
 
 	//////////////////////////////////
 	// Thread Startup

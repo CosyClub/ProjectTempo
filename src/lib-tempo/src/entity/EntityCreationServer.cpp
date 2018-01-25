@@ -1,5 +1,7 @@
 #include <tempo/entity/EntityCreationServer.hpp>
 
+#include <string.h>
+
 namespace tempo
 {
 
@@ -39,7 +41,10 @@ EntityCreationData dumpEntity(anax::Entity e)
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			Destroyable_t d;
 			memset(&(d.mesh_name), 0, 100);
-			memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(d.mesh_name), 100);
+			
+			// TODO Sort this
+			/* memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(d.mesh_name), 100); */
+
 			Entity_Type t = (Entity_Type) {.destroyable = d};
 			EntityCreationData data = {type_id, position, instance_id, t};
 			return data;
@@ -50,13 +55,84 @@ EntityCreationData dumpEntity(anax::Entity e)
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			NonDestroyable_t n;
 			memset(&(n.mesh_name), 0, 100);
-			memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(n.mesh_name), 100);
+			
+			// TODO Sort this
+			/* memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(n.mesh_name), 100); */
+			
 			Entity_Type t = (Entity_Type) {.nondestroyable = n};
 			EntityCreationData data = {type_id, position, instance_id, t};
 			return data;
 			break;
 			}
 	}
+
+}
+
+anax::Entity newPlayer(anax::World& world, int iid, EID tid, tempo::SystemLevelManager system_grid_motion) {
+
+	//TODO:: Add Entity to Specific Tile
+
+	anax::Entity entity_player = world.createEntity();
+	
+	entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
+	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
+	entity_player.addComponent<tempo::ComponentGridMotion>();
+	
+	
+	// TODO v this
+	/* entity_player.addComponent<tempo::ComponentPlayerLocal>(); */
+	
+	
+	entity_player.activate();
+
+	return entity_player;
+}
+
+anax::Entity newAI(anax::World& world, int iid, EID tid, int x, int y) {
+
+	//TODO:: Add Entity to Specific Tile
+
+	anax::Entity entity_ai = world.createEntity();
+
+	entity_ai.addComponent<tempo::ComponentID>(iid, (int)tid);
+	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y);
+	entity_ai.addComponent<tempo::ComponentGridMotion>();
+	entity_ai.addComponent<tempo::ComponentGridAi>();
+	entity_ai.activate();
+
+	return entity_ai;
+}
+
+anax::Entity newDestroyable(anax::World& world, int iid, EID tid, int x, int y, std::string mesh_name) {
+
+	//TODO:: Add HealthComponent
+	//TODO:: Add Entity to Specific Tile
+
+	anax::Entity entity_object = world.createEntity();
+
+	entity_object.addComponent<tempo::ComponentID>(iid, (int)tid);
+	entity_object.addComponent<tempo::ComponentGridPosition>(x, y);
+	entity_object.addComponent<tempo::ComponentGridMotion>();
+
+	entity_object.activate();
+
+	return entity_object;
+
+}
+
+anax::Entity newNonDestroyable(anax::World& world, int iid, EID tid, int x, int y, std::string mesh_name) {
+
+	//TODO:: Add Entity to Specific Tile
+
+	anax::Entity entity_object = world.createEntity();
+
+	entity_object.addComponent<tempo::ComponentID>(iid, (int)tid);
+	entity_object.addComponent<tempo::ComponentGridPosition>(x, y);
+	entity_object.addComponent<tempo::ComponentGridMotion>();
+
+	entity_object.activate();
+
+	return entity_object;
 
 }
 
