@@ -95,7 +95,7 @@ anax::Entity newAI(anax::World& world, int iid, EID tid, int x, int y) {
 	anax::Entity entity_ai = world.createEntity();
 
 	entity_ai.addComponent<tempo::ComponentID>(iid, (int)tid);
-	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y);
+	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
 	entity_ai.activate();
@@ -111,7 +111,7 @@ anax::Entity newDestroyable(anax::World& world, int iid, EID tid, int x, int y, 
 	anax::Entity entity_object = world.createEntity();
 
 	entity_object.addComponent<tempo::ComponentID>(iid, (int)tid);
-	entity_object.addComponent<tempo::ComponentGridPosition>(x, y);
+	entity_object.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_object.addComponent<tempo::ComponentGridMotion>();
 
 	entity_object.activate();
@@ -127,7 +127,7 @@ anax::Entity newNonDestroyable(anax::World& world, int iid, EID tid, int x, int 
 	anax::Entity entity_object = world.createEntity();
 
 	entity_object.addComponent<tempo::ComponentID>(iid, (int)tid);
-	entity_object.addComponent<tempo::ComponentGridPosition>(x, y);
+	entity_object.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_object.addComponent<tempo::ComponentGridMotion>();
 
 	entity_object.activate();
