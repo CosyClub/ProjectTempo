@@ -203,7 +203,7 @@ int main(int argc, const char** argv)
 
 	while (running) {
 
-		tempo::Queue<sf::Packet> *q = get_system_queue(tempo::SystemQID::PLAYER_UPDATES);
+		tempo::Queue<sf::Packet> *q = get_system_queue(tempo::SystemQID::ENTITY_CREATION);
 		while (!q->empty())
 		{
 			sf::Packet p = q->front();
@@ -211,6 +211,7 @@ int main(int argc, const char** argv)
 			tempo::EntityCreationData data;
 			p >> data;
 			newEntity(data, world, scene, system_level);
+			std::cout << "Recieved new entity" << std::endl;
 		}
 
 		float dt = dt_timer.getElapsedTime().asSeconds();

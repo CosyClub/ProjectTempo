@@ -182,6 +182,11 @@ void handshakeRoleReq(sf::Packet &packet,
 	rog << static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG);
 	// TODO Package Requested Entity, eg:
 	rog << dumpEntity(entity);
+
+	for (tempo::clientpair client:clients){
+		std::cout << "sending update to client " << client.first << std::endl; 
+		sendMessage(tempo::SystemQID::ENTITY_CREATION, rog, client.first);
+	}
 	
 	//Send response back to sender
 	sock_h.send(rog, sender, port);

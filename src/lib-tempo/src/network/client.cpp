@@ -91,6 +91,7 @@ void listenForServerUpdates()
 		}
 
 		// Sort packet into respective system.
+		std::cout << "recieved packet from server" << std::endl;
 		sortPacket(packet);
 	}
 
