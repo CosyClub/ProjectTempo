@@ -30,6 +30,7 @@ namespace tempo
 		//Start of non-reserved zone
 		
 		PLAYER_UPDATES,
+		ENTITY_CREATION,
 
 		//End of non-reserved zone
 		QID_RESERVED_TOP
