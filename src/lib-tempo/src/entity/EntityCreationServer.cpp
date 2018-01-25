@@ -77,6 +77,8 @@ anax::Entity newPlayer(anax::World& world, EID tid, tempo::SystemLevelManager sy
 	
 	entity_player.addComponent<tempo::ComponentID>((int)tid);
 	std::cout << "Created player with iid " << entity_player.getComponent<tempo::ComponentID>().instance_id << std::endl;
+	int iid = entity_player.getComponent<tempo::ComponentID>().instance_id;
+	id_map[iid] = entity_player;
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();	
@@ -96,6 +98,8 @@ anax::Entity newAI(anax::World& world, EID tid, int x, int y) {
 	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
+	int iid = entity_ai.getComponent<tempo::ComponentID>().instance_id;
+	id_map[iid] = entity_ai;
 	entity_ai.activate();
 
 	return entity_ai;
