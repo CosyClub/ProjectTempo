@@ -165,7 +165,8 @@ bool handshakeRoleReq(uint32_t id,
 		//TODO Extract entity/response from ROLEREQ_ROG
 		EntityCreationData e;
 		packet >> e;
-		newEntity(e, world, scene, system_gm);
+		anax::Entity en = newEntity(e, world, scene, system_gm);
+		en.addComponent<tempo::ComponentPlayerLocal>();
 	} else {
 		std::cout << "The server was rude to us when we requested a "
 		          << "role. >:(" << std::endl;
