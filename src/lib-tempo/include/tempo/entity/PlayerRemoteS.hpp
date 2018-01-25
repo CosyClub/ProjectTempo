@@ -2,8 +2,8 @@
 ///                      Part of Project Tempo                           ///
 ////////////////////////////////////////////////////////////////////////////
 
-#ifndef TEMPO_ENTITY_PLAYERLOCAL_HPP
-#define TEMPO_ENTITY_PLAYERLOCAL_HPP
+#ifndef TEMPO_ENTITY_PLAYERREMOTES_HPP
+#define TEMPO_ENTITY_PLAYERREMOTES_HPP
 
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
@@ -16,19 +16,19 @@
 
 namespace tempo{
 
-	struct ComponentPlayerRemote : anax::Component 
+	struct ComponentPlayerRemoteS : anax::Component 
 	{
 		bool moved_this_beat;
 
-		inline ComponentPlayerRemote() : moved_this_beat(false) {}
+		inline ComponentPlayerRemoteS() : moved_this_beat(false) {}
 	};
 
-	struct SystemPlayerRemote : anax::System<anax::Requires<ComponentGridMotion, 
-	                                                        ComponentPlayerRemote>> 
+	struct SystemPlayerRemoteS : anax::System<anax::Requires<ComponentGridMotion, 
+	                                                        ComponentPlayerRemoteS>> 
 	{
 		tempo::Clock& clock;
 
-		inline SystemPlayerRemote(tempo::Clock& c) : clock(c) {}
+		inline SystemPlayerRemoteS(tempo::Clock& c) : clock(c) {}
 
 		void advanceBeat();
 		bool update();

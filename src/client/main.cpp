@@ -22,6 +22,7 @@
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/LevelRenderer.hpp>
 #include <tempo/entity/PlayerLocal.hpp>
+#include <tempo/entity/PlayerRemote.hpp>
 #include <tempo/entity/Render.hpp>
 #include <tempo/entity/RenderHealth.hpp>
 #include <tempo/entity/Transform.hpp>
@@ -84,6 +85,7 @@ int main(int argc, const char** argv)
 	tempo::SystemUpdateTransforms system_update_transforms;
 	tempo::SystemGridAi           system_grid_ai;
 	tempo::SystemPlayerLocal      system_player_local(clock);
+	tempo::SystemPlayerRemote     system_player_remote(clock);
 	tempo::SystemHealth           system_health;
 	tempo::RenderHealth           render_health;
 
@@ -92,6 +94,7 @@ int main(int argc, const char** argv)
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_render);
 	world.addSystem(system_player_local);
+	world.addSystem(system_player_remote);
 	world.addSystem(system_health);
 	world.addSystem(render_health);
 	world.refresh();
@@ -166,7 +169,6 @@ int main(int argc, const char** argv)
 	anax::Entity entity_player;
 	for (auto& entity : world.getEntities()) {
 		if (entity.hasComponent<tempo::ComponentPlayerLocal>()) {
-			printf("\n\n\n\n\nFOUND A FOOKING THING\n\n\n\n\n\n");
 			entity_player = entity;
 			break;
 		}
@@ -224,6 +226,7 @@ int main(int argc, const char** argv)
 			system_grid_ai.update();
 
 			system_player_local.advanceBeat();
+			system_player_remote.advanceBeat();
 		}
 
 		float seconds_until_beat = clock.until_beat().asSeconds();

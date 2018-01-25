@@ -2,8 +2,8 @@
 ///                      Part of Project Tempo                           ///
 ////////////////////////////////////////////////////////////////////////////
 
-#ifndef TEMPO_ENTITY_PLAYERLOCAL_HPP
-#define TEMPO_ENTITY_PLAYERLOCAL_HPP
+#ifndef TEMPO_ENTITY_PLAYERREMOTE_HPP
+#define TEMPO_ENTITY_PLAYERREMOTE_HPP
 
 #include <anax/System.hpp>
 #include <anax/Component.hpp>

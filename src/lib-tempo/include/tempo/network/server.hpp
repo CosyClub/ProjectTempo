@@ -81,6 +81,10 @@ namespace tempo
 	//         known as THIS_IS_NOT_THE_CLIENT_YOU_ARE_LOOKING_FOR) if no
 	//         such client exists.
 	uint32_t findClientID(sf::Uint32 ip, unsigned short port);
+
+	bool sendMessage(tempo::SystemQID id, 
+                         sf::Packet payload, 
+                         uint32_t client_id);
 }
 
 #endif

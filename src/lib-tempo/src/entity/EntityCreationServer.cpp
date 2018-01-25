@@ -81,7 +81,7 @@ anax::Entity newPlayer(anax::World& world, EID tid, tempo::SystemLevelManager sy
 	id_map[iid] = entity_player;
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
-	entity_player.addComponent<tempo::ComponentPlayerRemote>();	
+	entity_player.addComponent<tempo::ComponentPlayerRemoteS>();	
 	
 	entity_player.activate();
 

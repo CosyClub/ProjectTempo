@@ -53,7 +53,7 @@ int main(int argc, const char** argv) {
 	// Create Systems
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemHealth       system_health;
-	tempo::SystemPlayerRemote system_player_remote(clock);
+	tempo::SystemPlayerRemoteS system_player_remote(clock);
 	tempo::SystemID           system_id;
 
 	world.addSystem(system_level);
@@ -79,6 +79,7 @@ int main(int argc, const char** argv) {
 	std::thread timeSyncThread (tempo::timeSyncServer, &clock);
 	std::thread newClientsThread (tempo::listenForNewClients, &world, system_level);
 	std::thread clientUpdatesThread (tempo::listenForClientUpdates);
+	tempo::bindSocket('o', tempo::port_so);
 
 	sf::Clock dt_timer;
 

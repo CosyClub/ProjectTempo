@@ -1,4 +1,7 @@
 #include <tempo/entity/EntityCreationClient.hpp>
+
+#include <tempo/entity/PlayerRemote.hpp>
+
 #include <iostream>
 
 namespace tempo {
@@ -80,6 +83,7 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, E
 	entity_player.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Pset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_player.addComponent<tempo::ComponentGridMotion>();
+	entity_player.addComponent<tempo::ComponentPlayerRemote>();
 	id_map[iid] = entity_player;
 	entity_player.activate();
 

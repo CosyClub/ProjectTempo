@@ -1,6 +1,7 @@
 #include <tempo/network/client.hpp>
 
 #include <tempo/entity/EntityCreationClient.hpp>
+#include <tempo/entity/PlayerRemote.hpp>
 
 #include <iostream>
 #include <thread>
@@ -166,6 +167,7 @@ bool handshakeRoleReq(uint32_t id,
 		EntityCreationData e;
 		packet >> e;
 		anax::Entity en = newEntity(e, world, scene, system_gm);
+		en.removeComponent<tempo::ComponentPlayerRemote>();
 		en.addComponent<tempo::ComponentPlayerLocal>();
 	} else {
 		std::cout << "The server was rude to us when we requested a "
