@@ -31,7 +31,7 @@ namespace tempo{
 		inline SystemPlayerRemote(tempo::Clock& c) : clock(c) {}
 
 		void advanceBeat();
-		bool update();
+		bool update(int player_id);
 	};
 }
 

@@ -202,16 +202,16 @@ int main(int argc, const char** argv)
 
 
 	while (running) {
-
 		tempo::Queue<sf::Packet> *q = get_system_queue(tempo::SystemQID::ENTITY_CREATION);
 		while (!q->empty())
 		{
 			sf::Packet p = q->front();
-			q->pop();
 			tempo::EntityCreationData data;
 			p >> data;
-			newEntity(data, world, scene, system_level);
-			std::cout << "Recieved new entity" << std::endl;
+			anax::Entity e = newEntity(data, world, scene, system_level);
+			int iid = e.getComponent<tempo::ComponentID>().instance_id;
+			q->pop();
+			std::cout << "Created new entity with ID " << iid << std::endl;
 		}
 
 		float dt = dt_timer.getElapsedTime().asSeconds();
@@ -272,6 +272,7 @@ int main(int argc, const char** argv)
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
 
 		world.refresh();
+		system_player_remote.update(entity_player.getComponent<tempo::ComponentID>().instance_id);
 		render_health.HealthBarUpdate();
 		system_health.CheckHealth();
 		system_level.update(dt);

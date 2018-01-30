@@ -4,6 +4,8 @@
 #include <tempo/network/queue.hpp>
 #include <tempo/structures.hpp>
 
+#include <iostream>
+
 namespace tempo
 {
 
@@ -12,12 +14,12 @@ sf::UdpSocket sock_o;
 sf::UdpSocket sock_h;
 
 sf::IpAddress addr_r = "0.0.0.0";
-unsigned int port_ci = 0;
-unsigned int port_co = 0;  // Should be set within the Client or Server 
-unsigned int port_sh = 0;  // at runtime. This way user input/config files
-unsigned int port_si = 0;  // can be used to set address/ports dynamically.
-unsigned int port_so = 0;  
-unsigned int port_st = 0;
+unsigned short port_ci = 0;
+unsigned short port_co = 0;  // Should be set within the Client or Server 
+unsigned short port_sh = 0;  // at runtime. This way user input/config files
+unsigned short port_si = 0;  // can be used to set address/ports dynamically.
+unsigned short port_so = 0;  
+unsigned short port_st = 0;
 
 bool bindSocket(char socket, unsigned short port)
 {
@@ -55,6 +57,8 @@ bool sortPacket(sf::Packet p)
 	//Get ID
 	p >> id;
 
+	std::cout << "recieved packet for queue " << id << std::endl;
+
 	//convert
 	qid = tempo::SystemQID(id);
 
@@ -67,6 +71,7 @@ bool sortPacket(sf::Packet p)
 	//Sort into queue
 	tempo::Queue<sf::Packet>* q = tempo::get_system_queue(qid);
 	q->push(p);
+	std::cout << q->empty() << std::endl;
 
 	return true;
 }

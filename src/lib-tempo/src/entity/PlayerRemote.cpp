@@ -21,7 +21,7 @@ namespace tempo{
 		}
 	}
 
-	bool SystemPlayerRemote::update()
+	bool SystemPlayerRemote::update(int player_id)
 	{
 		tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::PLAYER_UPDATES);
 	
@@ -37,6 +37,8 @@ namespace tempo{
 			int dy = 0;
 			update >> instance_id >> dx >> dy;
 
+			if (player_id == instance_id) continue;
+
 			// TODO This is horrifyingly bad and should be removed ASAP
 			if (id_map.find(instance_id) == id_map.end()) {
 				std::cout << "Entity " << instance_id << "tried "
@@ -44,6 +46,7 @@ namespace tempo{
 				continue;
 			}
 
+			std::cout << "instance id is " << instance_id << std::endl;
 			anax::Entity entity = id_map.find(instance_id)->second;
 			auto& input = entity.getComponent<tempo::ComponentPlayerRemote>();
 			auto& motion = entity.getComponent<tempo::ComponentGridMotion>();

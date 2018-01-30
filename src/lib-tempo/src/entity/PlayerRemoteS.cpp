@@ -33,12 +33,15 @@ namespace tempo{
 			std::cout << "THINGS BE GOT\n";
 			
 			sf::Packet update = queue->front();
+			sf::Packet update_broadcast;
+
 			queue->pop();
 			
 			int instance_id = 0;
 			int dx = 0;
 			int dy = 0;
 			update >> instance_id >> dx >> dy;
+			update_broadcast << instance_id << dx << dy;
 
 			// TODO This is horrifyingly bad and should be removed ASAP
 			if (id_map.find(instance_id) == id_map.end()) {
@@ -66,7 +69,7 @@ namespace tempo{
 
 			for (auto it = clients.begin(); it != clients.end(); ++it) {
 				sendMessage(SystemQID::PLAYER_UPDATES,
-				            update,
+				            update_broadcast,
 					    it->first);
 			}
 
