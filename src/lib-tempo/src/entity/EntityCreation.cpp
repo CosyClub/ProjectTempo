@@ -109,7 +109,8 @@ EntityCreationData dumpEntty(anax::Entity e)
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			Player_t p;
 			p.foo = 0;
-			Entity_Type t = (Entity_Type) {.player = p};
+			Entity_Type t;
+			t.player = p;
 			EntityCreationData data = {type_id, position, instance_id, t};
 			return data;
 			break;
@@ -119,7 +120,8 @@ EntityCreationData dumpEntty(anax::Entity e)
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			AI_t a;
 			a.foo = 0;
-			Entity_Type t = (Entity_Type) {.ai = a};
+			Entity_Type t;
+			t.ai = a;
 			EntityCreationData data = {type_id, position, instance_id, t};
 			return data;
 			break;
@@ -130,7 +132,8 @@ EntityCreationData dumpEntty(anax::Entity e)
 			Destroyable_t d;
 			memset(&(d.mesh_name), 0, 100);
 			memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(d.mesh_name), 100);
-			Entity_Type t = (Entity_Type) {.destroyable = d};
+			Entity_Type t;
+			t.destroyable = d;
 			EntityCreationData data = {type_id, position, instance_id, t};
 			return data;
 			break;
@@ -141,7 +144,8 @@ EntityCreationData dumpEntty(anax::Entity e)
 			NonDestroyable_t n;
 			memset(&(n.mesh_name), 0, 100);
 			memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(n.mesh_name), 100);
-			Entity_Type t = (Entity_Type) {.nondestroyable = n};
+			Entity_Type t;
+			t.nondestroyable = n;
 			EntityCreationData data = {type_id, position, instance_id, t};
 			return data;
 			break;
