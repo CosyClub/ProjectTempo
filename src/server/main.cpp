@@ -102,7 +102,7 @@ int main(int argc, const char** argv) {
 		world.refresh();
 		system_level.update(dt);
 		system_health.CheckHealth();
-		system_player_remote.update();
+		system_player_remote.update(system_id);
 		system_player_remote.advanceBeat();
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));

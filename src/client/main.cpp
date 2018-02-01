@@ -45,6 +45,20 @@ void sync_time(tempo::Clock& clock, tempo::Song *song)
 	clock.set_time(t, song);
 }
 
+void new_entity_check(anax::World &world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_level)
+{
+	tempo::Queue<sf::Packet> *q = get_system_queue(tempo::SystemQID::ENTITY_CREATION);
+	while (!q->empty())
+	{
+		sf::Packet p = q->front();
+		tempo::EntityCreationData data;
+		p >> data;
+		anax::Entity e = newEntity(data, world, scene, system_level);
+		int iid = e.getComponent<tempo::ComponentID>().instance_id;
+		q->pop();
+	}
+}
+
 int main(int argc, const char** argv)
 {
 	tempo::Application app = tempo::initialize_application("RaveCave", 800, 600);
@@ -87,6 +101,7 @@ int main(int argc, const char** argv)
 	tempo::SystemPlayerRemote     system_player_remote(clock);
 	tempo::SystemHealth           system_health;
 	tempo::RenderHealth           render_health;
+	tempo::SystemID               system_id;
 
 	world.addSystem(system_level);
 	world.addSystem(system_update_transforms);
@@ -96,6 +111,7 @@ int main(int argc, const char** argv)
 	world.addSystem(system_player_remote);
 	world.addSystem(system_health);
 	world.addSystem(render_health);
+	world.addSystem(system_id);
 	world.refresh();
 
 	Ogre::SceneManager* scene = system_render.scene;
@@ -201,16 +217,7 @@ int main(int argc, const char** argv)
 
 
 	while (running) {
-		tempo::Queue<sf::Packet> *q = get_system_queue(tempo::SystemQID::ENTITY_CREATION);
-		while (!q->empty())
-		{
-			sf::Packet p = q->front();
-			tempo::EntityCreationData data;
-			p >> data;
-			anax::Entity e = newEntity(data, world, scene, system_level);
-			int iid = e.getComponent<tempo::ComponentID>().instance_id;
-			q->pop();
-		}
+		new_entity_check(world, scene, system_level);
 
 		float dt = dt_timer.getElapsedTime().asSeconds();
 		dt_timer.restart();
@@ -266,7 +273,7 @@ int main(int argc, const char** argv)
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
 
 		world.refresh();
-		system_player_remote.update(entity_player.getComponent<tempo::ComponentID>().instance_id);
+		system_player_remote.update(entity_player.getComponent<tempo::ComponentID>().instance_id, system_id);
 		render_health.HealthBarUpdate();
 		system_health.CheckHealth();
 		system_level.update(dt);

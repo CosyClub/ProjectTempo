@@ -11,7 +11,7 @@ namespace tempo{
 		}
 	}
 
-	bool SystemPlayerRemoteServer::update()
+	bool SystemPlayerRemoteServer::update(SystemID system_id)
 	{
 		tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::PLAYER_UPDATES);
 	
@@ -31,34 +31,33 @@ namespace tempo{
 			update >> instance_id >> dx >> dy;
 			update_broadcast << instance_id << dx << dy;
 
-			// TODO This is horrifyingly bad and should be removed ASAP
-			if (id_map.find(instance_id) == id_map.end()) {
-				std::cout << "Entity " << instance_id << "tried "
-				          << "to move, but we don't have entity for that.";
-				continue;
-			}
+			try
+			{
+				anax::Entity entity = system_id.get(instance_id);
+				auto& input = entity.getComponent<tempo::ComponentPlayerRemoteServer>();
+				auto& motion = entity.getComponent<tempo::ComponentGridMotion>();
+				
+				if (!input.moved_this_beat){
+					input.moved_this_beat = true;
+					motion.beginMovement(dx, dy);
+				}
 
-			anax::Entity entity = id_map.find(instance_id)->second;
-			auto& input = entity.getComponent<tempo::ComponentPlayerRemoteServer>();
-			auto& motion = entity.getComponent<tempo::ComponentGridMotion>();
-			// END of horrifyingly bad bit
-			
-			if (!input.moved_this_beat){
-				input.moved_this_beat = true;
-				motion.beginMovement(dx, dy);
-			}
+				if (!clock.within_delta()){
+					std::cout << "Entity " << instance_id << " missed beat by " 
+					          << std::min(clock.since_beat().asMilliseconds(), 
+					                      clock.until_beat().asMilliseconds()) 
+					          << std::endl;
+				}
 
-			if (!clock.within_delta()){
-				std::cout << "Entity " << instance_id << " missed beat by " 
-				          << std::min(clock.since_beat().asMilliseconds(), 
-				                      clock.until_beat().asMilliseconds()) 
-				          << std::endl;
+				for (auto it = clients.begin(); it != clients.end(); ++it) {
+					sendMessage(SystemQID::PLAYER_UPDATES,
+					            update_broadcast,
+						    it->first);
+				}
 			}
-
-			for (auto it = clients.begin(); it != clients.end(); ++it) {
-				sendMessage(SystemQID::PLAYER_UPDATES,
-				            update_broadcast,
-					    it->first);
+   			catch(std::out_of_range& e)  
+   			{  
+				std::cerr << e.what() << std::endl;  
 			}
 
 		}

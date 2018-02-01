@@ -4,6 +4,8 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 #include <map>
+#include <iostream>
+#include <stdexcept>
 
 namespace tempo{
 
@@ -25,6 +27,7 @@ struct ComponentID : anax::Component {
 };
 
 struct SystemID : anax::System<anax::Requires<ComponentID>> {
+	std::map<int, anax::Entity> id_map;
 
 	SystemID();
 	~SystemID();

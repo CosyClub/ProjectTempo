@@ -73,7 +73,7 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, E
 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
 	player->setColour(Ogre::ColourValue::Red);
 	
-		entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
+	entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Pset);
 	entity_player.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);

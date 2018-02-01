@@ -13,6 +13,7 @@
 
 #include <SDL.h>
 #include <iostream>
+#include <stdexcept>
 #include <cstdio>
 
 #undef main // SDL likes to define main
@@ -34,7 +35,7 @@ namespace tempo{
 		inline SystemPlayerRemoteServer(tempo::Clock& c) : clock(c) {}
 
 		void advanceBeat();
-		bool update();
+		bool update(SystemID system_id);
 	};
 }
 
