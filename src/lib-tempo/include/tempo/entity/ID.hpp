@@ -1,18 +1,11 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-/// \file Render.hpp
-/// \author Jamie Terry
-/// \date 2017/11/14
-/// \brief Declares the the Render component and system
-////////////////////////////////////////////////////////////////////////////
-
 #ifndef TEMPO_ENTITY_ID_HPP
 #define TEMPO_ENTITY_ID_HPP
 
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 #include <map>
+#include <iostream>
+#include <stdexcept>
 
 namespace tempo{
 
@@ -34,13 +27,14 @@ struct ComponentID : anax::Component {
 };
 
 struct SystemID : anax::System<anax::Requires<ComponentID>> {
+	std::map<int, anax::Entity> id_map;
 
 	SystemID();
 	~SystemID();
 
 	anax::Entity get(int instance_id);
-	void OnEntityAdded(anax::Entity& e);
-	void OnEntityRemoved(anax::Entity& e);
+	void onEntityAdded(anax::Entity& e);
+	void onEntityRemoved(anax::Entity& e);
 };
 
 }

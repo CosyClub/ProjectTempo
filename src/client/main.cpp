@@ -14,22 +14,23 @@
 #include <Ogre.h>
 
 #include <tempo/Application.hpp>
-#include <tempo/network/client.hpp>
 #include <tempo/song.hpp>
 #include <tempo/time.hpp>
-#include <tempo/song.hpp>
-#include <tempo/entity/EntityCreation.hpp>
-#include <tempo/entity/Transform.hpp>
-#include <tempo/entity/Render.hpp>
+#include <tempo/entity/EntityCreationClient.hpp>
+#include <tempo/entity/GridAi.hpp>
+#include <tempo/entity/Health.hpp>
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/LevelRenderer.hpp>
-#include <tempo/entity/GridAi.hpp>
-#include <tempo/entity/PlayerInput.hpp>
-#include <tempo/entity/Health.hpp>
-
+#include <tempo/entity/PlayerLocal.hpp>
+#include <tempo/entity/PlayerRemote.hpp>
+#include <tempo/entity/Render.hpp>
+#include <tempo/entity/RenderHealth.hpp>
+#include <tempo/entity/Transform.hpp>
+#include <tempo/network/client.hpp>
 
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>
+#include <SFML/System/Time.hpp>
 
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
@@ -38,6 +39,25 @@
 #define DELTA 150
 #define TIME 60000000 / BPM
 
+void sync_time(tempo::Clock& clock, tempo::Song *song)
+{
+	sf::Time t = tempo::timeSyncClient(&clock);
+	clock.set_time(t, song);
+}
+
+void new_entity_check(anax::World &world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_level)
+{
+	tempo::Queue<sf::Packet> *q = get_system_queue(tempo::SystemQID::ENTITY_CREATION);
+	while (!q->empty())
+	{
+		sf::Packet p = q->front();
+		tempo::EntityCreationData data;
+		p >> data;
+		anax::Entity e = newEntity(data, world, scene, system_level);
+		int iid = e.getComponent<tempo::ComponentID>().instance_id;
+		q->pop();
+	}
+}
 
 int main(int argc, const char** argv)
 {
@@ -57,12 +77,44 @@ int main(int argc, const char** argv)
 
 	// Sound
 	tempo::Song mainsong("resources/sound/focus.ogg");
-	mainsong.set_volume(20.f);
+	mainsong.set_volume(0.f);
 
 	sf::SoundBuffer clickbuf;
 	clickbuf.loadFromFile("resources/sound/tick.ogg");
 	sf::Sound click;
 	click.setBuffer(clickbuf);
+
+	// Clock
+	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
+
+	/////////////////////////////////////////////////
+	// Setup scene
+	anax::World world;
+	tempo::SystemRender           system_render(app);
+	tempo::SystemLevelManager     system_level(world,
+	                                           "../bin/resources/levels/levelTest.bmp",
+	                                           "../bin/resources/levels/zonesTest.bmp"
+	                                           );
+	tempo::SystemUpdateTransforms system_update_transforms;
+	tempo::SystemGridAi           system_grid_ai;
+	tempo::SystemPlayerLocal      system_player_local(clock);
+	tempo::SystemPlayerRemote     system_player_remote(clock);
+	tempo::SystemHealth           system_health;
+	tempo::RenderHealth           render_health;
+	tempo::SystemID               system_id;
+
+	world.addSystem(system_level);
+	world.addSystem(system_update_transforms);
+	world.addSystem(system_grid_ai);
+	world.addSystem(system_render);
+	world.addSystem(system_player_local);
+	world.addSystem(system_player_remote);
+	world.addSystem(system_health);
+	world.addSystem(render_health);
+	world.addSystem(system_id);
+	world.refresh();
+
+	Ogre::SceneManager* scene = system_render.scene;
 
 	/////////////////////////////////////////////////
 	// Networking
@@ -70,10 +122,12 @@ int main(int argc, const char** argv)
 	// Set up remote address, local ports and remote handshake port
 	// Note, IF statement is to change ports for local development, bit
 	// hacky and should be removed in due course!
-	sf::IpAddress addr_r = DEFAULT_ADDR;
-	if (addr_r == DEFAULT_ADDR) {
-		tempo::port_ci = DEFAULT_PORT_IN+10;
-		tempo::port_co = DEFAULT_PORT_OUT+10;
+	tempo::addr_r = "127.0.0.1";
+	if (tempo::addr_r == "127.0.0.1") {
+		std::srand (time(NULL));
+		int d = std::rand() % 10;
+		tempo::port_ci = DEFAULT_PORT_IN+10+d;
+		tempo::port_co = DEFAULT_PORT_OUT+10+d;
 	} else {
 		tempo::port_ci = DEFAULT_PORT_IN;
 		tempo::port_co = DEFAULT_PORT_OUT;
@@ -93,36 +147,17 @@ int main(int argc, const char** argv)
 	tempo::ClientRoleData roleData = {"Bilbo Baggins"};
 
 	// Connect to server and handshake information
-	tempo::connectToAndSyncWithServer(role, roleData);
+	tempo::connectToAndSyncWithServer(role, roleData, world, scene, system_level);
 
-	// Clock & Time Sync Song
-	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
-	mainsong.set_volume(0.f);
+	// Start and Sync Song
 	mainsong.start();
-	clock.sync_time(&mainsong);
+	sync_time(clock, &mainsong);
 	mainsong.set_volume(20.f);
 	long offset = 0;
 
-	/////////////////////////////////////////////////
-	// Setup scene
-	anax::World world;
-	tempo::SystemRender      system_render(app);
-	Ogre::SceneManager* scene = system_render.scene;
-	tempo::SystemLevelManager system_level(world,
-	                                       "../bin/resources/levels/levelTest.bmp",
-	                                       "../bin/resources/levels/zonesTest.bmp"
-	                                      );
-	tempo::SystemGridAi       system_grid_ai;
-	tempo::SystemPlayerInput  system_player_input(clock);
-	tempo::SystemHealth       system_health;
-	tempo::RenderHealth       render_health;
-	world.addSystem(system_level);
-	world.addSystem(system_grid_ai);
-	world.addSystem(system_render);
-	world.addSystem(system_player_input);
-	world.addSystem(system_health);
-	world.addSystem(render_health);
-	world.refresh();
+
+	///////////////////////
+	// Who even knows
 
 	tempo::LevelRenderer level_renderer(scene, scene->getRootSceneNode(), &system_level);
 
@@ -136,9 +171,6 @@ int main(int argc, const char** argv)
 
 	// Dummy objects
 	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
-	//x1->setPosition(1, 0, 0);
-	//y1->setPosition(0, 1, 0);
-	//z1->setPosition(0, 0, 1);
 	Ogre::Entity* y1 = scene->createEntity("y1", Ogre::SceneManager::PT_SPHERE);
 	Ogre::Entity* z1 = scene->createEntity("z1", Ogre::SceneManager::PT_SPHERE);
 	Ogre::SceneNode* helpers = scene->getRootSceneNode()->createChildSceneNode();
@@ -146,20 +178,16 @@ int main(int argc, const char** argv)
 	helpers->attachObject(y1);
 	helpers->attachObject(z1);
 
-	//testing
-	/* tempo::EntityCreationData* entitytest = tempo::newEntity(1, {2,2}); */
-
 	// Player
-	anax::Entity entity_player = tempo::newPlayer(world, scene, 0, tempo::EID_PLAYER, system_level);
-
-	// Ai
-	anax::Entity entity_ai = tempo::newAI(world,scene, 1, tempo::EID_AI, 5, 5);
-
-	//Destroyables
-	anax::Entity entity_destroyable = tempo::newDestroyable(world,scene, 2, tempo::EID_DES, 2, 2, "Cube");
-
-	//NonDestroyables
-	anax::Entity entity_nondestroyable = tempo::newNonDestroyable(world,scene, 3, tempo::EID_NONDES, 5, 5, "Cube");
+	/* anax::Entity entity_player = tempo::newPlayer(world, scene, 0, tempo::EID_PLAYER, system_level, 2, 2); */
+	// TODO: use better way to find out player, for now this is a search
+	anax::Entity entity_player;
+	for (auto& entity : world.getEntities()) {
+		if (entity.hasComponent<tempo::ComponentPlayerLocal>()) {
+			entity_player = entity;
+			break;
+		}
+	}
 
 	//camera
 	Ogre::Camera* camera = scene->createCamera("MainCamera");
@@ -189,19 +217,18 @@ int main(int argc, const char** argv)
 
 
 	while (running) {
+		new_entity_check(world, scene, system_level);
+
 		float dt = dt_timer.getElapsedTime().asSeconds();
 		dt_timer.restart();
 
 		if (clock.passed_beat()) {
 			click.play();
-			/*
-			std::cout << clock.get_time().asMilliseconds() << std::endl;
-			std::cout << clock.until_beat().asMilliseconds << std::endl;
-			*/
 
 			system_grid_ai.update();
 
-			system_player_input.advanceBeat();
+			system_player_local.advanceBeat();
+			system_player_remote.advanceBeat();
 		}
 
 		float seconds_until_beat = clock.until_beat().asSeconds();
@@ -214,7 +241,7 @@ int main(int argc, const char** argv)
 
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
-			if (!system_player_input.handleInput(e)) {
+			if(!system_player_local.handleInput(e)){
 				switch (e.type) {
 				case SDL_WINDOWEVENT:
 					switch (e.window.event) {
@@ -239,10 +266,6 @@ int main(int argc, const char** argv)
 			}
 		}
 
-
-		render_health.HealthBarUpdate();
-		system_health.CheckHealth();
-
 		//float cam_motion_delta = sin(beat_progress) * 0.3f;
 		//node_camera->setPosition(sin(beat_progress-0.5)*0.1f, 8 + cam_motion_delta, 12 + cam_motion_delta);
 
@@ -250,7 +273,11 @@ int main(int argc, const char** argv)
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
 
 		world.refresh();
+		system_player_remote.update(entity_player.getComponent<tempo::ComponentID>().instance_id, system_id);
+		render_health.HealthBarUpdate();
+		system_health.CheckHealth();
 		system_level.update(dt);
+		system_update_transforms.update(system_level);
 		logic_time = dt_timer.getElapsedTime();
 		system_render.render(dt);
 		render_time = dt_timer.getElapsedTime() - logic_time;
@@ -259,12 +286,12 @@ int main(int argc, const char** argv)
 		++frame_counter;
 		if (fps_timer.getElapsedTime().asSeconds() > 0.5f) {
 			float seconds = fps_timer.getElapsedTime().asSeconds();
-			printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds),
-				100 * (float)(
-					render_time.asMicroseconds()
-					) / (
-						logic_time.asMicroseconds() +
-						render_time.asMicroseconds()));
+			/* printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds), */
+			/* 	100 * (float)( */
+			/* 		render_time.asMicroseconds() */
+			/* 		) / ( */
+			/* 			logic_time.asMicroseconds() + */
+			/* 			render_time.asMicroseconds())); */
 			/* printf("Logic time  (μs): %d\n",  logic_time.asMicroseconds()); */
 			/* printf("Render time (μs): %d\n", render_time.asMicroseconds()); */
 			fps_timer.restart();

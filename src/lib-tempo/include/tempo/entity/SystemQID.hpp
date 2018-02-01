@@ -1,9 +1,3 @@
-///////////////////////////////////////////////////////////////////////////////
-/// entity/SystemQID.hpp
-///
-/// Contains an enum, that is used to label messages sent between systems.
-////////////////////////////////////////////////////////////////////////////////
-
 #ifndef TEMPO_NETWORK_ECS_SYSTEMS_HPP
 #define TEMPO_NETWORK_ECS_SYSTEMS_HPP
 
@@ -29,8 +23,8 @@ namespace tempo
 		QID_RESERVED_BOTTOM,
 		//Start of non-reserved zone
 		
-		NETWORK_TEST,
-		ANOTHER_UNUSED_MESSAGE_DELETE_ME,
+		PLAYER_UPDATES,
+		ENTITY_CREATION,
 
 		//End of non-reserved zone
 		QID_RESERVED_TOP

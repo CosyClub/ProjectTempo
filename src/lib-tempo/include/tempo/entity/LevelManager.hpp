@@ -1,25 +1,23 @@
 ////////////////////////////////////////////////////////////////////////////
 ///                      Part of Project Tempo                           ///
 ////////////////////////////////////////////////////////////////////////////
-/// \file LevelManager.hpp
-/// \author Jamie Terry
-/// \date 2017/11/15
-/// \brief Contains declaration of LevelManager system and GridPosition component
-////////////////////////////////////////////////////////////////////////////
 
 #ifndef TEMPO_ENTITY_GRIDMOTION_HPP
 #define TEMPO_ENTITY_GRIDMOTION_HPP
 
+#include <anax/World.hpp>
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/entity/Transform.hpp>
 #include <tempo/entity/TileMask.hpp>
 #include <tempo/math/Vector.hpp>
-//#include <tempo/networkClient.hpp>
 
 #include <time.h>
 #include <limits>
+#include <iostream> //TODO do we really need to print things here
+#include <SDL.h>
+
+#undef main // SDL likes to define main
 
 namespace tempo{
 	class SystemLevelManager;
@@ -116,6 +114,12 @@ namespace tempo{
 		/////////////////////////////////////////////////////////////////////
 		bool isMovementLocked();
 
+		/////////////////////////////////////////////////////////////////////
+		/// \brief Gets value between 0 and 1 indicating how far we have come
+		/// in making the motion requested by this component
+		/////////////////////////////////////////////////////////////////////
+		float getMotionProgress();
+
 		///< \brief How high this entity can jump, determines if it can reach tiles
 		float max_jump_height;
 
@@ -141,8 +145,7 @@ namespace tempo{
 	/// Hence this system is responsible for rendering the world's tiles,
 	/// and managing the movement of entities on the grid
 	/////////////////////////////////////////////////////////////////////
-	class SystemLevelManager : public anax::System<anax::Requires<ComponentTransform,
-	                                                              ComponentGridPosition,
+	class SystemLevelManager : public anax::System<anax::Requires<ComponentGridPosition,
 	                                                              ComponentGridMotion
 	                                                              >>
 	{
@@ -151,7 +154,6 @@ namespace tempo{
 
 		std::vector<Vec2s> player_spawn_zone;
 		uint32_t spawn_zones = 0;
-		Ogre::SceneNode* floor_node;
 
 		class GridPositions : public anax::System<anax::Requires<ComponentGridPosition>>{};
 		GridPositions grid_positions;
@@ -176,7 +178,6 @@ namespace tempo{
 		}
 		float getHeight(int x, int y);
 
-		void loadLevel(Ogre::SceneManager* scene, const char* fileName);
 		void loadLevel(const char* fileName);
 
 		/////////////////////////////////////////////////////////////////////

@@ -1,20 +1,12 @@
-////////////////////////////////////////////////////////////////////////////////
-//                        Part of Xeno Engine                                 //
-////////////////////////////////////////////////////////////////////////////////
-/// \file intrinsics.hpp
-/// \author Jamie Terry
-/// \date 2017/05/30
-/// \brief Contains most basic helper functions and types used by the rest of the
-/// engine
-///
-/// \ingroup core
-////////////////////////////////////////////////////////////////////////////////
+
+//TODO License? Attribution? This doesn't look like ours
 
 #ifndef XEN_CORE_INTRINSICS_HPP
 #define XEN_CORE_INTRINSICS_HPP
 
 #include <stdint.h>
 #include <cmath>
+# define M_PI           3.14159265358979323846  /* pi */
 
 #define TempoArrayLength(array) (sizeof(array) / sizeof((array)[0]))
 

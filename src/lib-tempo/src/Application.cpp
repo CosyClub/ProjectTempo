@@ -1,20 +1,4 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-/// \file Application.cpp
-/// \author Jamie Terry
-/// \date 2017/11/06
-/// \brief Contains definitions of functions declared in Application.hpp
-////////////////////////////////////////////////////////////////////////////
-
-#include <OgreGL3PlusPlugin.h>
-#include <OgreGLPlugin.h>
-#include <OgreGLRenderSystem.h>
-
-#include <tempo/config.hpp>
 #include <tempo/Application.hpp>
-
-#include <SDL_syswm.h>
 
 namespace tempo{
 	bool operator==(const Application& a, const Application& b){

@@ -1,22 +1,14 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-/// \file Application.hpp
-/// \author Raef Coles
-/// \date 2017/11/13
-/// \Functions and classes related to timing
-//////////////////////////////////////////////////////////////////////////////
-
 #ifndef TEMPO_TIME_HPP
 #define TEMPO_TIME_HPP
 
 #include <tempo/song.hpp>
+#include <tempo/config.hpp>
 
 #include <SFML/Network.hpp>
-#include <SFML/System/Time.hpp>
 #include <SFML/System/Clock.hpp>
+#include <SFML/System/Time.hpp>
 
-namespace tempo 
+namespace tempo
 {
         class Clock
         {
@@ -25,7 +17,6 @@ namespace tempo
                 Clock(sf::Time first_beat, sf::Time offset);
                 sf::Time get_time();
                 void set_time(sf::Time t, tempo::Song *song);
-                void sync_time(tempo::Song *song);
 
                 //beat relate
                 bool passed_beat();

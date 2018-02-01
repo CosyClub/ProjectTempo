@@ -1,27 +1,16 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-/// \file PlayerInput.cpp
-/// \author Jamie Terry
-/// \date 2017/11/15
-/// \brief Contains definition of PlayerInput system functions
-////////////////////////////////////////////////////////////////////////////
-
-#include <tempo/entity/PlayerInput.hpp>
-#include <iostream>
-#include <cstdio>
+#include <tempo/entity/PlayerLocal.hpp>
 
 namespace tempo{
-	void SystemPlayerInput::advanceBeat(){
+	void SystemPlayerLocal::advanceBeat(){
 		auto entities = getEntities();
 
 		for(auto& entity : entities){
-			auto& input = entity.getComponent<tempo::ComponentPlayerInput>();
+			auto& input = entity.getComponent<tempo::ComponentPlayerLocal>();
 			input.moved_this_beat = false;
 		}
 	}
 
-	bool SystemPlayerInput::handleInput(SDL_Event& e){
+	bool SystemPlayerLocal::handleInput(SDL_Event& e){
 		if(e.type != SDL_KEYDOWN){
 			return false;
 		}
@@ -53,19 +42,27 @@ namespace tempo{
 		}
 
 		if(!clock.within_delta()){
-			std::cout << "Missed beat by " << std::min(clock.since_beat().asMilliseconds(), clock.until_beat().asMilliseconds()) << std::endl;
+			std::cout << "Local player missed beat by " 
+			          << std::min(clock.since_beat().asMilliseconds(), 
+			                      clock.until_beat().asMilliseconds()) 
+			          << std::endl;
 			return true;
 		}
 
 		auto entities = getEntities();
 
 		for(auto& entity : entities){
+			auto& id     = entity.getComponent<tempo::ComponentID>();
 			auto& motion = entity.getComponent<tempo::ComponentGridMotion>();
-			auto& input  = entity.getComponent<tempo::ComponentPlayerInput>();
+			auto& input  = entity.getComponent<tempo::ComponentPlayerLocal>();
 
 			if(!input.moved_this_beat){
 				input.moved_this_beat = true;
 				motion.beginMovement(dx, dy);
+
+				sf::Packet packet;
+				packet << id.instance_id << dx << dy;
+				sendMessage(SystemQID::PLAYER_UPDATES, packet, false);
 			}
 		}
 	}

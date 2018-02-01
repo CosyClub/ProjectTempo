@@ -1,20 +1,4 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-/// \file LevelManager.cpp
-/// \author Jamie Terry
-/// \date 2017/11/15
-/// \brief Contains definition of LevelManager functions
-////////////////////////////////////////////////////////////////////////////
-
-#include <OgreMath.h>
-
-#include <anax/World.hpp>
 #include <tempo/entity/LevelManager.hpp>
-#include <iostream>
-
-#include <SDL.h>
-#undef main // SDL likes to define main
 
 namespace tempo{
 	/////////////////////////////////////////////////////////////
@@ -63,6 +47,10 @@ namespace tempo{
 
 	const Vec2s& ComponentGridMotion::getCurrentMovement(){
 		return this->delta;
+	}
+
+	float ComponentGridMotion::getMotionProgress(){
+		return this->motion_progress;
 	}
 
 	bool ComponentGridMotion::isMoving(){
@@ -211,7 +199,6 @@ namespace tempo{
 		auto entities = getEntities();
 
 		for(auto& entity : entities){
-			auto& trans = entity.getComponent<ComponentTransform>();
 			auto& pos   = entity.getComponent<ComponentGridPosition>();
 			auto& gm    = entity.getComponent<ComponentGridMotion>();
 
@@ -275,19 +262,6 @@ namespace tempo{
 					gm.target_locked = true;
 				}
 			}
-
-			// :TODO: vector lerps would be nice... (as would swizzles)
-			trans.position.x = Ogre::Math::lerp<float>(pos.position.x, pos.position.x + gm.delta.x, gm.motion_progress);
-			trans.position.y = current_height;
-			trans.position.z = Ogre::Math::lerp<float>(pos.position.y, pos.position.y + gm.delta.y, gm.motion_progress);
-
-			/////////////////////////////////
-			// hop effect
-			float a = gm.motion_progress - 0.5;
-			// Add sinosodial hop motion
-			trans.position.y += (-(a*a) + 0.25f) * gm.max_jump_height * 2.0f;
-			// Add motion to get between current tile height and target
-			trans.position.y += Ogre::Math::lerp(0.0f, delta_height, gm.motion_progress);
 		}
 	}
 }
