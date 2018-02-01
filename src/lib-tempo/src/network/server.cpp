@@ -226,7 +226,6 @@ void listenForNewClients()
 			          << std::endl;
 			continue;
 		}
-	
 		processNewClientPacket(packet, ip, port);
 	}
 

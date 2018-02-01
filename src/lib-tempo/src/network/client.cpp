@@ -57,6 +57,8 @@ bool sendMessage(tempo::SystemQID id,
 	message << id;
 	message << payload;
 
+	
+
 	// Send message
 	if (isHandshake) {
 		return sock_o.send(message, addr_r, port_sh) == sf::Socket::Done;
