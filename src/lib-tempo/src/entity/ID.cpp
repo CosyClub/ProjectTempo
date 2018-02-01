@@ -34,11 +34,13 @@ anax::Entity SystemID::get(int instance_id){
 	return id_map.find(instance_id)->second;
 }
 
-void OnEntityAdded(anax::Entity& e)
+void SystemID::onEntityAdded(anax::Entity& e)
 {
 	int instance_id = e.getComponent<ComponentID>().instance_id;
 	id_map[instance_id] = e;
 }
-void OnEntityRemoved(anax::Entity& e);
+void SystemID::onEntityRemoved(anax::Entity& e)
+{
+}
 
 }

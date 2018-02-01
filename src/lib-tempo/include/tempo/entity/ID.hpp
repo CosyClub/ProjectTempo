@@ -30,8 +30,8 @@ struct SystemID : anax::System<anax::Requires<ComponentID>> {
 	~SystemID();
 
 	anax::Entity get(int instance_id);
-	void OnEntityAdded(anax::Entity& e);
-	void OnEntityRemoved(anax::Entity& e);
+	void onEntityAdded(anax::Entity& e);
+	void onEntityRemoved(anax::Entity& e);
 };
 
 }
