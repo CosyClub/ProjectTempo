@@ -18,7 +18,7 @@ namespace tempo
 	/// Constant #define's 
 
 	// Default Address
-	#define DEFAULT_ADDR "127.0.0.1"
+	#define DEFAULT_ADDR "0.0.0.0"
 	// Default Port for Hand Shake (HS) protocol
 	#define DEFAULT_PORT_HS  1337
 	// Default Port for Incoming Socket
