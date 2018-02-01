@@ -1,11 +1,5 @@
 #include <tempo/network/base.hpp>
 
-#include <tempo/entity/SystemQID.hpp>
-#include <tempo/network/queue.hpp>
-#include <tempo/structures.hpp>
-
-#include <iostream>
-
 namespace tempo
 {
 
@@ -57,8 +51,6 @@ bool sortPacket(sf::Packet p)
 	//Get ID
 	p >> id;
 
-	std::cout << "recieved packet for queue " << id << std::endl;
-
 	//convert
 	qid = tempo::SystemQID(id);
 
@@ -71,7 +63,6 @@ bool sortPacket(sf::Packet p)
 	//Sort into queue
 	tempo::Queue<sf::Packet>* q = tempo::get_system_queue(qid);
 	q->push(p);
-	std::cout << q->empty() << std::endl;
 
 	return true;
 }

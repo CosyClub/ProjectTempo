@@ -1,15 +1,4 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-
-#include <tempo/entity/ID.hpp>
 #include <tempo/entity/PlayerLocal.hpp>
-#include <tempo/entity/SystemQID.hpp>
-
-#include <tempo/network/client.hpp>
-
-#include <iostream>
-#include <cstdio>
 
 namespace tempo{
 	void SystemPlayerLocal::advanceBeat(){
@@ -72,7 +61,6 @@ namespace tempo{
 				motion.beginMovement(dx, dy);
 
 				sf::Packet packet;
-				std::cout << "sending move message for " << id.instance_id << std::endl;
 				packet << id.instance_id << dx << dy;
 				sendMessage(SystemQID::PLAYER_UPDATES, packet, false);
 			}

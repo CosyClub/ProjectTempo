@@ -1,17 +1,4 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-/// \file LevelRenderer.cpp
-/// \author Jamie Terry
-/// \date 2018/01/24
-/// \brief Contains implementation of the LevelRenderer class
-////////////////////////////////////////////////////////////////////////////
-
-#include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/LevelRenderer.hpp>
-
-#include <Ogre.h>
-#include <cstdio>
 
 namespace tempo{
 	LevelRenderer::LevelRenderer(Ogre::SceneManager* scene, Ogre::SceneNode* root_floor_node, SystemLevelManager* level)

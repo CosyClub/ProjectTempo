@@ -1,17 +1,19 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-
 #ifndef TEMPO_ENTITY_PLAYERLOCAL_HPP
 #define TEMPO_ENTITY_PLAYERLOCAL_HPP
 
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
+#include <tempo/entity/ID.hpp>
 #include <tempo/entity/LevelManager.hpp>
+#include <tempo/entity/SystemQID.hpp>
+#include <tempo/network/client.hpp>
 #include <tempo/time.hpp>
 
+#include <iostream>
+#include <cstdio>
 #include <SDL.h>
+
 #undef main // SDL likes to define main
 
 namespace tempo{

@@ -1,11 +1,3 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-/// Health.hpp
-///
-/// Header definitions for Health Component & Systems.
-////////////////////////////////////////////////////////////////////////////
-
 #ifndef TEMPO_ENTITY_RENDERHEALTH_HPP
 #define TEMPO_ENTITY_RENDERHEALTH_HPP
 
@@ -14,6 +6,8 @@
 
 #include <tempo/entity/Health.hpp>
 #include <tempo/entity/Render.hpp>
+
+#include <Ogre.h>
 
 namespace tempo {
 	struct RenderHealth : anax::System<anax::Requires<ComponentHealth, ComponentRender>> {

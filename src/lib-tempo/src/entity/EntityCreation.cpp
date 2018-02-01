@@ -1,6 +1,4 @@
 #include <tempo/entity/EntityCreation.hpp>
-#include <iostream>
-#include <string.h>
 
 namespace tempo
 {

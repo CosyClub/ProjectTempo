@@ -43,7 +43,6 @@ void sync_time(tempo::Clock& clock, tempo::Song *song)
 {
 	sf::Time t = tempo::timeSyncClient(&clock);
 	clock.set_time(t, song);
-	std::cout << t.asMicroseconds() << std::endl;
 }
 
 int main(int argc, const char** argv)
@@ -211,7 +210,6 @@ int main(int argc, const char** argv)
 			anax::Entity e = newEntity(data, world, scene, system_level);
 			int iid = e.getComponent<tempo::ComponentID>().instance_id;
 			q->pop();
-			std::cout << "Created new entity with ID " << iid << std::endl;
 		}
 
 		float dt = dt_timer.getElapsedTime().asSeconds();
@@ -219,10 +217,6 @@ int main(int argc, const char** argv)
 
 		if (clock.passed_beat()) {
 			click.play();
-			/*
-			std::cout << clock.get_time().asMilliseconds() << std::endl;
-			std::cout << clock.until_beat().asMilliseconds << std::endl;
-			*/
 
 			system_grid_ai.update();
 
@@ -285,12 +279,12 @@ int main(int argc, const char** argv)
 		++frame_counter;
 		if (fps_timer.getElapsedTime().asSeconds() > 0.5f) {
 			float seconds = fps_timer.getElapsedTime().asSeconds();
-			printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds),
-				100 * (float)(
-					render_time.asMicroseconds()
-					) / (
-						logic_time.asMicroseconds() +
-						render_time.asMicroseconds()));
+			/* printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds), */
+			/* 	100 * (float)( */
+			/* 		render_time.asMicroseconds() */
+			/* 		) / ( */
+			/* 			logic_time.asMicroseconds() + */
+			/* 			render_time.asMicroseconds())); */
 			/* printf("Logic time  (μs): %d\n",  logic_time.asMicroseconds()); */
 			/* printf("Render time (μs): %d\n", render_time.asMicroseconds()); */
 			fps_timer.restart();

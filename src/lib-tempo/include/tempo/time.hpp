@@ -1,16 +1,8 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-/// \file Application.hpp
-/// \author Raef Coles
-/// \date 2017/11/13
-/// \Functions and classes related to timing
-//////////////////////////////////////////////////////////////////////////////
-
 #ifndef TEMPO_TIME_HPP
 #define TEMPO_TIME_HPP
 
 #include <tempo/song.hpp>
+#include <tempo/config.hpp>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Clock.hpp>

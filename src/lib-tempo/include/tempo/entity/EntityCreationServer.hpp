@@ -7,7 +7,9 @@
 #include <tempo/entity/ID.hpp>
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/GridAi.hpp>
-#include <tempo/entity/PlayerRemoteS.hpp>
+#include <tempo/entity/PlayerRemoteServer.hpp>
+
+#include <string.h>
 
 namespace tempo
 {

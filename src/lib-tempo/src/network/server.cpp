@@ -1,9 +1,4 @@
 #include <tempo/network/server.hpp>
-#include <tempo/network/queue.hpp>
-
-#include <tempo/entity/EntityCreationServer.hpp>
-
-#include <iostream>
 
 namespace tempo
 {
@@ -110,7 +105,6 @@ uint32_t addClient(sf::Uint32 ip,
                    unsigned short port,
                    ClientRole role = ClientRole::NO_ROLE)
 {
-	std::cout << port << std::endl;
 	clientConnection newClient = {ip, port, role};
 	cmtx.lock();
 	clients.insert(std::make_pair(idCounter, newClient));
@@ -190,7 +184,6 @@ void handshakeRoleReq(sf::Packet &packet,
 
 	for (tempo::clientpair client:clients){
 		if (client.first == id) continue;
-		std::cout << "sending update to client " << client.first << std::endl; 
 		sendMessage(tempo::SystemQID::ENTITY_CREATION, p_broadcast, client.first);
 	}
 	
@@ -312,7 +305,6 @@ bool sendMessage(tempo::SystemQID id,
 	message << id;
 	message << payload;
 
-	std::cout << "Sever sending message to " << sf::IpAddress(clients[client_id].ip) << " : " << clients[client_id].port << std::endl;
 	return sock_o.send(message, sf::IpAddress(clients[client_id].ip), clients[client_id].port) == sf::Socket::Done;
 }
 

@@ -1,17 +1,10 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-/// \file LevelRenderer.hpp
-/// \author Jamie Terry
-/// \date 2018/01/24
-/// \brief Contains defintion of the LevelRenderer class, responsible for rendering
-/// the tiles making up the level's floor
-////////////////////////////////////////////////////////////////////////////
-
 #ifndef TEMPO_ENTITY_LEVELRENDERER_HPP
 #define TEMPO_ENTITY_LEVELRENDERER_HPP
 
+#include <tempo/entity/LevelManager.hpp>
+
 #include <Ogre.h>
+#include <cstdio>
 
 namespace tempo{
 

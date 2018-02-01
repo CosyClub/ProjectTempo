@@ -1,22 +1,21 @@
-////////////////////////////////////////////////////////////////////////////////
-/// networkClient.hpp
-///
-/// Header definitions for use on the Project Tempo client.
-////////////////////////////////////////////////////////////////////////////////
-
 #ifndef TEMPO_NETWORK_CLIENT_HPP
 #define TEMPO_NETWORK_CLIENT_HPP
 
-#include <tempo/config.hpp>
-#include <tempo/time.hpp>
+#include <tempo/entity/EntityCreationClient.hpp>
+#include <tempo/entity/PlayerRemote.hpp>
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/network/base.hpp>
+#include <tempo/config.hpp>
+#include <tempo/time.hpp>
 
 #include <anax/World.hpp>
-#include <Ogre.h>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
+
+#include <iostream>
+#include <thread>
+#include <Ogre.h>
 
 namespace tempo
 {

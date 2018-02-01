@@ -1,14 +1,5 @@
-////////////////////////////////////////////////////////////////////////////////
-//                        Part of Xeno Engine                                 //
-////////////////////////////////////////////////////////////////////////////////
-/// \file intrinsics.hpp
-/// \author Jamie Terry
-/// \date 2017/05/30
-/// \brief Contains most basic helper functions and types used by the rest of the
-/// engine
-///
-/// \ingroup core
-////////////////////////////////////////////////////////////////////////////////
+
+//TODO License? Attribution? This doesn't look like ours
 
 #ifndef XEN_CORE_INTRINSICS_HPP
 #define XEN_CORE_INTRINSICS_HPP

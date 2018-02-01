@@ -1,17 +1,16 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-/// \file Application.hpp
-/// \author Jamie Terry
-/// \date 2017/11/06
-/// \brief Contains definition of application type and related functions
-////////////////////////////////////////////////////////////////////////////
-
 #ifndef TEMPO_APPLICATION_HPP
 #define TEMPO_APPLICATION_HPP
 
+#include <tempo/config.hpp>
+
 #include <Ogre.h>
+#include <OgreGL3PlusPlugin.h>
+#include <OgreGLPlugin.h>
+#include <OgreGLRenderSystem.h>
+
 #include <SDL.h>
+#include <SDL_syswm.h>
+
 #undef main // SDL likes to define main
 
 namespace tempo{

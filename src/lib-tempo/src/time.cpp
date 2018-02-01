@@ -1,11 +1,4 @@
-#include <tempo/config.hpp>
 #include <tempo/time.hpp>
-
-#include <iostream>
-
-#include <SFML/Network.hpp>
-#include <SFML/System/Time.hpp>
-#include <SFML/System/Clock.hpp>
 
 namespace tempo
 {
@@ -28,7 +21,6 @@ namespace tempo
 		sf::Time delta = t - time;
 		time = t;
 		song->skip(delta);
-		std::cout << t.asMicroseconds() << std::endl;
         }
 
 	bool Clock::passed_beat()

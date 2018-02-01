@@ -53,7 +53,7 @@ int main(int argc, const char** argv) {
 	// Create Systems
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemHealth       system_health;
-	tempo::SystemPlayerRemoteS system_player_remote(clock);
+	tempo::SystemPlayerRemoteServer system_player_remote(clock);
 	tempo::SystemID           system_id;
 
 	world.addSystem(system_level);
@@ -90,9 +90,9 @@ int main(int argc, const char** argv) {
 		if (clock.passed_beat()) {
 			system_grid_ai.update();
 
-			std::cout << "Server Beat Passed ("
-			          << clock.get_time().asSeconds() << ")"
-			          << std::endl;
+			/* std::cout << "Server Beat Passed (" */
+			/*           << clock.get_time().asSeconds() << ")" */
+			/*           << std::endl; */
 		}
 
 		float next_dt_time = dt_timer.getElapsedTime().asSeconds();

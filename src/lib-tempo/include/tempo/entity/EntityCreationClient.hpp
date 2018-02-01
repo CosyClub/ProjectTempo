@@ -11,6 +11,7 @@
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerLocal.hpp>
+#include <tempo/entity/PlayerRemote.hpp>
 
 namespace tempo
 {

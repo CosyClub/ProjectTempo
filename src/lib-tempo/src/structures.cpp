@@ -1,4 +1,3 @@
-#include <tempo/config.hpp>
 #include <tempo/structures.hpp>
 
 namespace tempo

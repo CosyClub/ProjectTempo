@@ -1,23 +1,20 @@
-////////////////////////////////////////////////////////////////////////////////
-/// networkServer.hpp
-///
-/// Header definitions for use on the Project Tempo server.
-////////////////////////////////////////////////////////////////////////////////
-
 #ifndef TEMPO_NETWORK_SERVER_HPP
 #define TEMPO_NETWORK_SERVER_HPP
 
-#include <mutex>
-#include <thread>
-
-#include <tempo/time.hpp>
 #include <tempo/entity/LevelManager.hpp>
+#include <tempo/entity/EntityCreationServer.hpp>
 #include <tempo/network/base.hpp>
+#include <tempo/network/queue.hpp>
+#include <tempo/time.hpp>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
 
 #include <anax/World.hpp>
+
+#include <iostream>
+#include <mutex>
+#include <thread>
 
 namespace tempo
 {

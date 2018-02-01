@@ -1,7 +1,3 @@
-///////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-
 #ifndef TEMPO_ENTITY_PLAYERREMOTE_HPP
 #define TEMPO_ENTITY_PLAYERREMOTE_HPP
 
@@ -9,9 +5,15 @@
 #include <anax/Component.hpp>
 
 #include <tempo/entity/LevelManager.hpp>
+#include <tempo/entity/ID.hpp>
+#include <tempo/entity/SystemQID.hpp>
+#include <tempo/network/queue.hpp>
 #include <tempo/time.hpp>
 
 #include <SDL.h>
+#include <iostream>
+#include <cstdio>
+
 #undef main // SDL likes to define main
 
 namespace tempo{

@@ -1,15 +1,4 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-/// \file Transform.cpp
-/// \author Jamie Terry
-/// \date 2017/11/14
-/// \brief Contains definition of Transform system functions
-////////////////////////////////////////////////////////////////////////////
-
 #include <tempo/entity/Transform.hpp>
-
-#include <OgreMath.h>
 
 namespace tempo{
 	ComponentTransform::ComponentTransform() : ComponentTransform(0, 0, 0){

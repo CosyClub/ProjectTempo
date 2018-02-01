@@ -1,11 +1,5 @@
 #include <tempo/network/client.hpp>
 
-#include <tempo/entity/EntityCreationClient.hpp>
-#include <tempo/entity/PlayerRemote.hpp>
-
-#include <iostream>
-#include <thread>
-
 namespace tempo
 {
 
@@ -91,7 +85,6 @@ void listenForServerUpdates()
 		}
 
 		// Sort packet into respective system.
-		std::cout << "recieved packet from server" << std::endl;
 		sortPacket(packet);
 	}
 

@@ -1,8 +1,5 @@
 #include <tempo/entity/EntityCreationServer.hpp>
 
-#include <string.h>
-#include <iostream>
-
 namespace tempo
 {
 
@@ -76,12 +73,11 @@ anax::Entity newPlayer(anax::World& world, EID tid, tempo::SystemLevelManager sy
 	anax::Entity entity_player = world.createEntity();
 	
 	entity_player.addComponent<tempo::ComponentID>((int)tid);
-	std::cout << "Created player with iid " << entity_player.getComponent<tempo::ComponentID>().instance_id << std::endl;
 	int iid = entity_player.getComponent<tempo::ComponentID>().instance_id;
 	id_map[iid] = entity_player;
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
-	entity_player.addComponent<tempo::ComponentPlayerRemoteS>();	
+	entity_player.addComponent<tempo::ComponentPlayerRemoteServer>();	
 	
 	entity_player.activate();
 

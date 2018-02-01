@@ -1,14 +1,4 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-
 #include <tempo/entity/PlayerRemote.hpp>
-#include <tempo/entity/ID.hpp>
-#include <tempo/entity/SystemQID.hpp>
-#include <tempo/network/queue.hpp>
-
-#include <iostream>
-#include <cstdio>
 
 namespace tempo{
 	void SystemPlayerRemote::advanceBeat()
@@ -28,7 +18,6 @@ namespace tempo{
 		if (queue->empty()) return false;
 
 		while (!queue->empty()) {
-			std::cout << "We got a thing\n";
 			sf::Packet update = queue->front();
 			queue->pop();
 			
@@ -46,7 +35,6 @@ namespace tempo{
 				continue;
 			}
 
-			std::cout << "instance id is " << instance_id << std::endl;
 			anax::Entity entity = id_map.find(instance_id)->second;
 			auto& input = entity.getComponent<tempo::ComponentPlayerRemote>();
 			auto& motion = entity.getComponent<tempo::ComponentGridMotion>();

@@ -1,28 +1,17 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-
-#include <tempo/entity/PlayerRemoteS.hpp>
-#include <tempo/entity/ID.hpp>
-#include <tempo/entity/SystemQID.hpp>
-#include <tempo/network/queue.hpp>
-#include <tempo/network/server.hpp>
-
-#include <iostream>
-#include <cstdio>
+#include <tempo/entity/PlayerRemoteServer.hpp>
 
 namespace tempo{
-	void SystemPlayerRemoteS::advanceBeat()
+	void SystemPlayerRemoteServer::advanceBeat()
 	{
 		auto entities = getEntities();
 
 		for(auto& entity : entities) {
-			auto& comp = entity.getComponent<tempo::ComponentPlayerRemoteS>();
+			auto& comp = entity.getComponent<tempo::ComponentPlayerRemoteServer>();
 			comp.moved_this_beat = false;
 		}
 	}
 
-	bool SystemPlayerRemoteS::update()
+	bool SystemPlayerRemoteServer::update()
 	{
 		tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::PLAYER_UPDATES);
 	
@@ -30,7 +19,6 @@ namespace tempo{
 
 		while (!queue->empty()) {
 
-			std::cout << "THINGS BE GOT\n";
 			
 			sf::Packet update = queue->front();
 			sf::Packet update_broadcast;
@@ -51,7 +39,7 @@ namespace tempo{
 			}
 
 			anax::Entity entity = id_map.find(instance_id)->second;
-			auto& input = entity.getComponent<tempo::ComponentPlayerRemoteS>();
+			auto& input = entity.getComponent<tempo::ComponentPlayerRemoteServer>();
 			auto& motion = entity.getComponent<tempo::ComponentGridMotion>();
 			// END of horrifyingly bad bit
 			

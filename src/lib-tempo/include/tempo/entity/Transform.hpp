@@ -1,21 +1,13 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-/// \file Transform.hpp
-/// \author Jamie Terry
-/// \date 2017/11/14
-/// \brief Contains decleration of Transform component
-////////////////////////////////////////////////////////////////////////////
-
 #ifndef TEMPO_ENTITY_POSITION_HPP
 #define TEMPO_ENTITY_POSITION_HPP
-
-#include <OgreVector3.h>
 
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
 #include <tempo/entity/LevelManager.hpp>
+
+#include <OgreMath.h>
+#include <OgreVector3.h>
 
 namespace tempo{
 	struct ComponentTransform : anax::Component {
