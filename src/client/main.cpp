@@ -169,15 +169,6 @@ int main(int argc, const char** argv)
 
 	//auto node_floor = system_grid_motion.getFloorNode();
 
-	// Dummy objects
-	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
-	Ogre::Entity* y1 = scene->createEntity("y1", Ogre::SceneManager::PT_SPHERE);
-	Ogre::Entity* z1 = scene->createEntity("z1", Ogre::SceneManager::PT_SPHERE);
-	Ogre::SceneNode* helpers = scene->getRootSceneNode()->createChildSceneNode();
-	helpers->attachObject(x1);
-	helpers->attachObject(y1);
-	helpers->attachObject(z1);
-
 	// Player
 	/* anax::Entity entity_player = tempo::newPlayer(world, scene, 0, tempo::EID_PLAYER, system_level, 2, 2); */
 	// TODO: use better way to find out player, for now this is a search
