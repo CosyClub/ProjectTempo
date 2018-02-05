@@ -123,6 +123,7 @@ namespace tempo{
 		if (existsTile(x, y)) {
 			return tile_heights[x][y];
 		} else {
+			return 0;
 			std::cout <<" Can't get height of non-existent tile";
 		}
 	}
@@ -228,6 +229,10 @@ namespace tempo{
 
 				// Check height difference
 				if(abs(delta_height) > gm.max_jump_height){
+					can_make_move = false;
+				}
+
+				if(!existsTile(target_tile)){
 					can_make_move = false;
 				}
 
