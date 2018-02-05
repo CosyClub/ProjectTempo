@@ -175,7 +175,6 @@ void handshakeRoleReq(sf::Packet &packet,
 	// Construct ROLEREQ_ROG response
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG);
-	// TODO Package Requested Entity, eg:
 	EntityCreationData data = dumpEntity(entity);
 	rog << data;
 
@@ -191,61 +190,38 @@ void handshakeRoleReq(sf::Packet &packet,
 	sock_h.send(rog, sender, port);
 }
 
-void processNewClientPacket(sf::Packet &packet, 
-                            sf::IpAddress &sender,
-                            unsigned short port,
-                            anax::World *world,
-                            SystemLevelManager system_gm)
+void checkForNewClients(anax::World *world, SystemLevelManager system_gm)
 {
-	uint32_t receiveID = static_cast<uint32_t>(HandshakeID::DEFAULT);
-	packet >> receiveID;
+	tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::HANDSHAKE);	
+	if (queue->empty()) return false;
 
-	switch (static_cast<HandshakeID>(receiveID)) {
-	case HandshakeID::HELLO:
-		std::cout << "New client (" << sender.toString() << ":" << port
-		          << ") Connecting!" << std::endl; 
-		handshakeHello(packet, sender, port, world);
-		break;
-	case HandshakeID::ROLEREQ:
-		handshakeRoleReq(packet, sender, port, world, system_gm);
-		break;
-	default:
-		std::cout << "WARNING: an invalid handshake message was "
-		          << "recieved from " << sender.toString() << ":" 
-	                  << port << " ... ignoring" << std::endl;
-		break;
-	}
-}
-
-void listenForNewClients(anax::World *world, SystemLevelManager system_gm)
-{
-	// Bind to port
-	if (!bindSocket('h', port_sh)) {
-		std::cout << "Could not bind port " << port_sh << ", used to "
-		          << "listen for new clients." << std::endl;
-		return;
-	}
-
-	std::cout << "New Client Listener Started..." << std::endl;
-
-	// Loop listening for new clients
-	while (true) {
-		sf::Packet packet;
+	while (!queue->empty()) {
+		sf::Packet packet = queue->front();
+		queue->pop();
 		sf::IpAddress ip;
 		unsigned short port;
 
 		if (sock_h.receive(packet, ip, port) != sf::Socket::Done) {
-			std::cout << "Error recieving something from new "
-			          << "(connecting) client. Ignoring." 
-			          << std::endl;
-			continue;
-		}
 	
-		processNewClientPacket(packet, ip, port, world, system_gm);
-	}
+		uint32_t receiveID = static_cast<uint32_t>(HandshakeID::DEFAULT);
+		packet >> receiveID;
 
-	// TODO Probably should close the socket but it's a protected function
-	// so I can't.
+		switch (static_cast<HandshakeID>(receiveID)) {
+		case HandshakeID::HELLO:
+			std::cout << "New client (" << sender.toString() << ":" << port
+			          << ") Connecting!" << std::endl; 
+			handshakeHello(packet, sender, port, world);
+			break;
+		case HandshakeID::ROLEREQ:
+			handshakeRoleReq(packet, sender, port, world, system_gm);
+			break;
+		default:
+			std::cout << "WARNING: an invalid handshake message was "
+			          << "recieved from " << sender.toString() << ":" 
+		                  << port << " ... ignoring" << std::endl;
+			break;
+		}
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
