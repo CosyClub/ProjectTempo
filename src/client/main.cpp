@@ -12,6 +12,11 @@
 #include <thread>
 
 #include <Ogre.h>
+#include <OgreFont.h>
+#include <OgreFontManager.h>
+//#include <OgreOverlay.h>
+#include <OgreOverlayManager.h>
+#include <OgreOverlayContainer.h>
 
 #include <tempo/Application.hpp>
 #include <tempo/song.hpp>
@@ -190,6 +195,36 @@ int main(int argc, const char** argv)
 	node_camera->attachObject(camera);
 	node_camera->setPosition(0, 20, 10);
 	camera->lookAt(0, 0, 0);
+
+	// Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+	//  // Create an overlay
+	//  Ogre::Overlay* overlay = overlayManager.create( "OverlayName" );
+	//
+	//  // Create a panel
+	//  Ogre::OverlayContainer* panel = (Ogre::OverlayContainer*)( overlayManager.createOverlayElement( "Panel", "PanelName" ) );
+	//  panel->setPosition( 0.0, 0.0 );
+	//  panel->setDimensions( 0.1, 0.1 );
+	//  panel->setMaterialName( "BaseWhite" );
+	//  // Add the panel to the overlay
+	//  overlay->add2D( panel );
+	//
+	//  // Show the overlay
+	//  overlay->show();
+
+
+	// FontManager &fontMgr = FontManager::getSingleton();
+	//  // create a font resource
+	//  ResourcePtr font = fontMgr.create("MyFont","General");
+	//  // set as truetype
+	//  font->setParameter("type","truetype");
+	//  // set the .ttf file name
+	//  font->setParameter("source",/usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf);
+	//  // set the size
+	//  font->setParameter("size","26");
+	//  // set the dpi
+	//  font->setParameter("resolution","96");
+	//  // load the ttf
+	//  font->load();
 
 	// Movement hack
 	srand(time(NULL));

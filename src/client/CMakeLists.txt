@@ -10,6 +10,7 @@ set_target_properties(client PROPERTIES OUTPUT_NAME "RaveCave")
 target_include_directories(client PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_OGRE_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_SDL2_INCLUDE_DIR})
+target_include_directories(client PRIVATE ${TEMPO_OGRE_OVERLAY_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_ANAX_INCLUDE_DIR})
 
@@ -21,7 +22,7 @@ target_link_libraries(client sfml-audio)
 
 target_link_libraries(client SDL2)
 target_link_libraries(client SDL2main)
-
+target_link_libraries(client ${FREETYPE_LIBRARIES})
 target_link_libraries(client anax)
 
 # :TODO: have way to configure debug vs release - no _d for release
