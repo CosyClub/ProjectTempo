@@ -22,7 +22,6 @@ target_link_libraries(client sfml-audio)
 
 target_link_libraries(client SDL2)
 target_link_libraries(client SDL2main)
-target_link_libraries(client ${FREETYPE_LIBRARIES})
 target_link_libraries(client anax)
 
 # :TODO: have way to configure debug vs release - no _d for release
@@ -34,6 +33,9 @@ target_link_libraries(client "OgreGLSupport${TEMPO_OGRE_LIB_SUFFIX}")
 target_link_libraries(client "OgreOverlay${TEMPO_OGRE_LIB_SUFFIX}")
 target_link_libraries(client "OgreRTShaderSystem${TEMPO_OGRE_LIB_SUFFIX}")
 target_link_libraries(client "OgreMain${TEMPO_OGRE_LIB_SUFFIX}") # must be after all other Ogre links
+
+target_link_libraries(client freetyped            )
+target_link_libraries(client ${HARFBUZZ_LIBRARIES})
 
 find_package(OpenGL REQUIRED)
 target_link_libraries(client ${OPENGL_gl_LIBRARY} )
