@@ -6,7 +6,9 @@
 #include <Ogre.h>
 
 #include <tempo/entity/EntityCreation.hpp>
+#include <tempo/entity/Health.hpp>
 #include <tempo/entity/Render.hpp>
+#include <tempo/entity/RenderHealth.hpp>
 #include <tempo/entity/ID.hpp>
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/GridAi.hpp>
@@ -23,9 +25,9 @@ anax::Entity newEntity(EntityCreationData data,
                        Ogre::SceneManager* scene,
                        tempo::SystemLevelManager system_gm);
 
-anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, tempo::SystemLevelManager system_grid_motion);
-anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y);
-anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, std::string mesh_name);
+anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, int health, tempo::SystemLevelManager system_grid_motion);
+anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, int health);
+anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, int health, std::string mesh_name);
 anax::Entity newNonDestroyable(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, std::string mesh_name);
 
 EntityCreationData dumpEntity(anax::Entity e);

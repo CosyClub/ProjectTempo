@@ -215,7 +215,6 @@ int main(int argc, const char** argv)
 	bool running = true;
 	int frame_counter = 0;
 
-
 	while (running) {
 		new_entity_check(world, scene, system_level);
 

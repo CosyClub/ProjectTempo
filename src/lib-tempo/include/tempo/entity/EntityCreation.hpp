@@ -15,20 +15,20 @@ enum EID {
 };
 
 typedef struct {
-	int foo;
+	int health;
 	// int health;
 	/* char  name[100]; */
 	/* float color[3]; */
 } Player_t;
 
 typedef struct {
-	int foo;
+	int health;
 	// int health;
 } AI_t;
 
 typedef struct {
 	char mesh_name[100];
-	// int health;
+	 int health;
 } Destroyable_t;
 
 typedef struct {

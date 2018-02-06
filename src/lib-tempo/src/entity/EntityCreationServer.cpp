@@ -18,7 +18,7 @@ EntityCreationData dumpEntity(anax::Entity e)
 			{
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			Player_t p;
-			p.foo = 0;
+			p.health = 1000;
 			Entity_Type t;
 			t. player = p;
 			EntityCreationData data = {type_id, position, instance_id, t};
@@ -29,7 +29,7 @@ EntityCreationData dumpEntity(anax::Entity e)
 			{
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			AI_t a;
-			a.foo = 0;
+			a.health = 1000;
 			Entity_Type t;
 			t.ai = a;
 			EntityCreationData data = {type_id, position, instance_id, t};
@@ -40,6 +40,7 @@ EntityCreationData dumpEntity(anax::Entity e)
 			{
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			Destroyable_t d;
+			d.health = 100;
 			memset(&(d.mesh_name), 0, 100);
 			
 			// TODO Sort this
@@ -80,6 +81,7 @@ anax::Entity newPlayer(anax::World& world, EID tid, tempo::SystemLevelManager sy
 	int iid = entity_player.getComponent<tempo::ComponentID>().instance_id;
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
+	entity_player.addComponent<tempo::ComponentHealth>(1000);
 	entity_player.addComponent<tempo::ComponentPlayerRemoteServer>();	
 	
 	entity_player.activate();
@@ -87,23 +89,28 @@ anax::Entity newPlayer(anax::World& world, EID tid, tempo::SystemLevelManager sy
 	return entity_player;
 }
 
-anax::Entity newAI(anax::World& world, EID tid, int x, int y) {
+anax::Entity newAI(anax::World& world, EID tid, int x, int y, int health) {
 
 	//TODO:: Add Entity to Specific Tile
 
 	anax::Entity entity_ai = world.createEntity();
 
+	printf("\n\nCreating a new Server AI with Health = %d\n\n", health);
+
 	entity_ai.addComponent<tempo::ComponentID>((int)tid);
 	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
+	entity_ai.addComponent<tempo::ComponentHealth>(health);
+
+	printf("\n\n ServerAI currently has health = %d\n\n",entity_ai.getComponent<tempo::ComponentHealth>().current_health);
 	int iid = entity_ai.getComponent<tempo::ComponentID>().instance_id;
 	entity_ai.activate();
 
 	return entity_ai;
 }
 
-anax::Entity newDestroyable(anax::World& world, EID tid, int x, int y, std::string mesh_name) {
+anax::Entity newDestroyable(anax::World& world, EID tid, int x, int y, int health, std::string mesh_name) {
 
 	//TODO:: Add HealthComponent
 	//TODO:: Add Entity to Specific Tile
@@ -113,6 +120,7 @@ anax::Entity newDestroyable(anax::World& world, EID tid, int x, int y, std::stri
 	entity_object.addComponent<tempo::ComponentID>((int)tid);
 	entity_object.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_object.addComponent<tempo::ComponentGridMotion>();
+	entity_object.addComponent<tempo::ComponentHealth>(health);
 
 	entity_object.activate();
 
