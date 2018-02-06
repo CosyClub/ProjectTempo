@@ -69,7 +69,7 @@ int main(int argc, const char** argv) {
 	anax::Entity entity_ai2 = tempo::newAI(world, tempo::EID_AI, 3, 3, 1000);
 	anax::Entity entity_ai3 = tempo::newAI(world, tempo::EID_AI, 8, 8, 1000);
 	printf("\n Server AIs have been made \n\n");
-	
+
 	//Destroyables
 	anax::Entity entity_destroyable = tempo::newDestroyable(world, tempo::EID_DES, 2, 2, 200, "Cube");
 	printf("\n Server Destroyables have been made \n\n");
@@ -106,8 +106,6 @@ int main(int argc, const char** argv) {
 		world.refresh();
 		system_level.update(dt);
 		system_health.HealthUpdate(-1);
-		int chealth = entity_ai1.getComponent<tempo::ComponentHealth>().current_health;
-		printf("\n\n AI current health = %d", chealth);
 		system_health.CheckHealth();
 		system_player_remote.update(system_id);
 		system_player_remote.advanceBeat();

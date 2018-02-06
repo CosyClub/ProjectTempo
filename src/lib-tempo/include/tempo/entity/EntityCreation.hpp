@@ -15,15 +15,15 @@ enum EID {
 };
 
 typedef struct {
-	int health;
-	// int health;
+	int current_health;
+	int max_health;
 	/* char  name[100]; */
 	/* float color[3]; */
 } Player_t;
 
 typedef struct {
-	int health;
-	// int health;
+	int current_health;
+	int max_health;
 } AI_t;
 
 typedef struct {

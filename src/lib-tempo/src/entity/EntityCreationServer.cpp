@@ -20,10 +20,10 @@ EntityCreationData dumpEntity(anax::Entity e)
 			Player_t p;
 
 			//TODO:: Replace the next line with getcurrent health and get max health and send them to client and update the recieves as if the entity has already lost health the new guys need to know about it
-			p.health = 1000;
+			p.current_health = e.getComponent<tempo::ComponentHealth>().current_health;
+			p.max_health = e.getComponent<tempo::ComponentHealth>().max_health;
 			Entity_Type t;
 			t.player = p;
-			printf("\n\nplayer dump health : %d\n\n", t.player.health);
 			EntityCreationData data = {type_id, position, instance_id, t};
 			return data;
 			break;
@@ -32,10 +32,10 @@ EntityCreationData dumpEntity(anax::Entity e)
 			{
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			AI_t a;
-			a.health = 1000;
+			a.current_health = e.getComponent<tempo::ComponentHealth>().current_health;
+			a.max_health = e.getComponent<tempo::ComponentHealth>().max_health;
 			Entity_Type t;
 			t.ai = a;
-			printf("\n\nai dump health : %d\n\n", t.ai.health);
 			EntityCreationData data = {type_id, position, instance_id, t};
 			return data;
 			break;
@@ -44,9 +44,9 @@ EntityCreationData dumpEntity(anax::Entity e)
 			{
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			Destroyable_t d;
-			d.health = 100;
+			// d.health = 100;
 			memset(&(d.mesh_name), 0, 100);
-			
+
 			// TODO Sort this
 			/* memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(d.mesh_name), 100); */
 
@@ -61,10 +61,10 @@ EntityCreationData dumpEntity(anax::Entity e)
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			NonDestroyable_t n;
 			memset(&(n.mesh_name), 0, 100);
-			
+
 			// TODO Sort this
 			/* memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(n.mesh_name), 100); */
-			
+
 			Entity_Type t;
 			t.nondestroyable = n;
 			EntityCreationData data = {type_id, position, instance_id, t};
@@ -80,15 +80,15 @@ anax::Entity newPlayer(anax::World& world, EID tid, tempo::SystemLevelManager sy
 	//TODO:: Add Entity to Specific Tile
 
 	anax::Entity entity_player = world.createEntity();
-	
+
 	entity_player.addComponent<tempo::ComponentID>((int)tid);
 	int iid = entity_player.getComponent<tempo::ComponentID>().instance_id;
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentHealth>(1000);
 	printf("\n\n ServerPlayer currently has health = %d\n\n", entity_player.getComponent<tempo::ComponentHealth>().current_health);
-	entity_player.addComponent<tempo::ComponentPlayerRemoteServer>();	
-	
+	entity_player.addComponent<tempo::ComponentPlayerRemoteServer>();
+
 	entity_player.activate();
 
 	return entity_player;
