@@ -17,6 +17,26 @@ namespace tempo {
 
 	}
 
+	int ComponentHealth::getCurrentHealth(){
+		return (this->current_health);
+	}
+
+	int ComponentHealth::getMaxHealth(){
+		return this->max_health;
+	}
+
+	void ComponentHealth::setHealth(int current_health){
+
+					if(current_health <= (this->current_health)){
+						this->current_health = current_health;
+					}
+
+					else{
+						this->current_health = this->max_health;
+					}
+
+	}
+
 	void ComponentHealth::HealthUpdate(int delta_health){
 
 		// The entity's current health should not exceed the maximum health of the entity
@@ -44,20 +64,8 @@ namespace tempo {
 			auto& h = entity.getComponent<ComponentHealth>();
 			int id = entity.getId();
 
-			// The entity's current health should not exceed the maximum health of the entity
-			if ((h.current_health) + delta_health > (h.max_health)) {
-				h.current_health = h.max_health;
-			}
+			h.HealthUpdate(delta_health);
 
-			// Apply change to current health
-			else {
-				h.current_health += delta_health;
-			}
-
-			// Stop health from going less than 0
-			if ((h.current_health < 0)) {
-				h.current_health = 0;
-			}
 		}
 	}
 
@@ -70,7 +78,7 @@ namespace tempo {
 			int id = entity.getId();
 
 			// If the entity has 0 health then kill entity
-			if ((h.current_health <= 0)){
+			if ((h.getCurrentHealth() <= 0)){
 				printf("\nEntity ID: %d has just been \"killed\". \n", id);
 				// TODO: Sort something out for here
 				// entity.kill();

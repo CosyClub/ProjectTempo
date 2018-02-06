@@ -86,7 +86,6 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, E
 	entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentHealth>(current_health,max_health);
-	printf("\n\n ClientPlayer currently has health = %d\n\n", entity_player.getComponent<tempo::ComponentHealth>().current_health);
 	entity_player.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Pset);
 	entity_player.getComponent<tempo::ComponentRender>().AddHealthBar();
 	entity_player.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);

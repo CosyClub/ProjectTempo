@@ -20,8 +20,8 @@ EntityCreationData dumpEntity(anax::Entity e)
 			Player_t p;
 
 			//TODO:: Replace the next line with getcurrent health and get max health and send them to client and update the recieves as if the entity has already lost health the new guys need to know about it
-			p.current_health = e.getComponent<tempo::ComponentHealth>().current_health;
-			p.max_health = e.getComponent<tempo::ComponentHealth>().max_health;
+			p.current_health = e.getComponent<tempo::ComponentHealth>().getCurrentHealth();
+			p.max_health = e.getComponent<tempo::ComponentHealth>().getCurrentHealth();
 			Entity_Type t;
 			t.player = p;
 			EntityCreationData data = {type_id, position, instance_id, t};
@@ -32,8 +32,8 @@ EntityCreationData dumpEntity(anax::Entity e)
 			{
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			AI_t a;
-			a.current_health = e.getComponent<tempo::ComponentHealth>().current_health;
-			a.max_health = e.getComponent<tempo::ComponentHealth>().max_health;
+			a.current_health = e.getComponent<tempo::ComponentHealth>().getCurrentHealth();
+			a.max_health = e.getComponent<tempo::ComponentHealth>().getMaxHealth();
 			Entity_Type t;
 			t.ai = a;
 			EntityCreationData data = {type_id, position, instance_id, t};
@@ -86,7 +86,6 @@ anax::Entity newPlayer(anax::World& world, EID tid, tempo::SystemLevelManager sy
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentHealth>(1000);
-	printf("\n\n ServerPlayer currently has health = %d\n\n", entity_player.getComponent<tempo::ComponentHealth>().current_health);
 	entity_player.addComponent<tempo::ComponentPlayerRemoteServer>();
 
 	entity_player.activate();

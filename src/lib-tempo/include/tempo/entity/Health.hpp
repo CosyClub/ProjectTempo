@@ -8,10 +8,12 @@ namespace tempo {
 
 	struct ComponentHealth : anax::Component {
 
+	private:
 		//Starting Health for entity
 		int max_health;
 		int current_health;
 
+	public:
 		// ComponentHealth
 		// Initialisation of an entity's Health Component
 		//
@@ -31,6 +33,11 @@ namespace tempo {
 		// Returns:
 		//          void
 		ComponentHealth(int current_health, int max_health);
+
+		int getCurrentHealth();
+		int getMaxHealth();
+
+		void setHealth(int current_health);
 
 		// HealthUpdate
 		// Update the health of an individual entity by a specific amount
