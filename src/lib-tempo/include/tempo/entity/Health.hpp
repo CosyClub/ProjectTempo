@@ -21,6 +21,17 @@ namespace tempo {
 		//          void
 		ComponentHealth(int entity_health);
 
+		// ComponentHealth
+		// Initialisation of an entity's Health Component where the starting health is not
+		// the same as the max health
+		//
+		// Arguments:
+		//          current_health - The amount of health to give to the entity
+		//          max_health - the max_health to give to the entity
+		// Returns:
+		//          void
+		ComponentHealth(int current_health, int max_health);
+
 		// HealthUpdate
 		// Update the health of an individual entity by a specific amount
 		//

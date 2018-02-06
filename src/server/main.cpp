@@ -93,7 +93,7 @@ int main(int argc, const char** argv) {
 	while (true) {
 		if (clock.passed_beat()) {
 			system_grid_ai.update();
-
+			//system_health.HealthUpdate(-10);
 			/* std::cout << "Server Beat Passed (" */
 			/*           << clock.get_time().asSeconds() << ")" */
 			/*           << std::endl; */
@@ -105,6 +105,9 @@ int main(int argc, const char** argv) {
 
 		world.refresh();
 		system_level.update(dt);
+		system_health.HealthUpdate(-1);
+		int chealth = entity_ai1.getComponent<tempo::ComponentHealth>().current_health;
+		printf("\n\n AI current health = %d", chealth);
 		system_health.CheckHealth();
 		system_player_remote.update(system_id);
 		system_player_remote.advanceBeat();

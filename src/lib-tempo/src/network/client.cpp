@@ -123,6 +123,8 @@ uint32_t handshakeHello(anax::World& world,
 		EntityCreationData e;
 		for (int i = 0; i < entityCount; i++) {
 			packet >> e;
+			//TODO:: Recieves 0!!!!!!!!!!!!!!!!!
+			printf("\n\n Client Receives health: %d", e.entity_type.player.health);
 			newEntity(e, world, scene, system_gm);
 		}
 	} else {

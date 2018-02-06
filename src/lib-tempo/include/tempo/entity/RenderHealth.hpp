@@ -6,6 +6,9 @@
 
 #include <tempo/entity/Health.hpp>
 #include <tempo/entity/Render.hpp>
+#include <tempo/entity/GridAi.hpp>
+#include <tempo/entity/PlayerRemote.hpp>
+#include <tempo/entity/PlayerRemoteServer.hpp>
 
 #include <Ogre.h>
 

@@ -142,6 +142,9 @@ void handshakeHello(sf::Packet &packet,
 	rog << port_st;
 	rog << static_cast<uint32_t>(world->getEntityCount());
 	for (auto& entity: world->getEntities()) {
+		if (!(entity.hasComponent<tempo::ComponentGridAi>()) && (entity.hasComponent<tempo::ComponentHealth>())) {
+			printf("\n\n\n Player being sent!!!! Health currently: %d", entity.getComponent<tempo::ComponentHealth>().current_health);
+		}
 		rog << dumpEntity(entity);
 	}
 
@@ -177,6 +180,7 @@ void handshakeRoleReq(sf::Packet &packet,
 	rog << static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG);
 	// TODO Package Requested Entity, eg:
 	EntityCreationData data = dumpEntity(entity);
+	printf("\n\ndata sending health : %d\n\n", data.entity_type.player.health);
 	rog << data;
 
 	sf::Packet p_broadcast;

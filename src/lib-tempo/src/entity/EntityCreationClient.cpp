@@ -18,6 +18,7 @@ anax::Entity newEntity(EntityCreationData data,
 			{
 			Player_t p = data.entity_type.player;
 			int health = data.entity_type.player.health;
+			printf("\n\n Player new health: %d", health);
 			return_entity = newPlayer(world, scene, instance_id, type_id,
 			                          pos.x,
 			                          pos.y,
@@ -30,6 +31,7 @@ anax::Entity newEntity(EntityCreationData data,
 			{
 			AI_t a = data.entity_type.ai;
 			int health = data.entity_type.player.health;
+			printf("\n\n AI new health: %d", health);
 			return_entity = newAI(world, scene, instance_id, type_id,
 			                      pos.x,
 			                      pos.y,
@@ -81,10 +83,11 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, E
 	
 	entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_player.addComponent<tempo::ComponentTransform>();
-	entity_player.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Pset);
-	entity_player.addComponent<tempo::ComponentRender>(scene, "N/A").AddHealthBar();
-	entity_player.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_player.addComponent<tempo::ComponentHealth>(health);
+	printf("\n\n ClientPlayer currently has health = %d\n\n", entity_player.getComponent<tempo::ComponentHealth>().current_health);
+	entity_player.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Pset);
+	entity_player.getComponent<tempo::ComponentRender>().AddHealthBar();
+	entity_player.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
 	entity_player.activate();
@@ -105,15 +108,12 @@ anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int iid, EID t
 	Ogre::Billboard* ai = Aset->createBillboard(0, 0.75, 0);
 	ai->setColour(Ogre::ColourValue::Blue);
 
-	printf("\n\nCreating a new Client AI with Health = %d\n\n", health);
-
 	entity_ai.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_ai.addComponent<tempo::ComponentTransform>();
-	entity_ai.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Aset);
-	entity_ai.addComponent<tempo::ComponentRender>(scene, "N/A").AddHealthBar();
-	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentHealth>(health);
-	printf("\n\n ClientAI currently has health = %d\n\n", entity_ai.getComponent<tempo::ComponentHealth>().current_health);
+	entity_ai.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Aset);
+	entity_ai.getComponent<tempo::ComponentRender>().AddHealthBar();
+	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
 	entity_ai.activate();
@@ -132,10 +132,11 @@ anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int i
 
 	entity_object.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_object.addComponent<tempo::ComponentTransform>();
+	//entity_object.addComponent<tempo::ComponentHealth>(health);
+	//printf("\n\n ClientDest currently has health = %d\n\n", entity_object.getComponent<tempo::ComponentHealth>().current_health);
 	entity_object.addComponent<tempo::ComponentRender>(scene, mesh_name).node->attachObject(entity_mesh);
-	entity_object.addComponent<tempo::ComponentRender>(scene, mesh_name).AddHealthBar();
+	//entity_object.addComponent<tempo::ComponentRender>().AddHealthBar();
 	entity_object.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
-	entity_object.addComponent<tempo::ComponentHealth>(health);
 	entity_object.addComponent<tempo::ComponentGridMotion>();
 
 	//TEMP:: Mesh used was too big

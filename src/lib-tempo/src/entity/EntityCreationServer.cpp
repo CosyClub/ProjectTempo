@@ -18,9 +18,12 @@ EntityCreationData dumpEntity(anax::Entity e)
 			{
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			Player_t p;
+
+			//TODO:: Replace the next line with getcurrent health and get max health and send them to client and update the recieves as if the entity has already lost health the new guys need to know about it
 			p.health = 1000;
 			Entity_Type t;
-			t. player = p;
+			t.player = p;
+			printf("\n\nplayer dump health : %d\n\n", t.player.health);
 			EntityCreationData data = {type_id, position, instance_id, t};
 			return data;
 			break;
@@ -32,6 +35,7 @@ EntityCreationData dumpEntity(anax::Entity e)
 			a.health = 1000;
 			Entity_Type t;
 			t.ai = a;
+			printf("\n\nai dump health : %d\n\n", t.ai.health);
 			EntityCreationData data = {type_id, position, instance_id, t};
 			return data;
 			break;
@@ -82,6 +86,7 @@ anax::Entity newPlayer(anax::World& world, EID tid, tempo::SystemLevelManager sy
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentHealth>(1000);
+	printf("\n\n ServerPlayer currently has health = %d\n\n", entity_player.getComponent<tempo::ComponentHealth>().current_health);
 	entity_player.addComponent<tempo::ComponentPlayerRemoteServer>();	
 	
 	entity_player.activate();
@@ -95,15 +100,11 @@ anax::Entity newAI(anax::World& world, EID tid, int x, int y, int health) {
 
 	anax::Entity entity_ai = world.createEntity();
 
-	printf("\n\nCreating a new Server AI with Health = %d\n\n", health);
-
 	entity_ai.addComponent<tempo::ComponentID>((int)tid);
 	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
 	entity_ai.addComponent<tempo::ComponentHealth>(health);
-
-	printf("\n\n ServerAI currently has health = %d\n\n",entity_ai.getComponent<tempo::ComponentHealth>().current_health);
 	int iid = entity_ai.getComponent<tempo::ComponentID>().instance_id;
 	entity_ai.activate();
 
@@ -120,7 +121,8 @@ anax::Entity newDestroyable(anax::World& world, EID tid, int x, int y, int healt
 	entity_object.addComponent<tempo::ComponentID>((int)tid);
 	entity_object.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_object.addComponent<tempo::ComponentGridMotion>();
-	entity_object.addComponent<tempo::ComponentHealth>(health);
+	//entity_object.addComponent<tempo::ComponentHealth>(health);
+	//printf("\n\n ServerDest currently has health = %d\n\n", entity_object.getComponent<tempo::ComponentHealth>().current_health);
 
 	entity_object.activate();
 
