@@ -285,12 +285,12 @@ int main(int argc, const char** argv)
 		++frame_counter;
 		if (fps_timer.getElapsedTime().asSeconds() > 0.5f) {
 			float seconds = fps_timer.getElapsedTime().asSeconds();
-			/* printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds), */
-			/* 	100 * (float)( */
-			/* 		render_time.asMicroseconds() */
-			/* 		) / ( */
-			/* 			logic_time.asMicroseconds() + */
-			/* 			render_time.asMicroseconds())); */
+			 //printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds), 
+			 //	100 * (float)( 
+			 //		render_time.asMicroseconds() 
+			 //		) / ( 
+			 //			logic_time.asMicroseconds() + 
+			 //			render_time.asMicroseconds()));
 			/* printf("Logic time  (μs): %d\n",  logic_time.asMicroseconds()); */
 			/* printf("Render time (μs): %d\n", render_time.asMicroseconds()); */
 			fps_timer.restart();

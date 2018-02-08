@@ -56,19 +56,6 @@ namespace tempo {
 
 	}
 
-	void SystemHealth::HealthUpdate(int delta_health) {
-
-		auto entities = getEntities();
-
-		for (auto& entity : entities) {
-			auto& h = entity.getComponent<ComponentHealth>();
-			int id = entity.getId();
-
-			h.HealthUpdate(delta_health);
-
-		}
-	}
-
 	void SystemHealth::CheckHealth() {
 
 		auto entities = getEntities();

@@ -5,6 +5,10 @@ namespace tempo{
 		this->path = path;
 		this->scene = scene;
 		this->node  = scene->getRootSceneNode()->createChildSceneNode();
+
+		//incase the entity hasnt got a healthbar (i.e destroyables)
+		this->healthBarnode = NULL;
+		this->healthBillboard = NULL;
 	}
 
 
@@ -30,6 +34,13 @@ namespace tempo{
 		this->healthBarnode = this->node->createChildSceneNode();
 
 		this->healthBarnode->attachObject(Healthset);
+	}
+
+	bool ComponentRender::hasHealthBar() {
+		if (this->healthBarnode == NULL) {
+			return false;
+		}
+		else return true;
 	}
 
 	SystemRender::SystemRender(Application& new_app) : app(new_app) {
