@@ -18,6 +18,7 @@
 #include <OgreOverlayManager.h>
 #include <OgreOverlaySystem.h>
 #include <OgreOverlayContainer.h>
+#include <OgreTextAreaOverlayElement.h>
 
 #include <tempo/Application.hpp>
 #include <tempo/song.hpp>
@@ -197,23 +198,57 @@ int main(int argc, const char** argv)
 	node_camera->setPosition(0, 20, 10);
 	camera->lookAt(0, 0, 0);
 
+
+
+
 	Ogre::OverlaySystem* OverlaySystem = new Ogre::OverlaySystem();
 	scene->addRenderQueueListener(OverlaySystem);
 
+	Ogre::FontManager &fman = Ogre::FontManager::getSingleton();
+	// create a font resource
+	Ogre::ResourcePtr resource = fman.create("Roboto",Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	// set as truetype
+	resource->setParameter("type","truetype");
+	// set the .ttf file name
+	resource->setParameter("source","fonts/Roboto-Black.ttf");
+	// set the size
+	resource->setParameter("size","16");
+	// set the dpi
+	resource->setParameter("resolution","96");
+	// load the ttf
+	resource->load();
+
 	Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
-	 // Create an overlay
-	 Ogre::Overlay* overlay = overlayManager.create( "OverlayName" );
 
-	 // Create a panel
-	 Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>( overlayManager.createOverlayElement( "Panel", "PanelName" ) );
-	 panel->setPosition( 0.0, 0.0 );
-	 panel->setDimensions( 0.1, 0.1 );
-	 panel->setMaterialName( "BaseWhite" );
-	 // Add the panel to the overlay
-	 overlay->add2D( panel );
+	// Create a panel
+	Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(
+	    overlayManager.createOverlayElement("Panel", "PanelName"));
+	panel->setMetricsMode(Ogre::GMM_PIXELS);
+	panel->setPosition(10, 10);
+	panel->setDimensions(100, 100);
+	//panel->setMaterialName("MaterialName"); // Optional background material
 
-	 // Show the overlay
-	 overlay->show();
+	// Create a text area
+	Ogre::TextAreaOverlayElement* textArea = static_cast<Ogre::TextAreaOverlayElement*>(
+	    overlayManager.createOverlayElement("TextArea", "TextAreaName"));
+	textArea->setMetricsMode(Ogre::GMM_PIXELS);
+	textArea->setPosition(0, 0);
+	textArea->setDimensions(100, 100);
+	textArea->setCaption("Hello, World!");
+	textArea->setCharHeight(16);
+	textArea->setFontName("Roboto");
+	textArea->setColourBottom(Ogre::ColourValue(0.3, 0.5, 0.3));
+	textArea->setColourTop(Ogre::ColourValue(0.5, 0.7, 0.5));
+
+	// Create an overlay, and add the panel
+	Ogre::Overlay* overlay = overlayManager.create("OverlayName");
+	overlay->add2D(panel);
+
+	// Add the text area to the panel
+	panel->addChild(textArea);
+
+	// Show the overlay
+	overlay->show();
 
 	//
 	// Ogre::FontManager &fontMgr = Ogre::FontManager::getSingleton();
