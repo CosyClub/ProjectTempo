@@ -35,7 +35,8 @@ target_link_libraries(client "OgreRTShaderSystem${TEMPO_OGRE_LIB_SUFFIX}")
 target_link_libraries(client "OgreMain${TEMPO_OGRE_LIB_SUFFIX}") # must be after all other Ogre links
 
 target_link_libraries(client freetyped            )
-target_link_libraries(client ${HARFBUZZ_LIBRARIES})
+message("****** ${HARFBUZZ_LIBRARIES}")
+target_link_libraries(client harfbuzz)
 
 find_package(OpenGL REQUIRED)
 target_link_libraries(client ${OPENGL_gl_LIBRARY} )
