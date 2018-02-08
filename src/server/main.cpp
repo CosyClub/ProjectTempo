@@ -71,7 +71,7 @@ int main(int argc, const char** argv) {
 	printf("\n Server AIs have been made \n\n");
 
 	//Destroyables
-	anax::Entity entity_destroyable = tempo::newDestroyable(world, tempo::EID_DES, 2, 2, 200, "Cube");
+	anax::Entity entity_destroyable = tempo::newDestroyable(world, tempo::EID_DES, 2, 2, 200,200, "Cube");
 	printf("\n Server Destroyables have been made \n\n");
 
 
@@ -105,7 +105,6 @@ int main(int argc, const char** argv) {
 
 		world.refresh();
 		system_level.update(dt);
-		system_health.HealthUpdate(-1);
 		system_health.CheckHealth();
 		system_player_remote.update(system_id);
 		system_player_remote.advanceBeat();

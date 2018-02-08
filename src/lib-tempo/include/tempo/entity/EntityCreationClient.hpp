@@ -27,7 +27,7 @@ anax::Entity newEntity(EntityCreationData data,
 
 anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, int current_health, int max_health, tempo::SystemLevelManager system_grid_motion);
 anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, int current_health, int max_health);
-anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, std::string mesh_name);
+anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, int current_health, int max_health, std::string mesh_name);
 anax::Entity newNonDestroyable(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, std::string mesh_name);
 
 EntityCreationData dumpEntity(anax::Entity e);

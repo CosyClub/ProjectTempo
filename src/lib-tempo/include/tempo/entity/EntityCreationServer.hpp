@@ -19,11 +19,9 @@ EntityCreationData dumpEntity(anax::Entity e);
 
 anax::Entity newPlayer(anax::World& world, EID tid, SystemLevelManager system_grid_motion);
 anax::Entity newAI(anax::World& world, EID tid, int x, int y, int health);
-anax::Entity newDestroyable(anax::World& world, EID tid, int x, int y, int health, std::string mesh_name);
+anax::Entity newDestroyable(anax::World& world, EID tid, int x, int y, int current_health, int max_health, std::string mesh_name);
 anax::Entity newNonDestroyable(anax::World& world, EID tid, int x, int y, std::string mesh_name);
 
 }
 
 #endif
-
-
