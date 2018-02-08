@@ -64,12 +64,12 @@ int main(int argc, const char** argv) {
 	world.refresh();
 
 	// YOLO
-	anax::Entity entity_ai1 = tempo::newAI(world, tempo::EID_AI, 5, 5);
-	anax::Entity entity_ai2 = tempo::newAI(world, tempo::EID_AI, 3, 3);
-	anax::Entity entity_ai3 = tempo::newAI(world, tempo::EID_AI, 8, 8);
-	
+	anax::Entity entity_ai1 = tempo::newAI(world, tempo::EID_AI, 5, 5, 1000, 1000);
+	anax::Entity entity_ai2 = tempo::newAI(world, tempo::EID_AI, 3, 3, 1000, 1000);
+	anax::Entity entity_ai3 = tempo::newAI(world, tempo::EID_AI, 8, 8, 1000, 1000);
+
 	//Destroyables
-	anax::Entity entity_destroyable = tempo::newDestroyable(world, tempo::EID_DES, 2, 2, "Cube");
+	anax::Entity entity_destroyable = tempo::newDestroyable(world, tempo::EID_DES, 2, 2, 500,500, "Cube");
 
 	//NonDestroyables
 	anax::Entity entity_nondestroyable = tempo::newNonDestroyable(world, tempo::EID_NONDES, 5, 5, "Cube");
@@ -89,7 +89,6 @@ int main(int argc, const char** argv) {
 	while (true) {
 		if (clock.passed_beat()) {
 			system_grid_ai.update();
-
 			/* std::cout << "Server Beat Passed (" */
 			/*           << clock.get_time().asSeconds() << ")" */
 			/*           << std::endl; */

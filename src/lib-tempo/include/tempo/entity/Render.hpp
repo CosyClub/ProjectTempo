@@ -34,6 +34,15 @@ namespace tempo{
 		// Returns:
 		//          void
 		void AddHealthBar();
+
+		// hasHealthBar
+		// Check whether an entity has a health bar
+		//
+		// Arguments:
+		//          none
+		// Returns:
+		//          bool
+		bool hasHealthBar();
 	};
 
 	/////////////////////////////////////////////////////////////////////

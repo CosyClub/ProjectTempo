@@ -18,9 +18,12 @@ EntityCreationData dumpEntity(anax::Entity e)
 			{
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			Player_t p;
-			p.foo = 0;
+
+			//TODO:: Replace the next line with getcurrent health and get max health and send them to client and update the recieves as if the entity has already lost health the new guys need to know about it
+			p.current_health = e.getComponent<tempo::ComponentHealth>().getCurrentHealth();
+			p.max_health = e.getComponent<tempo::ComponentHealth>().getCurrentHealth();
 			Entity_Type t;
-			t. player = p;
+			t.player = p;
 			EntityCreationData data = {type_id, position, instance_id, t};
 			return data;
 			break;
@@ -29,7 +32,8 @@ EntityCreationData dumpEntity(anax::Entity e)
 			{
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			AI_t a;
-			a.foo = 0;
+			a.current_health = e.getComponent<tempo::ComponentHealth>().getCurrentHealth();
+			a.max_health = e.getComponent<tempo::ComponentHealth>().getMaxHealth();
 			Entity_Type t;
 			t.ai = a;
 			EntityCreationData data = {type_id, position, instance_id, t};
@@ -40,8 +44,10 @@ EntityCreationData dumpEntity(anax::Entity e)
 			{
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			Destroyable_t d;
+			d.current_health = e.getComponent<tempo::ComponentHealth>().getCurrentHealth();
+			d.current_health = e.getComponent<tempo::ComponentHealth>().getMaxHealth();
 			memset(&(d.mesh_name), 0, 100);
-			
+
 			// TODO Sort this
 			/* memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(d.mesh_name), 100); */
 
@@ -56,10 +62,10 @@ EntityCreationData dumpEntity(anax::Entity e)
 			position = e.getComponent<ComponentGridPosition>().getPosition();
 			NonDestroyable_t n;
 			memset(&(n.mesh_name), 0, 100);
-			
+
 			// TODO Sort this
 			/* memcpy((void*)e.getComponent<ComponentRender>().path.c_str(), &(n.mesh_name), 100); */
-			
+
 			Entity_Type t;
 			t.nondestroyable = n;
 			EntityCreationData data = {type_id, position, instance_id, t};
@@ -75,21 +81,20 @@ anax::Entity newPlayer(anax::World& world, EID tid, tempo::SystemLevelManager sy
 	//TODO:: Add Entity to Specific Tile
 
 	anax::Entity entity_player = world.createEntity();
-	
+
 	entity_player.addComponent<tempo::ComponentID>((int)tid);
 	int iid = entity_player.getComponent<tempo::ComponentID>().instance_id;
 	entity_player.addComponent<tempo::ComponentGridPosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentGridMotion>();
-	entity_player.addComponent<tempo::ComponentPlayerRemoteServer>();	
-	
+	entity_player.addComponent<tempo::ComponentHealth>(1000);
+	entity_player.addComponent<tempo::ComponentPlayerRemoteServer>();
+
 	entity_player.activate();
 
 	return entity_player;
 }
 
-anax::Entity newAI(anax::World& world, EID tid, int x, int y) {
-
-	//TODO:: Add Entity to Specific Tile
+anax::Entity newAI(anax::World& world, EID tid, int x, int y, int current_health, int max_health) {
 
 	anax::Entity entity_ai = world.createEntity();
 
@@ -97,22 +102,21 @@ anax::Entity newAI(anax::World& world, EID tid, int x, int y) {
 	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
+	entity_ai.addComponent<tempo::ComponentHealth>(current_health, max_health);
 	int iid = entity_ai.getComponent<tempo::ComponentID>().instance_id;
 	entity_ai.activate();
 
 	return entity_ai;
 }
 
-anax::Entity newDestroyable(anax::World& world, EID tid, int x, int y, std::string mesh_name) {
-
-	//TODO:: Add HealthComponent
-	//TODO:: Add Entity to Specific Tile
+anax::Entity newDestroyable(anax::World& world, EID tid, int x, int y, int current_health, int max_health, std::string mesh_name) {
 
 	anax::Entity entity_object = world.createEntity();
 
 	entity_object.addComponent<tempo::ComponentID>((int)tid);
 	entity_object.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_object.addComponent<tempo::ComponentGridMotion>();
+	entity_object.addComponent<tempo::ComponentHealth>(current_health, max_health);
 
 	entity_object.activate();
 
@@ -121,8 +125,6 @@ anax::Entity newDestroyable(anax::World& world, EID tid, int x, int y, std::stri
 }
 
 anax::Entity newNonDestroyable(anax::World& world, EID tid, int x, int y, std::string mesh_name) {
-
-	//TODO:: Add Entity to Specific Tile
 
 	anax::Entity entity_object = world.createEntity();
 
