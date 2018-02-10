@@ -234,7 +234,6 @@ int main(int argc, const char** argv)
 	textArea->setMetricsMode(Ogre::GMM_PIXELS);
 	textArea->setPosition(0, 0);
 	textArea->setDimensions(100, 100);
-	textArea->setCaption("Hello, World!");
 	textArea->setCharHeight(16);
 	textArea->setFontName("Roboto");
 	textArea->setColourBottom(Ogre::ColourValue(0.3, 0.5, 0.3));
@@ -295,6 +294,13 @@ int main(int argc, const char** argv)
 			system_player_local.advanceBeat();
 			system_player_remote.advanceBeat();
 		}
+
+
+		auto& input  = entity_player.getComponent<tempo::ComponentPlayerLocal>();
+		char buffer [50];
+		sprintf (buffer, "Counter combo: %d", input.counter_combo);
+
+		textArea->setCaption(buffer);
 
 		float seconds_until_beat = clock.until_beat().asSeconds();
 		float seconds_since_beat = clock.since_beat().asSeconds();
