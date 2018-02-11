@@ -6,7 +6,7 @@ namespace tempo{
 
 		for(auto& entity : entities){
 			auto& input = entity.getComponent<tempo::ComponentPlayerLocal>();
-			if(!clock.within_delta() || !input.moved_this_beat) {
+			if(!input.moved_this_beat) {
 				input.counter_combo = 0;
 				input.level_combo = 0;
 			}
@@ -45,7 +45,16 @@ namespace tempo{
 		default: return false; break;
 		}
 
+		auto entities = getEntities();
+		
 		if(!clock.within_delta()){
+			for (auto& entity : entities) {
+				if (entity.hasComponent<tempo::ComponentPlayerLocal>()) {
+					auto& input = entity.getComponent<tempo::ComponentPlayerLocal>();
+					input.counter_combo = 0;
+					break;
+				}
+			}
 			std::cout << "Local player missed beat by "
 			          << std::min(clock.since_beat().asMilliseconds(),
 			                      clock.until_beat().asMilliseconds())
@@ -53,7 +62,6 @@ namespace tempo{
 			return true;
 		}
 
-		auto entities = getEntities();
 
 		for(auto& entity : entities){
 			auto& id     = entity.getComponent<tempo::ComponentID>();

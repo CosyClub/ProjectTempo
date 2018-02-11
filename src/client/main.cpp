@@ -224,7 +224,7 @@ int main(int argc, const char** argv)
 	Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(
 	    overlayManager.createOverlayElement("Panel", "PanelName"));
 	panel->setMetricsMode(Ogre::GMM_PIXELS);
-	panel->setPosition(10, 10);
+	panel->setPosition(10.0, 550.0);
 	panel->setDimensions(100, 100);
 	//panel->setMaterialName("MaterialName"); // Optional background material
 
@@ -234,10 +234,9 @@ int main(int argc, const char** argv)
 	textArea->setMetricsMode(Ogre::GMM_PIXELS);
 	textArea->setPosition(0, 0);
 	textArea->setDimensions(100, 100);
-	textArea->setCharHeight(16);
+	textArea->setCharHeight(40);
 	textArea->setFontName("Roboto");
-	textArea->setColourBottom(Ogre::ColourValue(0.3, 0.5, 0.3));
-	textArea->setColourTop(Ogre::ColourValue(0.5, 0.7, 0.5));
+	textArea->setColour(Ogre::ColourValue::Red);
 
 	// Create an overlay, and add the panel
 	Ogre::Overlay* overlay = overlayManager.create("OverlayName");
@@ -298,7 +297,7 @@ int main(int argc, const char** argv)
 
 		auto& input  = entity_player.getComponent<tempo::ComponentPlayerLocal>();
 		char buffer [50];
-		sprintf (buffer, "Counter combo: %d", input.counter_combo);
+		sprintf (buffer, "Combo: %d", input.counter_combo);
 
 		textArea->setCaption(buffer);
 
