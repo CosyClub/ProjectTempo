@@ -8,6 +8,17 @@
 #include <irrlicht.h>
 #include <SFML/System/Clock.hpp>
 
+#include "gui.hpp"
+#include "FloorSceneNode.hpp"
+
+float floor_heights[] = {
+	 0.0f,  1.0f,  3.0f,  1.0f,  0.0f,
+	 0.0f,  0.0f,  5.0f,  0.0f,  0.0f,
+	 0.0f,  8.0f,  7.0f,  0.0f,  0.0f,
+	 0.0f,  0.0f, 10.0f,  9.0f,  8.0f,
+	 0.0f,  0.0f, 30.0f,  8.0f,  7.0f,
+};
+
 int main(const int argc, const char** argv){
 	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_OPENGL,
 	                                                irr::core::dimension2d<irr::u32>(800, 600),
@@ -21,19 +32,13 @@ int main(const int argc, const char** argv){
 
 	device->setWindowCaption(L"Irrlicht Test");
 
-	irr::video::IVideoDriver*  driver = device->getVideoDriver();
-	irr::scene::ISceneManager* smgr   = device->getSceneManager();
-	irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
+	irr::video::IVideoDriver*  driver  = device->getVideoDriver();
+	irr::scene::ISceneManager* smgr    = device->getSceneManager();
+	irr::gui::IGUIEnvironment* gui_env = device->getGUIEnvironment();
 
-	smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f, 0.3f));
+	setupGui(gui_env);
 
-	irr::gui::IGUISkin* gui_skin = guienv->getSkin();
-	gui_skin->setColor(irr::gui::EGDC_BUTTON_TEXT, irr::video::SColor(255, 255, 255, 255));
-	gui_skin->setFont(guienv->getFont("resources/fonts/liberation_sans.xml"));
-
-	guienv->addStaticText(L"Hello World! This is Irrlicht",
-	                      irr::core::rect<irr::s32>(10,10,500,50), false);
-
+	smgr->setAmbientLight(irr::video::SColorf(0.1f, 0.1f, 0.1f, 0.1f));
 
 	irr::scene::IAnimatedMesh* mesh_sydney = smgr->getMesh("resources/meshes/sydney.md2");
 	if (!mesh_sydney){
@@ -98,6 +103,10 @@ int main(const int argc, const char** argv){
 		node->setColor(irr::video::SColor(255, 255, 100, 100));
 	}
 
+	FloorSceneNode* floor_node = new FloorSceneNode(smgr->getRootSceneNode(), smgr, 5, 5);
+	floor_node->setPosition(irr::core::vector3df(0, -10, 0));
+	floor_node->setScale(irr::core::vector3df(30, 30, 0.5f));
+	floor_node->updateTiles(floor_heights);
 
 	irr::core::matrix4 light_0_transform;
 
@@ -118,7 +127,7 @@ int main(const int argc, const char** argv){
 		light_0_node->setRotation(irr::core::vector3df(game_time * 80.0f, game_time * 50.0f, game_time * -60.0f));
 
 		smgr->drawAll();
-		guienv->drawAll();
+		gui_env->drawAll();
 
 		driver->endScene();
 	}
