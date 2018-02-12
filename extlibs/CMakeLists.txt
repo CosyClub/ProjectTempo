@@ -29,11 +29,11 @@ execute_process(COMMAND cmake
 	-G ${CMAKE_GENERATOR}
 	"${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/"
 	WORKING_DIRECTORY "${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/"
-)
+	)
 # Build Ogre
 execute_process(COMMAND cmake --build
 	"${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/"
-)
+	)
 
 ##########################################
 # FreeImage
@@ -75,4 +75,23 @@ configure_file(
 	"${CMAKE_CURRENT_BINARY_DIR}/anax-1.1.1/include/anax/Config.hpp"
 	"${TEMPO_ANAX_INCLUDE_DIR}/anax/Config.hpp"
 	COPYONLY
-)
+	)
+
+##########################################
+# Irrlicht
+##########################################
+# Group output into subfolder
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${TEMPO_BIN_DIR}/irrlicht/examples/bin/")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${TEMPO_BIN_DIR}/irrlicht/examples/bin/")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${TEMPO_BIN_DIR}/irrlicht/examples/bin/")
+# Extract archive
+execute_process(COMMAND cmake -E tar xf irrlicht-1.8.4.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/irrlicht-cmake/" DESTINATION "${CMAKE_CURRENT_LIST_DIR}/irrlicht-1.8.4/")
+# Build libraries
+add_subdirectory(irrlicht-1.8.4)
+# Ensure we can run examples and tools
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/irrlicht-1.8.4/media/" DESTINATION "${TEMPO_BIN_DIR}/irrlicht/media/")
+# Reset bin output
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${TEMPO_BIN_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${TEMPO_BIN_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${TEMPO_BIN_DIR}")
