@@ -25,6 +25,8 @@ int main(const int argc, const char** argv){
 	irr::scene::ISceneManager* smgr   = device->getSceneManager();
 	irr::gui::IGUIEnvironment* guienv = device->getGUIEnvironment();
 
+	smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f, 0.3f));
+
 	irr::gui::IGUISkin* gui_skin = guienv->getSkin();
 	gui_skin->setColor(irr::gui::EGDC_BUTTON_TEXT, irr::video::SColor(255, 255, 255, 255));
 	gui_skin->setFont(guienv->getFont("resources/fonts/liberation_sans.xml"));
@@ -42,8 +44,8 @@ int main(const int argc, const char** argv){
 	irr::scene::IAnimatedMeshSceneNode* node_sydney = smgr->addAnimatedMeshSceneNode(mesh_sydney);
 	if (node_sydney){
 		node_sydney->setPosition(irr::core::vector3df(20, 0, 0));
-		node_sydney->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-		node_sydney->setMD2Animation(irr::scene::EMAT_STAND);
+		node_sydney->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+		node_sydney->setMD2Animation(irr::scene::EMAT_RUN);
 		node_sydney->setMaterialTexture( 0, driver->getTexture("resources/materials/textures/sydney.bmp") );
 	}
 
@@ -80,8 +82,24 @@ int main(const int argc, const char** argv){
 		node->setMaterialTexture(0, driver->getTexture("resources/materials/textures/particlewhite.bmp"));
 	}
 
+	irr::scene::ILightSceneNode* light_1_node = smgr->addLightSceneNode(light_0_node,
+	                                                                    irr::core::vector3df(15,0,0),
+	                                                                    irr::video::SColorf(1.0f, 0.0f, 0.0f),
+	                                                                    1000.0f);
+	irr::video::SLight& light_1 = light_1_node->getLightData();
+	light_1_node->enableCastShadow();
+	light_1.Attenuation = irr::core::vector3df(0, 0.001, 0.00001);
 
-	irr::core::matrix4 light_transform;
+	{
+		auto* node = smgr->addBillboardSceneNode(light_1_node, irr::core::dimension2d<irr::f32>(5, 5));
+		node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+		node->setMaterialType(irr::video::EMT_TRANSPARENT_ADD_COLOR);
+		node->setMaterialTexture(0, driver->getTexture("resources/materials/textures/particlewhite.bmp"));
+		node->setColor(irr::video::SColor(255, 255, 100, 100));
+	}
+
+
+	irr::core::matrix4 light_0_transform;
 
 	sf::Clock game_timer;
 
@@ -92,11 +110,12 @@ int main(const int argc, const char** argv){
 
 		node_bunny->setRotation(irr::core::vector3df(0, game_time * 60, 0));
 
-		light_transform.setRotationDegrees(irr::core::vector3df(0, game_time * -70, 0));
+		light_0_transform.setRotationDegrees(irr::core::vector3df(0, game_time * -70, 0));
 
 		irr::core::vector3df light_0_position(30, 0, 0);
-		light_transform.transformVect(light_0_position);
+		light_0_transform.transformVect(light_0_position);
 		light_0_node->setPosition(light_0_position);
+		light_0_node->setRotation(irr::core::vector3df(game_time * 80.0f, game_time * 50.0f, game_time * -60.0f));
 
 		smgr->drawAll();
 		guienv->drawAll();
