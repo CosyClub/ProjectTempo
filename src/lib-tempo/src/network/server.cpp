@@ -113,14 +113,16 @@ uint32_t addClient(sf::Uint32 ip,
 }
 
 void handshakeHello(sf::Packet &packet,
-                    sf::IpAddress &sender,
-                    unsigned short port,
                     anax::World *world)
 {
 	// Extract information from packet
+	sf::Uint32 ip;
 	unsigned short updatePort = 0;
+	packet >> ip;
 	packet >> updatePort;
-	sf::Uint32 ip = sender.toInteger();
+	std::cout << "New client (" << sf::IpAddress(ip).toString() << ":" 
+	          << updatePort << ") Connecting!" << std::endl;
+	sf::IpAddress sender(ip);
 
 	// Register Client Internally
 	uint32_t id = NO_CLIENT_ID;
@@ -146,12 +148,10 @@ void handshakeHello(sf::Packet &packet,
 	}
 
 	// Send response back to sender
-	sock_h.send(rog, sender, port);
+	sock_o.send(rog, sender, updatePort);
 }
 
 void handshakeRoleReq(sf::Packet &packet,
-                      sf::IpAddress &sender, 
-                      unsigned short port,
                       anax::World *world,
                       SystemLevelManager system_gm)
 {
@@ -169,7 +169,9 @@ void handshakeRoleReq(sf::Packet &packet,
 
 	// Register Role
 	cmtx.lock();
-	clients[id].role = static_cast<ClientRole>(role);
+	clients[id].role    = static_cast<ClientRole>(role);
+	sf::Uint32 ip       = clients[id].ip;
+	unsigned short port = clients[id].port;
 	cmtx.unlock();
 	
 	// Construct ROLEREQ_ROG response
@@ -187,38 +189,31 @@ void handshakeRoleReq(sf::Packet &packet,
 	}
 	
 	//Send response back to sender
-	sock_h.send(rog, sender, port);
+	sock_o.send(rog, sf::IpAddress(ip), port);
 }
 
 void checkForNewClients(anax::World *world, SystemLevelManager system_gm)
 {
 	tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::HANDSHAKE);	
-	if (queue->empty()) return false;
+	if (queue->empty()) return;
 
 	while (!queue->empty()) {
 		sf::Packet packet = queue->front();
 		queue->pop();
-		sf::IpAddress ip;
-		unsigned short port;
 
-		if (sock_h.receive(packet, ip, port) != sf::Socket::Done) {
-	
 		uint32_t receiveID = static_cast<uint32_t>(HandshakeID::DEFAULT);
 		packet >> receiveID;
 
 		switch (static_cast<HandshakeID>(receiveID)) {
 		case HandshakeID::HELLO:
-			std::cout << "New client (" << sender.toString() << ":" << port
-			          << ") Connecting!" << std::endl; 
-			handshakeHello(packet, sender, port, world);
+			handshakeHello(packet, world);
 			break;
 		case HandshakeID::ROLEREQ:
-			handshakeRoleReq(packet, sender, port, world, system_gm);
+			handshakeRoleReq(packet, world, system_gm);
 			break;
 		default:
 			std::cout << "WARNING: an invalid handshake message was "
-			          << "recieved from " << sender.toString() << ":" 
-		                  << port << " ... ignoring" << std::endl;
+			          << "recieved ... ignoring" << std::endl;
 			break;
 		}
 	}

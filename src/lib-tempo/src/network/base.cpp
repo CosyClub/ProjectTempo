@@ -45,18 +45,17 @@ bool bindSocket(char socket, unsigned short port)
 
 bool sortPacket(sf::Packet p)
 {
-	int id; //Should be a tempo::systemQID but they're the same
+	int id; // Should be a tempo::systemQID but they're the same
 	tempo::SystemQID qid;
 
-	//Get ID
+	// Get ID
 	p >> id;
 
-	//convert
+	// Convert
 	qid = tempo::SystemQID(id);
 
-	//Basic checking
-	if (id <= tempo::QID_RESERVED_BOTTOM || id >= tempo::QID_RESERVED_TOP)
-	{
+	// Basic checking
+	if (id <= tempo::QID_RESERVED_BOTTOM || id >= tempo::QID_RESERVED_TOP) {
 		return false;
 	}
 

@@ -35,11 +35,9 @@ namespace tempo
 	//         id        - ID of the System Queue or Handshake message to 
 	//                     deliver the message to. {use static_cast<int>()}
 	//         payload   - The payload to send to the message queue.
-	//         isHandshake - Whether or not the message is a handshake 
-	//                     message (true) or game message (false, default).
 	// Returns:
 	//         bool - true if sent, false if unable to send.
-	bool sendMessage(SystemQID id, sf::Packet payload, bool isHandshake);
+	bool sendMessage(SystemQID id, sf::Packet payload);
 
 	// listenForServerUpdates
 	// WARNING: Should be run on separate thread.

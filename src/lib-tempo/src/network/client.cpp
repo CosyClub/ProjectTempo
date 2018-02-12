@@ -92,6 +92,7 @@ uint32_t handshakeHello(anax::World& world,
 	// Package up payload
 	sf::Packet packet;
 	packet << static_cast<uint32_t>(HandshakeID::HELLO);
+	packet << sf::IpAddress::getLocalAddress().toInteger();
 	packet << port_ci;
 
 	// Send HELLO
@@ -205,6 +206,5 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 
 	return handshakeRoleReq(id, roleID, roleData, world, scene, system_gm);
 }
-
 
 }

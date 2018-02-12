@@ -132,7 +132,6 @@ int main(int argc, const char** argv)
 		tempo::port_ci = DEFAULT_PORT_IN;
 		tempo::port_co = DEFAULT_PORT_OUT;
 	}
-	tempo::port_sh = DEFAULT_PORT_HS;
 	// Other server ports aquired dynamically on handshake
 
 	// Bind sockets

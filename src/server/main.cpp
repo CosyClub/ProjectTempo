@@ -86,7 +86,7 @@ int main(int argc, const char** argv) {
 	// Main loop, with beat printouts
 	while (true) {
 		// Handshake call, DO NOT REMOVE
-		checkForNewClients(world, system_level);
+		checkForNewClients(&world, system_level);
 
 		if (clock.passed_beat()) {
 			system_grid_ai.update();
