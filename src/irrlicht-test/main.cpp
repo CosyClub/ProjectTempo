@@ -68,7 +68,14 @@ int main(const int argc, const char** argv){
 		node_bunny->setMaterialFlag(irr::video::EMF_LIGHTING, true);
 	}
 
-	smgr->addCameraSceneNode(0, irr::core::vector3df(0,30,-80), irr::core::vector3df(0,5,0));
+	//smgr->addCameraSceneNode(0, irr::core::vector3df(0,30,-80), irr::core::vector3df(0,5,0));
+
+	// add a camera scene node
+	irr::scene::ICameraSceneNode* camera = smgr->addCameraSceneNodeMaya();
+	camera->setFarValue(20000.f);
+	// Maya cameras reposition themselves relative to their target, so target the location
+	// where the mesh scene node is placed.
+	camera->setTarget(irr::core::vector3df(0,30,0));
 
 
 
@@ -104,8 +111,8 @@ int main(const int argc, const char** argv){
 	}
 
 	FloorSceneNode* floor_node = new FloorSceneNode(smgr->getRootSceneNode(), smgr, 5, 5);
-	floor_node->setPosition(irr::core::vector3df(0, -10, 0));
-	floor_node->setScale(irr::core::vector3df(30, 30, 0.5f));
+	floor_node->setPosition(irr::core::vector3df(-75.0f, -30.0f, -75.0f));
+	floor_node->setScale(irr::core::vector3df(30, 0.5f, 30));
 	floor_node->updateTiles(floor_heights);
 
 	irr::core::matrix4 light_0_transform;
