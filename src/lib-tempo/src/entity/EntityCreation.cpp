@@ -53,10 +53,10 @@ sf::Packet& operator <<(sf::Packet& packet, const Entity_Type& type)
 	return packet;
 }
 
-sf::Packet& operator <<(sf::Packet& packet, const Vec2s& vec)
+sf::Packet& operator <<(sf::Packet& packet, const glm::vec2& vec)
 {
-	packet << vec.elements[0];
-	packet << vec.elements[1];
+	packet << vec.x;
+	packet << vec.y;
 
 	return packet;
 }
@@ -87,10 +87,10 @@ sf::Packet& operator >>(sf::Packet& packet, Entity_Type& type)
 	return packet;
 }
 
-sf::Packet& operator >>(sf::Packet& packet, Vec2s& vec)
+sf::Packet& operator >>(sf::Packet& packet, glm::vec2& vec)
 {
-	packet >> vec.elements[0];
-	packet >> vec.elements[1];
+	packet >> vec.x;
+	packet >> vec.y;
 
 	return packet;
 }

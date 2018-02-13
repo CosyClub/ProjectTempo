@@ -1,7 +1,8 @@
 #ifndef TEMPO_ENTITY_ENTITYCREATION_HPP
 #define TEMPO_ENTITY_ENTITYCREATION_HPP
 
-#include <tempo/math/Vector.hpp>
+#include <glm/fwd.hpp>
+#include <glm/vec2.hpp>
 #include <SFML/Network.hpp>
 
 namespace tempo
@@ -44,18 +45,18 @@ typedef union {
 
 typedef struct {
 	EID type_id;
-	Vec2s position;
+	glm::vec2 position;
 	int instance_id;
 	Entity_Type entity_type;
 } EntityCreationData;
 
 sf::Packet& operator <<(sf::Packet& packet, const EntityCreationData& data);
 sf::Packet& operator <<(sf::Packet& packet, const Entity_Type& type);
-sf::Packet& operator <<(sf::Packet& packet, const Vec2s& vec);
+sf::Packet& operator <<(sf::Packet& packet, const glm::vec2& vec);
 
 sf::Packet& operator >>(sf::Packet& packet, EntityCreationData& data);
 sf::Packet& operator >>(sf::Packet& packet, Entity_Type& type);
-sf::Packet& operator >>(sf::Packet& packet, Vec2s& vec);
+sf::Packet& operator >>(sf::Packet& packet, glm::vec2& vec);
 
 }
 

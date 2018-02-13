@@ -1,4 +1,5 @@
 #include <tempo/entity/EntityCreationClient.hpp>
+#include <glm/vec2.hpp>
 
 namespace tempo {
 
@@ -10,7 +11,7 @@ anax::Entity newEntity(EntityCreationData data,
 	anax::Entity return_entity;
 
 	EID type_id = data.type_id;
-	Vec2s pos = data.position;
+	glm::vec2 pos = data.position;
 	int instance_id = data.instance_id;
 
 	switch (type_id){

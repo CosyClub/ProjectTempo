@@ -10,7 +10,9 @@
 #include <anax/Component.hpp>
 
 #include <tempo/entity/TileMask.hpp>
-#include <tempo/math/Vector.hpp>
+
+#include <glm/fwd.hpp>
+#include <glm/vec2.hpp>
 
 #include <time.h>
 #include <limits>
@@ -33,7 +35,7 @@ namespace tempo{
 		friend SystemLevelManager;
 	private:
 		///< \brief The position of the center of this entity
-		Vec2s position;
+		glm::vec2 position;
 
 		///< \brief Mask of the tile's that this entity occupies
 		TileMask mask;
@@ -45,11 +47,11 @@ namespace tempo{
 		/// but not through collapsed walls/enemies etc.
 		bool ethereal;
 	public:
-		inline const Vec2s&    getPosition(){ return this->position; }
+		inline const glm::vec2& getPosition(){ return this->position; }
 		inline const TileMask& getTileMask(){ return this->mask;     }
 		inline const bool      isEthereal (){ return this->ethereal; }
 
-		ComponentGridPosition(Vec2s pos        = {0,0},
+		ComponentGridPosition(glm::vec2 pos    = glm::vec2(0, 0),
 		                      TileMask         = tempo::tileMask1by1,
 		                      bool is_ethereal = true
 		                     );
@@ -90,12 +92,12 @@ namespace tempo{
 		/////////////////////////////////////////////////////////////////////
 		bool beginMovement(int dx, int dy);
 
-		inline bool beginMovement(Vec2s delta){ return beginMovement(delta.x, delta.y); }
+		inline bool beginMovement(glm::vec2 delta){ return beginMovement(delta.x, delta.y); }
 
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Returns the current movement delta
 		/////////////////////////////////////////////////////////////////////
-		const Vec2s& getCurrentMovement();
+		const glm::vec2& getCurrentMovement();
 
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Returns true if the entity is currently undergoing some motion
@@ -130,7 +132,7 @@ namespace tempo{
 		float movement_speed;
 	private:
 		///< \brief The delta that this entity is trying to move by
-	  Vec2s delta;
+	    glm::vec2 delta;
 
 		///< \brief Value between 0 and 1 indicating the progress towards the target
 		float motion_progress;
@@ -152,7 +154,7 @@ namespace tempo{
 	private:
 	  std::vector<std::vector<float>> tile_heights;
 
-		std::vector<Vec2s> player_spawn_zone;
+		std::vector<glm::vec2> player_spawn_zone;
 		uint32_t spawn_zones = 0;
 
 		class GridPositions : public anax::System<anax::Requires<ComponentGridPosition>>{};
@@ -165,15 +167,15 @@ namespace tempo{
 		SystemLevelManager(anax::World&, int size);
 		SystemLevelManager(anax::World&, const char* heightMap, const char* zoneMap);
 
-		bool existsTile(Vec2s position);
+		bool existsTile(glm::vec2 position);
 		bool existsTile(int x, int y);
 
-		void deleteTile(Vec2s position);
-		void createTile(Vec2s position);
+		void deleteTile(glm::vec2 position);
+		void createTile(glm::vec2 position);
 
-		void setHeight(float height, Vec2s position);
-		void setHeight(float height, Vec2s position, int width, int length);
-		inline float getHeight(Vec2s position){
+		void setHeight(float height, glm::vec2 position);
+		void setHeight(float height, glm::vec2 position, int width, int length);
+		inline float getHeight(glm::vec2 position){
 			return getHeight(position.x, position.y);
 		}
 		float getHeight(int x, int y);
@@ -184,10 +186,10 @@ namespace tempo{
 		/// \brief Returns the width and height of the world, IE: maximum
 		/// tile coordinate is 1 less than the returned vector in each dimension
 		/////////////////////////////////////////////////////////////////////
-		Vec2s getWorldSize();
+		glm::vec2 getWorldSize();
 
 		void loadZones(const char* fileNames);
-		Vec2s spawn();
+		glm::vec2 spawn();
 
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Handles moving entities with a GridMotionComponent
