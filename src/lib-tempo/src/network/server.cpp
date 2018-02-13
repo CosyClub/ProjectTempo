@@ -120,9 +120,9 @@ void handshakeHello(sf::Packet &packet,
 	unsigned short updatePort = 0;
 	packet >> ip;
 	packet >> updatePort;
-	std::cout << "New client (" << sf::IpAddress(ip).toString() << ":" 
-	          << updatePort << ") Connecting!" << std::endl;
 	sf::IpAddress sender(ip);
+	std::cout << "New client (" << sender.toString() << ":" << updatePort 
+	          << ") Connecting!" << std::endl;
 
 	// Register Client Internally
 	uint32_t id = NO_CLIENT_ID;
@@ -148,7 +148,7 @@ void handshakeHello(sf::Packet &packet,
 	}
 
 	// Send response back to sender
-	sock_o.send(rog, sender, updatePort);
+	sendMessage(SystemQID::HANDSHAKE, rog, id);
 }
 
 void handshakeRoleReq(sf::Packet &packet,
@@ -173,23 +173,26 @@ void handshakeRoleReq(sf::Packet &packet,
 	sf::Uint32 ip       = clients[id].ip;
 	unsigned short port = clients[id].port;
 	cmtx.unlock();
+	EntityCreationData data = dumpEntity(entity);
 	
 	// Construct ROLEREQ_ROG response
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG);
-	EntityCreationData data = dumpEntity(entity);
 	rog << data;
 
 	sf::Packet p_broadcast;
 	p_broadcast << data;
+	
+	// Send response back to sender
+	sendMessage(SystemQID::HANDSHAKE, rog, id);
 
+	// Send notification of new entity to all clients
 	for (tempo::clientpair client:clients){
-		if (client.first == id) continue;
+		if (client.first == id)
+			continue;
 		sendMessage(tempo::SystemQID::ENTITY_CREATION, p_broadcast, client.first);
 	}
 	
-	//Send response back to sender
-	sock_o.send(rog, sf::IpAddress(ip), port);
 }
 
 void checkForNewClients(anax::World *world, SystemLevelManager system_gm)

@@ -9,10 +9,9 @@ sf::UdpSocket sock_h;
 
 sf::IpAddress addr_r = "0.0.0.0";
 unsigned short port_ci = 0;
-unsigned short port_co = 0;  // Should be set within the Client or Server 
-unsigned short port_sh = 0;  // at runtime. This way user input/config files
-unsigned short port_si = 0;  // can be used to set address/ports dynamically.
-unsigned short port_so = 0;  
+unsigned short port_co = 0;  // Should be set within the Client or Server
+unsigned short port_si = 0;  // at runtime. This way user input/config files
+unsigned short port_so = 0;  // can be used to set address/ports dynamically.
 unsigned short port_st = 0;
 
 bool bindSocket(char socket, unsigned short port)

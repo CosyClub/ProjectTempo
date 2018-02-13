@@ -94,14 +94,15 @@ uint32_t handshakeHello(anax::World& world,
 	packet << static_cast<uint32_t>(HandshakeID::HELLO);
 	packet << sf::IpAddress::getLocalAddress().toInteger();
 	packet << port_ci;
-
+	
 	// Send HELLO
 	sendMessage(SystemQID::HANDSHAKE, packet);
 
 	// Wait until we recieve HELLO_ROG
 	tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::HANDSHAKE);
 	while (queue->empty()) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(40));
+		std::cout << ".\n";
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	}
 
 	// Take response from queue
@@ -148,10 +149,15 @@ bool handshakeRoleReq(uint32_t id,
 	// Send ROLEREQ
 	sendMessage(SystemQID::HANDSHAKE, packet);
 	
-	// Receive ROLEREQ_ROG
-	sf::IpAddress sender;
-	unsigned short port;
-	sock_o.receive(packet, sender, port);
+	// Wait until we recieve ROLEREQ_ROG
+	tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::HANDSHAKE);
+	while (queue->empty()) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+	}
+
+	// Take response from queue
+	packet = queue->front();
+	queue->pop();
 	
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
