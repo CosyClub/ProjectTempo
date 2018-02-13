@@ -12,6 +12,13 @@
 #include <thread>
 
 #include <Ogre.h>
+#include <OgreFont.h>
+#include <OgreFontManager.h>
+#include <OgreOverlay.h>
+#include <OgreOverlayManager.h>
+#include <OgreOverlaySystem.h>
+#include <OgreOverlayContainer.h>
+#include <OgreTextAreaOverlayElement.h>
 
 #include <tempo/Application.hpp>
 #include <tempo/song.hpp>
@@ -168,15 +175,6 @@ int main(int argc, const char** argv)
 
 	//auto node_floor = system_grid_motion.getFloorNode();
 
-	// Dummy objects
-	Ogre::Entity* x1 = scene->createEntity("x1", Ogre::SceneManager::PT_SPHERE);
-	Ogre::Entity* y1 = scene->createEntity("y1", Ogre::SceneManager::PT_SPHERE);
-	Ogre::Entity* z1 = scene->createEntity("z1", Ogre::SceneManager::PT_SPHERE);
-	Ogre::SceneNode* helpers = scene->getRootSceneNode()->createChildSceneNode();
-	helpers->attachObject(x1);
-	helpers->attachObject(y1);
-	helpers->attachObject(z1);
-
 	// Player
 	/* anax::Entity entity_player = tempo::newPlayer(world, scene, 0, tempo::EID_PLAYER, system_level, 2, 2); */
 	// TODO: use better way to find out player, for now this is a search
@@ -198,6 +196,71 @@ int main(int argc, const char** argv)
 	node_camera->attachObject(camera);
 	node_camera->setPosition(0, 20, 10);
 	camera->lookAt(0, 0, 0);
+
+
+
+
+	Ogre::OverlaySystem* OverlaySystem = new Ogre::OverlaySystem();
+	scene->addRenderQueueListener(OverlaySystem);
+
+	Ogre::FontManager &fman = Ogre::FontManager::getSingleton();
+	// create a font resource
+	Ogre::ResourcePtr resource = fman.create("Roboto",Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	// set as truetype
+	resource->setParameter("type","truetype");
+	// set the .ttf file name
+	resource->setParameter("source","fonts/Roboto-Black.ttf");
+	// set the size
+	resource->setParameter("size","16");
+	// set the dpi
+	resource->setParameter("resolution","96");
+	// load the ttf
+	resource->load();
+
+	Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+
+	// Create a panel
+	Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(
+	    overlayManager.createOverlayElement("Panel", "PanelName"));
+	panel->setMetricsMode(Ogre::GMM_PIXELS);
+	panel->setPosition(10.0, 550.0);
+	panel->setDimensions(100, 100);
+	//panel->setMaterialName("MaterialName"); // Optional background material
+
+	// Create a text area
+	Ogre::TextAreaOverlayElement* textArea = static_cast<Ogre::TextAreaOverlayElement*>(
+	    overlayManager.createOverlayElement("TextArea", "TextAreaName"));
+	textArea->setMetricsMode(Ogre::GMM_PIXELS);
+	textArea->setPosition(0, 0);
+	textArea->setDimensions(100, 100);
+	textArea->setCharHeight(40);
+	textArea->setFontName("Roboto");
+	textArea->setColour(Ogre::ColourValue::Red);
+
+	// Create an overlay, and add the panel
+	Ogre::Overlay* overlay = overlayManager.create("OverlayName");
+	overlay->add2D(panel);
+
+	// Add the text area to the panel
+	panel->addChild(textArea);
+
+	// Show the overlay
+	overlay->show();
+
+	//
+	// Ogre::FontManager &fontMgr = Ogre::FontManager::getSingleton();
+	//  // create a font resource
+	//  ResourcePtr font = fontMgr.create("MyFont","General");
+	//  // set as truetype
+	//  font->setParameter("type","truetype");
+	//  // set the .ttf file name
+	//  font->setParameter("source",/usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf);
+	//  // set the size
+	//  font->setParameter("size","26");
+	//  // set the dpi
+	//  font->setParameter("resolution","96");
+	//  // load the ttf
+	//  font->load();
 
 	// Movement hack
 	srand(time(NULL));
@@ -229,6 +292,13 @@ int main(int argc, const char** argv)
 			system_player_local.advanceBeat();
 			system_player_remote.advanceBeat();
 		}
+
+
+		auto& input  = entity_player.getComponent<tempo::ComponentPlayerLocal>();
+		char buffer [50];
+		sprintf (buffer, "Combo: %d", input.counter_combo);
+
+		textArea->setCaption(buffer);
 
 		float seconds_until_beat = clock.until_beat().asSeconds();
 		float seconds_since_beat = clock.since_beat().asSeconds();

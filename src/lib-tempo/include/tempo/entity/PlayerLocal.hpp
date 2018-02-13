@@ -20,6 +20,8 @@ namespace tempo{
 
 	struct ComponentPlayerLocal : anax::Component {
 		bool moved_this_beat;
+		uint counter_combo;
+		uint level_combo;
 
 		inline ComponentPlayerLocal() : moved_this_beat(false) {}
 	};
