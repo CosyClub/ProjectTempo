@@ -12,6 +12,7 @@
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerLocal.hpp>
 #include <tempo/entity/PlayerRemote.hpp>
+#include <tempo/entity/Health.hpp>
 
 namespace tempo
 {
@@ -32,4 +33,3 @@ EntityCreationData dumpEntity(anax::Entity e);
 }
 
 #endif
-

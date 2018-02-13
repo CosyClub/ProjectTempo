@@ -6,6 +6,10 @@ namespace tempo{
 
 		for(auto& entity : entities){
 			auto& input = entity.getComponent<tempo::ComponentPlayerLocal>();
+			if(!input.moved_this_beat) {
+				input.counter_combo = 0;
+				input.level_combo = 0;
+			}
 			input.moved_this_beat = false;
 		}
 	}
@@ -41,15 +45,23 @@ namespace tempo{
 		default: return false; break;
 		}
 
+		auto entities = getEntities();
+		
 		if(!clock.within_delta()){
-			std::cout << "Local player missed beat by " 
-			          << std::min(clock.since_beat().asMilliseconds(), 
-			                      clock.until_beat().asMilliseconds()) 
+			for (auto& entity : entities) {
+				if (entity.hasComponent<tempo::ComponentPlayerLocal>()) {
+					auto& input = entity.getComponent<tempo::ComponentPlayerLocal>();
+					input.counter_combo = 0;
+					break;
+				}
+			}
+			std::cout << "Local player missed beat by "
+			          << std::min(clock.since_beat().asMilliseconds(),
+			                      clock.until_beat().asMilliseconds())
 			          << std::endl;
 			return true;
 		}
 
-		auto entities = getEntities();
 
 		for(auto& entity : entities){
 			auto& id     = entity.getComponent<tempo::ComponentID>();
@@ -58,6 +70,7 @@ namespace tempo{
 
 			if(!input.moved_this_beat){
 				input.moved_this_beat = true;
+				input.counter_combo++;
 				motion.beginMovement(dx, dy);
 
 				sf::Packet packet;
