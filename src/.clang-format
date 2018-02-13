@@ -1,0 +1,26 @@
+---
+BasedOnStyle: LLVM
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: 'true'
+AlignConsecutiveDeclarations: 'true'
+AlignEscapedNewlinesLeft: 'false'
+AlignTrailingComments: 'true'
+AllowAllParametersOfDeclarationOnNextLine: 'false'
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: 'false'
+AllowShortLoopsOnASingleLine: 'false'
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Linux
+BreakStringLiterals: 'false'
+ColumnLimit: '100'
+ContinuationIndentWidth: '8'
+IndentCaseLabels: 'false'
+IndentWidth: '8'
+Language: Cpp
+MaxEmptyLinesToKeep: '2'
+SortIncludes: 'true'
+SpaceBeforeAssignmentOperators: 'true'
+TabWidth: '8'
+UseTab: Always
+
+...
