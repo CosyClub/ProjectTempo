@@ -122,6 +122,38 @@ int main(const int argc, const char** argv){
 		driver->getTexture("resources/materials/textures/irrlicht2_ft.jpg"),
 		driver->getTexture("resources/materials/textures/irrlicht2_bk.jpg"));
 
+
+	irr::scene::IParticleSystemSceneNode* ps = smgr->addParticleSystemSceneNode(false);
+
+	irr::scene::IParticleEmitter* em = ps->createBoxEmitter
+		(
+		 irr::core::aabbox3d<irr::f32>(-1,-1,-1, 1,1,1), // emitter size
+		 irr::core::vector3df(0.0f,0.05f,0.0f),   // initial direction
+		 80,100,                             // emit rate
+		 irr::video::SColor(0,255,255,255),       // darkest color
+		 irr::video::SColor(0,255,255,255),       // brightest color
+		 800,1500, 50,                         // min and max age, angle
+		 irr::core::dimension2df(5.f,5.f),         // min size
+		 irr::core::dimension2df(10.f,10.f));        // max size
+
+	ps->setEmitter(em); // this grabs the emitter
+	em->drop(); // so we can drop it here without deleting it
+
+	irr::scene::IParticleAffector* paf = ps->createFadeOutParticleAffector();
+	ps->addAffector(paf); // same goes for the affector
+	paf->drop();
+
+	irr::scene::IParticleAffector* pafg = ps->createGravityAffector();
+	ps->addAffector(pafg); // same goes for the affector
+	pafg->drop();
+
+	ps->setPosition(irr::core::vector3df(0,0,0));
+	ps->setScale(irr::core::vector3df(2,2,2));
+	ps->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	ps->setMaterialFlag(irr::video::EMF_ZWRITE_ENABLE, false);
+	ps->setMaterialTexture(0, driver->getTexture("resources/materials/textures/particlewhite.bmp"));
+	ps->setMaterialType(irr::video::EMT_TRANSPARENT_ADD_COLOR);
+
 	irr::core::matrix4 light_0_transform;
 	irr::core::matrix4 light_1_transform;
 
