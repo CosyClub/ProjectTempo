@@ -38,7 +38,7 @@ int main(const int argc, const char** argv){
 
 	setupGui(gui_env);
 
-	smgr->setAmbientLight(irr::video::SColorf(0.1f, 0.1f, 0.1f, 0.1f));
+	smgr->setAmbientLight(irr::video::SColorf(0.5f, 0.5f, 0.5f, 0.5f));
 
 	irr::scene::IAnimatedMesh* mesh_sydney = smgr->getMesh("resources/meshes/sydney.md2");
 	if (!mesh_sydney){
@@ -66,7 +66,7 @@ int main(const int argc, const char** argv){
 		node_bunny->setScale(irr::core::vector3df(200, 200, 200));
 		node_bunny->setPosition(irr::core::vector3df(-40, 0, 0));
 		node_bunny->setMaterialFlag(irr::video::EMF_LIGHTING, true);
-		node_bunny->getMaterial(0).DiffuseColor = irr::video::SColorf(1.0f, 1.0f, 1.0f);
+		node_bunny->getMaterial(0).DiffuseColor = irr::video::SColor(255, 255, 255, 255);
 	}
 
 	//smgr->addCameraSceneNode(0, irr::core::vector3df(0,30,-80), irr::core::vector3df(0,5,0));
@@ -80,11 +80,11 @@ int main(const int argc, const char** argv){
 
 	irr::scene::ILightSceneNode* light_0_node = smgr->addLightSceneNode(0,
 	                                                                    irr::core::vector3df(0,0,0),
-	                                                                    irr::video::SColorf(0.3f, 0.3f, 0.3f),
-	                                                                    100.0f);
+	                                                                    irr::video::SColorf(0.7f, 0.7f, 0.7f),
+	                                                                    1000.0f);
 	irr::video::SLight& light_0 = light_0_node->getLightData();
 	light_0_node->enableCastShadow();
-	//light_0.Attenuation = irr::core::vector3df(0, 0.0001, 0.00001);
+	light_0.Attenuation = irr::core::vector3df(0, 0.0001, 0.00001);
 
 	{
 		auto* node = smgr->addBillboardSceneNode(light_0_node, irr::core::dimension2d<irr::f32>(10, 10));
@@ -96,10 +96,10 @@ int main(const int argc, const char** argv){
 	irr::scene::ILightSceneNode* light_1_node = smgr->addLightSceneNode(0,
 	                                                                    irr::core::vector3df(0,0,0),
 	                                                                    irr::video::SColorf(1.0f, 0.1f, 0.1f),
-	                                                                    10.0f);
+	                                                                    1000.0f);
 	irr::video::SLight& light_1 = light_1_node->getLightData();
 	light_1_node->enableCastShadow();
-	//light_1.Attenuation = irr::core::vector3df(0, 0.001, 0.00001);
+	light_1.Attenuation = irr::core::vector3df(0, 0.0001, 0.00001);
 
 	{
 		auto* node = smgr->addBillboardSceneNode(light_1_node, irr::core::dimension2d<irr::f32>(5, 5));
@@ -113,6 +113,14 @@ int main(const int argc, const char** argv){
 	floor_node->setPosition(irr::core::vector3df(-125.0f, -30.0f, -75.0f));
 	floor_node->setScale(irr::core::vector3df(30, 0.5f, 30));
 	floor_node->updateTiles(floor_heights);
+
+	irr::scene::ISceneNode* sky_box = smgr->addSkyBoxSceneNode(
+		driver->getTexture("resources/materials/textures/irrlicht2_up.jpg"),
+		driver->getTexture("resources/materials/textures/irrlicht2_dn.jpg"),
+		driver->getTexture("resources/materials/textures/irrlicht2_lf.jpg"),
+		driver->getTexture("resources/materials/textures/irrlicht2_rt.jpg"),
+		driver->getTexture("resources/materials/textures/irrlicht2_ft.jpg"),
+		driver->getTexture("resources/materials/textures/irrlicht2_bk.jpg"));
 
 	irr::core::matrix4 light_0_transform;
 	irr::core::matrix4 light_1_transform;
