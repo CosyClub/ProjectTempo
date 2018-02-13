@@ -81,7 +81,7 @@ configure_file(
 # GLM
 ##########################################
 # Extract archive
-execute_process(COMMAND cmake -E tar xf glm-0.9.8.5-2.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+execute_process(COMMAND cmake -E tar xf glm-0.9.8.5.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 # Build libraries
 ##########################################
 # GLM
