@@ -9,7 +9,7 @@
 #include <tempo/entity/Render.hpp>
 #include <tempo/entity/ID.hpp>
 #include <tempo/entity/LevelManager.hpp>
-#include <tempo/entity/GridAi.hpp>
+#include <tempo/entity/ComponentGridAi.hpp>
 #include <tempo/entity/PlayerLocal.hpp>
 #include <tempo/entity/PlayerRemote.hpp>
 #include <tempo/entity/Health.hpp>

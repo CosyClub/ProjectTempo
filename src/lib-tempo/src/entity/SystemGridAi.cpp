@@ -1,4 +1,4 @@
-#include <tempo/entity/GridAi.hpp>
+#include <tempo/entity/SystemGridAi.hpp>
 
 namespace tempo{
 	void SystemGridAi::update(){
