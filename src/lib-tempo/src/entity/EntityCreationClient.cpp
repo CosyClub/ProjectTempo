@@ -2,7 +2,7 @@
 
 namespace tempo {
 
-anax::Entity newEntity(EntityCreationData data, 
+anax::Entity newEntity(EntityCreationData data,
                        anax::World& world,
                        Ogre::SceneManager* scene,
                        tempo::SystemLevelManager system_gm)
@@ -72,13 +72,15 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, E
 	Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
 	player->setColour(Ogre::ColourValue::Red);
-	
+
 	entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Pset);
+  entity_player.getComponent<tempo::ComponentRender>().AddHealthBar();
 	entity_player.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_player.addComponent<tempo::ComponentGridMotion>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
+  entity_player.addComponent<tempo::ComponentHealth>(1000);
 	entity_player.activate();
 
 	return entity_player;
@@ -100,9 +102,11 @@ anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int iid, EID t
 	entity_ai.addComponent<tempo::ComponentID>(iid, (int)tid);
 	entity_ai.addComponent<tempo::ComponentTransform>();
 	entity_ai.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Aset);
+  entity_ai.getComponent<tempo::ComponentRender>().AddHealthBar();
 	entity_ai.addComponent<tempo::ComponentGridPosition>(x, y, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentGridMotion>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
+  entity_ai.addComponent<tempo::ComponentHealth>(700);
 	entity_ai.activate();
 
 	return entity_ai;
@@ -112,7 +116,7 @@ anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int i
 
 	//TODO:: Add HealthComponent
 	//TODO:: Add Entity to Specific Tile
-	
+
 	anax::Entity entity_object = world.createEntity();
 	std::string filename = "meshes/" + mesh_name + ".mesh";
 	Ogre::Entity* entity_mesh = scene->createEntity(filename);
