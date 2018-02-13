@@ -1,6 +1,7 @@
 # Linux Executables
 RaveCave
 RaveCave_Server
+glm_dummy
 
 # MSVC compiler output
 *.exe

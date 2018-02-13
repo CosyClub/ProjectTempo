@@ -77,3 +77,14 @@ configure_file(
 	"${TEMPO_ANAX_INCLUDE_DIR}/anax/Config.hpp"
 	COPYONLY
 )
+
+##########################################
+# GLM
+##########################################
+# Extract archive
+execute_process(COMMAND cmake -E tar xf glm-0.9.8.5.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+# Build libraries
+##########################################
+# GLM
+add_subdirectory(glm)
+

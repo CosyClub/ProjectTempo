@@ -42,6 +42,8 @@
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
 
+#include <glm/gtc/constants.hpp>
+
 #define BPM 174
 #define DELTA 150
 #define TIME 60000000 / BPM
@@ -68,6 +70,8 @@ void new_entity_check(anax::World &world, Ogre::SceneManager* scene, tempo::Syst
 
 int main(int argc, const char** argv)
 {
+	std::cout << glm::pi<float>() << std::endl;
+	
 	tempo::Application app = tempo::initialize_application("RaveCave", 800, 600);
 	if (app.ogre == nullptr || app.window == nullptr || app.render_target == nullptr) {
 		printf("Application initialisation failed, exiting\n");
