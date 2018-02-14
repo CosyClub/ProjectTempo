@@ -1,10 +1,11 @@
-#ifndef TEMPO_ENTITY_PLAYERREMOTESERVER_HPP
-#define TEMPO_ENTITY_PLAYERREMOTESERVER_HPP
+#ifndef TEMPO_SYSTEM_PLAYERREMOTESERVER_HPP
+#define TEMPO_SYSTEM_PLAYERREMOTESERVER_HPP
 
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
 #include <tempo/component/ComponentGridMotion.hpp>
+#include <tempo/entity/ComponentPlayerRemoteServer.hpp>
 #include <tempo/system/SystemID.hpp>
 #include <tempo/entity/SystemQID.hpp>
 #include <tempo/network/queue.hpp>
@@ -19,13 +20,6 @@
 #undef main // SDL likes to define main
 
 namespace tempo{
-
-	struct ComponentPlayerRemoteServer : anax::Component 
-	{
-		bool moved_this_beat;
-
-		inline ComponentPlayerRemoteServer() : moved_this_beat(false) {}
-	};
 
 	struct SystemPlayerRemoteServer : anax::System<anax::Requires<ComponentGridMotion, 
 	                                                        ComponentPlayerRemoteServer>> 
