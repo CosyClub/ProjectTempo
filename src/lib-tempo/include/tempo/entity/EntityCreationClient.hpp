@@ -10,7 +10,7 @@
 #include <tempo/component/ComponentID.hpp>
 #include <tempo/component/ComponentRender.hpp>
 #include <tempo/entity/EntityCreation.hpp>
-#include <tempo/entity/ComponentPlayerLocal.hpp>
+#include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/entity/PlayerRemote.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 

@@ -1,5 +1,5 @@
-#include <tempo/entity/SystemPlayerLocal.hpp>
-#include <tempo/entity/ComponentPlayerLocal.hpp>
+#include <tempo/system/SystemPlayerLocal.hpp>
+#include <tempo/component/ComponentPlayerLocal.hpp>
 
 namespace tempo{
 	void SystemPlayerLocal::advanceBeat(){
