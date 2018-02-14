@@ -3,7 +3,8 @@
 
 #include <anax/Component.hpp>
 
-#include <tempo/entity/LevelManager.hpp>
+#include <tempo/entity/ComponentGridMotion.hpp>
+#include <tempo/entity/ComponentGridPosition.hpp>
 
 namespace tempo{
 	struct ComponentGridAi : anax::Component {

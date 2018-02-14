@@ -1,7 +1,7 @@
 #ifndef TEMPO_NETWORK_SERVER_HPP
 #define TEMPO_NETWORK_SERVER_HPP
 
-#include <tempo/entity/LevelManager.hpp>
+#include <tempo/entity/SystemLevelManager.hpp>
 #include <tempo/entity/EntityCreationServer.hpp>
 #include <tempo/network/base.hpp>
 #include <tempo/network/queue.hpp>

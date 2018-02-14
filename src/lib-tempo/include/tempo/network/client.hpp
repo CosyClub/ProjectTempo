@@ -3,7 +3,7 @@
 
 #include <tempo/entity/EntityCreationClient.hpp>
 #include <tempo/entity/PlayerRemote.hpp>
-#include <tempo/entity/LevelManager.hpp>
+#include <tempo/entity/SystemLevelManager.hpp>
 #include <tempo/network/base.hpp>
 #include <tempo/config.hpp>
 #include <tempo/time.hpp>

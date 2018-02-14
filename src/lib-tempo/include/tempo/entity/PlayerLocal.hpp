@@ -4,8 +4,8 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
+#include <tempo/entity/ComponentGridMotion.hpp>
 #include <tempo/entity/ID.hpp>
-#include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/SystemQID.hpp>
 #include <tempo/network/client.hpp>
 #include <tempo/time.hpp>
