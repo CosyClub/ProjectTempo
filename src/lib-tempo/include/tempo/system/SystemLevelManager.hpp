@@ -10,8 +10,8 @@
 #include <anax/Component.hpp>
 
 #include <tempo/entity/TileMask.hpp>
-#include <tempo/entity/ComponentGridMotion.hpp>
-#include <tempo/entity/ComponentGridPosition.hpp>
+#include <tempo/component/ComponentGridMotion.hpp>
+#include <tempo/component/ComponentGridPosition.hpp>
 #include <tempo/math/Vector.hpp>
 
 #include <time.h>

@@ -4,7 +4,7 @@
 #include <anax/Component.hpp>
 
 #include <tempo/component/ComponentGridAi.hpp>
-#include <tempo/entity/ComponentGridMotion.hpp>
+#include <tempo/component/ComponentGridMotion.hpp>
 
 namespace tempo{
 	struct SystemGridAi : anax::System<anax::Requires<ComponentGridMotion, ComponentGridAi>> {

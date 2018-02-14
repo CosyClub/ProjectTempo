@@ -4,10 +4,10 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/entity/ComponentGridMotion.hpp>
-#include <tempo/entity/ComponentGridPosition.hpp>
-#include <tempo/entity/SystemLevelManager.hpp>
+#include <tempo/component/ComponentGridMotion.hpp>
+#include <tempo/component/ComponentGridPosition.hpp>
 #include <tempo/component/ComponentTransform.hpp>
+#include <tempo/system/SystemLevelManager.hpp>
 
 #include <OgreMath.h>
 #include <OgreVector3.h>

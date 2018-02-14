@@ -7,7 +7,7 @@
 #include <tempo/entity/EntityCreation.hpp>
 #include <tempo/entity/ID.hpp>
 #include <tempo/entity/PlayerRemoteServer.hpp>
-#include <tempo/entity/SystemLevelManager.hpp>
+#include <tempo/system/SystemLevelManager.hpp>
 
 #include <string.h>
 

@@ -1,4 +1,4 @@
-#include <tempo/entity/ComponentGridMotion.hpp>
+#include <tempo/component/ComponentGridMotion.hpp>
 
 namespace tempo{
 
