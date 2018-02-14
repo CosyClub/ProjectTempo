@@ -24,7 +24,7 @@
 #include <tempo/song.hpp>
 #include <tempo/time.hpp>
 #include <tempo/entity/EntityCreationClient.hpp>
-#include <tempo/entity/GridAi.hpp>
+#include <tempo/entity/SystemGridAi.hpp>
 #include <tempo/entity/Health.hpp>
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/LevelRenderer.hpp>
