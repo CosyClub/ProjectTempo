@@ -16,8 +16,8 @@
 
 #include <tempo/entity/EntityCreationServer.hpp>
 #include <tempo/entity/LevelManager.hpp>
-#include <tempo/entity/SystemGridAi.hpp>
 #include <tempo/entity/Health.hpp>
+#include <tempo/system/SystemGridAi.hpp>
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>

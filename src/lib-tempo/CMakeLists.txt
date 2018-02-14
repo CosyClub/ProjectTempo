@@ -6,12 +6,11 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/structures.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/time.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Types.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentGridAi.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreation.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreationClient.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreationServer.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/ID.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/ComponentGridAi.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/SystemGridAi.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/Health.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/RenderHealth.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/LevelManager.hpp"
@@ -26,6 +25,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/client.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/queue.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/server.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemGridAi.hpp"
 )
 
 set(TEMPO_LIB_TEMPO_SOURCE

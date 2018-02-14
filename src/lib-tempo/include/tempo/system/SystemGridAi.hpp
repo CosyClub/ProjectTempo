@@ -3,8 +3,8 @@
 
 #include <anax/Component.hpp>
 
+#include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/entity/LevelManager.hpp>
-#include <tempo/entity/ComponentGridAi.hpp>
 
 namespace tempo{
 	struct SystemGridAi : anax::System<anax::Requires<ComponentGridMotion, ComponentGridAi>> {
