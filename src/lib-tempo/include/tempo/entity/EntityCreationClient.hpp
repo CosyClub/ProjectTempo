@@ -12,7 +12,7 @@
 #include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/PlayerLocal.hpp>
 #include <tempo/entity/PlayerRemote.hpp>
-#include <tempo/entity/Health.hpp>
+#include <tempo/entity/ComponentHealth.hpp>
 
 namespace tempo
 {
