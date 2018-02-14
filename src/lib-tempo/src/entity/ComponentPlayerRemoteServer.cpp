@@ -1,4 +1,4 @@
-#include <tempo/entity/SystemPlayerRemoteServer.hpp>
+#include <tempo/component/ComponentPlayerRemoteServer.hpp>
 
 namespace tempo{
 	

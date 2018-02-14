@@ -6,7 +6,7 @@
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/component/ComponentID.hpp>
 #include <tempo/entity/EntityCreation.hpp>
-#include <tempo/entity/ComponentPlayerRemoteServer.hpp>
+#include <tempo/component/ComponentPlayerRemoteServer.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 
 #include <string.h>
