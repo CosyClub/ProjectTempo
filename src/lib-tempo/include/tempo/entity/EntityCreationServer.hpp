@@ -5,7 +5,7 @@
 
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/entity/EntityCreation.hpp>
-#include <tempo/entity/ID.hpp>
+#include <tempo/entity/ComponentID.hpp>
 #include <tempo/entity/PlayerRemoteServer.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 

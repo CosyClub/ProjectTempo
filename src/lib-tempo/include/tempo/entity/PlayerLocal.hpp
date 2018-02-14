@@ -5,7 +5,7 @@
 #include <anax/Component.hpp>
 
 #include <tempo/component/ComponentGridMotion.hpp>
-#include <tempo/entity/ID.hpp>
+#include <tempo/entity/ComponentID.hpp>
 #include <tempo/entity/SystemQID.hpp>
 #include <tempo/network/client.hpp>
 #include <tempo/time.hpp>
