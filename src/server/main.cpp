@@ -17,6 +17,7 @@
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
+#include <tempo/system/SystemPlayerRemoteServer.hpp>
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>
