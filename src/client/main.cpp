@@ -29,7 +29,7 @@
 #include <tempo/entity/PlayerLocal.hpp>
 #include <tempo/entity/PlayerRemote.hpp>
 #include <tempo/entity/RenderHealth.hpp>
-#include <tempo/entity/Transform.hpp>
+#include <tempo/system/SystemTransform.hpp>
 #include <tempo/network/client.hpp>
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
