@@ -7,7 +7,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#include<tempo/entity/ComponentID.hpp>
+#include<tempo/component/ComponentID.hpp>
 
 namespace tempo{
 
