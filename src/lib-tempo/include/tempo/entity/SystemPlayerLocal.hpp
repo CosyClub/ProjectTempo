@@ -1,5 +1,5 @@
-#ifndef TEMPO_ENTITY_PLAYERLOCAL_HPP
-#define TEMPO_ENTITY_PLAYERLOCAL_HPP
+#ifndef TEMPO_SYSTEM_PLAYERLOCAL_HPP
+#define TEMPO_SYSTEM_PLAYERLOCAL_HPP
 
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
@@ -17,14 +17,6 @@
 #undef main // SDL likes to define main
 
 namespace tempo{
-
-	struct ComponentPlayerLocal : anax::Component {
-		bool moved_this_beat;
-		uint counter_combo;
-		uint level_combo;
-
-		inline ComponentPlayerLocal() : moved_this_beat(false) {}
-	};
 
 	struct SystemPlayerLocal : anax::System<anax::Requires<ComponentGridMotion, ComponentPlayerLocal>> {
 		tempo::Clock& clock;
