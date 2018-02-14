@@ -8,8 +8,8 @@
 #include <anax/Component.hpp>
 
 #include <tempo/Application.hpp>
-#include <tempo/entity/Transform.hpp>
 #include <tempo/component/ComponentRender.hpp>
+#include <tempo/entity/ComponentTransform.hpp>
 
 
 

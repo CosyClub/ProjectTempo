@@ -1,26 +1,16 @@
-#ifndef TEMPO_ENTITY_POSITION_HPP
-#define TEMPO_ENTITY_POSITION_HPP
+#ifndef TEMPO_SYSTEM_POSITION_HPP
+#define TEMPO_SYSTEM_POSITION_HPP
 
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
 #include <tempo/entity/LevelManager.hpp>
+#include <tempo/entity/ComponentTransform.hpp>
 
 #include <OgreMath.h>
 #include <OgreVector3.h>
 
 namespace tempo{
-	struct ComponentTransform : anax::Component {
-		/// \brief Offset from world origin to entity's local origin
-		Ogre::Vector3    position;
-
-		/// \brief Rotation of the entity about its local origin
-		Ogre::Quaternion rotation;
-
-		ComponentTransform();
-		ComponentTransform(Ogre::Vector3 pos);
-		ComponentTransform(Ogre::Real x, Ogre::Real y, Ogre::Real z);
-	};
 
 	/////////////////////////////////////////////////////////////////////
 	/// \brief System which has knowledge of the world's geometry.
