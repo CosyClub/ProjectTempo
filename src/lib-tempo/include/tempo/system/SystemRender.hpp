@@ -9,7 +9,7 @@
 
 #include <tempo/Application.hpp>
 #include <tempo/entity/Transform.hpp>
-#include <tempo/entity/ComponentRender.hpp>
+#include <tempo/component/ComponentRender.hpp>
 
 
 

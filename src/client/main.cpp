@@ -28,12 +28,12 @@
 #include <tempo/entity/LevelRenderer.hpp>
 #include <tempo/entity/PlayerLocal.hpp>
 #include <tempo/entity/PlayerRemote.hpp>
-#include <tempo/entity/Render.hpp>
 #include <tempo/entity/RenderHealth.hpp>
 #include <tempo/entity/Transform.hpp>
 #include <tempo/network/client.hpp>
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
+#include <tempo/system/SystemRender.hpp>
 
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>
