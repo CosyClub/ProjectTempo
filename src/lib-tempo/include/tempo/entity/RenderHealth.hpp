@@ -5,7 +5,7 @@
 #include <anax/Component.hpp>
 
 #include <tempo/component/ComponentHealth.hpp>
-#include <tempo/entity/Render.hpp>
+#include <tempo/entity/ComponentRender.hpp>
 
 #include <Ogre.h>
 
