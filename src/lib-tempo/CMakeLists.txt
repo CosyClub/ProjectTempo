@@ -18,7 +18,6 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreation.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreationClient.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreationServer.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/SystemRenderHealth.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/LevelRenderer.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/PlayerRemoteServer.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/TileMask.hpp"
@@ -33,6 +32,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemPlayerLocal.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemPlayerRemote.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemRender.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemRenderHealth.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemTransform.hpp"
 )
 
@@ -53,7 +53,6 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/EntityCreation.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/EntityCreationClient.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/EntityCreationServer.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/entity/SystemRenderHealth.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/LevelRenderer.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/PlayerRemoteServer.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/TileMask.cpp"
@@ -68,6 +67,7 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemPlayerLocal.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemPlayerRemote.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRender.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderHealth.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTransform.cpp"
 )
 
