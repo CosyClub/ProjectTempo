@@ -25,7 +25,7 @@
 #include <tempo/time.hpp>
 #include <tempo/entity/EntityCreationClient.hpp>
 #include <tempo/entity/LevelRenderer.hpp>
-#include <tempo/entity/RenderHealth.hpp>
+#include <tempo/system/SystemRenderHealth.hpp>
 #include <tempo/system/SystemTransform.hpp>
 #include <tempo/network/client.hpp>
 #include <tempo/system/SystemGridAi.hpp>
