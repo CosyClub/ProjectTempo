@@ -1,4 +1,4 @@
-#include <tempo/entity/ComponentHealth.hpp>
+#include <tempo/component/ComponentHealth.hpp>
 
 namespace tempo {
 

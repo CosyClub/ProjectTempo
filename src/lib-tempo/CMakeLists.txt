@@ -7,12 +7,11 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/time.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Types.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentGridAi.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentHealth.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreation.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreationClient.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreationServer.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/ID.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/ComponentHealth.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/SystemHealth.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/RenderHealth.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/LevelManager.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/LevelRenderer.hpp"
@@ -27,6 +26,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/queue.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/server.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemGridAi.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemHealth.hpp"
 )
 
 set(TEMPO_LIB_TEMPO_SOURCE
@@ -35,12 +35,11 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/song.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/structures.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/time.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentHealth.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/EntityCreation.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/EntityCreationClient.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/EntityCreationServer.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/ID.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/entity/ComponentHealth.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/entity/SystemHealth.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/RenderHealth.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/LevelManager.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/LevelRenderer.cpp"
@@ -55,6 +54,7 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/network/queue.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/network/server.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGridAi.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemHealth.cpp"
 )
 
 add_library(lib_tempo STATIC
