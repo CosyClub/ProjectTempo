@@ -1,3 +1,6 @@
+#ifndef TEMPO_COMPONENT_COMPONENTHEALTH_HPP 
+#define TEMPO_COMPONENT_COMPONENTHEALTH_HPP 
+
 #include <anax/Component.hpp>
 
 namespace tempo {
@@ -28,3 +31,5 @@ namespace tempo {
 
 	};
 }
+
+#endif

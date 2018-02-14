@@ -1,9 +1,9 @@
-#ifndef TEMPO_ENTITY_HEALTH_HPP
-#define TEMPO_ENTITY_HEALTH_HPP
+#ifndef TEMPO_SYSTEM_SYSTEMHEALTH_HPP
+#define TEMPO_SYSTEM_SYSTEMHEALTH_HPP
 
 #include <anax/System.hpp>
 
-#include <tempo\entity\ComponentHealth.hpp>
+#include <tempo\component\ComponentHealth.hpp>
 
 namespace tempo {
 
