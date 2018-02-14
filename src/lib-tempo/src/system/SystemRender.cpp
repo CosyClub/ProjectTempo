@@ -1,5 +1,5 @@
-#include <tempo/entity/SystemRender.hpp>
-#include <tempo/entity/ComponentRender.hpp>
+#include <tempo/system/SystemRender.hpp>
+#include <tempo/component/ComponentRender.hpp>
 
 namespace tempo{
 

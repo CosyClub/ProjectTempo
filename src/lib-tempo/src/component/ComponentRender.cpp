@@ -1,4 +1,4 @@
-#include <tempo/entity/ComponentRender.hpp>
+#include <tempo/component/ComponentRender.hpp>
 
 namespace tempo {
 	ComponentRender::ComponentRender(Ogre::SceneManager* scene, std::string path) {
