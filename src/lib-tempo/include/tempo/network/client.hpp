@@ -2,7 +2,7 @@
 #define TEMPO_NETWORK_CLIENT_HPP
 
 #include <tempo/entity/EntityCreationClient.hpp>
-#include <tempo/entity/ComponentPlayerRemote.hpp>
+#include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 #include <tempo/network/base.hpp>
 #include <tempo/config.hpp>

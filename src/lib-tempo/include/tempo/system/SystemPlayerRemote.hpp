@@ -5,7 +5,7 @@
 #include <anax/Component.hpp>
 
 #include <tempo/component/ComponentGridMotion.hpp>
-#include <tempo/entity/ComponentPlayerRemote.hpp>
+#include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/system/SystemID.hpp>
 #include <tempo/entity/SystemQID.hpp>
 #include <tempo/network/queue.hpp>
