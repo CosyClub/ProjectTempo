@@ -1,6 +1,6 @@
-#include <tempo/entity/ComponentGridMotion.hpp>
-#include <tempo/entity/ComponentGridPosition.hpp>
-#include <tempo/entity/SystemLevelManager.hpp>
+#include <tempo/component/ComponentGridMotion.hpp>
+#include <tempo/component/ComponentGridPosition.hpp>
+#include <tempo/system/SystemLevelManager.hpp>
 
 namespace tempo{
 

@@ -24,7 +24,6 @@
 #include <tempo/song.hpp>
 #include <tempo/time.hpp>
 #include <tempo/entity/EntityCreationClient.hpp>
-#include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/LevelRenderer.hpp>
 #include <tempo/entity/PlayerLocal.hpp>
 #include <tempo/entity/PlayerRemote.hpp>
@@ -33,6 +32,7 @@
 #include <tempo/network/client.hpp>
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
+#include <tempo/system/SystemLevelManager.hpp>
 #include <tempo/system/SystemRender.hpp>
 
 #include <SFML/Audio.hpp>
