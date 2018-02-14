@@ -62,7 +62,7 @@ int main(int argc, const char** argv) {
 	world.addSystem(system_id);
 	world.refresh();
 
-	// YOLO
+	// Create some Test Entities
 	anax::Entity entity_ai1 = tempo::newAI(world, tempo::EID_AI, 5, 5);
 	anax::Entity entity_ai2 = tempo::newAI(world, tempo::EID_AI, 3, 3);
 	anax::Entity entity_ai3 = tempo::newAI(world, tempo::EID_AI, 8, 8);
@@ -83,6 +83,8 @@ int main(int argc, const char** argv) {
 
 	float last_dt_time = dt_timer.getElapsedTime().asSeconds();
 
+	long tick = 0;
+
 	// Main loop, with beat printouts
 	while (true) {
 		// Handshake call, DO NOT REMOVE
@@ -90,10 +92,11 @@ int main(int argc, const char** argv) {
 
 		if (clock.passed_beat()) {
 			system_grid_ai.update();
-
-			/* std::cout << "Server Beat Passed (" */
-			/*           << clock.get_time().asSeconds() << ")" */
-			/*           << std::endl; */
+			
+			if (tick++ % 10 == 0)
+				std::cout << "TICK " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
+			else
+				std::cout << "TICK " << clock.get_time().asMilliseconds() << std::endl;
 		}
 
 		float next_dt_time = dt_timer.getElapsedTime().asSeconds();

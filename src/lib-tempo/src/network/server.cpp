@@ -23,9 +23,6 @@ std::mutex cmtx;
 // sync thread can continue listening for more clients whilst dealing with this.
 void timeSyncHandler(tempo::Clock *clock, sf::TcpSocket *client) 
 {
-	std::cout << "Client (" << tcpRemoteToStr(client)
-	          << ") time sync started." << std::endl;
-
 	// Store the current time
 	sf::Time t1 = clock->get_time();
 
@@ -43,7 +40,7 @@ void timeSyncHandler(tempo::Clock *clock, sf::TcpSocket *client)
 	}
 
 	std::cout << "Client (" << tcpRemoteToStr(client)
-	          << ") time sync finished." << std::endl;
+	          << ") completed time sync." << std::endl;
 
 	// Close Socket, Delete Socket Resources + Close thread
 	client->disconnect();
@@ -132,7 +129,7 @@ void handshakeHello(sf::Packet &packet,
 		id = findClientID(ip, updatePort);
 		// TODO: Time out old client and make a new one
 		std::cout << "WARNING: Connected client tried to reconnect ("
-		          << id << ", " << ip << ":" << updatePort << ")" 
+		          << id << ", " << sender << ":" << updatePort << ")" 
 		          << std::endl;
 	}
 	
