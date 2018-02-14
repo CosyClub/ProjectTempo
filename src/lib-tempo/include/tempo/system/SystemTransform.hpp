@@ -5,7 +5,7 @@
 #include <anax/Component.hpp>
 
 #include <tempo/entity/LevelManager.hpp>
-#include <tempo/entity/ComponentTransform.hpp>
+#include <tempo/component/ComponentTransform.hpp>
 
 #include <OgreMath.h>
 #include <OgreVector3.h>

@@ -9,7 +9,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentGridAi.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentHealth.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentRender.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/ComponentTransform.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentTransform.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreation.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreationClient.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreationServer.hpp"
@@ -28,7 +28,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemGridAi.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemHealth.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemRender.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/SystemTransform.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemTransform.hpp"
 )
 
 set(TEMPO_LIB_TEMPO_SOURCE
@@ -39,7 +39,7 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/time.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentHealth.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRender.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/entity/ComponentTransform.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentTransform.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/EntityCreation.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/EntityCreationClient.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/EntityCreationServer.cpp"
@@ -58,7 +58,7 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGridAi.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemHealth.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRender.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/entity/SystemTransform.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTransform.cpp"
 )
 
 add_library(lib_tempo STATIC

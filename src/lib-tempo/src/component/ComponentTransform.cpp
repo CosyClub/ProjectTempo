@@ -1,4 +1,4 @@
-#include <tempo/entity/ComponentTransform.hpp>
+#include <tempo/component/ComponentTransform.hpp>
 
 namespace tempo{
 	ComponentTransform::ComponentTransform() : ComponentTransform(0, 0, 0){

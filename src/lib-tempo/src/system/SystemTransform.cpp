@@ -1,5 +1,5 @@
-#include <tempo/entity/SystemTransform.hpp>
-#include <tempo/entity/ComponentTransform.hpp>
+#include <tempo/system/SystemTransform.hpp>
+#include <tempo/component/ComponentTransform.hpp>
 
 namespace tempo{
 
