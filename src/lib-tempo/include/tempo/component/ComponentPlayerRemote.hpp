@@ -6,8 +6,8 @@
 
 #include <tempo/component/ComponentGridMotion.hpp>
 #include <tempo/system/SystemID.hpp>
-#include <tempo/entity/SystemQID.hpp>
 #include <tempo/network/queue.hpp>
+#include <tempo/network/QueueID.hpp>
 #include <tempo/time.hpp>
 
 #include <SDL.h>
