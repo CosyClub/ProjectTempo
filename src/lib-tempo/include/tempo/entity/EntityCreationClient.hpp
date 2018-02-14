@@ -11,7 +11,7 @@
 #include <tempo/component/ComponentRender.hpp>
 #include <tempo/entity/EntityCreation.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
-#include <tempo/entity/PlayerRemote.hpp>
+#include <tempo/entity/ComponentPlayerRemote.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 
 namespace tempo

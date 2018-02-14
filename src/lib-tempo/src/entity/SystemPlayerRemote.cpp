@@ -1,4 +1,5 @@
-#include <tempo/entity/PlayerRemote.hpp>
+#include <tempo/entity/SystemPlayerRemote.hpp>
+#include <tempo/entity/ComponentPlayerRemote.hpp>
 
 namespace tempo{
 	void SystemPlayerRemote::advanceBeat()
