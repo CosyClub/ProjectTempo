@@ -12,11 +12,14 @@
 #include <tempo/entity/GridAi.hpp>
 #include <tempo/entity/PlayerLocal.hpp>
 #include <tempo/entity/PlayerRemote.hpp>
+#include <tempo/entity/Health.hpp>
+
+#include <glm/fwd.hpp>
 
 namespace tempo
 {
 
-EntityCreationData* newEntity(int type_id, Vec2s pos);
+EntityCreationData* newEntity(int type_id, glm::vec2 pos);
 
 anax::Entity newEntity(EntityCreationData data,
                        anax::World& world,
@@ -32,4 +35,3 @@ EntityCreationData dumpEntity(anax::Entity e);
 }
 
 #endif
-

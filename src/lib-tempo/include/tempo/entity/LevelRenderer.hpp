@@ -3,6 +3,9 @@
 
 #include <tempo/entity/LevelManager.hpp>
 
+#include <glm/fwd.hpp>
+#include <glm/vec2.hpp>
+
 #include <Ogre.h>
 #include <cstdio>
 
@@ -36,7 +39,7 @@ namespace tempo{
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Sets the material of some tile
 		/////////////////////////////////////////////////////////////////////
-		inline void setMaterial(Vec2s position, std::string material_name){
+		inline void setMaterial(glm::vec2 position, std::string material_name){
 			setMaterial(position.x, position.y, material_name);
 		}
 		void setMaterial(int x, int y, std::string material_name);

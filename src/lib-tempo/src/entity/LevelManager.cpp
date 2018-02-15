@@ -1,9 +1,11 @@
 #include <tempo/entity/LevelManager.hpp>
 
+#include <glm/vec2.hpp>
+
 namespace tempo{
 	/////////////////////////////////////////////////////////////
 	// ComponentGridPosition
-	ComponentGridPosition::ComponentGridPosition(Vec2s pos, TileMask mask, bool is_ethereal) :
+	ComponentGridPosition::ComponentGridPosition(glm::vec2 pos, TileMask mask, bool is_ethereal) :
 		ComponentGridPosition(pos.x, pos.y, mask, is_ethereal){
 		// empty body
 	}
@@ -45,7 +47,7 @@ namespace tempo{
 		return true;
 	}
 
-	const Vec2s& ComponentGridMotion::getCurrentMovement(){
+	const glm::vec2& ComponentGridMotion::getCurrentMovement(){
 		return this->delta;
 	}
 
@@ -83,7 +85,7 @@ namespace tempo{
 		loadZones(zoneMap);
 	}
 
-	bool SystemLevelManager::existsTile(Vec2s position) {
+	bool SystemLevelManager::existsTile(glm::vec2 position) {
 		return existsTile(position.x, position.y);
  	}
 
@@ -95,15 +97,15 @@ namespace tempo{
 		return tile_heights[x][y] != NO_TILE;
  	}
 
-	void SystemLevelManager::deleteTile(Vec2s position) {
+	void SystemLevelManager::deleteTile(glm::vec2 position) {
 		tile_heights[position.x][position.y] = NO_TILE;
 	}
 
-	void SystemLevelManager::createTile(Vec2s position) {
+	void SystemLevelManager::createTile(glm::vec2 position) {
 		tile_heights[position.x][position.y] = 0;
 	}
 
-	void SystemLevelManager::setHeight(float height, Vec2s position) {
+	void SystemLevelManager::setHeight(float height, glm::vec2 position) {
 		if (existsTile(position)) {
 			tile_heights[position.x][position.y] = height;
 		} else {
@@ -111,7 +113,7 @@ namespace tempo{
 		}
 	}
 
-	void SystemLevelManager::setHeight(float height, Vec2s position, int width, int length) {
+	void SystemLevelManager::setHeight(float height, glm::vec2 position, int width, int length) {
 		for(int i = position.x; i < width+position.x; i++){
 			for(int j = position.y; j < length+position.y; j++){
 				this->tile_heights[i][j] = height;
@@ -183,14 +185,14 @@ namespace tempo{
 
 	}
 
-	Vec2s SystemLevelManager::spawn() {
+	glm::vec2 SystemLevelManager::spawn() {
 		srand (time(NULL));
 		uint32_t random_location = rand() % spawn_zones;
 		return player_spawn_zone[random_location];
 	}
 
-	Vec2s SystemLevelManager::getWorldSize(){
-		Vec2s result;
+	glm::vec2 SystemLevelManager::getWorldSize(){
+		glm::vec2 result;
 		result.x = tile_heights.size();
 		result.y = tile_heights[0].size();
 		return result;
@@ -203,8 +205,8 @@ namespace tempo{
 			auto& pos   = entity.getComponent<ComponentGridPosition>();
 			auto& gm    = entity.getComponent<ComponentGridMotion>();
 
-			if(gm.delta != Vec2s::Origin){
-				gm.motion_progress += (dt * gm.movement_speed) / (float)tempo::length(gm.delta);
+			if(gm.delta != glm::vec2(0, 0)){
+				gm.motion_progress += (dt * gm.movement_speed) / gm.delta.length();
 				if(gm.motion_progress >= 1){
 					pos.position       += gm.delta;
 					gm.delta           =  {0,0};
@@ -213,7 +215,7 @@ namespace tempo{
 				}
 			}
 
-			Vec2s target_tile = pos.position + gm.delta;
+			glm::vec2 target_tile = pos.position + gm.delta;
 
 			float current_height = this->getHeight(pos.position);
 			float target_height  = this->getHeight(target_tile);
@@ -244,7 +246,7 @@ namespace tempo{
 
 					if(pos_candidate.ethereal && pos.ethereal){ continue; }
 
-					Vec2s candidate_delta = pos_candidate.position - target_tile;
+					glm::vec2 candidate_delta = pos_candidate.position - target_tile;
 					//printf("Found candidate: %i, %i\n", candidate_delta.x, candidate_delta.y);
 
 					if(pos.mask.isCollidingWith(pos_candidate.mask, candidate_delta)){

@@ -10,6 +10,7 @@ target_include_directories(server PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
 target_include_directories(server PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
 target_include_directories(server PRIVATE ${TEMPO_ANAX_INCLUDE_DIR})
 target_include_directories(server PRIVATE ${TEMPO_SDL2_INCLUDE_DIR})
+target_include_directories(server PRIVATE ${TEMPO_GLM_INCLUDE_DIR})
 
 target_link_libraries(server lib_tempo)
 target_link_libraries(server sfml-audio)

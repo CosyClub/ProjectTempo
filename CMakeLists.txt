@@ -33,6 +33,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${TEMPO_BIN_DIR}")
 
 set(OGRE_STATIC ON)
 
+
 set(TEMPO_EXTLIBS_DIR "${CMAKE_CURRENT_LIST_DIR}/extlibs")
 set(TEMPO_LIB_DIR     "${CMAKE_CURRENT_LIST_DIR}/libs")
 
@@ -65,6 +66,10 @@ set(TEMPO_SDL2_INCLUDE_DIR
 	"${TEMPO_SDL2_DIR}/include"
 )
 
+set(TEMPO_OGRE_OVERLAY_INCLUDE_DIR
+	"${TEMPO_OGRE_DIR}/Components/Overlay/include"
+)
+
 set(TEMPO_LIB_TEMPO_DIR
 	"${CMAKE_CURRENT_LIST_DIR}/src/lib-tempo"
 	)
@@ -77,6 +82,13 @@ set(TEMPO_ANAX_DIR
 	)
 set(TEMPO_ANAX_INCLUDE_DIR
 	"${TEMPO_ANAX_DIR}/include"
+)
+
+set(TEMPO_GLM_DIR
+	"${CMAKE_CURRENT_LIST_DIR}/extlibs/glm"
+	)
+set(TEMPO_GLM_INCLUDE_DIR
+	"${TEMPO_GLM_DIR}"
 )
 
 add_subdirectory(${TEMPO_EXTLIBS_DIR})
