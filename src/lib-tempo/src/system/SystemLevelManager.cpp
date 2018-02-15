@@ -1,65 +1,8 @@
-#include <tempo/entity/LevelManager.hpp>
+#include <tempo/component/ComponentGridMotion.hpp>
+#include <tempo/component/ComponentGridPosition.hpp>
+#include <tempo/system/SystemLevelManager.hpp>
 
 namespace tempo{
-	/////////////////////////////////////////////////////////////
-	// ComponentGridPosition
-	ComponentGridPosition::ComponentGridPosition(Vec2s pos, TileMask mask, bool is_ethereal) :
-		ComponentGridPosition(pos.x, pos.y, mask, is_ethereal){
-		// empty body
-	}
-
-	ComponentGridPosition::ComponentGridPosition(int x, int y, TileMask mask, bool is_ethereal){
-		// level not currently used -> but when we want to do more efficient lookup
-		// structure we need to insert entity in it based off of its position
-		this->position = {x,y};
-		this->mask     = mask;
-		this->ethereal = is_ethereal;
-	}
-
-	TileMask ComponentGridPosition::isCollidingWith(const ComponentGridPosition& other){
-		return this->mask.isCollidingWith(other.mask, other.position - this->position);
-	}
-
-	/////////////////////////////////////////////////////////////
-	// ComponentGridMotion
-	ComponentGridMotion::ComponentGridMotion(float max_jump_distance,
-	                                         float movement_speed,
-	                                         float max_jump_height){
-		this->delta             = {0,0};
-		this->motion_progress   = 0;
-		this->max_jump_height   = max_jump_height;
-		this->max_jump_distance = max_jump_distance;
-		this->movement_speed    = movement_speed;
-		this->target_locked     = false;
-	}
-
-	bool ComponentGridMotion::beginMovement(int dx, int dy){
-		if(this->motion_progress != 0){ return false; }
-
-		if((dx*dx + dy*dy) > (this->max_jump_distance * this->max_jump_distance)){
-			return false;
-		}
-
-		this->delta.x = dx;
-		this->delta.y = dy;
-		return true;
-	}
-
-	const Vec2s& ComponentGridMotion::getCurrentMovement(){
-		return this->delta;
-	}
-
-	float ComponentGridMotion::getMotionProgress(){
-		return this->motion_progress;
-	}
-
-	bool ComponentGridMotion::isMoving(){
-		return this->motion_progress >= 0.0f;
-	}
-
-	bool ComponentGridMotion::isMovementLocked(){
-		return this->target_locked;
-	}
 
 	/////////////////////////////////////////////////////////////
 	// SystemLevelManager
@@ -203,19 +146,19 @@ namespace tempo{
 			auto& pos   = entity.getComponent<ComponentGridPosition>();
 			auto& gm    = entity.getComponent<ComponentGridMotion>();
 
-			if(gm.delta != Vec2s::Origin){
-				gm.motion_progress += (dt * gm.movement_speed) / (float)tempo::length(gm.delta);
-				if(gm.motion_progress >= 1){
-					pos.position       += gm.delta;
-					gm.delta           =  {0,0};
-					gm.motion_progress =  0;
-					gm.target_locked   =  false;
+			if(gm.getCurrentMovement() != Vec2s::Origin){
+				gm.setMotionProgress(gm.getMotionProgress() + (dt * gm.movement_speed) / (float)tempo::length(gm.getCurrentMovement()));
+				if(gm.getMotionProgress() >= 1){
+					pos.setPosition(pos.getPosition() + gm.getCurrentMovement());
+					gm.setDelta({0,0});
+					gm.setMotionProgress(0);
+					gm.setTargetLocked(false);
 				}
 			}
 
-			Vec2s target_tile = pos.position + gm.delta;
+			Vec2s target_tile = pos.getPosition() + gm.getCurrentMovement();
 
-			float current_height = this->getHeight(pos.position);
+			float current_height = this->getHeight(pos.getPosition());
 			float target_height  = this->getHeight(target_tile);
 			float delta_height   = target_height - current_height;
 
@@ -224,7 +167,7 @@ namespace tempo{
 			// This depends on:
 			// - Delta height between tiles
 			// - If target tile is already occupied by another entity
-			if(gm.motion_progress >= 0.5f && !gm.isMovementLocked()){
+			if(gm.getMotionProgress() >= 0.5f && !gm.isMovementLocked()){
 				bool can_make_move = true;
 
 				// Check height difference
@@ -242,12 +185,12 @@ namespace tempo{
 				for(auto& collision_candidate : grid_positions.getEntities()){
 					auto& pos_candidate = collision_candidate.getComponent<ComponentGridPosition>();
 
-					if(pos_candidate.ethereal && pos.ethereal){ continue; }
+					if(pos_candidate.isEthereal() && pos.isEthereal()){ continue; }
 
-					Vec2s candidate_delta = pos_candidate.position - target_tile;
+					Vec2s candidate_delta = pos_candidate.getPosition() - target_tile;
 					//printf("Found candidate: %i, %i\n", candidate_delta.x, candidate_delta.y);
 
-					if(pos.mask.isCollidingWith(pos_candidate.mask, candidate_delta)){
+					if (pos.getTileMask().isCollidingWith(pos_candidate.getTileMask(), candidate_delta)) {
 						can_make_move = false;
 					}
 				}
@@ -257,14 +200,14 @@ namespace tempo{
 
 				if(!can_make_move){
 					// Then entity should bounce back to where it came from
-					pos.position += gm.delta;
-					gm.delta     *= -1;
+					pos.setPosition(pos.getPosition() + gm.getCurrentMovement());
+					gm.setDelta(gm.getCurrentMovement() * -1);
 					// Swap motion progress around so we don't have a obvious jump in motion
-					gm.motion_progress = 1 - gm.motion_progress;
-					gm.target_locked = true;
+					gm.setMotionProgress(1 - gm.getMotionProgress());
+					gm.setTargetLocked(true);
 				} else {
 					// :TODO: claim the target tile with level manager
-					gm.target_locked = true;
+					gm.setTargetLocked(true);
 				}
 			}
 		}

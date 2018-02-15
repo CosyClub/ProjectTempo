@@ -1,5 +1,5 @@
-#ifndef TEMPO_ENTITY_ID_HPP
-#define TEMPO_ENTITY_ID_HPP
+#ifndef TEMPO_COMPONENT_ID_HPP
+#define TEMPO_COMPONENT_ID_HPP
 
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
@@ -24,17 +24,6 @@ struct ComponentID : anax::Component {
 
 	//possibly unnecessary
 	~ComponentID();
-};
-
-struct SystemID : anax::System<anax::Requires<ComponentID>> {
-	std::map<int, anax::Entity> id_map;
-
-	SystemID();
-	~SystemID();
-
-	anax::Entity get(int instance_id);
-	void onEntityAdded(anax::Entity& e);
-	void onEntityRemoved(anax::Entity& e);
 };
 
 }

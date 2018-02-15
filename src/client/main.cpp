@@ -24,16 +24,16 @@
 #include <tempo/song.hpp>
 #include <tempo/time.hpp>
 #include <tempo/entity/EntityCreationClient.hpp>
-#include <tempo/entity/GridAi.hpp>
-#include <tempo/entity/Health.hpp>
-#include <tempo/entity/LevelManager.hpp>
 #include <tempo/entity/LevelRenderer.hpp>
-#include <tempo/entity/PlayerLocal.hpp>
-#include <tempo/entity/PlayerRemote.hpp>
-#include <tempo/entity/Render.hpp>
-#include <tempo/entity/RenderHealth.hpp>
-#include <tempo/entity/Transform.hpp>
+#include <tempo/system/SystemRenderHealth.hpp>
+#include <tempo/system/SystemTransform.hpp>
 #include <tempo/network/client.hpp>
+#include <tempo/system/SystemGridAi.hpp>
+#include <tempo/system/SystemHealth.hpp>
+#include <tempo/system/SystemLevelManager.hpp>
+#include <tempo/system/SystemPlayerLocal.hpp>
+#include <tempo/system/SystemPlayerRemote.hpp>
+#include <tempo/system/SystemRender.hpp>
 
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>

@@ -1,6 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// \file main.cpp
-/// \author Anthony Wharton
 /// \date 2017/11/13
 /// \brief Contains entry point for RaveCave Server
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,9 +14,10 @@
 #include <tempo/time.hpp>
 
 #include <tempo/entity/EntityCreationServer.hpp>
-#include <tempo/entity/LevelManager.hpp>
-#include <tempo/entity/GridAi.hpp>
-#include <tempo/entity/Health.hpp>
+#include <tempo/system/SystemGridAi.hpp>
+#include <tempo/system/SystemHealth.hpp>
+#include <tempo/system/SystemLevelManager.hpp>
+#include <tempo/system/SystemPlayerRemoteServer.hpp>
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>

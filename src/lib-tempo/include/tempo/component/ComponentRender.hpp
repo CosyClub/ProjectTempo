@@ -1,5 +1,5 @@
-#ifndef TEMPO_ENTITY_RENDER_HPP
-#define TEMPO_ENTITY_RENDER_HPP
+#ifndef TEMPO_COMPONENT_RENDER_HPP
+#define TEMPO_COMPONENT_RENDER_HPP
 
 #include <OgreRoot.h>
 #include <OgreSceneNode.h>
@@ -8,7 +8,7 @@
 #include <anax/Component.hpp>
 
 #include <tempo/Application.hpp>
-#include <tempo/entity/Transform.hpp>
+#include <tempo/component/ComponentTransform.hpp>
 
 namespace tempo{
 	/////////////////////////////////////////////////////////////////////
@@ -34,20 +34,6 @@ namespace tempo{
 		// Returns:
 		//          void
 		void AddHealthBar();
-	};
-
-	/////////////////////////////////////////////////////////////////////
-	/// \brief System that manages rendering entities, as well as managing
-	/// the Ogre scene
-	/////////////////////////////////////////////////////////////////////
-	struct SystemRender : anax::System<anax::Requires<ComponentTransform, ComponentRender>> {
-		Application&        app;
-		Ogre::SceneManager* scene;
-
-		SystemRender(Application& app);
-		~SystemRender();
-
-		void render(float dt);
 	};
 }
 

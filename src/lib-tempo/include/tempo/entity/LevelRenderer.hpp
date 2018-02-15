@@ -1,7 +1,7 @@
 #ifndef TEMPO_ENTITY_LEVELRENDERER_HPP
 #define TEMPO_ENTITY_LEVELRENDERER_HPP
 
-#include <tempo/entity/LevelManager.hpp>
+#include <tempo/system/SystemLevelManager.hpp>
 
 #include <Ogre.h>
 #include <cstdio>

@@ -2,7 +2,7 @@
 #define TEMPO_NETWORK_QUEUE_HPP
 
 #include <tempo/structures.hpp>
-#include <tempo/entity/SystemQID.hpp>
+#include <tempo/network/QueueID.hpp>
 
 #include <SFML/Network.hpp>
 

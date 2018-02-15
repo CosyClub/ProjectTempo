@@ -1,4 +1,4 @@
-#include <tempo/entity/RenderHealth.hpp>
+#include <tempo/system/SystemRenderHealth.hpp>
 
 namespace tempo {
 	void RenderHealth::HealthBarUpdate() {

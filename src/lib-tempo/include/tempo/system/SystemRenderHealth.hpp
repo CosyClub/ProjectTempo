@@ -1,11 +1,11 @@
-#ifndef TEMPO_ENTITY_RENDERHEALTH_HPP
-#define TEMPO_ENTITY_RENDERHEALTH_HPP
+#ifndef TEMPO_SYSTEM_RENDERHEALTH_HPP
+#define TEMPO_SYSTEM_RENDERHEALTH_HPP
 
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/entity/Health.hpp>
-#include <tempo/entity/Render.hpp>
+#include <tempo/component/ComponentHealth.hpp>
+#include <tempo/component/ComponentRender.hpp>
 
 #include <Ogre.h>
 

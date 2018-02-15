@@ -3,11 +3,11 @@
 
 #include <anax/World.hpp>
 
+#include <tempo/component/ComponentGridAi.hpp>
+#include <tempo/component/ComponentID.hpp>
 #include <tempo/entity/EntityCreation.hpp>
-#include <tempo/entity/ID.hpp>
-#include <tempo/entity/LevelManager.hpp>
-#include <tempo/entity/GridAi.hpp>
-#include <tempo/entity/PlayerRemoteServer.hpp>
+#include <tempo/component/ComponentPlayerRemoteServer.hpp>
+#include <tempo/system/SystemLevelManager.hpp>
 
 #include <string.h>
 
