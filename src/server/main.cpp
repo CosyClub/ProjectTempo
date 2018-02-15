@@ -83,7 +83,8 @@ int main(int argc, const char** argv) {
 
 	float last_dt_time = dt_timer.getElapsedTime().asSeconds();
 
-	long tick = 0;
+	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	tick++;
 
 	// Main loop, with beat printouts
 	while (true) {
@@ -92,11 +93,11 @@ int main(int argc, const char** argv) {
 
 		if (clock.passed_beat()) {
 			system_grid_ai.update();
-			
-			if (tick++ % 10 == 0)
-				std::cout << "TICK " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
-			else
-				std::cout << "TICK " << clock.get_time().asMilliseconds() << std::endl;
+
+			if (tick++ % 20 == 0)
+				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
+			// else
+			// 	std::cout << "TICK " << clock.get_time().asMilliseconds() << std::endl;
 		}
 
 		float next_dt_time = dt_timer.getElapsedTime().asSeconds();

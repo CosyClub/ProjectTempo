@@ -27,6 +27,7 @@ namespace tempo
 	// Returns:
 	//         The offset, in microseconds, of the server and local client 
 	//         clock, where offset = time(server) - time(client)
+	//         If this function returns 0, assume an error has occured.
 	sf::Int64 timeSyncClient(tempo::Clock *clock);
 
 	// sendMessageToServer

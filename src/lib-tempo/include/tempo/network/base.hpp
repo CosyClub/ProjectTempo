@@ -27,7 +27,9 @@ namespace tempo
 	#define DEFAULT_PORT_TS  1339
 
 	// Wait time for time sync protocol (millisecs)
-	#define TIMESYNC_DELTA 500
+	#define TIMESYNC_DELTA 100
+	// Number of times to repeat time sync exchange
+	#define TIMESYNC_ITERS 10
 
 	// Reserved client ID for a null client
 	#define NO_CLIENT_ID 0

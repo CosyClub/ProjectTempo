@@ -26,56 +26,52 @@ std::mutex cmtx;
 void timeSyncHandler(tempo::Clock *clock, sf::TcpSocket *client) 
 {
 	// Initialise time sync protocol variables
-	sf::Int64 T1  = 0;
-	sf::Int64 T2  = 0;
-	sf::Int64 T3  = 0;
-	sf::Int64 T4  = clock->get_time().asMicroseconds(); // (t2)
-	sf::Int64 org = 0;
-	sf::Int64 rec = T4; // (t2)
-	sf::Int64 xmt = 0;
-
-	// Time Sync Exchange (t1 -> t2)
-	sf::Packet packet;
-	client->receive(packet);
-	packet >> T1 >> T2 >> T3;
-	org = T3; // (t1)
-
-	std::cout << "+++ TS:RECV +++++++++++++++++++++++++++++" << std::endl
-	          << " T1: " <<  T1 << std::endl
-	          << " T2: " <<  T2 << std::endl
-	          << " T3: " <<  T3 << std::endl
-	          << " T4: " <<  T4 << std::endl
-	          << "ORG: " << org << std::endl
-	          << "REC: " << rec << std::endl
-	          << "XMT: " << xmt << std::endl
-	          << "+++++++++++++++++++++++++++++++++++++++++" << std::endl;
-
-	// Wait a bit
-	std::this_thread::sleep_for(std::chrono::milliseconds(TIMESYNC_DELTA));
-
-	// Time Sync Exchange (t3 -> t4)
-	packet = sf::Packet();
-	T1 = org; // (t1)
-	T2 = rec; // (t2)
-	T3 = clock->get_time().asMicroseconds(); // (t3)
-	packet << T1 << T2 << T3;
-	if (client->send(packet) != sf::Socket::Done) {
-		std::cout << "Tried to send time sync to client ("
-		          << tcpRemoteToStr(client) << "), but failed."
-		          << std::endl;
-	}
-	xmt = T3; // (t3)
+	sf::Int64 T1     = 0; // PACKET: Previous packet time of departure
+	sf::Int64 T2     = 0; // PACKET: Previous packet time of arrival
+	sf::Int64 T3     = 0; // PACKET: Current pakcet time of departure
+	sf::Int64 T4     = 0; // PACKET: Current packet time of arrival
+	sf::Int64 org    = 0; // STATE:  Time when message departed from peer
+	sf::Int64 rec    = 0; // STATE:  Time when we recieved from the peer
+	sf::Int64 xmt    = 0; // STATE:  Time when we transmitted to the peer
+	sf::Int64 offset = 0; // Final Result
 	
-	std::cout << "+++ TS:SENT +++++++++++++++++++++++++++++" << std::endl
-	          << " T1: " <<  T1 << std::endl
-	          << " T2: " <<  T2 << std::endl
-	          << " T3: " <<  T3 << std::endl
-	          << " T4: " <<  T4 << std::endl
-	          << "ORG: " << org << std::endl
-	          << "REC: " << rec << std::endl
-	          << "XMT: " << xmt << std::endl
-	          << "+++++++++++++++++++++++++++++++++++++++++" << std::endl;
+	for (int i = 0; i < TIMESYNC_ITERS; i++) {	
+		// Time Sync Exchange: t(n+0) -> t(n+1)
+		sf::Packet packet;
+		client->receive(packet);
+		T4  = clock->get_time().asMicroseconds(); // t(n+1)
+		packet >> T1 >> T2 >> T3;
+		org = T3; // t(n+0)
+		rec = T4; // t(n+1)
+	
+		// Sanity Checks
+		if ((T1 == org) || (T3 == xmt) || (T1 != xmt)) {
+			// Something went wrong; duplicate/bogus packet.
+			packet = sf::Packet();
+			packet << 0 << 0 << 0;
+			client->send(packet);
+			client->disconnect();
+			return;
+		}
 
+		// Wait a bit
+		std::this_thread::sleep_for(
+				std::chrono::milliseconds(TIMESYNC_DELTA));
+	
+		// Time Sync Exchange: t(n+2) -> t(n+3)
+		packet = sf::Packet();
+		T1 = org; // t(n+0)
+		T2 = rec; // t(n+1)
+		T3 = clock->get_time().asMicroseconds(); // t(n+2)
+		packet << T1 << T2 << T3;
+		if (client->send(packet) != sf::Socket::Done) {
+			std::cout << "Tried to send time sync to client ("
+			          << tcpRemoteToStr(client) << "), but failed."
+			          << std::endl;
+		}
+		xmt = T3; // t(n+2)
+	
+	}
 
 	std::cout << "Client (" << tcpRemoteToStr(client)
 	          << ") completed time sync." << std::endl;

@@ -15,62 +15,50 @@ sf::Int64 timeSyncClient(tempo::Clock *clock)
 	}
 
 	// Initialise time sync protocol variables
-	sf::Int64 T1  = 0;
-	sf::Int64 T2  = 0;
-	sf::Int64 T3  = clock->get_time().asMicroseconds(); // (t1)
-	sf::Int64 T4  = 0;
-	sf::Int64 org = 0;
-	sf::Int64 rec = 0;
-	sf::Int64 xmt = T3; // (t1)
+	sf::Int64 T1     = 0; // PACKET: Previous packet time of departure
+	sf::Int64 T2     = 0; // PACKET: Previous packet time of arrival
+	sf::Int64 T3     = 0; // PACKET: Current pakcet time of departure
+	sf::Int64 T4     = 0; // PACKET: Current packet time of arrival
+	sf::Int64 org    = 0; // STATE:  Time when message departed from peer
+	sf::Int64 rec    = 0; // STATE:  Time when we recieved from the peer
+	sf::Int64 xmt    = 0; // STATE:  Time when we transmitted to the peer
+	sf::Int64 offset = 0; // Final Result
 
-	// Time Sync Exchange (t1 -> t2)
-	sf::Packet packet;
-	packet << T1 << T2 << T3;
-	if (socket.send(packet) != sf::Socket::Done) {
-		std::cout << "Error sending packet" << std::endl;
-		return 0;
+	for (int i = 0; i < TIMESYNC_ITERS; i++) {
+		// Time Sync Exchange: t(n+0) -> t(n+1)
+		T1 = T3;
+		T2 = T4;
+		T3  = clock->get_time().asMicroseconds(); // t(n+0)
+		sf::Packet packet;
+		packet << T1 << T2 << T3;
+		if (socket.send(packet) != sf::Socket::Done) {
+			std::cout << "Error sending T/S packet" << std::endl;
+			return 0;
+		}
+		xmt = T3; // t(n+0)
+		
+		// Time Sync Exchange: t(n+2) -> t(n+3)
+		if (socket.receive(packet) != sf::Socket::Done) {
+			std::cout << "Error recieving T/S packet" << std::endl;
+			return 0;
+		}
+		T4 = clock->get_time().asMicroseconds(); // t(n+3)
+		packet >> T1 >> T2 >> T3;
+
+		// Sanity Checks
+		if ((T1 == org) || (T3 == xmt) || (T1 != xmt)) {
+			// Something went wrong; duplicate/bogus packet.
+			return 0;
+		}
+		org = T3;
+		rec = T4;
+
+		// Calculate offset 
+		offset += ((T2 - T1) + (T3 - T4)) / 2;
 	}
-	
-	std::cout << "+++ TS:SENT +++++++++++++++++++++++++++++" << std::endl
-	          << " T1: " <<  T1 << std::endl
-	          << " T2: " <<  T2 << std::endl
-	          << " T3: " <<  T3 << std::endl
-	          << " T4: " <<  T4 << std::endl
-	          << "ORG: " << org << std::endl
-	          << "REC: " << rec << std::endl
-	          << "XMT: " << xmt << std::endl
-	          << "+++++++++++++++++++++++++++++++++++++++++" << std::endl;
-
-	// Time Sync Exchange (t3 -> t4)
-	if (socket.receive(packet) != sf::Socket::Done) {
-		std::cout << "Error recieving packet" << std::endl;
-		return 0;
-	}
-	T4 = clock->get_time().asMicroseconds(); // (t4)
-	packet >> T1 >> T2 >> T3;
-	
-	std::cout << "+++ TS:RECV +++++++++++++++++++++++++++++" << std::endl
-	          << " T1: " <<  T1 << std::endl
-	          << " T2: " <<  T2 << std::endl
-	          << " T3: " <<  T3 << std::endl
-	          << " T4: " <<  T4 << std::endl
-	          << "ORG: " << org << std::endl
-	          << "REC: " << rec << std::endl
-	          << "XMT: " << xmt << std::endl
-	          << "+++++++++++++++++++++++++++++++++++++++++" << std::endl;
-
-	// Sanity Checks
-	if ((T1 != xmt) || (T3 == org)) {
-		// bogus response
-	}
-	org = T3;
-	rec = T4;
-
-	// Calculate offset 
-	sf::Int64 offset = ((T2 - T1) + (T3 - T4)) / 2;
 
 	// Return Time Sync Offset
-	return offset;
+	return offset / TIMESYNC_ITERS;
 }
 
 bool sendMessage(tempo::SystemQID id, sf::Packet payload) 

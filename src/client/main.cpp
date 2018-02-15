@@ -166,7 +166,7 @@ int main(int argc, const char** argv)
 	///////////////////////
 	// Who even knows
 
-	tempo::LevelRenderer level_renderer(scene, scene->getRootSceneNode(), &system_level);
+	// tempo::LevelRenderer level_renderer(scene, scene->getRootSceneNode(), &system_level);
 
 	scene->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
 	Ogre::SceneNode* node_light = scene->getRootSceneNode()->createChildSceneNode();
@@ -278,8 +278,8 @@ int main(int argc, const char** argv)
 	bool running = true;
 	int frame_counter = 0;
 
-	long tick = 0;
-
+	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	
 	while (running) {
 		new_entity_check(world, scene, system_level);
 
@@ -287,10 +287,10 @@ int main(int argc, const char** argv)
 		dt_timer.restart();
 
 		if (clock.passed_beat()) {
-			if (tick++ % 10 == 0)
-				std::cout << "TICK " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
-			else
-				std::cout << "TICK " << clock.get_time().asMilliseconds() << std::endl;
+			if (tick++ % 20 == 0)
+				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
+			// else
+			// 	std::cout << "TICK " << clock.get_time().asMilliseconds() << std::endl;
 			
 			click.play();
 
@@ -355,7 +355,7 @@ int main(int argc, const char** argv)
 		system_level.update(dt);
 		system_update_transforms.update(system_level);
 		logic_time = dt_timer.getElapsedTime();
-		system_render.render(dt);
+		// system_render.render(dt);
 		render_time = dt_timer.getElapsedTime() - logic_time;
 		SDL_GL_SwapWindow(app.window);
 
