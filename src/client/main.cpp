@@ -48,8 +48,8 @@
 
 void sync_time(tempo::Clock& clock, tempo::Song *song)
 {
-	sf::Time t = tempo::timeSyncClient(&clock);
-	clock.set_time(t, song);
+	sf::Int64 offset = tempo::timeSyncClient(&clock);
+	clock.set_time(clock.get_time() + sf::microseconds(offset), song);
 }
 
 void new_entity_check(anax::World &world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_level)

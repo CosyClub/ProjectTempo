@@ -25,8 +25,9 @@ namespace tempo
 	// Arguments:
 	//         clock - pointer to current client clock with "dirty time"
 	// Returns:
-	//         The correct "master time" as of call completion
-	sf::Time timeSyncClient(tempo::Clock *clock);
+	//         The offset, in microseconds, of the server and local client 
+	//         clock, where offset = time(server) - time(client)
+	sf::Int64 timeSyncClient(tempo::Clock *clock);
 
 	// sendMessageToServer
 	// Sends a message to the server. No guarentee of delivery given.

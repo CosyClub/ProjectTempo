@@ -3,45 +3,74 @@
 namespace tempo
 {
 
-sf::Time timeSyncClient(tempo::Clock *clock)
+// Brutalised version of the NTP Time Sync Protocol (RFC5905)
+// http://www.ietf.org/rfc/rfc5905.txt (Page 27)
+sf::Int64 timeSyncClient(tempo::Clock *clock)
 {
 	// Create a socket to the server and connect to it
 	sf::TcpSocket socket;
-	sf::Socket::Status status = socket.connect(addr_r, port_st);
-	if (status != sf::Socket::Done) {
+	if (socket.connect(addr_r, port_st) != sf::Socket::Done) {
 		std::cout << "Error binding socket" << std::endl;
-		return sf::Time::Zero;
+		return 0;
 	}
 
 	// Initialise time sync protocol variables
-	sf::Int64 t0 = clock->get_time().asMicroseconds();
-	sf::Int64 t1;
-	sf::Int64 t2;
-	sf::Int64 t3;
+	sf::Int64 T1  = 0;
+	sf::Int64 T2  = 0;
+	sf::Int64 T3  = clock->get_time().asMicroseconds(); // (t1)
+	sf::Int64 T4  = 0;
+	sf::Int64 org = 0;
+	sf::Int64 rec = 0;
+	sf::Int64 xmt = T3; // (t1)
 
-	// Start time sync exchange
+	// Time Sync Exchange (t1 -> t2)
 	sf::Packet packet;
-	packet << t0;
-	status = socket.send(packet);
-	if (status != sf::Socket::Done) {
+	packet << T1 << T2 << T3;
+	if (socket.send(packet) != sf::Socket::Done) {
 		std::cout << "Error sending packet" << std::endl;
-		return sf::Time::Zero;
+		return 0;
 	}
+	
+	std::cout << "+++ TS:SENT +++++++++++++++++++++++++++++" << std::endl
+	          << " T1: " <<  T1 << std::endl
+	          << " T2: " <<  T2 << std::endl
+	          << " T3: " <<  T3 << std::endl
+	          << " T4: " <<  T4 << std::endl
+	          << "ORG: " << org << std::endl
+	          << "REC: " << rec << std::endl
+	          << "XMT: " << xmt << std::endl
+	          << "+++++++++++++++++++++++++++++++++++++++++" << std::endl;
 
-	status = socket.receive(packet);
-	if (status != sf::Socket::Done) {
+	// Time Sync Exchange (t3 -> t4)
+	if (socket.receive(packet) != sf::Socket::Done) {
 		std::cout << "Error recieving packet" << std::endl;
-		return sf::Time::Zero;
+		return 0;
 	}
+	T4 = clock->get_time().asMicroseconds(); // (t4)
+	packet >> T1 >> T2 >> T3;
+	
+	std::cout << "+++ TS:RECV +++++++++++++++++++++++++++++" << std::endl
+	          << " T1: " <<  T1 << std::endl
+	          << " T2: " <<  T2 << std::endl
+	          << " T3: " <<  T3 << std::endl
+	          << " T4: " <<  T4 << std::endl
+	          << "ORG: " << org << std::endl
+	          << "REC: " << rec << std::endl
+	          << "XMT: " << xmt << std::endl
+	          << "+++++++++++++++++++++++++++++++++++++++++" << std::endl;
 
-	// End time sync exchange, calculate delay in last tranmission from 
-	// time sync server.
-	t3 = clock->get_time().asMicroseconds();
-	packet >> t1 >> t2;
-	sf::Int64 delay  = ((t3 - t0) - (t2 - t1)) / 2;
+	// Sanity Checks
+	if ((T1 != xmt) || (T3 == org)) {
+		// bogus response
+	}
+	org = T3;
+	rec = T4;
 
-	// Return current time
-	return sf::microseconds(t2 + delay);
+	// Calculate offset 
+	sf::Int64 offset = ((T2 - T1) + (T3 - T4)) / 2;
+
+	// Return Time Sync Offset
+	return offset;
 }
 
 bool sendMessage(tempo::SystemQID id, sf::Packet payload) 

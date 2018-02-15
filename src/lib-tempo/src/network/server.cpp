@@ -21,23 +21,61 @@ std::mutex cmtx;
 
 // For use in a separate thread by server to deal with a client so the main time 
 // sync thread can continue listening for more clients whilst dealing with this.
+// This function acts as peer B in our brutalised version of NTP (RFC5905)
+// http://www.ietf.org/rfc/rfc5905.txt
 void timeSyncHandler(tempo::Clock *clock, sf::TcpSocket *client) 
 {
-	// Store the current time
-	sf::Time t1 = clock->get_time();
+	// Initialise time sync protocol variables
+	sf::Int64 T1  = 0;
+	sf::Int64 T2  = 0;
+	sf::Int64 T3  = 0;
+	sf::Int64 T4  = clock->get_time().asMicroseconds(); // (t2)
+	sf::Int64 org = 0;
+	sf::Int64 rec = T4; // (t2)
+	sf::Int64 xmt = 0;
+
+	// Time Sync Exchange (t1 -> t2)
+	sf::Packet packet;
+	client->receive(packet);
+	packet >> T1 >> T2 >> T3;
+	org = T3; // (t1)
+
+	std::cout << "+++ TS:RECV +++++++++++++++++++++++++++++" << std::endl
+	          << " T1: " <<  T1 << std::endl
+	          << " T2: " <<  T2 << std::endl
+	          << " T3: " <<  T3 << std::endl
+	          << " T4: " <<  T4 << std::endl
+	          << "ORG: " << org << std::endl
+	          << "REC: " << rec << std::endl
+	          << "XMT: " << xmt << std::endl
+	          << "+++++++++++++++++++++++++++++++++++++++++" << std::endl;
 
 	// Wait a bit
 	std::this_thread::sleep_for(std::chrono::milliseconds(TIMESYNC_DELTA));
 
-	// Store the current time, and send all the times back
-	sf::Time t2 = clock->get_time();
-	sf::Packet packet;
-	packet << t1.asMicroseconds() << t2.asMicroseconds();
+	// Time Sync Exchange (t3 -> t4)
+	packet = sf::Packet();
+	T1 = org; // (t1)
+	T2 = rec; // (t2)
+	T3 = clock->get_time().asMicroseconds(); // (t3)
+	packet << T1 << T2 << T3;
 	if (client->send(packet) != sf::Socket::Done) {
 		std::cout << "Tried to send time sync to client ("
 		          << tcpRemoteToStr(client) << "), but failed."
 		          << std::endl;
 	}
+	xmt = T3; // (t3)
+	
+	std::cout << "+++ TS:SENT +++++++++++++++++++++++++++++" << std::endl
+	          << " T1: " <<  T1 << std::endl
+	          << " T2: " <<  T2 << std::endl
+	          << " T3: " <<  T3 << std::endl
+	          << " T4: " <<  T4 << std::endl
+	          << "ORG: " << org << std::endl
+	          << "REC: " << rec << std::endl
+	          << "XMT: " << xmt << std::endl
+	          << "+++++++++++++++++++++++++++++++++++++++++" << std::endl;
+
 
 	std::cout << "Client (" << tcpRemoteToStr(client)
 	          << ") completed time sync." << std::endl;
