@@ -278,8 +278,6 @@ int main(int argc, const char** argv)
 	bool running = true;
 	int frame_counter = 0;
 
-	long tick = 0;
-
 	while (running) {
 		new_entity_check(world, scene, system_level);
 
@@ -287,11 +285,6 @@ int main(int argc, const char** argv)
 		dt_timer.restart();
 
 		if (clock.passed_beat()) {
-			if (tick++ % 10 == 0)
-				std::cout << "TICK " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
-			else
-				std::cout << "TICK " << clock.get_time().asMilliseconds() << std::endl;
-			
 			click.play();
 
 			system_grid_ai.update();
