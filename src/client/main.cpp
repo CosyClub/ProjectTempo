@@ -129,7 +129,7 @@ int main(int argc, const char** argv)
 	// Set up remote address, local ports and remote handshake port
 	// Note, IF statement is to change ports for local development, bit
 	// hacky and should be removed in due course!
-	tempo::addr_r = "127.0.0.1";
+	tempo::addr_r = "192.168.137.1";
 	if (tempo::addr_r == "127.0.0.1") {
 		std::srand (time(NULL));
 		int d = std::rand() % 10;
@@ -166,7 +166,7 @@ int main(int argc, const char** argv)
 	///////////////////////
 	// Who even knows
 
-	// tempo::LevelRenderer level_renderer(scene, scene->getRootSceneNode(), &system_level);
+	tempo::LevelRenderer level_renderer(scene, scene->getRootSceneNode(), &system_level);
 
 	scene->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
 	Ogre::SceneNode* node_light = scene->getRootSceneNode()->createChildSceneNode();
@@ -355,7 +355,7 @@ int main(int argc, const char** argv)
 		system_level.update(dt);
 		system_update_transforms.update(system_level);
 		logic_time = dt_timer.getElapsedTime();
-		// system_render.render(dt);
+		system_render.render(dt);
 		render_time = dt_timer.getElapsedTime() - logic_time;
 		SDL_GL_SwapWindow(app.window);
 
