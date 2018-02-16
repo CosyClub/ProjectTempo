@@ -37,7 +37,7 @@ namespace tempo
 	//                     message (true) or game message (false, default).
 	// Returns:
 	//         bool - true if sent, false if unable to send.
-	bool sendMessage(SystemQID id, sf::Packet payload, bool isHandshake);
+	bool sendMessage(QueueID id, sf::Packet payload, bool isHandshake);
 
 	// listenForServerUpdates
 	// WARNING: Should be run on separate thread.

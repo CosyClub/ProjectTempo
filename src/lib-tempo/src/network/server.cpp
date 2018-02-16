@@ -184,7 +184,7 @@ void handshakeRoleReq(sf::Packet &packet,
 
 	for (tempo::clientpair client:clients){
 		if (client.first == id) continue;
-		sendMessage(tempo::SystemQID::ENTITY_CREATION, p_broadcast, client.first);
+		sendMessage(tempo::QueueID::ENTITY_CREATION, p_broadcast, client.first);
 	}
 	
 	//Send response back to sender
@@ -295,7 +295,7 @@ uint32_t findClientID(sf::Uint32 ip, unsigned short port)
 }
 
 
-bool sendMessage(tempo::SystemQID id, 
+bool sendMessage(tempo::QueueID id, 
                  sf::Packet payload, 
                  uint32_t client_id)
 {

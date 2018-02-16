@@ -48,7 +48,7 @@ sf::Time timeSyncClient(tempo::Clock *clock)
 	return sf::microseconds(t2 + delay);
 }
 
-bool sendMessage(tempo::SystemQID id, 
+bool sendMessage(tempo::QueueID id, 
                  sf::Packet payload, 
                  bool isHandshake = false) 
 {

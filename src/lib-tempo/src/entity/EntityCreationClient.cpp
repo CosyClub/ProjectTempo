@@ -1,5 +1,6 @@
 #include <tempo/entity/EntityCreationClient.hpp>
 
+#include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentID.hpp>
@@ -96,6 +97,7 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene,
 
 	// refactored:
 	entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
+	entity_player.addComponent<tempo::ComponentCombo>();
 	entity_player.addComponent<tempo::ComponentHealth>(health);
 	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x,y));
 	entity_player.addComponent<tempo::ComponentStageTranslation>();

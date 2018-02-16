@@ -1,5 +1,6 @@
 #include <tempo/entity/EntityCreationServer.hpp>
 
+#include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/component/ComponentID.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
@@ -95,6 +96,7 @@ anax::Entity newPlayer(anax::World& world,
 	
 	// refactored
 	entity_player.addComponent<tempo::ComponentID>((int)tid);
+	entity_player.addComponent<tempo::ComponentCombo>();
 	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(5,5));
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
