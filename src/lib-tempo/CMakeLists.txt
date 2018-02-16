@@ -5,7 +5,6 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/song.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/structures.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/time.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Types.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreation.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreationClient.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreationServer.hpp"
