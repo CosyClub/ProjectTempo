@@ -1,6 +1,7 @@
 set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Application.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/config.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/mask.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/model.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/song.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/structures.hpp"
@@ -28,6 +29,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 
 set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/Application.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/mask.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/model.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/song.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/structures.cpp"
