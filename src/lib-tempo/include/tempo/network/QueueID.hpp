@@ -1,11 +1,13 @@
 #ifndef TEMPO_NETWORK_ECS_SYSTEMS_HPP
 #define TEMPO_NETWORK_ECS_SYSTEMS_HPP
 
-#include <tempo/system/NetworkedSystem.hpp>
+#include <anax/System.hpp>
+#include <anax/Component.hpp>
+
+#include <SFML/Network.hpp>
 
 namespace tempo
 {
-	NetworkedSystem system_list[int(QID_RESERVED_TOP)]
 	// SystemQID
 	// This enum class should contain all the ID's for systems that want to
 	// recieve messages from the network stack. These cannot be reused more
@@ -32,6 +34,19 @@ namespace tempo
 		//End of non-reserved zone
 		QID_RESERVED_TOP
 	};
+
+	enum Component_ID
+	{
+		CID_RESERVED_BOTTOM,
+		//Start of non-reserved zone
+		
+		//End of non-reserved zone
+		CID_RESERVED_TOP
+	};
+
+	extern void (*restore_pointer[Component_ID::CID_RESERVED_TOP])(anax::Entity& e, sf::Packet p);
+
+	extern sf::Packet (*dump_pointer[Component_ID::CID_RESERVED_TOP])(anax::Entity& e);
 }
 
 #endif
