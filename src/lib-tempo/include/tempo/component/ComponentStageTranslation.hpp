@@ -5,14 +5,18 @@
 #include <glm/fwd.hpp>
 #include <glm/vec2.hpp>
 
-namespace tempo{
-	// represents a translation on the stage
-	struct ComponentStageTranslation : anax::Component {
-		// the position translation
-		glm::ivec2 delta;
-		// creates the stage translation with no delta
-		ComponentStageTranslation();
-	};
-}
+namespace tempo
+{
+	
+// Represents a translation on the stage
+struct ComponentStageTranslation : anax::Component 
+{
+	// The position translation
+	glm::ivec2 delta;
+	// Creates the stage translation with no delta
+	ComponentStageTranslation();
+};
+
+} // namespace tempo
 
 #endif
