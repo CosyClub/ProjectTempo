@@ -33,12 +33,13 @@ namespace tempo{
 			{
 				anax::Entity entity = system_id.get(instance_id);
 				auto& input = entity.getComponent<tempo::ComponentPlayerRemote>();
-				auto& motion = entity.getComponent<tempo::ComponentGridMotion>();
+				auto& motion = entity.getComponent<tempo::ComponentStageTranslation>();
 				// END of horrifyingly bad bit
 				
 				if(!input.moved_this_beat){
 					input.moved_this_beat = true;
-					motion.beginMovement(dx, dy);
+					assert(false);
+					//motion.beginMovement(dx, dy);
 				}
 
 				if(!clock.within_delta()){

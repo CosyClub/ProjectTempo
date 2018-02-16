@@ -4,7 +4,7 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/component/ComponentGridMotion.hpp>
+#include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentPlayerRemoteServer.hpp>
 #include <tempo/system/SystemID.hpp>
 #include <tempo/network/queue.hpp>
@@ -21,7 +21,7 @@
 
 namespace tempo{
 
-	struct SystemPlayerRemoteServer : anax::System<anax::Requires<ComponentGridMotion, 
+	struct SystemPlayerRemoteServer : anax::System<anax::Requires<ComponentStageTranslation, 
 	                                                        ComponentPlayerRemoteServer>> 
 	{
 		tempo::Clock& clock;

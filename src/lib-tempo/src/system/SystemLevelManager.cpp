@@ -1,11 +1,10 @@
-#include <tempo/component/ComponentGridMotion.hpp>
-#include <tempo/component/ComponentGridPosition.hpp>
+#include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 
 #include <glm/vec2.hpp>
 
 namespace tempo{
-	/////////////////////////////////////////////////////////////
 	// SystemLevelManager
 	SystemLevelManager::SystemLevelManager(anax::World& world, int size)
 		: tile_heights(size, std::vector<float>(size)) {
@@ -143,73 +142,74 @@ namespace tempo{
 	void SystemLevelManager::update(float dt){
 		auto entities = getEntities();
 
-		for(auto& entity : entities){
-			auto& pos   = entity.getComponent<ComponentGridPosition>();
-			auto& gm    = entity.getComponent<ComponentGridMotion>();
+		for (auto& entity : entities) {
+			auto& pos = entity.getComponent<ComponentStagePosition>();
+			auto& gm = entity.getComponent<ComponentStageTranslation>();
 
-			if(gm.getCurrentMovement() != glm::vec2(0, 0)){
-				gm.setMotionProgress(gm.getMotionProgress() + (dt * gm.movement_speed) / gm.getCurrentMovement().length());
-				if(gm.getMotionProgress() >= 1){
-					pos.setPosition(pos.getPosition() + gm.getCurrentMovement());
-					gm.setDelta({0,0});
-					gm.setMotionProgress(0);
-					gm.setTargetLocked(false);
-				}
-			}
+			assert(false);
+			{
+			//if(gm.getCurrentMovement() != glm::vec2(0, 0)){
+			//	gm.setMotionProgress(gm.getMotionProgress() + (dt * gm.movement_speed) / gm.getCurrentMovement().length());
+			//	if(gm.getMotionProgress() >= 1){
+			//		pos.setPosition(pos.getPosition() + gm.getCurrentMovement());
+			//		gm.setDelta({0,0});
+			//		gm.setMotionProgress(0);
+			//		gm.setTargetLocked(false);
+			//	}
+			//}
 
-			glm::vec2 target_tile = pos.getPosition() + gm.getCurrentMovement();
-			float current_height = this->getHeight(pos.getPosition());
-			float target_height  = this->getHeight(target_tile);
-			float delta_height   = target_height - current_height;
+			//glm::vec2 target_tile = pos.getPosition() + gm.getCurrentMovement();
+			//float current_height = this->getHeight(pos.getPosition());
+			//float target_height  = this->getHeight(target_tile);
+			//float delta_height   = target_height - current_height;
 
-			/////////////////////////////////
 			// Work out if entity is allowed to go to its current target
 			// This depends on:
 			// - Delta height between tiles
 			// - If target tile is already occupied by another entity
-			if(gm.getMotionProgress() >= 0.5f && !gm.isMovementLocked()){
-				bool can_make_move = true;
+			//if(gm.getMotionProgress() >= 0.5f && !gm.isMovementLocked()){
+			//	bool can_make_move = true;
 
-				// Check height difference
-				if(abs(delta_height) > gm.max_jump_height){
-					can_make_move = false;
-				}
+			//	// Check height difference
+			//	if(abs(delta_height) > gm.max_jump_height){
+			//		can_make_move = false;
+			//	}
 
-				if(!existsTile(target_tile)){
-					can_make_move = false;
-				}
+			//	if(!existsTile(target_tile)){
+			//		can_make_move = false;
+			//	}
 
-				// :TODO:OPT: this might be quite slow - for each entity
-				// check all others, might want to build quadtree / 2d boolean array
-				// -> but we only do this check once per move - so might be okay - PROFILE!
-				for(auto& collision_candidate : grid_positions.getEntities()){
-					auto& pos_candidate = collision_candidate.getComponent<ComponentGridPosition>();
+			//	// :TODO:OPT: this might be quite slow - for each entity
+			//	// check all others, might want to build quadtree / 2d boolean array
+			//	// -> but we only do this check once per move - so might be okay - PROFILE!
+			//	for(auto& collision_candidate : grid_positions.getEntities()){
+			//		auto& pos_candidate = collision_candidate.getComponent<ComponentStagePosition>();
 
-					if(pos_candidate.isEthereal() && pos.isEthereal()){ continue; }
+			//		if(pos_candidate.isEthereal() && pos.isEthereal()){ continue; }
 
-					glm::vec2 candidate_delta = pos_candidate.getPosition() - target_tile;
-					//printf("Found candidate: %i, %i\n", candidate_delta.x, candidate_delta.y);
+			//		glm::vec2 candidate_delta = pos_candidate.getPosition() - target_tile;
+			//		//printf("Found candidate: %i, %i\n", candidate_delta.x, candidate_delta.y);
 
-					if (pos.getTileMask().isCollidingWith(pos_candidate.getTileMask(), candidate_delta)) {
-						can_make_move = false;
-					}
-				}
+			//		if (pos.getTileMask().isCollidingWith(pos_candidate.getTileMask(), candidate_delta)) {
+			//			can_make_move = false;
+			//		}
+			//	}
 
-				// :TODO: If multiple entities try to jump into same tile simultaneously
-				// should they both bounce back? Should first one moving get priority?
+			//	// :TODO: If multiple entities try to jump into same tile simultaneously
+			//	// should they both bounce back? Should first one moving get priority?
 
-				if(!can_make_move){
-					// Then entity should bounce back to where it came from
-					pos.setPosition(pos.getPosition() + gm.getCurrentMovement());
-					gm.setDelta(-gm.getCurrentMovement());
-					// Swap motion progress around so we don't have a obvious jump in motion
-					gm.setMotionProgress(1 - gm.getMotionProgress());
-					gm.setTargetLocked(true);
-				} else {
-					// :TODO: claim the target tile with level manager
-					gm.setTargetLocked(true);
-				}
+			//	if(!can_make_move){
+			//		// Then entity should bounce back to where it came from
+			//		pos.setPosition(pos.getPosition() + gm.getCurrentMovement());
+			//		gm.setDelta(-gm.getCurrentMovement());
+			//		// Swap motion progress around so we don't have a obvious jump in motion
+			//		gm.setMotionProgress(1 - gm.getMotionProgress());
+			//		gm.setTargetLocked(true);
+			//	} else {
+			//		// :TODO: claim the target tile with level manager
+			//		gm.setTargetLocked(true);
 			}
 		}
+
 	}
 }

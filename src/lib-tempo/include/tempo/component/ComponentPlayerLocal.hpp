@@ -4,7 +4,7 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/component/ComponentGridMotion.hpp>
+#include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentID.hpp>
 #include <tempo/network/client.hpp>
 #include <tempo/network/QueueID.hpp>
@@ -20,8 +20,8 @@ namespace tempo{
 
 	struct ComponentPlayerLocal : anax::Component {
 		bool moved_this_beat;
-		uint counter_combo;
-		uint level_combo;
+		unsigned int counter_combo;
+		unsigned int level_combo;
 
 		inline ComponentPlayerLocal() : moved_this_beat(false) {}
 	};

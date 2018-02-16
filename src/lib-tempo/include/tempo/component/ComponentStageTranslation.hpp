@@ -1,5 +1,5 @@
-#ifndef TEMPO_COMPONENT_STAGE_MOTION_HPP
-#define TEMPO_COMPONENT_STAGE_MOTION_HPP
+#ifndef TEMPO_COMPONENT_STAGE_TRANSLATION_HPP
+#define TEMPO_COMPONENT_STAGE_TRANSLATION_HPP
 #include <anax/Component.hpp>
 
 #include <glm/fwd.hpp>
@@ -7,11 +7,11 @@
 
 namespace tempo{
 	// represents a translation on the stage
-	struct ComponentStageMotion : anax::Component {
+	struct ComponentStageTranslation : anax::Component {
 		// the position translation
 		glm::ivec2 delta;
 		// creates the stage translation with no delta
-		ComponentStageMotion();
+		ComponentStageTranslation();
 	};
 }
 

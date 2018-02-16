@@ -4,8 +4,8 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/component/ComponentGridMotion.hpp>
-#include <tempo/component/ComponentGridPosition.hpp>
+#include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentTransform.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 
@@ -20,8 +20,8 @@ namespace tempo{
 	/// and managing the movement of entities on the grid
 	/////////////////////////////////////////////////////////////////////
 	class SystemUpdateTransforms : public anax::System<anax::Requires<ComponentTransform,
-	                                                                  ComponentGridPosition,
-	                                                                  ComponentGridMotion
+	                                                                  ComponentStagePosition,
+	                                                                  ComponentStageTranslation
 	                                                                  >>
 	{
 	public:

@@ -66,13 +66,14 @@ namespace tempo{
 
 		for(auto& entity : entities){
 			auto& id     = entity.getComponent<tempo::ComponentID>();
-			auto& motion = entity.getComponent<tempo::ComponentGridMotion>();
+			auto& motion = entity.getComponent<tempo::ComponentStageTranslation>();
 			auto& input  = entity.getComponent<tempo::ComponentPlayerLocal>();
 
 			if(!input.moved_this_beat){
 				input.moved_this_beat = true;
 				input.counter_combo++;
-				motion.beginMovement(dx, dy);
+				assert(false);
+				//motion.beginMovement(dx, dy);
 
 				sf::Packet packet;
 				packet << id.instance_id << dx << dy;

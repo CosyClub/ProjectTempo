@@ -10,8 +10,8 @@
 #include <anax/Component.hpp>
 
 #include <tempo/entity/TileMask.hpp>
-#include <tempo/component/ComponentGridMotion.hpp>
-#include <tempo/component/ComponentGridPosition.hpp>
+#include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentStagePosition.hpp>
 
 #include <glm/fwd.hpp>
 #include <glm/vec2.hpp>
@@ -31,8 +31,8 @@ namespace tempo{
 	/// Hence this system is responsible for rendering the world's tiles,
 	/// and managing the movement of entities on the grid
 	/////////////////////////////////////////////////////////////////////
-	class SystemLevelManager : public anax::System<anax::Requires<ComponentGridPosition,
-	                                                              ComponentGridMotion
+	class SystemLevelManager : public anax::System<anax::Requires<ComponentStagePosition,
+	                                                              ComponentStageTranslation
 	                                                              >>
 	{
 	private:
@@ -41,7 +41,7 @@ namespace tempo{
 		std::vector<glm::vec2> player_spawn_zone;
 		uint32_t spawn_zones = 0;
 
-		class GridPositions : public anax::System<anax::Requires<ComponentGridPosition>>{};
+		class GridPositions : public anax::System<anax::Requires<ComponentStagePosition>>{};
 		GridPositions grid_positions;
 
 	public:
