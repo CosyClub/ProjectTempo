@@ -73,6 +73,11 @@ EntityCreationData dumpEntity(anax::Entity e)
 			break;
 			}
 	}
+	
+
+	assert(false);
+	EntityCreationData data;
+	return data;
 
 }
 
@@ -84,7 +89,7 @@ anax::Entity newPlayer(anax::World& world, EID tid, tempo::SystemLevelManager sy
 	
 	entity_player.addComponent<tempo::ComponentID>((int)tid);
 	int iid = entity_player.getComponent<tempo::ComponentID>().instance_id;
-	entity_player.addComponent<tempo::ComponentStagePosition>(system_grid_motion.spawn());
+	//entity_player.addComponent<tempo::ComponentStagePosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
 	entity_player.addComponent<tempo::ComponentPlayerRemoteServer>();	
 	
@@ -100,7 +105,7 @@ anax::Entity newAI(anax::World& world, EID tid, int x, int y) {
 	anax::Entity entity_ai = world.createEntity();
 
 	entity_ai.addComponent<tempo::ComponentID>((int)tid);
-	entity_ai.addComponent<tempo::ComponentStagePosition>(x, y, tempo::tileMask1by1, false);
+	//entity_ai.addComponent<tempo::ComponentStagePosition>(x, y, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentStageTranslation>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
 	int iid = entity_ai.getComponent<tempo::ComponentID>().instance_id;
@@ -117,7 +122,7 @@ anax::Entity newDestroyable(anax::World& world, EID tid, int x, int y, std::stri
 	anax::Entity entity_object = world.createEntity();
 
 	entity_object.addComponent<tempo::ComponentID>((int)tid);
-	entity_object.addComponent<tempo::ComponentStagePosition>(x, y, tempo::tileMask1by1, false);
+	//entity_object.addComponent<tempo::ComponentStagePosition>(x, y, tempo::tileMask1by1, false);
 	entity_object.addComponent<tempo::ComponentStageTranslation>();
 
 	entity_object.activate();
@@ -133,7 +138,7 @@ anax::Entity newNonDestroyable(anax::World& world, EID tid, int x, int y, std::s
 	anax::Entity entity_object = world.createEntity();
 
 	entity_object.addComponent<tempo::ComponentID>((int)tid);
-	entity_object.addComponent<tempo::ComponentStagePosition>(x, y, tempo::tileMask1by1, false);
+	//entity_object.addComponent<tempo::ComponentStagePosition>(x, y, tempo::tileMask1by1, false);
 	entity_object.addComponent<tempo::ComponentStageTranslation>();
 
 	entity_object.activate();

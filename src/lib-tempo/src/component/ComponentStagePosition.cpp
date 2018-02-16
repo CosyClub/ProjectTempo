@@ -3,7 +3,8 @@
 #include <glm/vec2.hpp>
 
 namespace tempo{
-	ComponentStagePosition::ComponentStagePosition(glm::ivec2 bottom_left, glm::ivec2 top_right) {
+	ComponentStagePosition::ComponentStagePosition(glm::ivec2 bottom_left, glm::ivec2 top_right)
+		: occupied(0) {
 		assert(bottom_left.x <= top_right.x && bottom_left.y <= top_right.y);
 
 		for (int y = bottom_left.y; y < top_right.y; y++) {
@@ -14,7 +15,9 @@ namespace tempo{
 	}
 	
 	ComponentStagePosition::ComponentStagePosition(glm::ivec2 position) 
-		: ComponentStagePosition(position, position) {}
+		: occupied(1) {
+		occupied.push_back(position);
+	}
 
 	std::vector<glm::ivec2> ComponentStagePosition::getOccupied() {
 		return occupied;

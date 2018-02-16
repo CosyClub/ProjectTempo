@@ -6,14 +6,6 @@
 #include <glm/vec2.hpp>
 
 namespace tempo{
-	enum direction {
-		NORTH,
-		SOUTH,
-		EAST,
-		WEST,
-	};
-	direction facing;
-
 	struct ComponentStagePosition : anax::Component {
 	private:
 		// a non empty set of all positions that is occupied by this entity
