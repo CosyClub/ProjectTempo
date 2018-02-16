@@ -12,7 +12,9 @@
 #include <tempo/entity/TileMask.hpp>
 #include <tempo/component/ComponentGridMotion.hpp>
 #include <tempo/component/ComponentGridPosition.hpp>
-#include <tempo/math/Vector.hpp>
+
+#include <glm/fwd.hpp>
+#include <glm/vec2.hpp>
 
 #include <time.h>
 #include <limits>
@@ -36,7 +38,7 @@ namespace tempo{
 	private:
 	  std::vector<std::vector<float>> tile_heights;
 
-		std::vector<Vec2s> player_spawn_zone;
+		std::vector<glm::vec2> player_spawn_zone;
 		uint32_t spawn_zones = 0;
 
 		class GridPositions : public anax::System<anax::Requires<ComponentGridPosition>>{};
@@ -49,15 +51,15 @@ namespace tempo{
 		SystemLevelManager(anax::World&, int size);
 		SystemLevelManager(anax::World&, const char* heightMap, const char* zoneMap);
 
-		bool existsTile(Vec2s position);
+		bool existsTile(glm::vec2 position);
 		bool existsTile(int x, int y);
 
-		void deleteTile(Vec2s position);
-		void createTile(Vec2s position);
+		void deleteTile(glm::vec2 position);
+		void createTile(glm::vec2 position);
 
-		void setHeight(float height, Vec2s position);
-		void setHeight(float height, Vec2s position, int width, int length);
-		inline float getHeight(Vec2s position){
+		void setHeight(float height, glm::vec2 position);
+		void setHeight(float height, glm::vec2 position, int width, int length);
+		inline float getHeight(glm::vec2 position){
 			return getHeight(position.x, position.y);
 		}
 		float getHeight(int x, int y);
@@ -68,10 +70,10 @@ namespace tempo{
 		/// \brief Returns the width and height of the world, IE: maximum
 		/// tile coordinate is 1 less than the returned vector in each dimension
 		/////////////////////////////////////////////////////////////////////
-		Vec2s getWorldSize();
+		glm::vec2 getWorldSize();
 
 		void loadZones(const char* fileNames);
-		Vec2s spawn();
+		glm::vec2 spawn();
 
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Handles moving entities with a GridMotionComponent

@@ -1,6 +1,8 @@
 #include <tempo/system/SystemTransform.hpp>
 #include <tempo/component/ComponentTransform.hpp>
 
+#include <glm/vec2.hpp>
+
 namespace tempo{
 
 	void SystemUpdateTransforms::update(SystemLevelManager& level){
@@ -12,9 +14,9 @@ namespace tempo{
 			auto& gm    = entity.getComponent<ComponentGridMotion>();
 
 			float motion_progress = gm.getMotionProgress();
-			Vec2s delta           = gm.getCurrentMovement();
-			Vec2s position        = pos.getPosition();
-			Vec2s target          = position + delta;
+			glm::vec2 delta           = gm.getCurrentMovement();
+			glm::vec2 position        = pos.getPosition();
+			glm::vec2 target          = position + delta;
 
 			float current_height = level.getHeight(position);
 			float target_height  = level.getHeight(target  );
