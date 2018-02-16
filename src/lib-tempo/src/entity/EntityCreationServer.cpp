@@ -1,12 +1,14 @@
 #include <tempo/entity/EntityCreationServer.hpp>
 
+#include <glm/vec2.hpp>
+
 namespace tempo
 {
 
 EntityCreationData dumpEntity(anax::Entity e)
 {
 	EID type_id = (EID) e.getComponent<ComponentID>().type_id;
-	Vec2s position;
+	glm::vec2 position;
 	int instance_id   = e.getComponent<ComponentID>().instance_id;
 
 	/* data.type_id = type_id; */

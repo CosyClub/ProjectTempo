@@ -1,8 +1,10 @@
 #ifndef TEMPO_ENTITY_TILEMASK_HPP
 #define TEMPO_ENTITY_TILEMASK_HPP
 
+#include <glm/fwd.hpp>
+#include <glm/vec2.hpp>
+
 #include <tempo/intrinsics.hpp>
-#include <tempo/math/Vector.hpp>
 
 #include <cstdio>
 
@@ -126,14 +128,14 @@ namespace tempo {
 		/// center of the other
 		/// \return TileMask representing the common tiles occupied by both Entities
 		/////////////////////////////////////////////////////////////////////
-		TileMask isCollidingWith(const TileMask& other, Vec2s center_delta) const;
+		TileMask isCollidingWith(const TileMask& other, glm::vec2 center_delta) const;
 
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Computes a new TileMask that represents this translated
 		/// by some amount along each axis
 		/////////////////////////////////////////////////////////////////////]
 		TileMask getTranslated(int dx, int dy) const;
-		inline TileMask getTranslated(Vec2s delta) const { return getTranslated(delta.x, delta.y); }
+		inline TileMask getTranslated(glm::vec2 delta) const { return getTranslated(delta.x, delta.y); }
 
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Translates this TileMask in place.
@@ -141,7 +143,7 @@ namespace tempo {
 		/// \return Reference to this TileMask for operator chaining
 		/////////////////////////////////////////////////////////////////////
 		TileMask& translate(int dx, int dy);
-		TileMask& translate(Vec2s delta) { return translate(delta.x, delta.y); }
+		TileMask& translate(glm::vec2 delta) { return translate(delta.x, delta.y); }
 
 		/////////////////////////////////////////////////////////////////////
 		/// \brief Casts the TileMask to a bool. Evaluates to true

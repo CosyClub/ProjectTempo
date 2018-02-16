@@ -1,5 +1,7 @@
 #include <tempo/entity/LevelRenderer.hpp>
 
+#include <glm/vec2.hpp>
+
 namespace tempo{
 	LevelRenderer::LevelRenderer(Ogre::SceneManager* scene, Ogre::SceneNode* root_floor_node, SystemLevelManager* level)
 		: scene(scene),
@@ -12,7 +14,7 @@ namespace tempo{
 	void LevelRenderer::updateFloorNodes(SystemLevelManager& level){
 		printf("LevelRenderer: Begin update of floor nodes\n");
 
-		Vec2s world_size = level.getWorldSize();
+		glm::vec2 world_size = level.getWorldSize();
 
 		tile_nodes.resize(world_size.x);
 		for(int x = 0; x < world_size.x; ++x){
