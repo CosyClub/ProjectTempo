@@ -1,8 +1,11 @@
 #ifndef TEMPO_NETWORK_ECS_SYSTEMS_HPP
 #define TEMPO_NETWORK_ECS_SYSTEMS_HPP
 
+#include <tempo/system/NetworkedSystem.hpp>
+
 namespace tempo
 {
+	NetworkedSystem system_list[int(QID_RESERVED_TOP)]
 	// SystemQID
 	// This enum class should contain all the ID's for systems that want to
 	// recieve messages from the network stack. These cannot be reused more

@@ -30,6 +30,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/queue.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/QueueID.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/server.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/NetworkedSystem.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemAttack.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemGridAi.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemHealth.hpp"
