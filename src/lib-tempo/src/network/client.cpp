@@ -113,17 +113,17 @@ uint32_t handshakeHello(anax::World& world,
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
 	uint32_t id = NO_CLIENT_ID;
-	uint32_t entityCount = 0;
+	uint32_t componentCount = 0;
 	packet >> msg;
 	if (msg == static_cast<uint32_t>(HandshakeID::HELLO_ROG)) {
 		packet >> id;
 		packet >> port_si;
 		packet >> port_st;
-		packet >> entityCount;
-		EntityCreationData e;
-		for (int i = 0; i < entityCount; i++) {
-			packet >> e;
-			newEntity(e, world, scene, system_gm);
+		packet >> componentCount;
+		sf::Packet p2;
+		for (int i = 0; i < componentCount; i++) {
+			sock_o.receive(p2, sender, port);
+			addComponent(world, p2);
 		}
 	} else {
 		std::cout << "The server was rude to us when we said hello. >:("
@@ -157,12 +157,17 @@ bool handshakeRoleReq(uint32_t id,
 	
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
+	int componentCount;
 	packet >> msg;
+	packet >> componentCount;
 	if (msg == static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG)) {
 		//TODO Extract entity/response from ROLEREQ_ROG
-		EntityCreationData e;
-		packet >> e;
-		anax::Entity en = newEntity(e, world, scene, system_gm);
+		sf::Packet p2;
+		anax::Entity en;
+		for (int i = 0; i < componentCount; i++) {
+			sock_o.receive(p2, sender, port);
+			en = addComponent(world, p2);
+		}
 		en.removeComponent<tempo::ComponentPlayerRemote>();
 		en.addComponent<tempo::ComponentPlayerLocal>();
 	} else {

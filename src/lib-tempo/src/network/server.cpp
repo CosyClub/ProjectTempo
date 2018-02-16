@@ -140,13 +140,35 @@ void handshakeHello(sf::Packet &packet,
 	rog << id; // TODO change to temporary token
 	rog << port_si;
 	rog << port_st;
-	rog << static_cast<uint32_t>(world->getEntityCount());
+	//Work out how many components there are in the world
+	uint32_t componentAmount = 0;
 	for (auto& entity: world->getEntities()) {
-		rog << dumpEntity(entity);
+		for (auto& component: entity.getComponents())
+		{
+			componentAmount += 1;		
+		}
 	}
+	rog << componentAmount;
 
 	// Send response back to sender
 	sock_h.send(rog, sender, port);
+
+	// Now actually send them
+	sf::Packet p2;
+	for (auto& entity: world->getEntities()) {
+		for (auto& component: entity.getComponents())
+		{
+			auto f = dump_map.find(component);
+			if (f == dump_map.end())
+			{
+				//FUCK
+				std::cout << "Failed to find component"
+				          << std::endl;	
+			}
+			p2 = (*f->second)(entity);
+			sock_h.send(rog, sender, port);
+		}
+	}
 }
 
 void handshakeRoleReq(sf::Packet &packet,
@@ -165,7 +187,7 @@ void handshakeRoleReq(sf::Packet &packet,
 
 	// Create Entity for selected role from client
 	// Only creating players for now (spectators are not a thing)	
-	anax::Entity entity = newPlayer(*world, EID::EID_PLAYER, system_gm);
+	anax::Entity entity = newPlayer(*world, system_gm);
 
 	// Register Role
 	cmtx.lock();
@@ -176,19 +198,49 @@ void handshakeRoleReq(sf::Packet &packet,
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG);
 	// TODO Package Requested Entity, eg:
-	EntityCreationData data = dumpEntity(entity);
-	rog << data;
+	uint32_t componentAmount;
+	
+	for (auto& component: entity.getComponents())
+	{
+		componentAmount += 1;
+	}
+
+	rog << componentAmount;
 
 	sf::Packet p_broadcast;
-	p_broadcast << data;
 
 	for (tempo::clientpair client:clients){
 		if (client.first == id) continue;
-		sendMessage(tempo::SystemQID::ENTITY_CREATION, p_broadcast, client.first);
+		for (auto& component: entity.getComponents())
+		{
+			auto f = dump_map.find(*component);
+			if (f == dump_map.end())
+			{
+				//FUCK
+				std::cout << "Failed to find component"
+				          << std::endl;	
+			}
+			p_broadcast = (*f->second)(entity);
+			sendMessage(tempo::SystemQID::ENTITY_CREATION, p_broadcast, client.first);
+		}
 	}
 	
 	//Send response back to sender
 	sock_h.send(rog, sender, port);
+
+	sf::Packet p2;
+	for (auto& component: entity.getComponents())
+	{
+		auto f = dump_map.find(*component);
+		if (f == dump_map.end())
+		{
+			//FUCK
+			std::cout << "Failed to find component"
+			          << std::endl;	
+		}
+		p2 = (*f->second)(entity);
+		sock_h.send(p2, sender, port);
+	}
 }
 
 void processNewClientPacket(sf::Packet &packet, 

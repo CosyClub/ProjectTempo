@@ -44,9 +44,17 @@ namespace tempo
 		CID_RESERVED_TOP
 	};
 
-	extern void (*restore_pointer[Component_ID::CID_RESERVED_TOP])(anax::Entity& e, sf::Packet p);
+	sf::Packet& operator <<(sf::Packet& packet, const Component_ID id);
+	sf::Packet& operator >>(sf::Packet& packet, Component_ID& id);
 
-	extern sf::Packet (*dump_pointer[Component_ID::CID_RESERVED_TOP])(anax::Entity& e);
+	typedef void (*restore_pointer)(anax::Entity& e, sf::Packet p);
+	typedef sf::Packet (*dump_pointer)(const anax::Entity& e);
+
+	typedef std::map<Component_ID, restore_pointer> restore_pointer_map;
+	typedef std::map<anax::Component, dump_pointer> dump_pointer_map;
+
+	extern restore_pointer_map restore_map;
+	extern dump_pointer_map dump_map;
 }
 
 #endif

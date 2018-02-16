@@ -3,8 +3,19 @@
 namespace tempo
 {
 
-void (*restore_pointer[Component_ID::CID_RESERVED_TOP])(anax::Entity& e, sf::Packet p);
+restore_pointer_map restore_map;
+dump_pointer_map dump_map;
 
-sf::Packet (*dump_pointer[Component_ID::CID_RESERVED_TOP])(anax::Entity& e);
+sf::Packet& operator <<(sf::Packet& packet, const Component_ID id)
+{
+	return packet << uint32_t(id);
+}
+sf::Packet& operator >>(sf::Packet& packet, Component_ID& id)
+{
+	uint32_t data;
+	packet >> data;
+	id = (Component_ID)data;
+	return packet << (id);
+}
 
 }

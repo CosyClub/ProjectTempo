@@ -14,12 +14,10 @@
 namespace tempo
 {
 
-EntityCreationData dumpEntity(anax::Entity e);
-
-anax::Entity newPlayer(anax::World& world, EID tid, SystemLevelManager system_grid_motion);
-anax::Entity newAI(anax::World& world, EID tid, int x, int y);
-anax::Entity newDestroyable(anax::World& world, EID tid, int x, int y, std::string mesh_name);
-anax::Entity newNonDestroyable(anax::World& world, EID tid, int x, int y, std::string mesh_name);
+anax::Entity newPlayer(anax::World& world, SystemLevelManager system_grid_motion);
+anax::Entity newAI(anax::World& world, int x, int y);
+anax::Entity newDestroyable(anax::World& world, int x, int y, std::string mesh_name);
+anax::Entity newNonDestroyable(anax::World& world, int x, int y, std::string mesh_name);
 
 }
 
