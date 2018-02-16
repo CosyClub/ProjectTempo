@@ -6,10 +6,12 @@ namespace tempo
 	ComponentWeapon::ComponentWeapon(int rate, Mask m)
 	{
 		attack_rate = rate;
+		last_attack = sf::microseconds(0);
 		damage = m;
 	}
 
-	int ComponentWeapon::GetDamage(glm::vec2 offset)
+	float ComponentWeapon::GetDamage(glm::vec2 offset)
 	{
+		//TODO
 	}
 }

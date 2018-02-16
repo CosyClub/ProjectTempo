@@ -8,16 +8,19 @@
 #include <anax/Component.hpp>
 #include <glm/glm.hpp>
 
+#include <SFML/System/Time.hpp>
+
 namespace tempo
 {
 
 struct ComponentWeapon : anax::Component
 {
 	int attack_rate;
+	sf::Time last_attack;
 	Mask damage;
 
 	ComponentWeapon(int rate, Mask m);
-	int GetDamage(glm::vec2 offset);
+	float GetDamage(glm::vec2 offset);
 };
 
 }
