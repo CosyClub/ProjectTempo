@@ -16,10 +16,10 @@ enum EID {
 };
 
 typedef struct {
-	int foo;
-	// int health;
-	/* char  name[100]; */
-	/* float color[3]; */
+	unsigned char localPlayer; // 0 - remote player, 1 - local player
+	int health;
+	// char  name[100];
+	// float color[3];
 } Player_t;
 
 typedef struct {

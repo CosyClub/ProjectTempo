@@ -1,5 +1,4 @@
 #include <tempo/system/SystemPlayerLocal.hpp>
-#include <tempo/component/ComponentPlayerLocal.hpp>
 
 namespace tempo{
 	void SystemPlayerLocal::advanceBeat(){

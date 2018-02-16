@@ -1,4 +1,11 @@
 #include <tempo/entity/EntityCreationClient.hpp>
+
+#include <tempo/component/ComponentGridAi.hpp>
+#include <tempo/component/ComponentHealth.hpp>
+#include <tempo/component/ComponentID.hpp>
+#include <tempo/component/ComponentPlayerLocal.hpp>
+#include <tempo/component/ComponentPlayerRemote.hpp>
+#include <tempo/component/ComponentRender.hpp>
 #include <glm/vec2.hpp>
 
 namespace tempo {
@@ -19,8 +26,10 @@ anax::Entity newEntity(EntityCreationData data,
 			{
 			Player_t p = data.entity_type.player;
 			return_entity = newPlayer(world, scene, instance_id, type_id,
+			                          p.localPlayer,
 			                          pos.x,
 			                          pos.y,
+			                          p.health,
 			                          system_gm
 			                         );
 			break;
@@ -61,9 +70,15 @@ anax::Entity newEntity(EntityCreationData data,
 	return return_entity;
 }
 
-anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, tempo::SystemLevelManager system_grid_motion) {
-
-	//TODO:: Add Entity to Specific Tile
+anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, 
+                       int iid,
+                       EID tid,
+                       unsigned char localPlayer,
+                       int x,
+                       int y,
+                       int health,
+                       tempo::SystemLevelManager system_grid_motion) 
+{
 
 	anax::Entity entity_player = world.createEntity();
 	Ogre::BillboardSet* Pset = scene->createBillboardSet();
@@ -74,14 +89,21 @@ anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, E
 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
 	player->setColour(Ogre::ColourValue::Red);
 
-	entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
+	// not refactored:
 	entity_player.addComponent<tempo::ComponentTransform>();
 	entity_player.addComponent<tempo::ComponentRender>(scene, "N/A").node->attachObject(Pset);
 	entity_player.getComponent<tempo::ComponentRender>().AddHealthBar();
-	//entity_player.addComponent<tempo::ComponentStagePosition>(x, y, tempo::tileMask1by1, false);
+
+	// refactored:
+	entity_player.addComponent<tempo::ComponentID>(iid, (int)tid);
+	entity_player.addComponent<tempo::ComponentHealth>(health);
+	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x,y));
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
-	entity_player.addComponent<tempo::ComponentPlayerRemote>();
-	entity_player.addComponent<tempo::ComponentHealth>(1000);
+	if (localPlayer) {
+		entity_player.addComponent<tempo::ComponentPlayerLocal>();
+	} else {
+		entity_player.addComponent<tempo::ComponentPlayerRemote>();
+	}
 	entity_player.activate();
 
 	return entity_player;

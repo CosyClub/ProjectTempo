@@ -5,13 +5,7 @@
 
 #include <Ogre.h>
 
-#include <tempo/component/ComponentGridAi.hpp>
-#include <tempo/component/ComponentHealth.hpp>
-#include <tempo/component/ComponentID.hpp>
-#include <tempo/component/ComponentRender.hpp>
 #include <tempo/entity/EntityCreation.hpp>
-#include <tempo/component/ComponentPlayerLocal.hpp>
-#include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 
 #include <glm/fwd.hpp>
@@ -26,12 +20,38 @@ anax::Entity newEntity(EntityCreationData data,
                        Ogre::SceneManager* scene,
                        tempo::SystemLevelManager system_gm);
 
-anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, tempo::SystemLevelManager system_grid_motion);
-anax::Entity newAI(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y);
-anax::Entity newDestroyable(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, std::string mesh_name);
-anax::Entity newNonDestroyable(anax::World& world, Ogre::SceneManager* scene, int iid, EID tid, int x, int y, std::string mesh_name);
+anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, 
+                       int iid, 
+                       EID tid,
+                       unsigned char playerLocal,
+                       int x, 
+                       int y, 
+                       int health,
+                       tempo::SystemLevelManager system_grid_motion);
 
-EntityCreationData dumpEntity(anax::Entity e);
-}
+anax::Entity newAI(anax::World& world, 
+                   Ogre::SceneManager* scene, 
+                   int iid, 
+                   EID tid, 
+                   int x, 
+                   int y);
+
+anax::Entity newDestroyable(anax::World& world, 
+                            Ogre::SceneManager* scene, 
+                            int iid, 
+                            EID tid, 
+                            int x, 
+                            int y, 
+                            std::string mesh_name);
+
+anax::Entity newNonDestroyable(anax::World& world, 
+                               Ogre::SceneManager* scene, 
+                               int iid, 
+                               EID tid, 
+                               int x, 
+                               int y, 
+                               std::string mesh_name);
+
+} // namespace tempo
 
 #endif

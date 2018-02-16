@@ -3,7 +3,7 @@
 
 #include <anax/System.hpp>
 
-#include <tempo\component\ComponentHealth.hpp>
+#include <tempo/component/ComponentHealth.hpp>
 
 namespace tempo {
 

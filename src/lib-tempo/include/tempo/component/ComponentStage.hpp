@@ -10,7 +10,7 @@
 namespace tempo {
 
 	// This implementation may change without notice
-	typedef std::vector<std::tuple<glm::ivec2, float>> stage_tiles
+	typedef std::vector<std::tuple<glm::ivec2, float>> stage_tiles;
 
 	// An entity that is bound by the world stage
 	struct ComponentStage : anax::Component {

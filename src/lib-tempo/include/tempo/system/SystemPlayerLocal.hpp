@@ -5,6 +5,7 @@
 #include <anax/Component.hpp>
 
 #include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentID.hpp>
 #include <tempo/network/client.hpp>
 #include <tempo/network/QueueID.hpp>
@@ -21,7 +22,7 @@ namespace tempo{
 	struct SystemPlayerLocal : anax::System<anax::Requires<ComponentStageTranslation, ComponentPlayerLocal>> {
 		tempo::Clock& clock;
 
-		inline SystemPlayerLocal(tempo::Clock& c) : clock(c) {}
+		inline SystemPlayerLocal(tempo::Clock& c) : clock(c) {};
 
 		void advanceBeat();
 		bool handleInput(SDL_Event& e);

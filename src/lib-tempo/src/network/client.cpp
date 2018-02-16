@@ -1,5 +1,9 @@
 #include <tempo/network/client.hpp>
 
+#include <tempo/entity/EntityCreationClient.hpp>
+#include <tempo/component/ComponentPlayerLocal.hpp>
+#include <tempo/component/ComponentPlayerRemote.hpp>
+
 namespace tempo
 {
 
@@ -208,5 +212,4 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 	return handshakeRoleReq(id, roleID, roleData, world, scene, system_gm);
 }
 
-
-}
+} // namespace tempo
