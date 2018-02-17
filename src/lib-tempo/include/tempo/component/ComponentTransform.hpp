@@ -7,20 +7,21 @@
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 
-#include <OgreMath.h>
-#include <OgreVector3.h>
+#include <glm/fwd.hpp>
+#include <glm/vec3.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 namespace tempo{
 	struct ComponentTransform : anax::Component {
 		/// \brief Offset from world origin to entity's local origin
-		Ogre::Vector3    position;
+		glm::vec3 position;
 
 		/// \brief Rotation of the entity about its local origin
-		Ogre::Quaternion rotation;
+		glm::quat rotation;
 
 		ComponentTransform();
-		ComponentTransform(Ogre::Vector3 pos);
-		ComponentTransform(Ogre::Real x, Ogre::Real y, Ogre::Real z);
+		ComponentTransform(glm::vec3 pos);
+		ComponentTransform(float x, float y, float z);
 	};
 }
 
