@@ -1,6 +1,6 @@
-#include <tempo/network/client.hpp>
+#include <client/network/client.hpp>
+#include <client/EntityCreationClient.hpp>
 
-#include <tempo/entity/EntityCreationClient.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
 
@@ -38,7 +38,7 @@ sf::Time timeSyncClient(tempo::Clock *clock)
 		return sf::Time::Zero;
 	}
 
-	// End time sync exchange, calculate delay in last tranmission from 
+	// End time sync exchange, calculate delay in last tranmission from
 	// time sync server.
 	t3 = clock->get_time().asMicroseconds();
 	packet >> t1 >> t2;
@@ -48,9 +48,9 @@ sf::Time timeSyncClient(tempo::Clock *clock)
 	return sf::microseconds(t2 + delay);
 }
 
-bool sendMessage(tempo::QueueID id, 
-                 sf::Packet payload, 
-                 bool isHandshake = false) 
+bool sendMessage(tempo::QueueID id,
+                 sf::Packet payload,
+                 bool isHandshake = false)
 {
 	sf::Packet message;
 
@@ -58,7 +58,7 @@ bool sendMessage(tempo::QueueID id,
 	message << id;
 	message << payload;
 
-	
+
 
 	// Send message
 	if (isHandshake) {
@@ -97,7 +97,7 @@ void listenForServerUpdates()
 	return;
 }
 
-uint32_t handshakeHello(anax::World& world, 
+uint32_t handshakeHello(anax::World& world,
 		        Ogre::SceneManager *scene,
                         tempo::SystemLevelManager system_gm)
 {
@@ -137,8 +137,8 @@ uint32_t handshakeHello(anax::World& world,
 	return id;
 }
 
-bool handshakeRoleReq(uint32_t id, 
-                      ClientRole roleID, 
+bool handshakeRoleReq(uint32_t id,
+                      ClientRole roleID,
                       ClientRoleData &roleData,
                       anax::World& world,
 		      Ogre::SceneManager *scene,
@@ -150,15 +150,15 @@ bool handshakeRoleReq(uint32_t id,
 	packet << id;
 	packet << roleID;
 	packet << roleData;
-	
+
 	// Send ROLEREQ
 	sock_o.send(packet, addr_r, port_sh);
-	
+
 	// Receive ROLEREQ_ROG
 	sf::IpAddress sender;
 	unsigned short port;
 	sock_o.receive(packet, sender, port);
-	
+
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
 	packet >> msg;
@@ -174,11 +174,11 @@ bool handshakeRoleReq(uint32_t id,
 		          << "role. >:(" << std::endl;
 		return false;
 	}
-	
+
 	return true;
 }
-	
-bool connectToAndSyncWithServer(ClientRole roleID, 
+
+bool connectToAndSyncWithServer(ClientRole roleID,
                                 ClientRoleData &roleData,
                                 anax::World& world,
                                 Ogre::SceneManager *scene,
@@ -188,7 +188,7 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 	if (sock_o.getLocalPort() == 0) {
 		if (!bindSocket('o', port_co)) {
 			std::cout << "Could not bind socket on port " << port_co
-			          << " to connect to and sync with server." 
+			          << " to connect to and sync with server."
 			          << std::endl;
 			return false;
 		}
@@ -204,7 +204,7 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 
 	uint32_t id = handshakeHello(world, scene, system_gm);
 	if (id == NO_CLIENT_ID) {
-		std::cout << "The server didn't like us saying HELLO!" 
+		std::cout << "The server didn't like us saying HELLO!"
 		          << std::endl;
 		return false;
 	}

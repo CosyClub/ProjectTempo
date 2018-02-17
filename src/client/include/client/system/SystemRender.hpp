@@ -7,8 +7,9 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/Application.hpp>
-#include <tempo/component/ComponentRender.hpp>
+#include <client/Application.hpp>
+#include <client/component/ComponentRender.hpp>
+
 #include <tempo/component/ComponentTransform.hpp>
 
 

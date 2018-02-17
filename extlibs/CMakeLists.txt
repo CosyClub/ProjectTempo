@@ -34,7 +34,7 @@ execute_process(COMMAND cmake
 # Build Ogre
 execute_process(COMMAND cmake --build
 	"${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/"
-	)
+)
 
 ##########################################
 # FreeImage

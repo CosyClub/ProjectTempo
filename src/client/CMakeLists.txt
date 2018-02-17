@@ -2,11 +2,30 @@ link_directories("${TEMPO_OGRE_LIBRARY_DIR}")
 link_directories("${TEMPO_LIB_DIR}")
 
 add_executable(client
+	${CMAKE_CURRENT_LIST_DIR}/include/client/Application.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/EntityCreationClient.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/LevelRenderer.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentRender.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/network/client.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemGameInput.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRender.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderHealth.hpp
+
+	${CMAKE_CURRENT_LIST_DIR}/src/Application.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/EntityCreationClient.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/LevelRenderer.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRender.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/network/client.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGameInput.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRender.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderHealth.cpp
+
 	${CMAKE_CURRENT_LIST_DIR}/main.cpp
 )
 
 set_target_properties(client PROPERTIES OUTPUT_NAME "RaveCave")
 
+target_include_directories(client PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
 target_include_directories(client PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_OGRE_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_SDL2_INCLUDE_DIR})

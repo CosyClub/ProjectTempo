@@ -20,21 +20,23 @@
 #include <OgreOverlayContainer.h>
 #include <OgreTextAreaOverlayElement.h>
 
-#include <tempo/Application.hpp>
 #include <tempo/song.hpp>
 #include <tempo/time.hpp>
-#include <tempo/entity/EntityCreationClient.hpp>
-#include <tempo/entity/LevelRenderer.hpp>
-#include <tempo/network/client.hpp>
-#include <tempo/system/SystemRenderHealth.hpp>
+
 #include <tempo/system/SystemTransform.hpp>
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
-#include <tempo/system/SystemGameInput.hpp>
 #include <tempo/system/SystemPlayer.hpp>
-#include <tempo/system/SystemRender.hpp>
+
+#include <client/Application.hpp>
+#include <client/EntityCreationClient.hpp>
+#include <client/LevelRenderer.hpp>
+#include <client/network/client.hpp>
+#include <client/system/SystemRenderHealth.hpp>
+#include <client/system/SystemRender.hpp>
+#include <client/system/SystemGameInput.hpp>
 
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>
@@ -72,7 +74,7 @@ void new_entity_check(anax::World &world, Ogre::SceneManager* scene, tempo::Syst
 int main(int argc, const char** argv)
 {
 	std::cout << glm::pi<float>() << std::endl;
-	
+
 	tempo::Application app = tempo::initialize_application("RaveCave", 800, 600);
 	if (app.ogre == nullptr || app.window == nullptr || app.render_target == nullptr) {
 		printf("Application initialisation failed, exiting\n");

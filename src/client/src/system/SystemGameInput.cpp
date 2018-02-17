@@ -1,13 +1,12 @@
-#include <tempo/system/SystemGameInput.hpp>
-
-#include <tempo/network/client.hpp>
+#include <client/system/SystemGameInput.hpp>
+#include <client/network/client.hpp>
 
 namespace tempo
 {
 
 void alertServerBrokenCombo(ComponentID& id) {
 	sf::Packet packet;
-	packet << id.instance_id 
+	packet << id.instance_id
 	       << static_cast<uint8_t>(MessageCombo::BROKEN_COMBO);
 	sendMessage(QueueID::COMBO, packet, false);
 }
@@ -51,7 +50,7 @@ bool SystemGameInput::handleInput(SDL_Event& e)
 			auto& combo = entity.getComponent<ComponentCombo>();
 			combo.breakCombo();
 			alertServerBrokenCombo(id);
-			
+
 			std::cout << "Missed beat by "
 			          << std::min(clock.since_beat().asMilliseconds(),
 			                      clock.until_beat().asMilliseconds())
@@ -78,11 +77,11 @@ bool SystemGameInput::handleInput(SDL_Event& e)
 			sendMessage(QueueID::PLAYER_UPDATES, packet, false);
 		} else {
 			// Do not move or do anything other than tell the server
-			// we have broken our combo	
+			// we have broken our combo
 			alertServerBrokenCombo(id);
 		}
 	}
-	
+
 	return true;
 }
 

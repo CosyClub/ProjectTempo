@@ -7,7 +7,6 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/Application.hpp>
 #include <tempo/component/ComponentTransform.hpp>
 
 namespace tempo{

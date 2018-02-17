@@ -1,4 +1,4 @@
-#include <tempo/entity/LevelRenderer.hpp>
+#include <client/LevelRenderer.hpp>
 
 #include <glm/vec2.hpp>
 

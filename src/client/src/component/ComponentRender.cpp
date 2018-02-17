@@ -1,4 +1,9 @@
-#include <tempo/component/ComponentRender.hpp>
+#include <client/component/ComponentRender.hpp>
+
+#include <Ogre.h>
+#include <OgreGL3PlusPlugin.h>
+#include <OgreGLPlugin.h>
+#include <OgreGLRenderSystem.h>
 
 namespace tempo {
 	ComponentRender::ComponentRender(Ogre::SceneManager* scene, std::string path) {

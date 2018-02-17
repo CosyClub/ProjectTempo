@@ -5,7 +5,8 @@
 #include <anax/Component.hpp>
 
 #include <tempo/component/ComponentHealth.hpp>
-#include <tempo/component/ComponentRender.hpp>
+
+#include <client/component/ComponentRender.hpp>
 
 #include <Ogre.h>
 

@@ -1,13 +1,14 @@
-#include <tempo/entity/EntityCreationClient.hpp>
-
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentID.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
-#include <tempo/component/ComponentRender.hpp>
+
 #include <glm/vec2.hpp>
+
+#include <client/EntityCreationClient.hpp>
+#include <client/component/ComponentRender.hpp>
 
 namespace tempo {
 
@@ -71,14 +72,14 @@ anax::Entity newEntity(EntityCreationData data,
 	return return_entity;
 }
 
-anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene, 
+anax::Entity newPlayer(anax::World& world, Ogre::SceneManager* scene,
                        int iid,
                        EID tid,
                        unsigned char localPlayer,
                        int x,
                        int y,
                        int health,
-                       tempo::SystemLevelManager system_grid_motion) 
+                       tempo::SystemLevelManager system_grid_motion)
 {
 
 	anax::Entity entity_player = world.createEntity();
