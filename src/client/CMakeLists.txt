@@ -2,24 +2,6 @@ link_directories("${TEMPO_OGRE_LIBRARY_DIR}")
 link_directories("${TEMPO_LIB_DIR}")
 
 add_executable(client
-	${CMAKE_CURRENT_LIST_DIR}/include/client/Application.hpp
-	${CMAKE_CURRENT_LIST_DIR}/include/client/EntityCreationClient.hpp
-	${CMAKE_CURRENT_LIST_DIR}/include/client/LevelRenderer.hpp
-	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentRender.hpp
-	${CMAKE_CURRENT_LIST_DIR}/include/client/network/client.hpp
-	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemGameInput.hpp
-	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRender.hpp
-	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderHealth.hpp
-
-	${CMAKE_CURRENT_LIST_DIR}/src/Application.cpp
-	${CMAKE_CURRENT_LIST_DIR}/src/EntityCreationClient.cpp
-	${CMAKE_CURRENT_LIST_DIR}/src/LevelRenderer.cpp
-	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRender.cpp
-	${CMAKE_CURRENT_LIST_DIR}/src/network/client.cpp
-	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGameInput.cpp
-	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRender.cpp
-	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderHealth.cpp
-
 	${CMAKE_CURRENT_LIST_DIR}/main.cpp
 )
 
@@ -27,9 +9,7 @@ set_target_properties(client PROPERTIES OUTPUT_NAME "RaveCave")
 
 target_include_directories(client PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
 target_include_directories(client PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
-target_include_directories(client PRIVATE ${TEMPO_OGRE_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_SDL2_INCLUDE_DIR})
-target_include_directories(client PRIVATE ${TEMPO_OGRE_OVERLAY_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_ANAX_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_GLM_INCLUDE_DIR})
@@ -44,19 +24,8 @@ target_link_libraries(client SDL2)
 target_link_libraries(client SDL2main)
 target_link_libraries(client anax)
 
-# :TODO: have way to configure debug vs release - no _d for release
-set(TEMPO_OGRE_LIB_SUFFIX "Static_d")
-
-target_link_libraries(client "RenderSystem_GL3Plus${TEMPO_OGRE_LIB_SUFFIX}")
-target_link_libraries(client "RenderSystem_GL${TEMPO_OGRE_LIB_SUFFIX}")
-target_link_libraries(client "OgreGLSupport${TEMPO_OGRE_LIB_SUFFIX}")
-target_link_libraries(client "OgreOverlay${TEMPO_OGRE_LIB_SUFFIX}")
-target_link_libraries(client "OgreRTShaderSystem${TEMPO_OGRE_LIB_SUFFIX}")
-target_link_libraries(client "OgreMain${TEMPO_OGRE_LIB_SUFFIX}") # must be after all other Ogre links
-
 target_link_libraries(client freetyped            )
 if(UNIX)
-	message("****** ${HARFBUZZ_LIBRARIES}")
 	target_link_libraries(client harfbuzz)
 endif(UNIX)
 
