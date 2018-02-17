@@ -1,23 +1,30 @@
 #include <cstdio>
-#include <cmath>
-#include <cstdlib>
-#include <string>
-#include <iostream>
-#include <thread>
-
-#include <tempo/song.hpp>
-#include <tempo/time.hpp>
-
-#include <SFML/Audio.hpp>
-#include <SFML/System/Clock.hpp>
-#include <SFML/System/Time.hpp>
-
-#include <anax/World.hpp>
-#include <anax/Entity.hpp>
-
-#include <glm/gtc/constants.hpp>
+#include <irrlicht.h>
 
 int main(int argc, const char** argv){
-	printf("Hello World\n");
+	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_OPENGL,
+	                                                irr::core::dimension2d<irr::u32>(800, 600),
+	                                                16,
+	                                                false, false, false, 0);
+
+	if(!device){
+		printf("Failed to create Irrlicht Device\n");
+		return 1;
+	}
+
+	device->setWindowCaption(L"Irrlicht Test");
+
+	irr::video::IVideoDriver*  driver  = device->getVideoDriver();
+	irr::scene::ISceneManager* smgr    = device->getSceneManager();
+	irr::gui::IGUIEnvironment* gui_env = device->getGUIEnvironment();
+
+	smgr->setAmbientLight(irr::video::SColorf(0.5f, 0.5f, 0.5f, 0.5f));
+
+	printf("Entering main loop\n");
+	while(device->run()){
+
+	}
+	printf("Left main loop\n");
+
 	return 0;
 }

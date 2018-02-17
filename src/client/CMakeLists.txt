@@ -7,11 +7,20 @@ add_executable(client
 set_target_properties(client PROPERTIES OUTPUT_NAME "RaveCave")
 
 target_include_directories(client PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
+target_include_directories(client PRIVATE ${TEMPO_IRRLICHT_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_SDL2_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_ANAX_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_GLM_INCLUDE_DIR})
+
+target_link_libraries(client "Irrlicht")
+# Irrlicht Dependencies
+if(UNIX)
+	target_link_libraries(client z)
+	target_link_libraries(client X11)
+	target_link_libraries(client Xxf86vm)
+endif(UNIX)
 
 target_link_libraries(client lib_tempo)
 
