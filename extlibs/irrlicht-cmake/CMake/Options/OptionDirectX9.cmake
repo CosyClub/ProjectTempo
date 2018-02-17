@@ -1,6 +1,6 @@
 # The ZLIB license
 #
-# Copyright (c) 2015 André Netzeband
+# Copyright (c) 2015 Andrï¿½ Netzeband
 #
 # This software is provided 'as-is', without any express or implied
 # warranty. In no event will the authors be held liable for any damages
@@ -19,11 +19,12 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #
 
-if(WIN32)
-	SET (IRRLICHT_ENABLE_DIRECTX9 ON CACHE BOOL "Enabled DirectX9 support.")
-else()
-	SET (IRRLICHT_ENABLE_DIRECTX9 OFF CACHE BOOL "Enabled DirectX9 support.")
-endif()
+SET (IRRLICHT_ENABLE_DIRECTX9 OFF)
+# if(WIN32)
+# 	SET (IRRLICHT_ENABLE_DIRECTX9 ON CACHE BOOL "Enabled DirectX9 support.")
+# else()
+# 	SET (IRRLICHT_ENABLE_DIRECTX9 OFF CACHE BOOL "Enabled DirectX9 support.")
+# endif()
 
 if (IRRLICHT_ENABLE_DIRECTX9)
 	message(STATUS "Enable DirectX support...")
