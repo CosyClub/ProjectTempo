@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# See:
-# http://wiki.ogre3d.org/Prerequisites?tikiversion=Linux
-
 set -e
 
 echo "This script is about to install a some packages..."
@@ -14,8 +11,6 @@ then
 		echo "Installing packages with apt..."
 		# Build utils
 		sudo apt install cmake
-		# Ogre3d
-		sudo apt install xaw3dg xorg-dev libz-dev libgl1-mesa-dev libglu1-mesa-dev
 		# SFML
 		sudo apt install libudev-dev libopenal-dev libvorbis-dev libflac-dev
 elif [ `command -v yum` ]
@@ -28,15 +23,11 @@ then
 		#echo "Installing packages with yum..."
 		# Build utils
 		#sudo yum install cmake gcc-c++
-		# Ogre
-		#sudo yum install mesa-libGL-devel mesa-libGLU-devel libXaw-devel
 
 elif [ `command -v pacman` ] # Keep this last since it will launch pacman game on ubuntu...
 then
 		echo "Installing packages with pacman..."
 		pacman -S cmake base-devel
-		# Ogre
-		pacman -S mesa glu
 		# SFML
 		pacman -S openal flac libvorbis libx11 libxrandr
 
