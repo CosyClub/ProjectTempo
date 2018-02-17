@@ -12,7 +12,7 @@ int main(int argc, const char** argv){
 		return 1;
 	}
 
-	device->setWindowCaption(L"Irrlicht Test");
+	device->setWindowCaption(L"RaveCave");
 
 	irr::video::IVideoDriver*  driver  = device->getVideoDriver();
 	irr::scene::ISceneManager* smgr    = device->getSceneManager();
@@ -22,9 +22,15 @@ int main(int argc, const char** argv){
 
 	printf("Entering main loop\n");
 	while(device->run()){
+		smgr->drawAll();
+		gui_env->drawAll();
+
+		driver->endScene();
 
 	}
 	printf("Left main loop\n");
+
+	device->drop();
 
 	return 0;
 }
