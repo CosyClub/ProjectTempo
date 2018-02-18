@@ -1,33 +1,21 @@
-////////////////////////////////////////////////////////////////////////////
-/// \brief Contains system responsible for rendering ComponentStage instances
-////////////////////////////////////////////////////////////////////////////
+#ifndef CLIENT_SYSTEM_STAGE_RENDERER_HPP
+#define CLIENT_SYSTEM_STAGE_RENDERER_HPP
 
-#ifndef CLIENT_SYSTEMSTAGERENDERER_HPP
-#define CLIENT_SYSTEMSTAGERENDERER_HPP
+#include <tempo/component/ComponentStage.hpp>
 
 #include <anax/System.hpp>
-#include <tempo/component/ComponentStage.hpp>
+
 #include <ISceneManager.h>
 
 namespace client {
-	/////////////////////////////////////////////////////////////////////
-	/// \brief System which renders the ComponentStage components
-	/////////////////////////////////////////////////////////////////////
+
+	// Initalises all rendering for the static stage
 	class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentStage>> {
 	public:
-		/////////////////////////////////////////////////////////////////////
-		/// \brief Creates a new SystemStageRenderer
-		/////////////////////////////////////////////////////////////////////
-		SystemStageRenderer(irr::scene::ISceneManager* smgr);
+		// Creates a static irrlitch scene node based on the component stage heights
+		void setup(irr::scene::ISceneManager* smgr);
 
-		/////////////////////////////////////////////////////////////////////
-		/// \brief Loads the level and adds it to the Irrlicht scene
-		/////////////////////////////////////////////////////////////////////
-		void initialize2();
-
-	private:
-		irr::scene::ISceneManager* smgr;
 	};
-}
+} // namespace client
 
 #endif

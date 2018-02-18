@@ -24,6 +24,6 @@ namespace tempo {
 			stage_tiles getHeights();
 	};
 
-}
+} // namespace tempo
 
 #endif

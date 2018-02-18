@@ -45,13 +45,6 @@ int main(int argc, const char** argv){
 
 	smgr->setAmbientLight(irr::video::SColorf(0.1f, 0.1f, 0.1f));
 
-	 //smgr->addCameraSceneNode(nullptr, // parent node
-	 //                         irr::core::vector3df(0,30,80), // position
-	 //                         irr::core::vector3df(0, 0, 0)  // look at
-	 //                        );
-
-	irr::scene::ISceneNode* node;
-
 	if (false) {
 		float rotateSpeed = 25.0f;
 		float moveSpeed = 0.1f;
@@ -68,13 +61,6 @@ int main(int argc, const char** argv){
 		camera_node->setTarget(irr::core::vector3df(0.0f, 0.0f, 0.0f));
 	}
 
-	/////////////////////////////////////////////////
-	// Setup scene
-	anax::World world;
-	client::SystemStageRenderer system_stage_renderer(smgr);
-
-	createEntityStage(world);
-
 	smgr->addLightSceneNode(nullptr, irr::core::vector3df(0.0f, 10.0f, 0.0f));
 
 	irr::core::dimension2d<irr::f32> size(1.0f, 2.0f);
@@ -87,12 +73,16 @@ int main(int argc, const char** argv){
 		-1,
 		red,
 		red);
-	billboard->setPosition(position);
 
+	/////////////////////////////////////////////////
+	// Setup scene
+	anax::World world;
+	client::SystemStageRenderer system_stage_renderer;
 	world.addSystem(system_stage_renderer);
+	createEntityStage(world);
+	
 	world.refresh();
-
-	system_stage_renderer.initialize2();
+	system_stage_renderer.setup(smgr);
 
 	printf("Entering main loop\n");
 	while(device->run()){

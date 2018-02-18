@@ -1,7 +1,3 @@
-////////////////////////////////////////////////////////////////////////////
-/// \brief Contains implementation of SystemStageRenderer
-////////////////////////////////////////////////////////////////////////////
-
 #include <client/system/SystemStageRenderer.hpp>
 
 #include <tempo/component/ComponentStage.hpp>
@@ -9,8 +5,6 @@
 #include <IAnimatedMesh.h>
 #include <IAnimatedMeshSceneNode.h>
 #include <irrlicht.h> // :TODO: sort out includes
-
-#include <limits>
 
 #include <glm/vec2.hpp>
 
@@ -99,25 +93,20 @@ namespace {
 }
 
 namespace client {
-	SystemStageRenderer::SystemStageRenderer(irr::scene::ISceneManager* smgr)
-		: smgr(smgr) {
-		// no-op
-
-		/*irr::scene::IAnimatedMesh* mesh_hills = smgr->addHillPlaneMesh("test_hill_mesh",
-		                                                               irr::core::dimension2d<irr::f32>(  1,   1), // tile size
-		                                                               irr::core::dimension2d<irr::u32>(100, 100), // tile count
-		                                                               nullptr,  // material
-		                                                               1.0f      // hill height
-		                                                               );
-		irr::scene::IAnimatedMeshSceneNode* node_hills = smgr->addAnimatedMeshSceneNode(mesh_hills);
-		if (node_hills){
-			node_hills->setPosition(irr::core::vector3df(0, 0, 0));
-			}*/
-	}
-
-	void SystemStageRenderer::initialize2(){
-
+	void SystemStageRenderer::setup(irr::scene::ISceneManager* smgr){
 		printf("SystemStageRenderer initializing\n");
+
+		// generate testing hills plane mesh
+		//irr::scene::IAnimatedMesh* mesh_hills = smgr->addHillPlaneMesh("test_hill_mesh",
+		//                                                               irr::core::dimension2d<irr::f32>(  1,   1), // tile size
+		//                                                               irr::core::dimension2d<irr::u32>(100, 100), // tile count
+		//                                                               nullptr,  // material
+		//                                                               1.0f      // hill height
+		//                                                               );
+		//irr::scene::IAnimatedMeshSceneNode* node_hills = smgr->addAnimatedMeshSceneNode(mesh_hills);
+		//if (node_hills){
+		//	node_hills->setPosition(irr::core::vector3df(0, 0, 0));
+		//}
 
 		auto entities = getEntities();
 		auto entity = std::begin(entities);
@@ -125,6 +114,6 @@ namespace client {
 
 		tempo::stage_tiles tiles = stage.getHeights();
 
-	  FloorSceneNode* floor_node = new FloorSceneNode(smgr->getRootSceneNode(), smgr, tiles);
+		FloorSceneNode* floor_node = new FloorSceneNode(smgr->getRootSceneNode(), smgr, tiles);
 	}
-}
+} // namespace client
