@@ -1,6 +1,6 @@
 # The ZLIB license
 #
-# Copyright (c) 2015 André Netzeband
+# Copyright (c) 2015 Andrï¿½ Netzeband
 #
 # This software is provided 'as-is', without any express or implied
 # warranty. In no event will the authors be held liable for any damages
@@ -19,7 +19,7 @@
 # 3. This notice may not be removed or altered from any source distribution.
 #
 
-SET (IRRLICHT_STATIC_LIBRARY ON CACHE BOOL "Enabled static lib build.")
+SET (IRRLICHT_STATIC_LIBRARY OFF CACHE BOOL "Enabled static lib build.")
 
 if (IRRLICHT_STATIC_LIBRARY)
 	message(STATUS "Build static library...")

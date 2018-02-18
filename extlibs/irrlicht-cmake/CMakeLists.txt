@@ -1,6 +1,6 @@
 # The ZLIB license
 #
-# Copyright (c) 2015 André Netzeband
+# Copyright (c) 2015 Andrï¿½ Netzeband
 #
 # This software is provided 'as-is', without any express or implied
 # warranty. In no event will the authors be held liable for any damages
@@ -121,7 +121,6 @@ if (IRRLICHT_BUILD_EXAMPLES OR IRRLICHT_BUILD_TOOLS)
 	SET(IRRLICHT_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/" CACHE PATH "The include directory for Irrlicht headers.")
 	mark_as_advanced(FORCE IRRLICHT_INCLUDE_DIR)
 	SET(IRRLICHT_LIBRARY     "${CMAKE_CURRENT_LIST_DIR}/../../lib/${IRRLICHT_LIB_FILE}" CACHE FILEPATH "The path to the irrlicht library.")
-	message("************ IRRLICHT_LIBRARY: ${IRRLICHT_LIBRARY}")
 	mark_as_advanced(FORCE IRRLICHT_LIBRARY)
 	if (NOT IRRLICHT_STATIC_LIBRARY)
 		SET(IRRLICHT_SHARED_BIN  "${CMAKE_CURRENT_BINARY_DIR}/${IRRLICHT_SHARED_FILE}" CACHE FILEPATH "The path to the irrlicht shared library.")
