@@ -3,8 +3,6 @@
 namespace tempo
 {
 
-std::map<Component_ID, anax::detail::TypeId> componentMap;
-
 sf::Packet& operator <<(sf::Packet& packet, const Component_ID id)
 {
 	return packet << uint32_t(id);

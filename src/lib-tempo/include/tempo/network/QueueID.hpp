@@ -59,8 +59,6 @@ namespace tempo
 
 	sf::Packet& operator <<(sf::Packet& packet, const Component_ID id);
 	sf::Packet& operator >>(sf::Packet& packet, Component_ID& id);
-
-	extern std::map<Component_ID, axax::detail::TypeId> componentMap;
 }
 
 #endif

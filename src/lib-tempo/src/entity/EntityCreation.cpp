@@ -1,5 +1,7 @@
 #include <tempo/entity/EntityCreation.hpp>
 
+#include <tempo/component/ComponentTransform.hpp>
+
 namespace tempo
 {
 
@@ -13,20 +15,18 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 
 	anax::Entity e = anax::Entity(w, id);
 	e.activate();
-	anax::detail::TypeId type_id;
-	if (! e.getComponentTypeList()[type_id])
+	switch (component_id)
 	{
-		e.addComponent<>
+		case Component_ID::CID_TRANSFORM :
+			if (! e.hasComponent<ComponentTransform>())
+			{
+				e.addComponent<ComponentTransform>();
+			}
+			ComponentTransform c = e.getComponent<ComponentTransform>();
+			NetworkedComponent *nc = static_cast<NetworkedComponent*>(&c);		
+			nc->restoreComponent(p);
+			break;
 	}
-	auto f = restore_map.find(component_id);
-	if (f == restore_map.end())
-	{
-		//FUCK
-		std::cout << "Failed to find component with ID " << component_id
-		          << std::endl;	
-		return e;
-	}
-	(*f->second)(e, p);
 }
 
 
