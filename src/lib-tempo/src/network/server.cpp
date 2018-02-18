@@ -129,7 +129,7 @@ uint32_t countComponents(anax::Entity entity, ec_list &list)
 
 }
 	
-void sendComponents(sf::IpAddress ip, unsigned char port, ec_list &list)
+void sendComponents(sf::IpAddress ip, unsigned short port, ec_list &list)
 {
 	sf::Packet rog;
 	for (auto& pair: list) {

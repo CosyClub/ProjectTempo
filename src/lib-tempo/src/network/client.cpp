@@ -120,9 +120,11 @@ uint32_t handshakeHello(anax::World& world,
 		packet >> port_si;
 		packet >> port_st;
 		packet >> componentCount;
+
 		sf::Packet p2;
 		for (int i = 0; i < componentCount; i++) {
 			sock_o.receive(p2, sender, port);
+			std::cout << "Recieved " << i << "/" << componentCount << std::endl;
 			addComponent(world, p2);
 		}
 	} else {
@@ -203,14 +205,19 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 		return false;
 	}
 
+	std::cout << "HELLO STARTING" << std::endl;
 	uint32_t id = handshakeHello(world, scene, system_gm);
+	std::cout << "HELLO COMPLETE" << std::endl;
 	if (id == NO_CLIENT_ID) {
 		std::cout << "The server didn't like us saying HELLO!" 
 		          << std::endl;
 		return false;
 	}
 
-	return handshakeRoleReq(id, roleID, roleData, world, scene, system_gm);
+	std::cout << "ROLEREQ STARTING" << std::endl;
+	bool ret = handshakeRoleReq(id, roleID, roleData, world, scene, system_gm);
+	std::cout << "ROLEREQ COMPLETE" << std::endl;
+	return ret;
 }
 
 
