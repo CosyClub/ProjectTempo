@@ -18,7 +18,7 @@ target_include_directories(client PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_ANAX_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_GLM_INCLUDE_DIR})
 
-target_link_libraries(client "Irrlicht")
+target_link_libraries(client ${IRRLICHT_LIBRARY})
 # Irrlicht Dependencies
 if(UNIX)
 	target_link_libraries(client z)
