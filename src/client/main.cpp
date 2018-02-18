@@ -48,8 +48,8 @@
 
 void sync_time(tempo::Clock& clock, tempo::Song *song)
 {
-	sf::Time t = tempo::timeSyncClient(&clock);
-	clock.set_time(t, song);
+	sf::Int64 offset = tempo::timeSyncClient(&clock);
+	clock.set_time(clock.get_time() + sf::microseconds(offset), song);
 }
 
 void new_entity_check(anax::World &world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_level)
@@ -278,6 +278,8 @@ int main(int argc, const char** argv)
 	bool running = true;
 	int frame_counter = 0;
 
+	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	
 	while (running) {
 		new_entity_check(world, scene, system_level);
 
@@ -285,6 +287,9 @@ int main(int argc, const char** argv)
 		dt_timer.restart();
 
 		if (clock.passed_beat()) {
+			if (tick++ % 20 == 0)
+				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
+      
 			click.play();
 
 			system_grid_ai.update();
