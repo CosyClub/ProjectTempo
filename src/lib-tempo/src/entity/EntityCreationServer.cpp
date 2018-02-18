@@ -11,7 +11,6 @@ anax::Entity newPlayer(anax::World& world, tempo::SystemLevelManager system_grid
 
 	anax::Entity entity_player = world.createEntity();
 	
-	int iid = entity_player.getComponent<tempo::ComponentID>().instance_id;
 	//entity_player.addComponent<tempo::ComponentStagePosition>(system_grid_motion.spawn());
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
 	entity_player.addComponent<tempo::ComponentPlayerRemoteServer>();	
@@ -30,7 +29,6 @@ anax::Entity newAI(anax::World& world, int x, int y) {
 	//entity_ai.addComponent<tempo::ComponentStagePosition>(x, y, tempo::tileMask1by1, false);
 	entity_ai.addComponent<tempo::ComponentStageTranslation>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
-	int iid = entity_ai.getComponent<tempo::ComponentID>().instance_id;
 	entity_ai.activate();
 
 	return entity_ai;

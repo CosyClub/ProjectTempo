@@ -142,10 +142,20 @@ void handshakeHello(sf::Packet &packet,
 	rog << port_st;
 	//Work out how many components there are in the world
 	uint32_t componentAmount = 0;
+	std::vector<std::pair<anax::Entity,anax::Component*>> Components;
 	for (auto& entity: world->getEntities()) {
 		for (auto& component: entity.getComponents())
 		{
-			componentAmount += 1;		
+			auto f = dump_map.find(component);
+			if (f == dump_map.end())
+			{
+				//Not FUCK
+			}
+			else
+			{
+				componentAmount += 1;		
+				Components.push_back(std::make_pair(entity, component));
+			}
 		}
 	}
 	rog << componentAmount;
@@ -155,20 +165,22 @@ void handshakeHello(sf::Packet &packet,
 
 	// Now actually send them
 	sf::Packet p2;
-	for (auto& entity: world->getEntities()) {
-		for (auto& component: entity.getComponents())
+	for (auto& pair: Components)
+	{
+		auto f = dump_map.find(pair.second);
+		if (f == dump_map.end())
 		{
-			auto f = dump_map.find(component);
-			if (f == dump_map.end())
-			{
-				//FUCK
-				std::cout << "Failed to find component"
-				          << std::endl;	
-			}
-			p2 = (*f->second)(entity);
+			//FUCK
+			std::cout << "Failed to find component when sending"
+			          << std::endl;	
+		}
+		else
+		{
+			p2 = (*f->second)(pair.first);
 			sock_h.send(rog, sender, port);
 		}
 	}
+	
 }
 
 void handshakeRoleReq(sf::Packet &packet,
@@ -198,11 +210,21 @@ void handshakeRoleReq(sf::Packet &packet,
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG);
 	// TODO Package Requested Entity, eg:
-	uint32_t componentAmount;
 	
+	uint32_t componentAmount = 0;
+	std::vector<std::pair<anax::Entity,anax::Component*>> Components;
 	for (auto& component: entity.getComponents())
 	{
-		componentAmount += 1;
+		auto f = dump_map.find(component);
+		if (f == dump_map.end())
+		{
+			//Not FUCK
+		}
+		else
+		{
+			componentAmount += 1;		
+			Components.push_back(std::make_pair(entity, component));
+		}
 	}
 
 	rog << componentAmount;
@@ -211,17 +233,20 @@ void handshakeRoleReq(sf::Packet &packet,
 
 	for (tempo::clientpair client:clients){
 		if (client.first == id) continue;
-		for (auto& component: entity.getComponents())
+		for (auto& pair: Components)
 		{
-			auto f = dump_map.find(*component);
+			auto f = dump_map.find(pair.second);
 			if (f == dump_map.end())
 			{
 				//FUCK
-				std::cout << "Failed to find component"
+				std::cout << "Failed to find component when sending"
 				          << std::endl;	
 			}
-			p_broadcast = (*f->second)(entity);
-			sendMessage(tempo::SystemQID::ENTITY_CREATION, p_broadcast, client.first);
+			else
+			{
+				p_broadcast = (*f->second)(entity);
+				sendMessage(tempo::SystemQID::ENTITY_CREATION, p_broadcast, client.first);
+			}
 		}
 	}
 	
@@ -229,17 +254,20 @@ void handshakeRoleReq(sf::Packet &packet,
 	sock_h.send(rog, sender, port);
 
 	sf::Packet p2;
-	for (auto& component: entity.getComponents())
+	for (auto& pair: Components)
 	{
-		auto f = dump_map.find(*component);
+		auto f = dump_map.find(pair.second);
 		if (f == dump_map.end())
 		{
 			//FUCK
-			std::cout << "Failed to find component"
+			std::cout << "Failed to find component when sending"
 			          << std::endl;	
 		}
-		p2 = (*f->second)(entity);
-		sock_h.send(p2, sender, port);
+		else
+		{
+			p2 = (*f->second)(pair.first);
+			sock_h.send(p2, sender, port);
+		}
 	}
 }
 

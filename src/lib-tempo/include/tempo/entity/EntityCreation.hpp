@@ -4,6 +4,7 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
+#include <tempo/network/base.hpp>
 #include <tempo/network/QueueID.hpp>
 
 #include <iostream>
@@ -15,9 +16,6 @@ namespace tempo
 {
 
 anax::Entity addComponent(anax::World& w, sf::Packet p);
-
-sf::Packet& operator <<(sf::Packet& packet, const anax::Entity::Id id);
-sf::Packet& operator >>(sf::Packet& packet, anax::Entity::Id& id);
 
 }
 

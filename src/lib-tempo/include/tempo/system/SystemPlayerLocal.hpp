@@ -5,7 +5,6 @@
 #include <anax/Component.hpp>
 
 #include <tempo/component/ComponentStageTranslation.hpp>
-#include <tempo/component/ComponentID.hpp>
 #include <tempo/network/client.hpp>
 #include <tempo/network/QueueID.hpp>
 #include <tempo/time.hpp>

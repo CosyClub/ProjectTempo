@@ -65,7 +65,7 @@ namespace tempo{
 
 
 		for(auto& entity : entities){
-			auto& id     = entity.getComponent<tempo::ComponentID>();
+			auto& id     = entity.getId();
 			auto& motion = entity.getComponent<tempo::ComponentStageTranslation>();
 			auto& input  = entity.getComponent<tempo::ComponentPlayerLocal>();
 
@@ -76,7 +76,7 @@ namespace tempo{
 				//motion.beginMovement(dx, dy);
 
 				sf::Packet packet;
-				packet << id.instance_id << dx << dy;
+				packet << id << dx << dy;
 				sendMessage(SystemQID::PLAYER_UPDATES, packet, false);
 			}
 		}

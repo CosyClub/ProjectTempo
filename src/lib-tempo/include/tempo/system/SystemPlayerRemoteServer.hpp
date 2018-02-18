@@ -6,7 +6,6 @@
 
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentPlayerRemoteServer.hpp>
-#include <tempo/system/SystemID.hpp>
 #include <tempo/network/queue.hpp>
 #include <tempo/network/QueueID.hpp>
 #include <tempo/network/server.hpp>
@@ -19,18 +18,20 @@
 
 #undef main // SDL likes to define main
 
-namespace tempo{
+namespace tempo
+{
 
-	struct SystemPlayerRemoteServer : anax::System<anax::Requires<ComponentStageTranslation, 
-	                                                        ComponentPlayerRemoteServer>> 
-	{
-		tempo::Clock& clock;
+struct SystemPlayerRemoteServer : anax::System<anax::Requires<ComponentStageTranslation, 
+                                                        ComponentPlayerRemoteServer>> 
+{
+	tempo::Clock& clock;
 
-		inline SystemPlayerRemoteServer(tempo::Clock& c) : clock(c) {}
+	inline SystemPlayerRemoteServer(tempo::Clock& c) : clock(c) {}
 
-		void advanceBeat();
-		bool update(SystemID system_id);
-	};
+	void advanceBeat();
+	bool update(anax::World& world);
+};
+
 }
 
 #endif

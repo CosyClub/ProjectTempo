@@ -1,6 +1,8 @@
 #ifndef TEMPO_NETWORK_BASE_HPP
 #define TEMPO_NETWORK_BASE_HPP
 
+#include <anax/World.hpp>
+
 #include <tempo/network/queue.hpp>
 #include <tempo/network/QueueID.hpp>
 #include <tempo/structures.hpp>
@@ -148,6 +150,10 @@ namespace tempo
 	// 	sf::Packet p >> tempo::ClientRoleData c
 	sf::Packet& operator <<(sf::Packet &p, const ClientRoleData &c);
 	sf::Packet& operator >>(sf::Packet &p, ClientRoleData &c);
+
+	sf::Packet& operator <<(sf::Packet& packet, const anax::Entity::Id id);
+	sf::Packet& operator >>(sf::Packet& packet, anax::Entity::Id& id);
+
 
 }
 

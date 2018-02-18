@@ -23,7 +23,7 @@
 #include <tempo/Application.hpp>
 #include <tempo/song.hpp>
 #include <tempo/time.hpp>
-#include <tempo/entity/EntityCreationClient.hpp>
+#include <tempo/entity/EntityCreation.hpp>
 #include <tempo/entity/LevelRenderer.hpp>
 #include <tempo/system/SystemRenderHealth.hpp>
 #include <tempo/system/SystemTransform.hpp>
@@ -60,10 +60,7 @@ void new_entity_check(anax::World &world, Ogre::SceneManager* scene, tempo::Syst
 	while (!q->empty())
 	{
 		sf::Packet p = q->front();
-		tempo::EntityCreationData data;
-		p >> data;
-		anax::Entity e = newEntity(data, world, scene, system_level);
-		int iid = e.getComponent<tempo::ComponentID>().instance_id;
+		tempo::addComponent(world, p);
 		q->pop();
 	}
 }
@@ -112,7 +109,6 @@ int main(int argc, const char** argv)
 	tempo::SystemPlayerRemote     system_player_remote(clock);
 	tempo::SystemHealth           system_health;
 	tempo::RenderHealth           render_health;
-	tempo::SystemID               system_id;
 
 	world.addSystem(system_level);
 	world.addSystem(system_update_transforms);
@@ -122,7 +118,6 @@ int main(int argc, const char** argv)
 	world.addSystem(system_player_remote);
 	world.addSystem(system_health);
 	world.addSystem(render_health);
-	world.addSystem(system_id);
 	world.refresh();
 
 	Ogre::SceneManager* scene = system_render.scene;
@@ -347,7 +342,7 @@ int main(int argc, const char** argv)
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
 
 		world.refresh();
-		system_player_remote.update(entity_player.getComponent<tempo::ComponentID>().instance_id, system_id);
+		system_player_remote.update(world, entity_player.getId());
 		render_health.HealthBarUpdate();
 		system_health.CheckHealth();
 		system_level.update(dt);

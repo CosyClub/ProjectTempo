@@ -86,4 +86,38 @@ sf::Packet& operator >>(sf::Packet& p, ClientRoleData& c)
 	return p >> c.name;	
 }
 
+sf::Packet& operator <<(sf::Packet& packet, const anax::Entity::Id id)
+{
+	uint64_t data = 0;
+	uint8_t* raw_data = (uint8_t*)&data;
+
+	#ifdef ANAX_32_BIT_ENTITY_IDS
+	data += uint32_t(id);
+	#else
+	data += uint64_t(id);
+	#endif
+
+	for (int I = 0; I < sizeof(uint64_t); I++)
+	{
+		packet << raw_data[I];
+	}
+	return packet;
+}
+
+sf::Packet& operator >>(sf::Packet& packet, anax::Entity::Id& id)
+{
+	uint64_t data = 0;
+	uint8_t* raw_data = (uint8_t*)&data;
+	for (int I = 0; I < sizeof(uint64_t); I++)
+	{
+		packet >> raw_data[I];
+	}
+	#ifdef ANAX_32_BIT_ENTITY_IDS
+	data += uint32_t(id);
+	#else
+	data += uint64_t(id);
+	#endif
+	return packet;
+}
+
 }

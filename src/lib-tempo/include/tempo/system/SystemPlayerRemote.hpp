@@ -6,7 +6,7 @@
 
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
-#include <tempo/system/SystemID.hpp>
+#include <tempo/network/base.hpp>
 #include <tempo/network/queue.hpp>
 #include <tempo/network/QueueID.hpp>
 #include <tempo/time.hpp>
@@ -20,16 +20,17 @@
 
 namespace tempo{
 
-	struct SystemPlayerRemote : anax::System<anax::Requires<ComponentStageTranslation, 
-	                                                        ComponentPlayerRemote>> 
-	{
-		tempo::Clock& clock;
+struct SystemPlayerRemote : anax::System<anax::Requires<ComponentStageTranslation, 
+                                                        ComponentPlayerRemote>> 
+{
+	tempo::Clock& clock;
 
-		inline SystemPlayerRemote(tempo::Clock& c) : clock(c) {}
+	inline SystemPlayerRemote(tempo::Clock& c) : clock(c) {}
 
-		void advanceBeat();
-		bool update(int player_id, SystemID system_id);
-	};
+	void advanceBeat();
+	bool update(anax::World& world, anax::Entity::Id player_id);
+};
+
 }
 
 #endif
