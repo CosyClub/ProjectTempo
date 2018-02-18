@@ -39,12 +39,14 @@ namespace client {
 
 		for (auto entity : entities)
 		{
+			std::cout << "Moved billboard" << std::endl;
 			tempo::ComponentStage& s = entity.getComponent<tempo::ComponentStage>();
 			tempo::ComponentStagePosition& sp = entity.getComponent<tempo::ComponentStagePosition>();
 			client::ComponentRenderSceneNode& sn = entity.getComponent<client::ComponentRenderSceneNode>();
 
 			glm::ivec2 pos = sp.getOrigin();
 
+			sn.node->setPosition(irr::core::vector3df(pos.x, s.getHeight(pos), pos.y));
 			// TODO
 		}
 	}

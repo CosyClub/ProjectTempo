@@ -4,6 +4,7 @@
 #include <anax/Component.hpp>
 
 #include <glm/fwd.hpp>
+#include <glm/vec2.hpp>
 
 #include <tuple>
 
@@ -22,6 +23,20 @@ namespace tempo {
 	
 			// Gets a list of 
 			stage_tiles getHeights();
+
+			// TODO: better matrix for ZZ, ZZ, float 
+			// Get height at
+			float getHeight(glm::ivec2 position) {
+				for (int i = 0; i < tiles.size(); i++) {
+					std::tuple<glm::ivec2, float> tile = tiles[i];
+					glm::ivec2 pos = std::get<0>(tile);
+					if (pos == position) {
+						return std::get<1>(tile);
+					}
+				}
+
+				return -1.0f;
+			}
 	};
 
 } // namespace tempo
