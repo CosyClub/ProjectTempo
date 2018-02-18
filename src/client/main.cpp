@@ -32,10 +32,23 @@ int main(int argc, const char** argv){
 
 	smgr->setAmbientLight(irr::video::SColorf(0.5f, 0.5f, 0.5f, 0.5f));
 
-	smgr->addCameraSceneNode(nullptr, // parent node
-	                         irr::core::vector3df(0,30,80), // position
-	                         irr::core::vector3df(0, 0, 0)  // look at
-	                        );
+	// smgr->addCameraSceneNode(nullptr, // parent node
+	//                          irr::core::vector3df(0,30,80), // position
+	//                          irr::core::vector3df(0, 0, 0)  // look at
+	//                         );
+
+	irr::scene::ISceneNode* node = 0;
+
+	if (node)
+		node->setPosition(irr::core::vector3df(0,30,80));
+
+
+	float 	rotateSpeed = 25.0f;
+	float 	moveSpeed = 0.25f;
+
+	smgr->addCameraSceneNodeFPS(node, rotateSpeed, moveSpeed);
+
+	device->getCursorControl()->setVisible(false);
 
 	/////////////////////////////////////////////////
 	// Setup scene
@@ -51,10 +64,15 @@ int main(int argc, const char** argv){
 
 	printf("Entering main loop\n");
 	while(device->run()){
-		smgr->drawAll();
-		gui_env->drawAll();
+		if (device->isWindowActive()) {
+			driver->beginScene(true, true);
+			smgr->drawAll();
+			gui_env->drawAll();
 
-		driver->endScene();
+			driver->endScene();
+				}
+		else
+			device->yield();
 	}
 	printf("Left main loop\n");
 

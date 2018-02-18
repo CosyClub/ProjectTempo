@@ -95,7 +95,7 @@ namespace tempo{
 
 				if (pixel > 0) {
 					int height = (int) (pixel - 127) / 25.6;
-					this->tile_heights[x][y] = height;
+					this->tile_heights[y][x] = height;
 				}
 			}
 		}
