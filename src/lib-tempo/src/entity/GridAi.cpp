@@ -1,12 +1,3 @@
-////////////////////////////////////////////////////////////////////////////
-///                      Part of Project Tempo                           ///
-////////////////////////////////////////////////////////////////////////////
-/// \file GridAi.cpp
-/// \author Jamie Terry
-/// \date 2017/11/15
-/// \brief Contains definition of Grid Ai system
-////////////////////////////////////////////////////////////////////////////
-
 #include <tempo/entity/GridAi.hpp>
 
 namespace tempo{
@@ -19,9 +10,9 @@ namespace tempo{
 			int dir = rand() % 2; // between 0 and 1
 			int amount = (rand() % 2) * 2 - 1; //-1 or 1
 			if (dir) {
-				grid_motion.moveBy(amount, 0);
+				grid_motion.beginMovement(amount, 0);
 			} else {
-				grid_motion.moveBy(0, amount);
+				grid_motion.beginMovement(0, amount);
 			}
 		}
 	}

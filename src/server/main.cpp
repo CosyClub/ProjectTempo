@@ -5,16 +5,28 @@
 /// \brief Contains entry point for RaveCave Server
 ////////////////////////////////////////////////////////////////////////////////
 
+#define AM_SERVER
+
 #include <iostream>
 #include <cstdio>
 #include <thread>
 #include <vector>
 
 #include <tempo/time.hpp>
+
+#include <tempo/entity/EntityCreationServer.hpp>
+#include <tempo/entity/LevelManager.hpp>
+#include <tempo/entity/GridAi.hpp>
+#include <tempo/entity/Health.hpp>
+
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>
+
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
+
+#include <anax/World.hpp>
+#include <anax/Entity.hpp>
 
 #define BPM 174              // Beats per minutes
 #define PLAYER_DELTA 150     // Delta around a beat a player can hit (millisecs)
@@ -26,27 +38,70 @@ int main(int argc, const char** argv) {
 	                                  sf::milliseconds(PLAYER_DELTA));
 
 	// Set up remote address, local ports and remote handshake port
-	tempo::port_sh = DEFAULT_PORT_HS;
 	tempo::port_si = DEFAULT_PORT_IN;
 	tempo::port_so = DEFAULT_PORT_OUT;
-	tempo::port_st = DEFAULT_PORT_TS;	
+	tempo::port_st = DEFAULT_PORT_TS;
 
-	// Start up timeSyncThread
-	std::thread timeSyncThread (tempo::timeSyncServer, &clock); 
+	//////////////////////////////////
+	// Set up ECS
+	anax::World world;
+	tempo::SystemLevelManager system_level(world,
+	                                       "../bin/resources/levels/levelTest.bmp",
+	                                       "../bin/resources/levels/zonesTest.bmp"
+	                                       );
+	// Create Systems
+	tempo::SystemGridAi       system_grid_ai;
+	tempo::SystemHealth       system_health;
+	tempo::SystemPlayerRemoteServer system_player_remote(clock);
+	tempo::SystemID           system_id;
 
-	// Start up listenForNewClientsThread
-	std::thread newClientsThread (tempo::listenForNewClients);
+	world.addSystem(system_level);
+	world.addSystem(system_grid_ai);
+	world.addSystem(system_health);
+	world.addSystem(system_player_remote);
+	world.addSystem(system_id);
+	world.refresh();
 
-	// Start up listenForClientUpdatesThread
+	// Create some Test Entities
+	anax::Entity entity_ai1 = tempo::newAI(world, tempo::EID_AI, 5, 5);
+	anax::Entity entity_ai2 = tempo::newAI(world, tempo::EID_AI, 3, 3);
+	anax::Entity entity_ai3 = tempo::newAI(world, tempo::EID_AI, 8, 8);
+	
+	//Destroyables
+	anax::Entity entity_destroyable = tempo::newDestroyable(world, tempo::EID_DES, 2, 2, "Cube");
+
+	//NonDestroyables
+	anax::Entity entity_nondestroyable = tempo::newNonDestroyable(world, tempo::EID_NONDES, 5, 5, "Cube");
+
+	//////////////////////////////////
+	// Thread Startup
+	std::thread timeSyncThread (tempo::timeSyncServer, &clock);
 	std::thread clientUpdatesThread (tempo::listenForClientUpdates);
+	tempo::bindSocket('o', tempo::port_so);
+
+	sf::Clock dt_timer;
+
+	float last_dt_time = dt_timer.getElapsedTime().asSeconds();
 
 	// Main loop, with beat printouts
 	while (true) {
+		// Handshake call, DO NOT REMOVE
+		checkForNewClients(&world, system_level);
+
 		if (clock.passed_beat()) {
-			std::cout << "Server Beat Passed (" 
-			          << clock.get_time().asSeconds() << ")" 
-			          << std::endl;
+			system_grid_ai.update();
 		}
+
+		float next_dt_time = dt_timer.getElapsedTime().asSeconds();
+		float dt = next_dt_time - last_dt_time;
+		last_dt_time = next_dt_time;
+
+		world.refresh();
+		system_level.update(dt);
+		system_health.CheckHealth();
+		system_player_remote.update(system_id);
+		system_player_remote.advanceBeat();
+
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	}
 	return 0;

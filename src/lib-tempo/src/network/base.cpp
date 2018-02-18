@@ -1,9 +1,5 @@
 #include <tempo/network/base.hpp>
 
-#include <tempo/entity/SystemQID.hpp>
-#include <tempo/network/queue.hpp>
-#include <tempo/structures.hpp>
-
 namespace tempo
 {
 
@@ -12,12 +8,11 @@ sf::UdpSocket sock_o;
 sf::UdpSocket sock_h;
 
 sf::IpAddress addr_r = "0.0.0.0";
-unsigned int port_ci = 0;
-unsigned int port_co = 0;  // Should be set within the Client or Server 
-unsigned int port_sh = 0;  // at runtime. This way user input/config files
-unsigned int port_si = 0;  // can be used to set address/ports dynamically.
-unsigned int port_so = 0;  
-unsigned int port_st = 0;
+unsigned short port_ci = 0;
+unsigned short port_co = 0;  // Should be set within the Client or Server
+unsigned short port_si = 0;  // at runtime. This way user input/config files
+unsigned short port_so = 0;  // can be used to set address/ports dynamically.
+unsigned short port_st = 0;
 
 bool bindSocket(char socket, unsigned short port)
 {
@@ -49,18 +44,17 @@ bool bindSocket(char socket, unsigned short port)
 
 bool sortPacket(sf::Packet p)
 {
-	int id; //Should be a tempo::systemQID but they're the same
+	int id; // Should be a tempo::systemQID but they're the same
 	tempo::SystemQID qid;
 
-	//Get ID
+	// Get ID
 	p >> id;
 
-	//convert
+	// Convert
 	qid = tempo::SystemQID(id);
 
-	//Basic checking
-	if (id <= tempo::QID_RESERVED_BOTTOM || id >= tempo::QID_RESERVED_TOP)
-	{
+	// Basic checking
+	if (id <= tempo::QID_RESERVED_BOTTOM || id >= tempo::QID_RESERVED_TOP) {
 		return false;
 	}
 

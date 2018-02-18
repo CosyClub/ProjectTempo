@@ -1,20 +1,20 @@
-////////////////////////////////////////////////////////////////////////////////
-/// networkServer.hpp
-///
-/// Header definitions for use on the Project Tempo server.
-////////////////////////////////////////////////////////////////////////////////
-
 #ifndef TEMPO_NETWORK_SERVER_HPP
 #define TEMPO_NETWORK_SERVER_HPP
 
-#include <mutex>
-#include <thread>
-
-#include <tempo/time.hpp>
+#include <tempo/entity/LevelManager.hpp>
+#include <tempo/entity/EntityCreationServer.hpp>
 #include <tempo/network/base.hpp>
+#include <tempo/network/queue.hpp>
+#include <tempo/time.hpp>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
+
+#include <anax/World.hpp>
+
+#include <iostream>
+#include <mutex>
+#include <thread>
 
 namespace tempo
 {
@@ -48,13 +48,14 @@ namespace tempo
 	void timeSyncServer(tempo::Clock *clock);
 
 	// listenForNewClients
-	// WARNING: Should be run on separate thread.
-	// Listens for and orchestrates initialisation of new clients on 
+	// Checks for and orchestrates initialisation of new clients on 
 	// `port_sh`.
+	//
+	// TODO: Write parameters
 	//
 	// Returns:
 	//         void (is a thread)
-	void listenForNewClients();
+	void checkForNewClients(anax::World *world, SystemLevelManager system_grid_motion);
 
 	// listenForClientUpdates
 	// WARNING: Should be run on separate thread.
@@ -76,6 +77,10 @@ namespace tempo
 	//         known as THIS_IS_NOT_THE_CLIENT_YOU_ARE_LOOKING_FOR) if no
 	//         such client exists.
 	uint32_t findClientID(sf::Uint32 ip, unsigned short port);
+
+	bool sendMessage(tempo::SystemQID id, 
+                         sf::Packet payload, 
+                         uint32_t client_id);
 }
 
 #endif

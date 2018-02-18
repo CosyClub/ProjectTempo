@@ -1,9 +1,5 @@
 #include <tempo/network/server.hpp>
 
-#include <iostream>
-
-#include <tempo/network/queue.hpp>
-
 namespace tempo
 {
 
@@ -27,9 +23,6 @@ std::mutex cmtx;
 // sync thread can continue listening for more clients whilst dealing with this.
 void timeSyncHandler(tempo::Clock *clock, sf::TcpSocket *client) 
 {
-	std::cout << "Client (" << tcpRemoteToStr(client)
-	          << ") time sync started." << std::endl;
-
 	// Store the current time
 	sf::Time t1 = clock->get_time();
 
@@ -47,7 +40,7 @@ void timeSyncHandler(tempo::Clock *clock, sf::TcpSocket *client)
 	}
 
 	std::cout << "Client (" << tcpRemoteToStr(client)
-	          << ") time sync finished." << std::endl;
+	          << ") completed time sync." << std::endl;
 
 	// Close Socket, Delete Socket Resources + Close thread
 	client->disconnect();
@@ -117,22 +110,26 @@ uint32_t addClient(sf::Uint32 ip,
 }
 
 void handshakeHello(sf::Packet &packet,
-                    sf::IpAddress &sender,
-                    unsigned short port)
+                    anax::World *world)
 {
 	// Extract information from packet
+	sf::Uint32 ip;
 	unsigned short updatePort = 0;
+	packet >> ip;
 	packet >> updatePort;
-	sf::Uint32 ip = sender.toInteger();
+	sf::IpAddress sender(ip);
+	std::cout << "New client (" << sender.toString() << ":" << updatePort 
+	          << ") Connecting!" << std::endl;
 
 	// Register Client Internally
 	uint32_t id = NO_CLIENT_ID;
 	if (findClientID(ip, updatePort) == NO_CLIENT_ID) {
 		id = addClient(ip, updatePort);
 	} else {
+		id = findClientID(ip, updatePort);
 		// TODO: Time out old client and make a new one
 		std::cout << "WARNING: Connected client tried to reconnect ("
-		          << id << ", " << ip << ":" << updatePort << ")" 
+		          << id << ", " << sender << ":" << updatePort << ")" 
 		          << std::endl;
 	}
 	
@@ -142,16 +139,18 @@ void handshakeHello(sf::Packet &packet,
 	rog << id; // TODO change to temporary token
 	rog << port_si;
 	rog << port_st;
-	// TODO Package entire level, eg:
-	// rog << packageLevel()
+	rog << static_cast<uint32_t>(world->getEntityCount());
+	for (auto& entity: world->getEntities()) {
+		rog << dumpEntity(entity);
+	}
 
 	// Send response back to sender
-	sock_h.send(rog, sender, port);
+	sendMessage(SystemQID::HANDSHAKE, rog, id);
 }
 
 void handshakeRoleReq(sf::Packet &packet,
-                      sf::IpAddress &sender, 
-                      unsigned short port)
+                      anax::World *world,
+                      SystemLevelManager system_gm)
 {
 	// Extract data from packet
 	uint32_t id = NO_CLIENT_ID;
@@ -162,76 +161,62 @@ void handshakeRoleReq(sf::Packet &packet,
 	packet >> roleData; 
 
 	// Create Entity for selected role from client
-	// TODO ^The above
+	// Only creating players for now (spectators are not a thing)	
+	anax::Entity entity = newPlayer(*world, EID::EID_PLAYER, system_gm);
 
 	// Register Role
 	cmtx.lock();
-	clients[id].role = static_cast<ClientRole>(role);
+	clients[id].role    = static_cast<ClientRole>(role);
+	sf::Uint32 ip       = clients[id].ip;
+	unsigned short port = clients[id].port;
 	cmtx.unlock();
+	EntityCreationData data = dumpEntity(entity);
 	
 	// Construct ROLEREQ_ROG response
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG);
-	// TODO Package Requested Entity, eg:
-	// rog << packagePlayer(id);
+	rog << data;
+
+	sf::Packet p_broadcast;
+	p_broadcast << data;
 	
-	//Send response back to sender
-	sock_h.send(rog, sender, port);
-}
+	// Send response back to sender
+	sendMessage(SystemQID::HANDSHAKE, rog, id);
 
-void processNewClientPacket(sf::Packet &packet, 
-                            sf::IpAddress &sender,
-                            unsigned short port)
-{
-	uint32_t receiveID = static_cast<uint32_t>(HandshakeID::DEFAULT);
-	packet >> receiveID;
-
-	switch (static_cast<HandshakeID>(receiveID)) {
-	case HandshakeID::HELLO:
-		std::cout << "New client (" << sender.toString() << ":" << port
-		          << ") Connecting!" << std::endl; 
-		handshakeHello(packet, sender, port);
-		break;
-	case HandshakeID::ROLEREQ:
-		handshakeRoleReq(packet, sender, port);
-		break;
-	default:
-		std::cout << "WARNING: an invalid handshake message was "
-		          << "recieved from " << sender.toString() << ":" 
-	                  << port << " ... ignoring" << std::endl;
-		break;
-	}
-}
-
-void listenForNewClients()
-{
-	// Bind to port
-	if (!bindSocket('h', port_sh)) {
-		std::cout << "Could not bind port " << port_sh << ", used to "
-		          << "listen for new clients." << std::endl;
-		return;
-	}
-
-	std::cout << "New Client Listener Started..." << std::endl;
-
-	// Loop listening for new clients
-	while (true) {
-		sf::Packet packet;
-		sf::IpAddress ip;
-		unsigned short port;
-
-		if (sock_h.receive(packet, ip, port) != sf::Socket::Done) {
-			std::cout << "Error recieving something from new "
-			          << "(connecting) client. Ignoring." 
-			          << std::endl;
+	// Send notification of new entity to all clients
+	for (tempo::clientpair client:clients){
+		if (client.first == id)
 			continue;
-		}
-	
-		processNewClientPacket(packet, ip, port);
+		sendMessage(tempo::SystemQID::ENTITY_CREATION, p_broadcast, client.first);
 	}
+	
+}
 
-	// TODO Probably should close the socket but it's a protected function
-	// so I can't.
+void checkForNewClients(anax::World *world, SystemLevelManager system_gm)
+{
+	tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::HANDSHAKE);	
+	if (queue->empty()) return;
+
+	while (!queue->empty()) {
+		sf::Packet packet = queue->front();
+		queue->pop();
+
+		uint32_t receiveID = static_cast<uint32_t>(HandshakeID::DEFAULT);
+		packet >> receiveID;
+
+		switch (static_cast<HandshakeID>(receiveID)) {
+		case HandshakeID::HELLO:
+			handshakeHello(packet, world);
+			break;
+		case HandshakeID::ROLEREQ:
+			handshakeRoleReq(packet, world, system_gm);
+			break;
+		default:
+			std::cout << "WARNING: an invalid handshake message was "
+			          << "recieved ... ignoring" << std::endl;
+			break;
+		}
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -281,5 +266,17 @@ uint32_t findClientID(sf::Uint32 ip, unsigned short port)
 }
 
 
+bool sendMessage(tempo::SystemQID id, 
+                 sf::Packet payload, 
+                 uint32_t client_id)
+{
+	sf::Packet message;
+
+	// Construct message
+	message << id;
+	message << payload;
+
+	return sock_o.send(message, sf::IpAddress(clients[client_id].ip), clients[client_id].port) == sf::Socket::Done;
+}
 
 } // end of namespace

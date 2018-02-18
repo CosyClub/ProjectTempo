@@ -1,12 +1,4 @@
-#include <tempo/config.hpp>
 #include <tempo/time.hpp>
-#include <tempo/network/client.hpp>
-
-#include <iostream>
-
-#include <SFML/Network.hpp>
-#include <SFML/System/Time.hpp>
-#include <SFML/System/Clock.hpp>
 
 namespace tempo
 {
@@ -29,15 +21,7 @@ namespace tempo
 		sf::Time delta = t - time;
 		time = t;
 		song->skip(delta);
-		std::cout << t.asMicroseconds() << std::endl;
         }
-
-	void Clock::sync_time(tempo::Song *song)
-	{ 	
-		sf::Time t = timeSyncClient(this);
-		set_time(t, song);
-		std::cout << time.asMicroseconds() << std::endl;
-	}
 
 	bool Clock::passed_beat()
 	{
@@ -83,7 +67,7 @@ namespace tempo
 	}
 
 	void Clock::update_beat()
-	{       
+	{
 		cache_time();
 		while (next_beat < time) {
 			sf::Time delta = next_beat - last_beat;

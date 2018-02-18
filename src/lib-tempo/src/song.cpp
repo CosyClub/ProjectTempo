@@ -1,10 +1,4 @@
-#include <tempo/config.hpp>
-#include <tempo/time.hpp>
 #include <tempo/song.hpp>
-
-#include <SFML/System/Time.hpp>
-#include <SFML/System/Clock.hpp>
-#include <SFML/Audio.hpp>
 
 namespace tempo
 {
