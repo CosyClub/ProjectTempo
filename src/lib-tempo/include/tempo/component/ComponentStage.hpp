@@ -35,7 +35,7 @@ namespace tempo {
 					}
 				}
 
-				return -1.0f;
+				return -10.0f;
 			}
 	};
 

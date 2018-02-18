@@ -68,7 +68,7 @@ void createEntityPlayer(anax::World& world) {
 	printf("Creating entity player\n");
 	anax::Entity entity_player = world.createEntity();
 	entity_player.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(0, 0));
+	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(5, 5));
 	entity_player.addComponent<client::ComponentRenderSceneNode>(nullptr);
 	entity_player.activate();
 }

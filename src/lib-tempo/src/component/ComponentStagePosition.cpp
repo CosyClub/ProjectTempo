@@ -17,9 +17,7 @@ ComponentStagePosition::ComponentStagePosition(glm::ivec2 bottom_left, glm::ivec
 	}
 }
 
-ComponentStagePosition::ComponentStagePosition(glm::ivec2 position) 
-	: occupied(1) 
-{
+ComponentStagePosition::ComponentStagePosition(glm::ivec2 position) {
 	occupied.push_back(position);
 }
 
