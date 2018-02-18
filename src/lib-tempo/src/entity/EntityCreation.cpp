@@ -12,6 +12,12 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 	p >> component_id;
 
 	anax::Entity e = anax::Entity(w, id);
+	e.activate();
+	anax::detail::TypeId type_id;
+	if (! e.getComponentTypeList()[type_id])
+	{
+		e.addComponent<>
+	}
 	auto f = restore_map.find(component_id);
 	if (f == restore_map.end())
 	{

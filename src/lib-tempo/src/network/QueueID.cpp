@@ -3,8 +3,7 @@
 namespace tempo
 {
 
-restore_pointer_map restore_map;
-dump_pointer_map dump_map;
+std::map<Component_ID, anax::detail::TypeId> componentMap;
 
 sf::Packet& operator <<(sf::Packet& packet, const Component_ID id)
 {

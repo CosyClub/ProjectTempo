@@ -60,14 +60,7 @@ namespace tempo
 	sf::Packet& operator <<(sf::Packet& packet, const Component_ID id);
 	sf::Packet& operator >>(sf::Packet& packet, Component_ID& id);
 
-	typedef void (*restore_pointer)(anax::Entity& e, sf::Packet p);
-	typedef sf::Packet (*dump_pointer)(const anax::Entity& e);
-
-	typedef std::map<Component_ID, restore_pointer> restore_pointer_map;
-	typedef std::map<anax::Component*, dump_pointer> dump_pointer_map;
-
-	extern restore_pointer_map restore_map;
-	extern dump_pointer_map dump_map;
+	extern std::map<Component_ID, axax::detail::TypeId> componentMap;
 }
 
 #endif

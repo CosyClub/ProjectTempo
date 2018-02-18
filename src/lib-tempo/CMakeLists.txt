@@ -19,6 +19,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentStageTranslation.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentTransform.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentWeapon.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/NetworkedComponent.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreation.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreationServer.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/LevelRenderer.hpp"
