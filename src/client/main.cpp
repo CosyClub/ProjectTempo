@@ -289,9 +289,7 @@ int main(int argc, const char** argv)
 		if (clock.passed_beat()) {
 			if (tick++ % 20 == 0)
 				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
-			// else
-			// 	std::cout << "TICK " << clock.get_time().asMilliseconds() << std::endl;
-			
+      
 			click.play();
 
 			system_grid_ai.update();
