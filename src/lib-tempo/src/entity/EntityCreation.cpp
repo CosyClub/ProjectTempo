@@ -8,7 +8,7 @@ namespace tempo
 anax::Entity addComponent(anax::World& w, sf::Packet p)
 {
 	anax::Entity::Id id;
-	tempo::Component_ID component_id;
+	tempo::ComponentID component_id;
 
 	p >> id;
 	p >> component_id;
@@ -17,17 +17,14 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 	e.activate();
 	switch (component_id)
 	{
-		case Component_ID::CID_TRANSFORM :
-			if (! e.hasComponent<ComponentTransform>())
-			{
-				e.addComponent<ComponentTransform>();
+		case ComponentID::STAGE_TRANSLATION :
+			if (!e.hasComponent<ComponentStageTranslation>()) {
+				e.addComponent<ComponentStageTranslation>();
 			}
-			ComponentTransform c = e.getComponent<ComponentTransform>();
-			NetworkedComponent *nc = static_cast<NetworkedComponent*>(&c);		
-			nc->restoreComponent(p);
+			ComponentStageTranslation c = e.getComponent<ComponentStageTranslation>();
+			c.restoreComponent(p);
 			break;
 	}
 }
 
-
-}
+} // namespace tempo

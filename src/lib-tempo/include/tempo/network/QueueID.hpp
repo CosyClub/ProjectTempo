@@ -35,30 +35,28 @@ namespace tempo
 		QID_RESERVED_TOP
 	};
 
-	enum Component_ID
+	enum ComponentID
 	{
 		CID_RESERVED_BOTTOM,
 		//Start of non-reserved zone
 		
-		CID_GRIDAI,
-		CID_HEALTH,
-		CID_PICKUP,
-		CID_PLAYERLOCAL,
-		CID_PLAYERREMOTE,
-		CID_PLAYERREMOTESERVER,
-		CID_RENDER,
-		CID_STAGE,
-		CID_STAGEPOSITION,
-		CID_STAGETRANSLATION,
-		CID_TRANSFORM,
-		CID_WEAPON,
+		GRID_AI,
+		HEALTH,
+		PICKUP,
+		PLAYER_LOCAL,
+		PLAYER_REMOTE,
+		STAGE,
+		STAGE_POSITION,
+		STAGE_TRANSLATION,
+		TRANSFORM,
+		WEAPON,
 		
 		//End of non-reserved zone
 		CID_RESERVED_TOP
 	};
 
-	sf::Packet& operator <<(sf::Packet& packet, const Component_ID id);
-	sf::Packet& operator >>(sf::Packet& packet, Component_ID& id);
+	sf::Packet& operator <<(sf::Packet& packet, const ComponentID id);
+	sf::Packet& operator >>(sf::Packet& packet, ComponentID& id);
 }
 
 #endif
