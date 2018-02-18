@@ -1,6 +1,18 @@
 #include <cstdio>
 #include <irrlicht.h>
 
+#include <anax/World.hpp>
+#include <anax/Entity.hpp>
+
+#include <client/system/SystemStageRenderer.hpp>
+
+void createEntityStage(anax::World& world){
+	printf("Creating entity stage\n");
+	anax::Entity entity_stage = world.createEntity();
+	entity_stage.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	entity_stage.activate();
+}
+
 int main(int argc, const char** argv){
 	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_OPENGL,
 	                                                irr::core::dimension2d<irr::u32>(800, 600),
@@ -25,17 +37,17 @@ int main(int argc, const char** argv){
 	                         irr::core::vector3df(0, 0, 0)  // look at
 	                        );
 
-	irr::scene::IAnimatedMesh* mesh_hills = smgr->addHillPlaneMesh(
-	                                                               L"test_hill_mesh",
-		irr::core::dimension2d<irr::f32>(  1,   1), // tile size
-		irr::core::dimension2d<irr::u32>(100, 100), // tile count
-		nullptr, // material
-		1.0f // hill height
-	);
-	irr::scene::IAnimatedMeshSceneNode* node_hills = smgr->addAnimatedMeshSceneNode(mesh_hills);
-	if (node_hills){
-		node_hills->setPosition(irr::core::vector3df(0, 0, 0));
-	}
+	/////////////////////////////////////////////////
+	// Setup scene
+	anax::World world;
+	client::SystemStageRenderer system_stage_renderer(smgr);
+
+	createEntityStage(world);
+
+	world.addSystem(system_stage_renderer);
+	world.refresh();
+
+	system_stage_renderer.initialize2();
 
 	printf("Entering main loop\n");
 	while(device->run()){

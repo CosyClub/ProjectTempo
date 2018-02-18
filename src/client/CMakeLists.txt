@@ -1,6 +1,10 @@
 link_directories("${TEMPO_LIB_DIR}")
 
 add_executable(client
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemStageRenderer.hpp
+
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemStageRenderer.cpp
+
 	${CMAKE_CURRENT_LIST_DIR}/main.cpp
 )
 

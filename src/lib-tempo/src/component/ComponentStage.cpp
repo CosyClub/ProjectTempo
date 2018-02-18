@@ -7,8 +7,8 @@
 
 namespace tempo {
 
-ComponentStage::ComponentStage(const char* stage_file) 
-{	
+ComponentStage::ComponentStage(const char* stage_file)
+{
 	SDL_Surface* level = SDL_LoadBMP(stage_file);
 
 	// Load tiles, this can only handles stage_files in positive ZZ
