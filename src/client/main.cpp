@@ -129,7 +129,7 @@ int main(int argc, const char** argv)
 	// Set up remote address, local ports and remote handshake port
 	// Note, IF statement is to change ports for local development, bit
 	// hacky and should be removed in due course!
-	tempo::addr_r = "192.168.137.1";
+	tempo::addr_r = "127.0.0.1";
 	if (tempo::addr_r == "127.0.0.1") {
 		std::srand (time(NULL));
 		int d = std::rand() % 10;
