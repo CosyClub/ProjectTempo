@@ -15,19 +15,17 @@ namespace tempo
 // Represents a translation on the stage
 struct ComponentStageTranslation : anax::Component, NetworkedComponent
 {
-	// The position translation
 	ComponentID id;
+	// The position translation
 	glm::ivec2 delta;
 	// Creates the stage translation with no delta
 	ComponentStageTranslation();
 	
+	//Required for inital network sync
+	ComponentStageTranslation(sf::Packet p);
 	sf::Packet dumpComponent();
-	void restoreComponent(sf::Packet p);
 
 };
-
-
-void restoreComponentStageTranslation(anax::Entity& e, sf::Packet p);
 
 } // namespace tempo
 

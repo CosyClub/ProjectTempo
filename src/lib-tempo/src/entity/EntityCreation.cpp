@@ -1,6 +1,16 @@
 #include <tempo/entity/EntityCreation.hpp>
 
-
+#define CASE(NAME, CID) case ComponentID::CID : 					\
+				if (!e.hasComponent<NAME>()) { 			\
+					e.addComponent<NAME>(p);			\
+				}							\
+				else							\
+				{							\
+					std::cout << "Warning: Reinstanciation of "	\
+						  << "#NAME" 			\
+						  << std::endl;				\
+				}							\
+				break;
 namespace tempo
 {
 
@@ -34,12 +44,8 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 	}
 
 	switch (component_id) {
-	case ComponentID::STAGE_TRANSLATION :
-		if (!e.hasComponent<ComponentStageTranslation>()) {
-			e.addComponent<ComponentStageTranslation>();
-		}
-		e.getComponent<ComponentStageTranslation>().restoreComponent(p);
-		break;
+	CASE(ComponentHealth, HEALTH)
+	CASE(ComponentStageTranslation, STAGE_TRANSLATION)
 	default :
 		std::cout << "WARNING: Unimplemented deserialisation of"
 			     " recieved component occured, ignoring." 

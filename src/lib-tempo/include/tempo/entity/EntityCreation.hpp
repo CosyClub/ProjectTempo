@@ -6,6 +6,7 @@
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/QueueID.hpp>
+#include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
 
 #include <iostream>

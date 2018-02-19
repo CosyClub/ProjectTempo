@@ -14,7 +14,6 @@ struct NetworkedComponent
 	ComponentID ID;
 
 	virtual sf::Packet dumpComponent() =0;
-	virtual void restoreComponent(sf::Packet p) =0;
 };
 
 }

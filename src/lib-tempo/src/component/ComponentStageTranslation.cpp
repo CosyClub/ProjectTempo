@@ -9,6 +9,12 @@ ComponentStageTranslation::ComponentStageTranslation()
 	id = ComponentID::TRANSFORM;
 }
 
+ComponentStageTranslation::ComponentStageTranslation(sf::Packet p)
+{
+	p >> delta.x;
+	p >> delta.y;
+}
+
 sf::Packet ComponentStageTranslation::dumpComponent()
 {
 	sf::Packet p;
@@ -16,12 +22,6 @@ sf::Packet ComponentStageTranslation::dumpComponent()
 	p << delta.y;
 
 	return p;
-}
-
-void ComponentStageTranslation::restoreComponent(sf::Packet p)
-{
-	p >> delta.x;
-	p >> delta.y;
 }
 
 } // namespace tempo

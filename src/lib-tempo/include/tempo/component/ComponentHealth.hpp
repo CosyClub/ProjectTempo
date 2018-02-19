@@ -3,20 +3,24 @@
 
 #include <anax/Component.hpp>
 
+#include <tempo/network/QueueID.hpp>
+#include <tempo/component/NetworkedComponent.hpp>
+
 namespace tempo {
 
-struct ComponentHealth : anax::Component {
+struct ComponentHealth : anax::Component{
 
+	ComponentID id;
 	// Starting Health for entity
-	int max_health;
-	int current_health;
+	int32_t max_health;
+	int32_t current_health;
 
 	// ComponentHealth
 	// Initialisation of an entity's Health Component
 	//
 	// Arguments:
 	//          entity_health - The amount of health to give to the entity
-	ComponentHealth(int entity_health);
+	ComponentHealth(int32_t entity_health);
 
 	// HealthUpdate
 	// Update the health of an individual entity by a specific amount
@@ -24,7 +28,11 @@ struct ComponentHealth : anax::Component {
 	// Arguments:
 	//          delta_health - The amount the entity's health will change 
 	//                         (can be ±)
-	void HealthUpdate(int delta_health);
+	void HealthUpdate(int32_t delta_health);
+
+	//Required for inital network sync
+	ComponentHealth(sf::Packet p);
+	sf::Packet dumpComponent();
 
 };
 
