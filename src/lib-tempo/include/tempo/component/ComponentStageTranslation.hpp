@@ -16,7 +16,7 @@ namespace tempo
 struct ComponentStageTranslation : anax::Component, NetworkedComponent
 {
 	// The position translation
-	Component_ID id;
+	ComponentID id;
 	glm::ivec2 delta;
 	// Creates the stage translation with no delta
 	ComponentStageTranslation();

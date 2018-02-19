@@ -112,6 +112,36 @@ uint32_t addClient(sf::Uint32 ip,
 	return idCounter++;
 }
 
+typedef std::vector<std::pair<anax::Entity, anax::Component*>> ec_list;
+uint32_t countComponents(anax::Entity entity, ec_list &list)
+{
+	// TODO Clean this up post merge with new handshake
+	uint32_t result = 0;
+	for (auto& component: entity.getComponents()) {
+		NetworkedComponent *nc;
+		nc = dynamic_cast<NetworkedComponent*>(component);
+		if (nc != NULL) {
+			result++;
+			list.push_back(std::make_pair(entity, component));
+		}
+	}
+	return result;
+
+}
+	
+void sendComponents(sf::IpAddress ip, unsigned short port, ec_list &list)
+{
+	sf::Packet rog;
+	for (auto& pair: list) {
+		NetworkedComponent *nc;
+		nc = dynamic_cast<NetworkedComponent*>(pair.second);
+		rog << pair.first.getId();
+		rog << nc->ID;
+		rog << nc->dumpComponent();
+		sock_h.send(rog, ip, port);
+	}
+}
+
 void handshakeHello(sf::Packet &packet,
                     sf::IpAddress &sender,
                     unsigned short port,
@@ -134,52 +164,25 @@ void handshakeHello(sf::Packet &packet,
 		          << std::endl;
 	}
 	
+	//Work out how many components there are in the world
+	uint32_t componentAmount = 0;
+	ec_list components;
+	for (auto& entity: world->getEntities()) 
+		componentAmount += countComponents(entity, components);
+	
 	// Construct HELLO_ROG response
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::HELLO_ROG);
 	rog << id; // TODO change to temporary token
 	rog << port_si;
 	rog << port_st;
-	//Work out how many components there are in the world
-	uint32_t componentAmount = 0;
-	std::vector<std::pair<anax::Entity,anax::Component*>> Components;
-	for (auto& entity: world->getEntities()) {
-		for (auto& component: entity.getComponents())
-		{
-			auto f = dump_map.find(component);
-			if (f == dump_map.end())
-			{
-				//Not FUCK
-			}
-			else
-			{
-				componentAmount += 1;		
-				Components.push_back(std::make_pair(entity, component));
-			}
-		}
-	}
 	rog << componentAmount;
 
 	// Send response back to sender
 	sock_h.send(rog, sender, port);
 
-	// Now actually send them
-	sf::Packet p2;
-	for (auto& pair: Components)
-	{
-		auto f = dump_map.find(pair.second);
-		if (f == dump_map.end())
-		{
-			//FUCK
-			std::cout << "Failed to find component when sending"
-			          << std::endl;	
-		}
-		else
-		{
-			p2 = (*f->second)(pair.first);
-			sock_h.send(rog, sender, port);
-		}
-	}
+	// Now send current state back to the original sender
+	sendComponents(sender, port, components);
 	
 }
 
@@ -206,67 +209,33 @@ void handshakeRoleReq(sf::Packet &packet,
 	clients[id].role = static_cast<ClientRole>(role);
 	cmtx.unlock();
 	
+	// Package Requested Entity
+	ec_list components;
+	uint32_t componentAmount = countComponents(entity, components);
+
 	// Construct ROLEREQ_ROG response
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG);
-	// TODO Package Requested Entity, eg:
-	
-	uint32_t componentAmount = 0;
-	std::vector<std::pair<anax::Entity,anax::Component*>> Components;
-	for (auto& component: entity.getComponents())
-	{
-		auto f = dump_map.find(component);
-		if (f == dump_map.end())
-		{
-			//Not FUCK
-		}
-		else
-		{
-			componentAmount += 1;		
-			Components.push_back(std::make_pair(entity, component));
-		}
-	}
-
 	rog << componentAmount;
 
-	sf::Packet p_broadcast;
-
-	for (tempo::clientpair client:clients){
-		if (client.first == id) continue;
-		for (auto& pair: Components)
-		{
-			auto f = dump_map.find(pair.second);
-			if (f == dump_map.end())
-			{
-				//FUCK
-				std::cout << "Failed to find component when sending"
-				          << std::endl;	
-			}
-			else
-			{
-				p_broadcast = (*f->second)(entity);
-				sendMessage(tempo::SystemQID::ENTITY_CREATION, p_broadcast, client.first);
-			}
-		}
-	}
-	
-	//Send response back to sender
+	// Send response back to sender
 	sock_h.send(rog, sender, port);
+	sendComponents(sender, port, components);
 
-	sf::Packet p2;
-	for (auto& pair: Components)
-	{
-		auto f = dump_map.find(pair.second);
-		if (f == dump_map.end())
-		{
-			//FUCK
-			std::cout << "Failed to find component when sending"
-			          << std::endl;	
-		}
-		else
-		{
-			p2 = (*f->second)(pair.first);
-			sock_h.send(p2, sender, port);
+	// Tell everyone that we have a new player
+	// TODO Clean this up post merge with new handshake
+	for (clientpair client : clients) {
+		if (client.first == id) continue;
+		rog = sf::Packet();
+		for (auto& pair : components) {
+			NetworkedComponent *nc;
+			nc = dynamic_cast<NetworkedComponent*>(pair.second);
+			rog << pair.first.getId();
+			rog << nc->ID;
+			rog << nc->dumpComponent();
+			sendMessage(tempo::SystemQID::ENTITY_CREATION, 
+			            rog,
+			            client.first);
 		}
 	}
 }

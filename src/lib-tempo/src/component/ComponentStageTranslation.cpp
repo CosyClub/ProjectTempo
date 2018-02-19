@@ -6,8 +6,9 @@ namespace tempo
 ComponentStageTranslation::ComponentStageTranslation() 
 : delta(0, 0) 
 {
-	id = Component_ID::CID_TRANSFORM;		
+	id = ComponentID::TRANSFORM;
 }
+
 sf::Packet ComponentStageTranslation::dumpComponent()
 {
 	sf::Packet p;
@@ -23,4 +24,4 @@ void ComponentStageTranslation::restoreComponent(sf::Packet p)
 	p >> delta.y;
 }
 
-}
+} // namespace tempo
