@@ -2,6 +2,6 @@
 
 namespace tempo{
 	
-	//Nothing Implemented
+	// Currently Empty
 
 }

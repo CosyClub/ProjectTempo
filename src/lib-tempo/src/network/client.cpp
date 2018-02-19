@@ -1,5 +1,10 @@
 #include <tempo/network/client.hpp>
 
+#include <tempo/component/ComponentPlayerLocal.hpp>
+#include <tempo/component/ComponentPlayerRemote.hpp>
+
+#include <tempo/entity/EntityCreation.hpp>
+
 namespace tempo
 {
 
@@ -61,7 +66,7 @@ sf::Int64 timeSyncClient(tempo::Clock *clock)
 	return offset / TIMESYNC_ITERS;
 }
 
-bool sendMessage(tempo::SystemQID id, sf::Packet payload) 
+bool sendMessage(tempo::QueueID id, sf::Packet payload) 
 {
 	sf::Packet message;
 
@@ -73,7 +78,7 @@ bool sendMessage(tempo::SystemQID id, sf::Packet payload)
 	return sock_o.send(message, addr_r, port_si) == sf::Socket::Done;
 }
 
-sf::Packet receiveMessage(SystemQID qid) {
+sf::Packet receiveMessage(QueueID qid) {
 	tempo::Queue<sf::Packet> *queue = get_system_queue(qid);
 	while (queue->empty()) 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
@@ -121,10 +126,10 @@ uint32_t handshakeHello(anax::World& world,
 	packet << port_ci;
 	
 	// Send HELLO
-	sendMessage(SystemQID::HANDSHAKE, packet);
+	sendMessage(QueueID::HANDSHAKE, packet);
 
 	// Receive HELLO_ROG
-	packet = receiveMessage(SystemQID::HANDSHAKE);
+	packet = receiveMessage(QueueID::HANDSHAKE);
 
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
@@ -139,7 +144,7 @@ uint32_t handshakeHello(anax::World& world,
 
 		sf::Packet p2;
 		for (int i = 0; i < componentCount; i++) {
-			p2 = receiveMessage(SystemQID::HANDSHAKE);
+			p2 = receiveMessage(QueueID::HANDSHAKE);
 			std::cout << "Recieved " << i << "/" << componentCount << std::endl;
 			addComponent(world, p2);
 		}
@@ -166,10 +171,10 @@ bool handshakeRoleReq(uint32_t id,
 	packet << roleData;
 	
 	// Send ROLEREQ
-	sendMessage(SystemQID::HANDSHAKE, packet);
+	sendMessage(QueueID::HANDSHAKE, packet);
 	
 	// Wait until we recieve ROLEREQ_ROG
-	packet = receiveMessage(SystemQID::HANDSHAKE);
+	packet = receiveMessage(QueueID::HANDSHAKE);
 
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
@@ -181,7 +186,7 @@ bool handshakeRoleReq(uint32_t id,
 		sf::Packet p2;
 		anax::Entity en;
 		for (int i = 0; i < componentCount; i++) {
-			p2 = receiveMessage(SystemQID::HANDSHAKE);
+			p2 = receiveMessage(QueueID::HANDSHAKE);
 			en = addComponent(world, p2);
 		}
 		en.removeComponent<tempo::ComponentPlayerRemote>();
@@ -235,4 +240,4 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 	return ret;
 }
 
-}
+} // namespace tempo

@@ -17,6 +17,6 @@ namespace tempo
 
 anax::Entity addComponent(anax::World& w, sf::Packet p);
 
-}
+} // namespace tempo
 
 #endif

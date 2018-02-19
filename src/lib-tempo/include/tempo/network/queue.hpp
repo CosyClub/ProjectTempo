@@ -23,7 +23,7 @@ namespace tempo
 //
 // Returns:
 // 	Pointer to a tempo::Queue<sf::Packet>
-tempo::Queue<sf::Packet>* get_system_queue(tempo::SystemQID);
+tempo::Queue<sf::Packet>* get_system_queue(tempo::QueueID);
 
 }
 

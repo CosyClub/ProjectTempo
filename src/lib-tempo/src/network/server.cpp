@@ -169,7 +169,7 @@ void sendComponents(uint32_t clientID, ec_list &list)
 		rog << pair.first.getId();
 		rog << nc->ID;
 		rog << nc->dumpComponent();
-		sendMessage(SystemQID::HANDSHAKE, rog, clientID);
+		sendMessage(QueueID::HANDSHAKE, rog, clientID);
 	}
 }
 
@@ -212,7 +212,7 @@ void handshakeHello(sf::Packet &packet,
 	rog << componentAmount;
 
 	// Send response back to sender
-	sendMessage(SystemQID::HANDSHAKE, rog, id);
+	sendMessage(QueueID::HANDSHAKE, rog, id);
 
 	// Now send current state back to the original sender
 	sendComponents(id, components);
@@ -251,7 +251,7 @@ void handshakeRoleReq(sf::Packet &packet,
 	rog << componentAmount;
 
 	// Send response back to sender
-	sendMessage(SystemQID::HANDSHAKE, rog, id);
+	sendMessage(QueueID::HANDSHAKE, rog, id);
 	sendComponents(id, components);
 
 	// Tell everyone that we have a new player
@@ -265,7 +265,7 @@ void handshakeRoleReq(sf::Packet &packet,
 			rog << pair.first.getId();
 			rog << nc->ID;
 			rog << nc->dumpComponent();
-			sendMessage(tempo::SystemQID::ENTITY_CREATION, 
+			sendMessage(tempo::QueueID::ENTITY_CREATION, 
 			            rog,
 			            client.first);
 		}
@@ -274,7 +274,7 @@ void handshakeRoleReq(sf::Packet &packet,
 
 void checkForNewClients(anax::World *world, SystemLevelManager system_gm)
 {
-	tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::HANDSHAKE);	
+	tempo::Queue<sf::Packet> *queue = get_system_queue(QueueID::HANDSHAKE);	
 	if (queue->empty()) return;
 
 	while (!queue->empty()) {
@@ -346,7 +346,7 @@ uint32_t findClientID(sf::Uint32 ip, unsigned short port)
 }
 
 
-bool sendMessage(tempo::SystemQID id, 
+bool sendMessage(tempo::QueueID id, 
                  sf::Packet payload, 
                  uint32_t client_id)
 {
