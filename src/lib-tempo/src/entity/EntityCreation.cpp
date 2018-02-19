@@ -1,8 +1,8 @@
 #include <tempo/entity/EntityCreation.hpp>
 
 #define CASE(NAME, CID) case ComponentID::CID : 					\
-				if (!e.hasComponent<NAME>()) { 			\
-					e.addComponent<NAME>(p);			\
+				if (!e.hasComponent<NAME>()) { 				\
+					e.addComponent<NAME>(part);			\
 				}							\
 				else							\
 				{							\
@@ -22,8 +22,6 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 	tempo::ComponentID component_id;
 
 	p >> id;
-	p >> component_id;
-
 	auto a = servertolocal.find(id);
 	if (a == servertolocal.end())
 	{
@@ -44,17 +42,28 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 		e = anax::Entity(w, localid);
 		e.activate();
 	}
-	
-	std::cout << "Adding Component with ID " << component_id << std::endl;
-	switch (component_id) {
-	CASE(ComponentHealth, HEALTH)
-	CASE(ComponentStageTranslation, STAGE_TRANSLATION)
-	CASE(ComponentPlayerLocal, PLAYER_LOCAL)
-	default :
-		std::cout << "WARNING: Unimplemented deserialisation of"
-			     " recieved component occured, ignoring." 
-		          << std::endl;
+
+	while (!p.endOfPacket())
+	{
+		uint32_t size = 0;
+		p >> size;
+		std::cout << "Splitting packet to size " << size << std::endl;
+		sf::Packet part = splitPacket(p, size);
+
+		part >> component_id;
+		std::cout << "Adding Component with ID " << component_id << std::endl;
+		switch (component_id) {
+		CASE(ComponentHealth, HEALTH)
+		CASE(ComponentStageTranslation, STAGE_TRANSLATION)
+		CASE(ComponentPlayerLocal, PLAYER_LOCAL)
+		default :
+			std::cout << "WARNING: Unimplemented deserialisation of"
+				     " recieved component occured, ignoring." 
+			          << std::endl;
+		}
 	}
+
+	
 
 	return e;
 }

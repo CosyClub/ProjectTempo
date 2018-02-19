@@ -127,4 +127,16 @@ sf::Packet& operator >>(sf::Packet& packet, anax::Entity::Id& id)
 	return packet;
 }
 
+sf::Packet splitPacket(sf::Packet& packet, uint32_t size)
+{
+	uint8_t data = 0;
+	sf::Packet p;
+	for (int I = 0; I < size; I++)
+	{
+		packet >> data;
+		p << data;
+	}
+	return p;
+}
+
 }

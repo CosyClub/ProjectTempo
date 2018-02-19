@@ -112,34 +112,53 @@ uint32_t addClient(sf::Uint32 ip,
 	return idCounter++;
 }
 
-typedef std::vector<std::pair<anax::Entity, anax::Component*>> ec_list;
-uint32_t countComponents(anax::Entity entity, ec_list &list)
+typedef std::pair<anax::Entity, std::vector<anax::Component*>> c_list;
+typedef std::vector<c_list> ec_list;
+uint32_t countComponents(anax::Entity entity, ec_list &e_list)
 {
 	// TODO Clean this up post merge with new handshake
+	c_list list;
 	uint32_t result = 0;
+	list.first = entity;
 	for (auto& component: entity.getComponents()) {
 		NetworkedComponent *nc;
 		nc = dynamic_cast<NetworkedComponent*>(component);
 		if (nc != NULL) {
 			result++;
-			list.push_back(std::make_pair(entity, component));
+			list.second.push_back(component);
 		}
 	}
+	e_list.push_back(list);
 	return result;
 
 }
+
+sf::Packet makeBigPacket(c_list list)
+{
+	anax::Entity e = list.first;
+	sf::Packet p = sf::Packet();
+	p << e.getId();
+	std::cout << "Sending components for entity " << e.getId().index << std::endl;
+	for (anax::Component* c : list.second)
+	{
+		sf::Packet part = sf::Packet();
+		NetworkedComponent *nc;
+		nc = dynamic_cast<NetworkedComponent*>(c);
+		std::cout << "Adding component with ID " << nc->getID() << std::endl;
+		part << nc->getID();
+		part << nc->dumpComponent();
+		p << sf::Uint64(part.getDataSize());
+		p << part;
+	}
+
+	return p;
+}
 	
-void sendComponents(sf::IpAddress ip, unsigned short port, ec_list &list)
+void sendComponents(sf::IpAddress ip, unsigned short port, ec_list &e_list)
 {
 	sf::Packet rog;
-	for (auto& pair: list) {
-		rog = sf::Packet();
-		NetworkedComponent *nc;
-		nc = dynamic_cast<NetworkedComponent*>(pair.second);
-		rog << pair.first.getId();
-		std::cout << "Sending component for entity " << pair.first.getId() << std::endl;
-		rog << nc->getID();
-		rog << nc->dumpComponent();
+	for (c_list list: e_list) {
+		rog = makeBigPacket(list);
 		sock_h.send(rog, ip, port);
 	}
 }
@@ -232,12 +251,13 @@ void handshakeRoleReq(sf::Packet &packet,
 	for (clientpair client : clients) {
 		if (client.first == id) continue;
 		rog = sf::Packet();
-		for (auto& pair : components) {
-			NetworkedComponent *nc;
-			nc = dynamic_cast<NetworkedComponent*>(pair.second);
-			rog << pair.first.getId();
-			rog << nc->getID();
-			rog << nc->dumpComponent();
+		for (c_list list : components) {
+			// NetworkedComponent *nc;
+			// nc = dynamic_cast<NetworkedComponent*>(pair.second);
+			// rog << pair.first.getId();
+			// rog << nc->getID();
+			// rog << nc->dumpComponent();
+			rog = makeBigPacket(list);
 			sendMessage(tempo::SystemQID::ENTITY_CREATION, 
 			            rog,
 			            client.first);
