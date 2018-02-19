@@ -88,34 +88,41 @@ sf::Packet& operator >>(sf::Packet& p, ClientRoleData& c)
 
 sf::Packet& operator <<(sf::Packet& packet, const anax::Entity::Id id)
 {
-	uint64_t data = 0;
-	uint8_t* raw_data = (uint8_t*)&data;
+	uint64_t index = 0;
+	uint64_t counter = 0;
 
 	#ifdef ANAX_32_BIT_ENTITY_IDS
-	data += uint32_t(id);
+	index += uint32_t(id.index);
+	counter += uint32_t(id.counter);
+	std::cout << "Sending 32 bit ID " << index << ":" << counter << std::endl;
 	#else
-	data += uint64_t(id);
+	index += uint64_t(id.index);
+	counter += uint64_t(id.counter);
+	std::cout << "Sending 64 bit ID " << index << ":" << counter<< std::endl;
 	#endif
 
-	for (int I = 0; I < sizeof(uint64_t); I++)
-	{
-		packet << raw_data[I];
-	}
+	packet << sf::Uint64(index);
+	packet << sf::Uint64(counter);
+
 	return packet;
 }
 
 sf::Packet& operator >>(sf::Packet& packet, anax::Entity::Id& id)
 {
-	uint64_t data = 0;
-	uint8_t* raw_data = (uint8_t*)&data;
-	for (int I = 0; I < sizeof(uint64_t); I++)
-	{
-		packet >> raw_data[I];
-	}
+	sf::Uint64 index = 0;
+	sf::Uint64 counter = 0;
+	
+	packet >> index;
+	packet >> counter;
+
 	#ifdef ANAX_32_BIT_ENTITY_IDS
-	data += uint32_t(id);
+	std::cout << "Receiving 32 bit ID " << index<< ":" << counter << std::endl;
+	id.index = uint32_t(index);
+	id.counter = uint32_t(counter);
 	#else
-	data += uint64_t(id);
+	std::cout << "Receiving 64 bit ID " << index<< ":" << counter << std::endl;
+	id.index = uint64_t(index);
+	id.counter = uint64_t(counter);
 	#endif
 	return packet;
 }

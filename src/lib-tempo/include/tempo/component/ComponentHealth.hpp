@@ -8,9 +8,9 @@
 
 namespace tempo {
 
-struct ComponentHealth : anax::Component{
+struct ComponentHealth : anax::Component, NetworkedComponent
+{
 
-	ComponentID id;
 	// Starting Health for entity
 	int32_t max_health;
 	int32_t current_health;
@@ -33,6 +33,7 @@ struct ComponentHealth : anax::Component{
 	//Required for inital network sync
 	ComponentHealth(sf::Packet p);
 	sf::Packet dumpComponent();
+	ComponentID getID();
 
 };
 

@@ -11,9 +11,8 @@ namespace tempo{
 
 struct NetworkedComponent
 {
-	ComponentID ID;
-
-	virtual sf::Packet dumpComponent() =0;
+	virtual ComponentID getID() = 0;
+	virtual sf::Packet dumpComponent() = 0;
 };
 
 }

@@ -8,6 +8,7 @@
 #include <tempo/network/QueueID.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
+#include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
 
 #include <iostream>

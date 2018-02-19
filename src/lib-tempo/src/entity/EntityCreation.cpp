@@ -7,7 +7,7 @@
 				else							\
 				{							\
 					std::cout << "Warning: Reinstanciation of "	\
-						  << "#NAME" 			\
+						  << "" #NAME 				\
 						  << std::endl;				\
 				}							\
 				break;
@@ -28,7 +28,8 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 	if (a == servertolocal.end())
 	{
 		//Looks like it's a new one
-		std::cout << "Recieved New Entity" << std::endl;
+		std::cout << "Recieved New Entity with server ID " << id.index
+		          << std::endl;
 		e = w.createEntity();
 		localid = e.getId();
 		servertolocal.emplace(id, localid);
@@ -37,12 +38,14 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 	}
 	else
 	{
-		std::cout << "Adding component to current entity" << std::endl;
+		std::cout << "Using current Entity with server ID " << id.index 
+		          << std::endl;
 		localid = a->second;
 		e = anax::Entity(w, localid);
 		e.activate();
 	}
-
+	
+	std::cout << "Adding Component with ID " << component_id << std::endl;
 	switch (component_id) {
 	CASE(ComponentHealth, HEALTH)
 	CASE(ComponentStageTranslation, STAGE_TRANSLATION)

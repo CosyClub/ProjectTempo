@@ -1,4 +1,5 @@
 #include <tempo/network/QueueID.hpp>
+#include <iostream>
 
 namespace tempo
 {

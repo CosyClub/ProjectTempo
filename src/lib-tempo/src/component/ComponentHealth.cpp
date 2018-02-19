@@ -5,7 +5,6 @@ namespace tempo {
 	ComponentHealth::ComponentHealth(int entity_health) {
 
 		// Assign Health to Entity
-		this->id = ComponentID::HEALTH;
 		this->max_health = entity_health;
 		this->current_health = entity_health;
 	}
@@ -31,7 +30,6 @@ namespace tempo {
 
 	ComponentHealth::ComponentHealth(sf::Packet p)
 	{
-		id = ComponentID::HEALTH;
 		p >> max_health;
 		p >> current_health;
 	}
@@ -42,6 +40,10 @@ namespace tempo {
 		p << current_health;
 
 		return p;
+	}
+	ComponentID ComponentHealth::getID()
+	{
+		return ComponentID::HEALTH;
 	}
 
 }

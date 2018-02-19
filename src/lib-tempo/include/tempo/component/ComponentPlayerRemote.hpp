@@ -5,6 +5,7 @@
 #include <anax/Component.hpp>
 
 #include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/NetworkedComponent.hpp>
 #include <tempo/network/queue.hpp>
 #include <tempo/network/QueueID.hpp>
 #include <tempo/time.hpp>
@@ -16,14 +17,21 @@
 
 #undef main // SDL likes to define main
 
-namespace tempo{
+namespace tempo
+{
 
-	struct ComponentPlayerRemote : anax::Component 
-	{
-		bool moved_this_beat;
+struct ComponentPlayerRemote : anax::Component
+{
+	ComponentID id;
 
-		inline ComponentPlayerRemote() : moved_this_beat(false) {}
-	};
+	bool moved_this_beat;
+
+	inline ComponentPlayerRemote();
+
+	//Required for inital network sync
+	ComponentPlayerRemote(sf::Packet p);
+	sf::Packet dumpComponent();
+};
 
 }
 

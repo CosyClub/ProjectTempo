@@ -136,7 +136,8 @@ void sendComponents(sf::IpAddress ip, unsigned short port, ec_list &list)
 		NetworkedComponent *nc;
 		nc = dynamic_cast<NetworkedComponent*>(pair.second);
 		rog << pair.first.getId();
-		rog << nc->ID;
+		std::cout << "Sending component for entity " << pair.first.getId() << std::endl;
+		rog << nc->getID();
 		rog << nc->dumpComponent();
 		sock_h.send(rog, ip, port);
 	}
@@ -169,6 +170,9 @@ void handshakeHello(sf::Packet &packet,
 	ec_list components;
 	for (auto& entity: world->getEntities()) 
 		componentAmount += countComponents(entity, components);
+
+	std::cout << "Found " << componentAmount << " components from "
+	          << world->getEntities().size() << " entities" << std::endl;
 	
 	// Construct HELLO_ROG response
 	sf::Packet rog;
@@ -231,7 +235,7 @@ void handshakeRoleReq(sf::Packet &packet,
 			NetworkedComponent *nc;
 			nc = dynamic_cast<NetworkedComponent*>(pair.second);
 			rog << pair.first.getId();
-			rog << nc->ID;
+			rog << nc->getID();
 			rog << nc->dumpComponent();
 			sendMessage(tempo::SystemQID::ENTITY_CREATION, 
 			            rog,

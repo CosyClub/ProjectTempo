@@ -38,6 +38,7 @@ namespace tempo
 	enum ComponentID
 	{
 		CID_RESERVED_BOTTOM,
+		CID_RESERVED_ERROR,
 		//Start of non-reserved zone
 		
 		GRID_AI,
