@@ -133,6 +133,7 @@ void sendComponents(sf::IpAddress ip, unsigned short port, ec_list &list)
 {
 	sf::Packet rog;
 	for (auto& pair: list) {
+		rog = sf::Packet();
 		NetworkedComponent *nc;
 		nc = dynamic_cast<NetworkedComponent*>(pair.second);
 		rog << pair.first.getId();
