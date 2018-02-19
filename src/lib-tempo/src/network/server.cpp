@@ -160,7 +160,7 @@ uint32_t countComponents(anax::Entity entity, ec_list &list)
 
 }
 	
-void sendComponents(sf::IpAddress ip, unsigned short port, ec_list &list)
+void sendComponents(uint32_t clientID, ec_list &list)
 {
 	sf::Packet rog;
 	for (auto& pair: list) {
@@ -169,7 +169,7 @@ void sendComponents(sf::IpAddress ip, unsigned short port, ec_list &list)
 		rog << pair.first.getId();
 		rog << nc->ID;
 		rog << nc->dumpComponent();
-		sock_h.send(rog, ip, port);
+		sendMessage(SystemQID::HANDSHAKE, rog, clientID);
 	}
 }
 
@@ -212,10 +212,10 @@ void handshakeHello(sf::Packet &packet,
 	rog << componentAmount;
 
 	// Send response back to sender
-	sock_h.send(rog, sender, port);
+	sendMessage(SystemQID::HANDSHAKE, rog, id);
 
 	// Now send current state back to the original sender
-	sendComponents(sender, port, components);
+	sendComponents(id, components);
 }
 
 void handshakeRoleReq(sf::Packet &packet,
@@ -240,7 +240,6 @@ void handshakeRoleReq(sf::Packet &packet,
 	sf::Uint32 ip       = clients[id].ip;
 	unsigned short port = clients[id].port;
 	cmtx.unlock();
-	EntityCreationData data = dumpEntity(entity);
 	
 	// Package Requested Entity
 	ec_list components;
@@ -249,12 +248,11 @@ void handshakeRoleReq(sf::Packet &packet,
 	// Construct ROLEREQ_ROG response
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG);
-<<<<<<< HEAD
 	rog << componentAmount;
 
 	// Send response back to sender
-	sock_h.send(rog, sender, port);
-	sendComponents(sender, port, components);
+	sendMessage(SystemQID::HANDSHAKE, rog, id);
+	sendComponents(id, components);
 
 	// Tell everyone that we have a new player
 	// TODO Clean this up post merge with new handshake
@@ -272,23 +270,6 @@ void handshakeRoleReq(sf::Packet &packet,
 			            client.first);
 		}
 	}
-=======
-	rog << data;
-
-	sf::Packet p_broadcast;
-	p_broadcast << data;
-	
-	// Send response back to sender
-	sendMessage(SystemQID::HANDSHAKE, rog, id);
-
-	// Send notification of new entity to all clients
-	for (tempo::clientpair client:clients){
-		if (client.first == id)
-			continue;
-		sendMessage(tempo::SystemQID::ENTITY_CREATION, p_broadcast, client.first);
-	}
-	
->>>>>>> networking-master
 }
 
 void checkForNewClients(anax::World *world, SystemLevelManager system_gm)

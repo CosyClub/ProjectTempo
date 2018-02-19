@@ -73,6 +73,14 @@ bool sendMessage(tempo::SystemQID id, sf::Packet payload)
 	return sock_o.send(message, addr_r, port_si) == sf::Socket::Done;
 }
 
+sf::Packet receiveMessage(SystemQID qid) {
+	tempo::Queue<sf::Packet> *queue = get_system_queue(qid);
+	while (queue->empty()) 
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+	sf::Packet packet = queue->front();
+	queue->pop();
+	return packet;
+}
 
 void listenForServerUpdates()
 {
@@ -115,16 +123,8 @@ uint32_t handshakeHello(anax::World& world,
 	// Send HELLO
 	sendMessage(SystemQID::HANDSHAKE, packet);
 
-	// Wait until we recieve HELLO_ROG
-	tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::HANDSHAKE);
-	while (queue->empty()) {
-		std::cout << ".\n";
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-	}
-
-	// Take response from queue
-	packet = queue->front();
-	queue->pop();
+	// Receive HELLO_ROG
+	packet = receiveMessage(SystemQID::HANDSHAKE);
 
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
@@ -139,7 +139,7 @@ uint32_t handshakeHello(anax::World& world,
 
 		sf::Packet p2;
 		for (int i = 0; i < componentCount; i++) {
-			sock_o.receive(p2, sender, port);
+			p2 = receiveMessage(SystemQID::HANDSHAKE);
 			std::cout << "Recieved " << i << "/" << componentCount << std::endl;
 			addComponent(world, p2);
 		}
@@ -169,15 +169,8 @@ bool handshakeRoleReq(uint32_t id,
 	sendMessage(SystemQID::HANDSHAKE, packet);
 	
 	// Wait until we recieve ROLEREQ_ROG
-	tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::HANDSHAKE);
-	while (queue->empty()) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-	}
+	packet = receiveMessage(SystemQID::HANDSHAKE);
 
-	// Take response from queue
-	packet = queue->front();
-	queue->pop();
-	
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
 	int componentCount;
@@ -188,7 +181,7 @@ bool handshakeRoleReq(uint32_t id,
 		sf::Packet p2;
 		anax::Entity en;
 		for (int i = 0; i < componentCount; i++) {
-			sock_o.receive(p2, sender, port);
+			p2 = receiveMessage(SystemQID::HANDSHAKE);
 			en = addComponent(world, p2);
 		}
 		en.removeComponent<tempo::ComponentPlayerRemote>();

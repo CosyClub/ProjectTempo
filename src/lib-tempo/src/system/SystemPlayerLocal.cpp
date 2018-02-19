@@ -77,7 +77,7 @@ namespace tempo{
 
 				sf::Packet packet;
 				packet << id << dx << dy;
-				sendMessage(SystemQID::PLAYER_UPDATES, packet, false);
+				sendMessage(SystemQID::PLAYER_UPDATES, packet);
 			}
 		}
 	}
