@@ -153,7 +153,7 @@ int main(int argc, const char** argv)
 	tempo::ClientRoleData roleData = {"Bilbo Baggins"};
 
 	// Connect to server and handshake information
-	tempo::connectToAndSyncWithServer(role, roleData, world, scene, system_level);
+	tempo::connectToAndSyncWithServer(role, roleData, world, system_level);
 
 	// Start and Sync Song
 	mainsong.start();

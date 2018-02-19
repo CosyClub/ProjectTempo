@@ -16,7 +16,6 @@
 
 #include <iostream>
 #include <thread>
-#include <Ogre.h>
 
 namespace tempo
 {
@@ -70,8 +69,6 @@ namespace tempo
 	//         roleData - Point to client's requested role data (if any)
 	//                    null inputs assume no role data requied.
 	//         world    - Anax world to put entities from the server in.
-	//         scene    - Ogre scene manager for the things that need to be
-	//                    rendered from the server.
 	//         system_gm - The Level Manager System for the client for the
 	//                    entities recieved from the server.
 	// Returns:
@@ -79,7 +76,6 @@ namespace tempo
 	bool connectToAndSyncWithServer(ClientRole roleID, 
 	                                ClientRoleData &roleData,
 	                                anax::World& world,
-                                        Ogre::SceneManager *scene,
                                         tempo::SystemLevelManager system_gm);
 
 }
