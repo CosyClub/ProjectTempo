@@ -3,6 +3,9 @@
 namespace tempo
 {
 
+std::map<anax::Entity::Id, anax::Entity::Id> servertolocal;
+std::map<anax::Entity::Id, anax::Entity::Id> localtoserver;
+
 sf::Packet& operator <<(sf::Packet& packet, const ComponentID id)
 {
 	return packet << uint32_t(id);

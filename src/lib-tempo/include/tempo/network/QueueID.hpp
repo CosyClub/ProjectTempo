@@ -57,6 +57,9 @@ namespace tempo
 
 	sf::Packet& operator <<(sf::Packet& packet, const ComponentID id);
 	sf::Packet& operator >>(sf::Packet& packet, ComponentID& id);
+
+	extern std::map<anax::Entity::Id, anax::Entity::Id> servertolocal;
+	extern std::map<anax::Entity::Id, anax::Entity::Id> localtoserver;
 }
 
 #endif
