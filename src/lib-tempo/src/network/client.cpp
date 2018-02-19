@@ -3,50 +3,65 @@
 namespace tempo
 {
 
-sf::Time timeSyncClient(tempo::Clock *clock)
+// Brutalised version of the NTP Time Sync Protocol (RFC5905)
+// http://www.ietf.org/rfc/rfc5905.txt (Page 27)
+sf::Int64 timeSyncClient(tempo::Clock *clock)
 {
 	// Create a socket to the server and connect to it
 	sf::TcpSocket socket;
-	sf::Socket::Status status = socket.connect(addr_r, port_st);
-	if (status != sf::Socket::Done) {
+	if (socket.connect(addr_r, port_st) != sf::Socket::Done) {
 		std::cout << "Error binding socket" << std::endl;
-		return sf::Time::Zero;
+		return 0;
 	}
 
 	// Initialise time sync protocol variables
-	sf::Int64 t0 = clock->get_time().asMicroseconds();
-	sf::Int64 t1;
-	sf::Int64 t2;
-	sf::Int64 t3;
+	sf::Int64 T1     = 0; // PACKET: Previous packet time of departure
+	sf::Int64 T2     = 0; // PACKET: Previous packet time of arrival
+	sf::Int64 T3     = 0; // PACKET: Current pakcet time of departure
+	sf::Int64 T4     = 0; // PACKET: Current packet time of arrival
+	sf::Int64 org    = 0; // STATE:  Time when message departed from peer
+	sf::Int64 rec    = 0; // STATE:  Time when we recieved from the peer
+	sf::Int64 xmt    = 0; // STATE:  Time when we transmitted to the peer
+	sf::Int64 offset = 0; // Final Result
 
-	// Start time sync exchange
-	sf::Packet packet;
-	packet << t0;
-	status = socket.send(packet);
-	if (status != sf::Socket::Done) {
-		std::cout << "Error sending packet" << std::endl;
-		return sf::Time::Zero;
+	for (int i = 0; i < TIMESYNC_ITERS; i++) {
+		// Time Sync Exchange: t(n+0) -> t(n+1)
+		T1 = T3;
+		T2 = T4;
+		T3  = clock->get_time().asMicroseconds(); // t(n+0)
+		sf::Packet packet;
+		packet << T1 << T2 << T3;
+		if (socket.send(packet) != sf::Socket::Done) {
+			std::cout << "Error sending T/S packet" << std::endl;
+			return 0;
+		}
+		xmt = T3; // t(n+0)
+		
+		// Time Sync Exchange: t(n+2) -> t(n+3)
+		if (socket.receive(packet) != sf::Socket::Done) {
+			std::cout << "Error recieving T/S packet" << std::endl;
+			return 0;
+		}
+		T4 = clock->get_time().asMicroseconds(); // t(n+3)
+		packet >> T1 >> T2 >> T3;
+
+		// Sanity Checks
+		if ((T1 == org) || (T3 == xmt) || (T1 != xmt)) {
+			// Something went wrong; duplicate/bogus packet.
+			return 0;
+		}
+		org = T3;
+		rec = T4;
+
+		// Calculate offset 
+		offset += ((T2 - T1) + (T3 - T4)) / 2;
 	}
 
-	status = socket.receive(packet);
-	if (status != sf::Socket::Done) {
-		std::cout << "Error recieving packet" << std::endl;
-		return sf::Time::Zero;
-	}
-
-	// End time sync exchange, calculate delay in last tranmission from 
-	// time sync server.
-	t3 = clock->get_time().asMicroseconds();
-	packet >> t1 >> t2;
-	sf::Int64 delay  = ((t3 - t0) - (t2 - t1)) / 2;
-
-	// Return current time
-	return sf::microseconds(t2 + delay);
+	// Return Time Sync Offset
+	return offset / TIMESYNC_ITERS;
 }
 
-bool sendMessage(tempo::SystemQID id, 
-                 sf::Packet payload, 
-                 bool isHandshake = false) 
+bool sendMessage(tempo::SystemQID id, sf::Packet payload) 
 {
 	sf::Packet message;
 
@@ -54,14 +69,8 @@ bool sendMessage(tempo::SystemQID id,
 	message << id;
 	message << payload;
 
-	
-
 	// Send message
-	if (isHandshake) {
-		return sock_o.send(message, addr_r, port_sh) == sf::Socket::Done;
-	} else {
-		return sock_o.send(message, addr_r, port_si) == sf::Socket::Done;
-	}
+	return sock_o.send(message, addr_r, port_si) == sf::Socket::Done;
 }
 
 
@@ -100,15 +109,22 @@ uint32_t handshakeHello(anax::World& world,
 	// Package up payload
 	sf::Packet packet;
 	packet << static_cast<uint32_t>(HandshakeID::HELLO);
+	packet << sf::IpAddress::getLocalAddress().toInteger();
 	packet << port_ci;
-
+	
 	// Send HELLO
-	sock_o.send(packet, addr_r, port_sh);
+	sendMessage(SystemQID::HANDSHAKE, packet);
 
-	// Recieve HELLO_ROG
-	sf::IpAddress sender;
-	unsigned short port;
-	sock_o.receive(packet, sender, port);
+	// Wait until we recieve HELLO_ROG
+	tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::HANDSHAKE);
+	while (queue->empty()) {
+		std::cout << ".\n";
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+	}
+
+	// Take response from queue
+	packet = queue->front();
+	queue->pop();
 
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
@@ -128,8 +144,8 @@ uint32_t handshakeHello(anax::World& world,
 			addComponent(world, p2);
 		}
 	} else {
-		std::cout << "The server was rude to us when we said hello. >:("
-		          << std::endl;
+		std::cout << "We didn't get what we expected when connecting "
+		          << "to the server." << std::endl;
 	}
 
 	return id;
@@ -150,12 +166,17 @@ bool handshakeRoleReq(uint32_t id,
 	packet << roleData;
 	
 	// Send ROLEREQ
-	sock_o.send(packet, addr_r, port_sh);
+	sendMessage(SystemQID::HANDSHAKE, packet);
 	
-	// Receive ROLEREQ_ROG
-	sf::IpAddress sender;
-	unsigned short port;
-	sock_o.receive(packet, sender, port);
+	// Wait until we recieve ROLEREQ_ROG
+	tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::HANDSHAKE);
+	while (queue->empty()) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+	}
+
+	// Take response from queue
+	packet = queue->front();
+	queue->pop();
 	
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
@@ -201,7 +222,8 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 	if (sock_i.getLocalPort() == 0) {
 		std::cout << "Looks like the listener thread hasn't started, "
 		          << "or didn't bind it's socket correctly. Will not "
-		          << "connect to server without this!" << std::endl;
+		          << "connect to server without this or we won't hear "
+		          << "anything from the server!" << std::endl;
 		return false;
 	}
 
@@ -209,7 +231,7 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 	uint32_t id = handshakeHello(world, scene, system_gm);
 	std::cout << "HELLO COMPLETE" << std::endl;
 	if (id == NO_CLIENT_ID) {
-		std::cout << "The server didn't like us saying HELLO!" 
+		std::cout << "Couldn't connect to the server." 
 		          << std::endl;
 		return false;
 	}
@@ -219,6 +241,5 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 	std::cout << "ROLEREQ COMPLETE" << std::endl;
 	return ret;
 }
-
 
 }

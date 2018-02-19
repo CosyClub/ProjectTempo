@@ -48,15 +48,14 @@ namespace tempo
 	void timeSyncServer(tempo::Clock *clock);
 
 	// listenForNewClients
-	// WARNING: Should be run on separate thread.
-	// Listens for and orchestrates initialisation of new clients on 
+	// Checks for and orchestrates initialisation of new clients on 
 	// `port_sh`.
 	//
 	// TODO: Write parameters
 	//
 	// Returns:
 	//         void (is a thread)
-	void listenForNewClients(anax::World *world, SystemLevelManager system_grid_motion);
+	void checkForNewClients(anax::World *world, SystemLevelManager system_grid_motion);
 
 	// listenForClientUpdates
 	// WARNING: Should be run on separate thread.

@@ -26,8 +26,10 @@ namespace tempo
 	// Arguments:
 	//         clock - pointer to current client clock with "dirty time"
 	// Returns:
-	//         The correct "master time" as of call completion
-	sf::Time timeSyncClient(tempo::Clock *clock);
+	//         The offset, in microseconds, of the server and local client 
+	//         clock, where offset = time(server) - time(client)
+	//         If this function returns 0, assume an error has occured.
+	sf::Int64 timeSyncClient(tempo::Clock *clock);
 
 	// sendMessageToServer
 	// Sends a message to the server. No guarentee of delivery given.
@@ -36,11 +38,9 @@ namespace tempo
 	//         id        - ID of the System Queue or Handshake message to 
 	//                     deliver the message to. {use static_cast<int>()}
 	//         payload   - The payload to send to the message queue.
-	//         isHandshake - Whether or not the message is a handshake 
-	//                     message (true) or game message (false, default).
 	// Returns:
 	//         bool - true if sent, false if unable to send.
-	bool sendMessage(SystemQID id, sf::Packet payload, bool isHandshake);
+	bool sendMessage(SystemQID id, sf::Packet payload);
 
 	// listenForServerUpdates
 	// WARNING: Should be run on separate thread.

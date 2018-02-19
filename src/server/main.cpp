@@ -38,7 +38,6 @@ int main(int argc, const char** argv) {
 	                                  sf::milliseconds(PLAYER_DELTA));
 
 	// Set up remote address, local ports and remote handshake port
-	tempo::port_sh = DEFAULT_PORT_HS;
 	tempo::port_si = DEFAULT_PORT_IN;
 	tempo::port_so = DEFAULT_PORT_OUT;
 	tempo::port_st = DEFAULT_PORT_TS;
@@ -61,7 +60,7 @@ int main(int argc, const char** argv) {
 	world.addSystem(system_player_remote);
 	world.refresh();
 
-	// YOLO
+	// Create some Test Entities
 	anax::Entity entity_ai1 = tempo::newAI(world, 5, 5);
 	anax::Entity entity_ai2 = tempo::newAI(world, 3, 3);
 	anax::Entity entity_ai3 = tempo::newAI(world, 8, 8);
@@ -75,7 +74,6 @@ int main(int argc, const char** argv) {
 	//////////////////////////////////
 	// Thread Startup
 	std::thread timeSyncThread (tempo::timeSyncServer, &clock);
-	std::thread newClientsThread (tempo::listenForNewClients, &world, system_level);
 	std::thread clientUpdatesThread (tempo::listenForClientUpdates);
 	tempo::bindSocket('o', tempo::port_so);
 
@@ -83,14 +81,19 @@ int main(int argc, const char** argv) {
 
 	float last_dt_time = dt_timer.getElapsedTime().asSeconds();
 
+	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	tick++;
+  
 	// Main loop, with beat printouts
 	while (true) {
+		// Handshake call, DO NOT REMOVE
+		checkForNewClients(&world, system_level);
+
 		if (clock.passed_beat()) {
 			system_grid_ai.update();
-
-			/* std::cout << "Server Beat Passed (" */
-			/*           << clock.get_time().asSeconds() << ")" */
-			/*           << std::endl; */
+      
+			if (tick++ % 20 == 0)
+				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
 		}
 
 		float next_dt_time = dt_timer.getElapsedTime().asSeconds();

@@ -28,6 +28,7 @@ namespace tempo
 		QID_RESERVED_BOTTOM,
 		//Start of non-reserved zone
 		
+		HANDSHAKE,
 		PLAYER_UPDATES,
 		ENTITY_CREATION,
 
