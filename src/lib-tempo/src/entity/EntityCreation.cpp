@@ -53,9 +53,15 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 		part >> component_id;
 		std::cout << "Adding Component with ID " << component_id << std::endl;
 		switch (component_id) {
+
+		//Put new Components in here
+		
 		CASE(ComponentHealth, HEALTH)
-		CASE(ComponentStageTranslation, STAGE_TRANSLATION)
 		CASE(ComponentPlayerLocal, PLAYER_LOCAL)
+		CASE(ComponentStagePosition, STAGE_POSITION)
+		CASE(ComponentStageTranslation, STAGE_TRANSLATION)
+
+		//End of new Component Zone
 		default :
 			std::cout << "WARNING: Unimplemented deserialisation of"
 				     " recieved component occured, ignoring." 

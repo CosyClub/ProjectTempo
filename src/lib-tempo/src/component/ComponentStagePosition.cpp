@@ -26,4 +26,51 @@ namespace tempo{
 	glm::ivec2 ComponentStagePosition::getOrigin() {
 		return occupied[0];
 	}
+
+	//Required for inital network sync
+	ComponentStagePosition::ComponentStagePosition(sf::Packet p)
+	{
+		uint32_t size;
+		p >> size;
+
+		occupied.clear();
+		for (int I = 0; I < size; I++)
+		{
+			uint32_t x;
+			uint32_t y;
+
+			p >> x;
+			p >> y;
+
+			occupied.push_back(glm::ivec2(x, y));
+		}
+	}
+
+	sf::Packet ComponentStagePosition::dumpComponent()
+	{
+		sf::Packet p;
+		uint32_t size;
+
+		size = occupied.size();
+		p >> size;
+
+		for (int I = 0; I < size; I++)
+		{
+			uint32_t x;
+			uint32_t y;
+
+			x = occupied[I].x;
+			y = occupied[I].y;
+
+			p >> x;
+			p >> y;
+		}
+		
+		return p;
+	}
+
+	ComponentID ComponentStagePosition::getID()
+	{
+		return ComponentID::STAGE_POSITION;
+	}
 }
