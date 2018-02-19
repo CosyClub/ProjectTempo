@@ -120,11 +120,11 @@ uint32_t countComponents(anax::Entity entity, ec_list &e_list)
 	c_list list;
 	uint32_t result = 0;
 	list.first = entity;
+	result++; //TODO This doesn't make any sense anymore
 	for (auto& component: entity.getComponents()) {
 		NetworkedComponent *nc;
 		nc = dynamic_cast<NetworkedComponent*>(component);
 		if (nc != NULL) {
-			result++;
 			list.second.push_back(component);
 		}
 	}
