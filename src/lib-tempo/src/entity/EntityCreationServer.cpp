@@ -26,7 +26,7 @@ anax::Entity newAI(anax::World& world, int x, int y) {
 
 	anax::Entity entity_ai = world.createEntity();
 
-	//entity_ai.addComponent<tempo::ComponentStagePosition>(x, y, tempo::tileMask1by1, false);
+	entity_ai.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x, y));
 	entity_ai.addComponent<tempo::ComponentStageTranslation>();
 	entity_ai.addComponent<tempo::ComponentGridAi>();
 	entity_ai.activate();
