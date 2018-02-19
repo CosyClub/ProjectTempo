@@ -46,6 +46,7 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 	switch (component_id) {
 	CASE(ComponentHealth, HEALTH)
 	CASE(ComponentStageTranslation, STAGE_TRANSLATION)
+	CASE(ComponentPlayerLocal, PLAYER_LOCAL)
 	default :
 		std::cout << "WARNING: Unimplemented deserialisation of"
 			     " recieved component occured, ignoring." 
