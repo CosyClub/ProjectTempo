@@ -152,6 +152,8 @@ namespace tempo
 	sf::Packet& operator <<(sf::Packet& packet, const anax::Entity::Id id);
 	sf::Packet& operator >>(sf::Packet& packet, anax::Entity::Id& id);
 
+	sf::Packet splitPacket(sf::Packet& packet, uint32_t size);
+
 
 }
 

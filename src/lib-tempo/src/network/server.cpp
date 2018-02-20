@@ -143,33 +143,55 @@ uint32_t addClient(sf::Uint32 ip,
 	return idCounter++;
 }
 
-typedef std::vector<std::pair<anax::Entity, anax::Component*>> ec_list;
-uint32_t countComponents(anax::Entity entity, ec_list &list)
+typedef std::pair<anax::Entity, std::vector<anax::Component*>> c_list;
+typedef std::vector<c_list> ec_list;
+uint32_t countComponents(anax::Entity entity, ec_list &e_list)
 {
 	// TODO Clean this up post merge with new handshake
+	c_list list;
 	uint32_t result = 0;
+	list.first = entity;
+	result++; //TODO This doesn't make any sense anymore
 	for (auto& component: entity.getComponents()) {
 		NetworkedComponent *nc;
 		nc = dynamic_cast<NetworkedComponent*>(component);
 		if (nc != NULL) {
-			result++;
-			list.push_back(std::make_pair(entity, component));
+			list.second.push_back(component);
 		}
 	}
+	e_list.push_back(list);
 	return result;
 
+}
+
+sf::Packet makeBigPacket(c_list list)
+{
+	anax::Entity e = list.first;
+	sf::Packet p = sf::Packet();
+	p << e.getId();
+	std::cout << "Sending components for entity " << e.getId().index << std::endl;
+	for (anax::Component* c : list.second)
+	{
+		sf::Packet part = sf::Packet();
+		NetworkedComponent *nc;
+		nc = dynamic_cast<NetworkedComponent*>(c);
+		std::cout << "Adding component with ID " << nc->getID() << std::endl;
+		part << nc->getID();
+		part << nc->dumpComponent();
+		p << sf::Uint64(part.getDataSize());
+		p << part;
+	}
+
+	return p;
 }
 	
 void sendComponents(uint32_t clientID, ec_list &list)
 {
 	sf::Packet rog;
-	for (auto& pair: list) {
-		NetworkedComponent *nc;
-		nc = dynamic_cast<NetworkedComponent*>(pair.second);
-		rog << pair.first.getId();
-		rog << nc->ID;
-		rog << nc->dumpComponent();
+	for (c_list list: e_list) {
+		rog = makeBigPacket(list);
 		sendMessage(QueueID::HANDSHAKE, rog, clientID);
+		sock_h.send(rog, ip, port);
 	}
 }
 
@@ -202,6 +224,9 @@ void handshakeHello(sf::Packet &packet,
 	ec_list components;
 	for (auto& entity: world->getEntities()) 
 		componentAmount += countComponents(entity, components);
+
+	std::cout << "Found " << componentAmount << " components from "
+	          << world->getEntities().size() << " entities" << std::endl;
 	
 	// Construct HELLO_ROG response
 	sf::Packet rog;
@@ -260,11 +285,11 @@ void handshakeRoleReq(sf::Packet &packet,
 		if (client.first == id) continue;
 		rog = sf::Packet();
 		for (auto& pair : components) {
-			NetworkedComponent *nc;
-			nc = dynamic_cast<NetworkedComponent*>(pair.second);
-			rog << pair.first.getId();
-			rog << nc->ID;
-			rog << nc->dumpComponent();
+			// NetworkedComponent *nc;
+			// nc = dynamic_cast<NetworkedComponent*>(pair.second);
+			// rog << pair.first.getId();
+			// rog << nc->ID;
+			// rog << nc->dumpComponent();
 			sendMessage(tempo::QueueID::ENTITY_CREATION, 
 			            rog,
 			            client.first);

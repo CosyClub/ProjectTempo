@@ -144,17 +144,18 @@ namespace tempo{
 
 		for (auto& entity : entities) {
 			auto& pos = entity.getComponent<ComponentStagePosition>();
-			auto& mot = entity.getComponent<ComponentStageTranslation>();
+			auto& gm = entity.getComponent<ComponentStageTranslation>();
 
-			// if(mot.getCurrentMovement() != glm::vec2(0,0)){
-			// 	gm.setMotionProgress(mot.getMotionProgress() + (dt * gm.movement_speed) / gm.getCurrentMovement().length());
-			// 	if(gm.getMotionProgress() >= 1){
-			// 		pos.setPosition(pos.getPosition() + gm.getCurrentMovement());
-			// 		gm.setDelta({0,0});
-			// 		gm.setMotionProgress(0);
-			// 		gm.setTargetLocked(false);
-			// 	}
-			// }
+			{
+			//if(gm.getCurrentMovement() != glm::vec2(0, 0)){
+			//	gm.setMotionProgress(gm.getMotionProgress() + (dt * gm.movement_speed) / gm.getCurrentMovement().length());
+			//	if(gm.getMotionProgress() >= 1){
+			//		pos.setPosition(pos.getPosition() + gm.getCurrentMovement());
+			//		gm.setDelta({0,0});
+			//		gm.setMotionProgress(0);
+			//		gm.setTargetLocked(false);
+			//	}
+			//}
 
 			//glm::vec2 target_tile = pos.getPosition() + gm.getCurrentMovement();
 			//float current_height = this->getHeight(pos.getPosition());

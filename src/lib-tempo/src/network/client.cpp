@@ -116,7 +116,6 @@ void listenForServerUpdates()
 }
 
 uint32_t handshakeHello(anax::World& world, 
-		        Ogre::SceneManager *scene,
                         tempo::SystemLevelManager system_gm)
 {
 	// Package up payload
@@ -160,7 +159,6 @@ bool handshakeRoleReq(uint32_t id,
                       ClientRole roleID, 
                       ClientRoleData &roleData,
                       anax::World& world,
-		      Ogre::SceneManager *scene,
                       tempo::SystemLevelManager system_gm)
 {
 	// Package up payload
@@ -203,7 +201,6 @@ bool handshakeRoleReq(uint32_t id,
 bool connectToAndSyncWithServer(ClientRole roleID, 
                                 ClientRoleData &roleData,
                                 anax::World& world,
-                                Ogre::SceneManager *scene,
                                 tempo::SystemLevelManager system_gm)
 {
 	// Bind outgoing port if not bound
@@ -226,7 +223,7 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 	}
 
 	std::cout << "HELLO STARTING" << std::endl;
-	uint32_t id = handshakeHello(world, scene, system_gm);
+	uint32_t id = handshakeHello(world, system_gm);
 	std::cout << "HELLO COMPLETE" << std::endl;
 	if (id == NO_CLIENT_ID) {
 		std::cout << "Couldn't connect to the server." 
@@ -235,7 +232,7 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 	}
 
 	std::cout << "ROLEREQ STARTING" << std::endl;
-	bool ret = handshakeRoleReq(id, roleID, roleData, world, scene, system_gm);
+	bool ret = handshakeRoleReq(id, roleID, roleData, world, system_gm);
 	std::cout << "ROLEREQ COMPLETE" << std::endl;
 	return ret;
 }

@@ -28,4 +28,24 @@ void ComponentHealth::HealthUpdate(int delta_health) {
 
 }
 
+ComponentHealth::ComponentHealth(sf::Packet p)
+{
+	p >> max_health;
+	p >> current_health;
+}
+
+sf::Packet ComponentHealth::dumpComponent()
+{
+	sf::Packet p;
+	p << max_health;
+	p << current_health;
+
+	return p;
+}
+
+ComponentID ComponentHealth::getId()
+{
+	return ComponentID::HEALTH;
+}
+
 } // namespace tempo

@@ -2,15 +2,17 @@
 #define TEMPO_COMPONENT_PLAYERREMOTE_HPP
 
 #include <anax/Component.hpp>
+#include <tempo/component/NetworkedComponent.hpp>
 
 namespace tempo
 {
 
-struct ComponentPlayerRemote : anax::Component 
+struct ComponentPlayerRemote : anax::Component, NetworkedComponent 
 {
-
-	// Currently Empty
-
+	// Required for inital network sync	
+	ComponentPlayerRemote(sf::Packet p);
+	ComponentID getId();
+	sf::Packet dumpComponent();
 };
 
 } // namespace tempo

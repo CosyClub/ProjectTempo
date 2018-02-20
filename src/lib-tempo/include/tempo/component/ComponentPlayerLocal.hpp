@@ -2,14 +2,17 @@
 #define TEMPO_COMPONENT_PLAYERLOCAL_HPP
 
 #include <anax/Component.hpp>
+#include <tempo/component/NetworkedComponent.hpp>
 
 namespace tempo
 {
 
-struct ComponentPlayerLocal : anax::Component 
-{
-	
-	// Currently Empty
+struct ComponentPlayerLocal : anax::Component, NetworkedComponent 
+{	
+	// Required for inital network sync	
+	ComponentPlayerLocal(sf::Packet p);
+	ComponentID getId();
+	sf::Packet dumpComponent();
 
 };
 

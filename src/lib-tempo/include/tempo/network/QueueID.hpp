@@ -40,6 +40,7 @@ namespace tempo
 	enum ComponentID
 	{
 		CID_RESERVED_BOTTOM,
+		CID_RESERVED_ERROR,
 		//Start of non-reserved zone
 		
 		GRID_AI,
@@ -59,6 +60,9 @@ namespace tempo
 
 	sf::Packet& operator <<(sf::Packet& packet, const ComponentID id);
 	sf::Packet& operator >>(sf::Packet& packet, ComponentID& id);
+
+	extern std::map<anax::Entity::Id, anax::Entity::Id> servertolocal;
+	extern std::map<anax::Entity::Id, anax::Entity::Id> localtoserver;
 }
 
 #endif

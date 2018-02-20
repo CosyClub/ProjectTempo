@@ -4,12 +4,6 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/network/base.hpp>
-#include <tempo/network/QueueID.hpp>
-
-#include <iostream>
-#include <glm/fwd.hpp>
-#include <glm/vec2.hpp>
 #include <SFML/Network.hpp>
 
 namespace tempo
