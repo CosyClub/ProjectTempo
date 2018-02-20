@@ -9,6 +9,9 @@ namespace tempo
 
 struct ComponentPlayerLocal : anax::Component, NetworkedComponent 
 {	
+	//Anthony it's broken because you removed all the fucking constructors
+	ComponentPlayerLocal();
+
 	// Required for inital network sync	
 	ComponentPlayerLocal(sf::Packet p);
 	ComponentID getId();

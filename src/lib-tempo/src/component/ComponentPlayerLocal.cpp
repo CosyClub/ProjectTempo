@@ -2,6 +2,10 @@
 
 namespace tempo
 {
+ComponentPlayerLocal::ComponentPlayerLocal()
+{
+	return; // Do nothing as this struct is currently empty
+}
 
 ComponentPlayerLocal::ComponentPlayerLocal(sf::Packet p)
 {

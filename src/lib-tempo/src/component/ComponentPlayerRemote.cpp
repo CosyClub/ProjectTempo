@@ -3,6 +3,11 @@
 namespace tempo
 {
 
+ComponentPlayerRemote::ComponentPlayerRemote()
+{
+	return; // Do nothing as this struct is currently empty
+}
+
 ComponentPlayerRemote::ComponentPlayerRemote(sf::Packet p)
 {
 	return; // Do nothing as this struct is currently empty
