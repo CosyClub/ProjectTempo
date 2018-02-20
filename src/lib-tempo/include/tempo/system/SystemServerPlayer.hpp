@@ -23,7 +23,7 @@ struct SystemServerPlayer : anax::System<
 
 	inline SystemServerPlayer(tempo::Clock& c) : clock(c) {}
 
-	void update();
+	void update(anax::World &world);
 };
 
 } // namespace tempo

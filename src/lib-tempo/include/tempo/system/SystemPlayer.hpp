@@ -20,7 +20,7 @@ struct SystemPlayer : anax::System<anax::Requires<ComponentCombo,
 
 	inline SystemPlayer(tempo::Clock& c) : clock(c) {}
 
-	void update(anax::Entity::Id player_id);
+	void update(anax::Entity::Id player_id, anax::World &world);
 };
 
 } // namespace tempo
