@@ -68,7 +68,9 @@ bool sortPacket(sf::Packet p)
 sf::Packet& operator <<(sf::Packet& p1, sf::Packet& p2)
 {
 	uint8_t temp;
-	while (p2 >> temp) {
+	for (int I = 0; I < p2.getDataSize(); I++)
+	{
+		p2 >> temp;
 		p1 << temp;
 	}
 	return p1;
