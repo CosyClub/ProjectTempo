@@ -191,7 +191,6 @@ void sendComponents(uint32_t clientID, ec_list &e_list)
 	for (c_list list: e_list) {
 		rog = makeBigPacket(list);
 		sendMessage(QueueID::HANDSHAKE, rog, clientID);
-		sock_h.send(rog, ip, port);
 	}
 }
 
