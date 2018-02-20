@@ -77,7 +77,7 @@ sf::Packet ComponentStagePosition::dumpComponent()
 	uint32_t size;
 
 	size = occupied.size();
-	p >> size;
+	p << size;
 
 	for (int I = 0; I < size; I++) {
 		uint32_t x;
@@ -85,9 +85,9 @@ sf::Packet ComponentStagePosition::dumpComponent()
 
 		x = occupied[I].x;
 		y = occupied[I].y;
-
-		p >> x;
-		p >> y;
+		
+		p << x;
+		p << y;
 	}
 	
 	return p;

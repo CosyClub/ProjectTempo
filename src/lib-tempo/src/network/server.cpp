@@ -175,9 +175,12 @@ sf::Packet makeBigPacket(c_list list)
 		sf::Packet part = sf::Packet();
 		NetworkedComponent *nc;
 		nc = dynamic_cast<NetworkedComponent*>(c);
-		std::cout << "Adding component with ID " << nc->getId() << std::endl;
 		part << nc->getId();
-		part << nc->dumpComponent();
+		sf::Packet part2 = nc->dumpComponent();
+		part << part2;
+		std::cout << "Adding component with ID " << nc->getId()
+		          << " and size " << sf::Uint32(part.getDataSize())
+		          << std::endl;
 		p << sf::Uint32(part.getDataSize());
 		p << part;
 	}
