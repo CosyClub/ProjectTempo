@@ -146,7 +146,6 @@ namespace tempo{
 			auto& pos = entity.getComponent<ComponentStagePosition>();
 			auto& gm = entity.getComponent<ComponentStageTranslation>();
 
-			{
 			//if(gm.getCurrentMovement() != glm::vec2(0, 0)){
 			//	gm.setMotionProgress(gm.getMotionProgress() + (dt * gm.movement_speed) / gm.getCurrentMovement().length());
 			//	if(gm.getMotionProgress() >= 1){
