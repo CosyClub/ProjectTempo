@@ -108,7 +108,7 @@ int main(int argc, const char** argv) {
 		system_combo.checkForUpdates();
 		system_level.update(dt);
 		system_health.CheckHealth();
-		system_player.update();
+		system_player.update(world);
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	}

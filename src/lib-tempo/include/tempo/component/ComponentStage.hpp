@@ -21,6 +21,8 @@ struct ComponentStage : anax::Component, NetworkedComponent
 	private:
 		stage_tiles tiles;
 		std::string stage_file;
+
+		void loadLevel(const char * stage_file);
 	public:
 		// Constructor requires stage file
 		ComponentStage(const char* stage_file);

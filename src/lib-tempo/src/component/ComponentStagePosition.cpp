@@ -9,6 +9,25 @@ ComponentStagePosition::ComponentStagePosition(glm::ivec2 bottom_left,
                                                glm::ivec2 top_right)
                                              : occupied(0) 
 {
+	setPosition(bottom_left, top_right);
+}
+
+ComponentStagePosition::ComponentStagePosition(glm::ivec2 position) 
+	: occupied(0) 
+{
+	setPosition(position);
+}
+
+void ComponentStagePosition::movePosition(glm::ivec2 delta)
+{
+	for (int i = 0; i < occupied.size(); i++) {
+		occupied[i] = occupied[i] + delta;
+	}
+}
+
+void ComponentStagePosition::setPosition(glm::ivec2 bottom_left, glm::ivec2 top_right)
+{
+	occupied.clear();
 	assert(bottom_left.x <= top_right.x && bottom_left.y <= top_right.y);
 
 	for (int y = bottom_left.y; y < top_right.y; y++) {
@@ -18,12 +37,11 @@ ComponentStagePosition::ComponentStagePosition(glm::ivec2 bottom_left,
 	}
 }
 
-ComponentStagePosition::ComponentStagePosition(glm::ivec2 position) 
-	: occupied(0) 
+void ComponentStagePosition::setPosition(glm::ivec2 position)
 {
+	occupied.clear();
 	occupied.push_back(position);
 }
-
 
 std::vector<glm::ivec2> ComponentStagePosition::getOccupied()
 {

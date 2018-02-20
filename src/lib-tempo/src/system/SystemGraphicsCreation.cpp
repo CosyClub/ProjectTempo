@@ -33,7 +33,7 @@ void SystemGraphicsCreation::addEntities(Ogre::SceneManager* scene)
 
 		Ogre::SceneNode* node = entity.getComponent<ComponentRender>().node;
 		glm::ivec2 pos = entity.getComponent<ComponentStagePosition>().getOrigin();
-		// node->setPosition(Ogre::Vector3(pos.x, pos.y, 1));
+		node->setPosition(Ogre::Vector3(pos.x, 0, pos.y));
 	}
 }
 

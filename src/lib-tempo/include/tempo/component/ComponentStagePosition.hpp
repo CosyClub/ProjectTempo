@@ -24,6 +24,12 @@ struct ComponentStagePosition : anax::Component, NetworkedComponent
 		// Generate an entity that only occupies a single square.
 		ComponentStagePosition(glm::ivec2 position);
 	
+		// DO NOT CALL: Moves the occupied position by a delta
+		void movePosition(glm::ivec2 delta);
+		// DO NOT CALL: Sets the occupied positions
+		void setPosition(glm::ivec2 bottom_left, glm::ivec2 top_right);
+		void setPosition(glm::ivec2 position);
+
 		// Returns all the positions that this entity occupies.
 		std::vector<glm::ivec2> getOccupied();
 		// Returns the origin of the entity.

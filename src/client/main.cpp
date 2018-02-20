@@ -360,7 +360,7 @@ int main(int argc, const char** argv)
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
 
 		world.refresh();
-		system_player.update(entity_player.getId());
+		system_player.update(entity_player.getId(), world);
 		render_health.HealthBarUpdate();
 		system_health.CheckHealth();
 		system_level.update(dt);
