@@ -34,5 +34,28 @@ void ComponentCombo::breakCombo()
 	actionedThisBeat = true;
 	comboCounter     = 0;
 }
+	
+
+/////
+// Required for networking
+/////
+ComponentCombo(sf::Packet p)
+{
+	p >> actionedThisBeat
+	  >> comboCounter;
+}
+
+ComponentID ComponentCombo::getId()
+{
+	return ComponentID::COMBO
+}
+
+sf::Packet ComponentCombo::dumpComponent()
+{
+	sf::Packet p;
+	p << actionedThisBeat
+	  << comboCounter;
+	return p;
+}
 
 } // namespace tempo
