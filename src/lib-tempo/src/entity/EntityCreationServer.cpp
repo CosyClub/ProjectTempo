@@ -3,6 +3,7 @@
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
+#include <tempo/component/ComponentModel.hpp>
 #include <glm/vec2.hpp>
 
 namespace tempo
@@ -22,6 +23,7 @@ anax::Entity newPlayer(anax::World& world, tempo::SystemLevelManager system_grid
 	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(5,5));
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
+	entity_player.addComponent<tempo::ComponentModel>("");
 	
 	entity_player.activate();
 
@@ -36,6 +38,7 @@ anax::Entity newAI(anax::World& world, int x, int y)
 	entity_ai.addComponent<tempo::ComponentGridAi>();
 	entity_ai.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x,y));
 	entity_ai.addComponent<tempo::ComponentStageTranslation>();
+	entity_ai.addComponent<tempo::ComponentModel>("");
 	entity_ai.activate();
 
 	return entity_ai;
@@ -49,6 +52,7 @@ anax::Entity newDestroyable(anax::World& world, int x, int y, std::string mesh_n
 
 	entity_object.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x,y));
 	entity_object.addComponent<tempo::ComponentStageTranslation>();
+	entity_object.addComponent<tempo::ComponentModel>("");
 
 	entity_object.activate();
 
@@ -65,6 +69,7 @@ anax::Entity newNonDestroyable(anax::World& world, int x, int y, std::string mes
 
 	entity_object.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x,y));
 	entity_object.addComponent<tempo::ComponentStageTranslation>();
+	entity_object.addComponent<tempo::ComponentModel>("");
 
 	entity_object.activate();
 
