@@ -207,7 +207,6 @@ namespace tempo{
 			//	} else {
 			//		// :TODO: claim the target tile with level manager
 			//		gm.setTargetLocked(true);
-			}
 		}
 
 	}

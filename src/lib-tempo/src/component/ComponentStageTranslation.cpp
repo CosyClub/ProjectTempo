@@ -22,7 +22,7 @@ sf::Packet ComponentStageTranslation::dumpComponent()
 
 	return p;
 }
-ComponentID ComponentStageTranslation::getID()
+ComponentID ComponentStageTranslation::getId()
 {
 	return ComponentID::STAGE_TRANSLATION;
 }

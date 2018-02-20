@@ -21,29 +21,60 @@ std::mutex cmtx;
 
 // For use in a separate thread by server to deal with a client so the main time 
 // sync thread can continue listening for more clients whilst dealing with this.
+// This function acts as peer B in our brutalised version of NTP (RFC5905)
+// http://www.ietf.org/rfc/rfc5905.txt
 void timeSyncHandler(tempo::Clock *clock, sf::TcpSocket *client) 
 {
-	std::cout << "Client (" << tcpRemoteToStr(client)
-	          << ") time sync started." << std::endl;
+	// Initialise time sync protocol variables
+	sf::Int64 T1     = 0; // PACKET: Previous packet time of departure
+	sf::Int64 T2     = 0; // PACKET: Previous packet time of arrival
+	sf::Int64 T3     = 0; // PACKET: Current pakcet time of departure
+	sf::Int64 T4     = 0; // PACKET: Current packet time of arrival
+	sf::Int64 org    = 0; // STATE:  Time when message departed from peer
+	sf::Int64 rec    = 0; // STATE:  Time when we recieved from the peer
+	sf::Int64 xmt    = 0; // STATE:  Time when we transmitted to the peer
+	sf::Int64 offset = 0; // Final Result
+	
+	for (int i = 0; i < TIMESYNC_ITERS; i++) {	
+		// Time Sync Exchange: t(n+0) -> t(n+1)
+		sf::Packet packet;
+		client->receive(packet);
+		T4  = clock->get_time().asMicroseconds(); // t(n+1)
+		packet >> T1 >> T2 >> T3;
+		org = T3; // t(n+0)
+		rec = T4; // t(n+1)
+	
+		// Sanity Checks
+		if ((T1 == org) || (T3 == xmt) || (T1 != xmt)) {
+			// Something went wrong; duplicate/bogus packet.
+			packet = sf::Packet();
+			packet << 0 << 0 << 0;
+			client->send(packet);
+			client->disconnect();
+			return;
+		}
 
-	// Store the current time
-	sf::Time t1 = clock->get_time();
-
-	// Wait a bit
-	std::this_thread::sleep_for(std::chrono::milliseconds(TIMESYNC_DELTA));
-
-	// Store the current time, and send all the times back
-	sf::Time t2 = clock->get_time();
-	sf::Packet packet;
-	packet << t1.asMicroseconds() << t2.asMicroseconds();
-	if (client->send(packet) != sf::Socket::Done) {
-		std::cout << "Tried to send time sync to client ("
-		          << tcpRemoteToStr(client) << "), but failed."
-		          << std::endl;
+		// Wait a bit
+		std::this_thread::sleep_for(
+				std::chrono::milliseconds(TIMESYNC_DELTA));
+	
+		// Time Sync Exchange: t(n+2) -> t(n+3)
+		packet = sf::Packet();
+		T1 = org; // t(n+0)
+		T2 = rec; // t(n+1)
+		T3 = clock->get_time().asMicroseconds(); // t(n+2)
+		packet << T1 << T2 << T3;
+		if (client->send(packet) != sf::Socket::Done) {
+			std::cout << "Tried to send time sync to client ("
+			          << tcpRemoteToStr(client) << "), but failed."
+			          << std::endl;
+		}
+		xmt = T3; // t(n+2)
+	
 	}
 
 	std::cout << "Client (" << tcpRemoteToStr(client)
-	          << ") time sync finished." << std::endl;
+	          << ") completed time sync." << std::endl;
 
 	// Close Socket, Delete Socket Resources + Close thread
 	client->disconnect();
@@ -154,24 +185,27 @@ sf::Packet makeBigPacket(c_list list)
 	return p;
 }
 	
-void sendComponents(sf::IpAddress ip, unsigned short port, ec_list &e_list)
+void sendComponents(uint32_t clientID, ec_list &list)
 {
 	sf::Packet rog;
 	for (c_list list: e_list) {
 		rog = makeBigPacket(list);
+		sendMessage(QueueID::HANDSHAKE, rog, clientID);
 		sock_h.send(rog, ip, port);
 	}
 }
 
 void handshakeHello(sf::Packet &packet,
-                    sf::IpAddress &sender,
-                    unsigned short port,
                     anax::World *world)
 {
 	// Extract information from packet
+	sf::Uint32 ip;
 	unsigned short updatePort = 0;
+	packet >> ip;
 	packet >> updatePort;
-	sf::Uint32 ip = sender.toInteger();
+	sf::IpAddress sender(ip);
+	std::cout << "New client (" << sender.toString() << ":" << updatePort 
+	          << ") Connecting!" << std::endl;
 
 	// Register Client Internally
 	uint32_t id = NO_CLIENT_ID;
@@ -181,7 +215,7 @@ void handshakeHello(sf::Packet &packet,
 		id = findClientID(ip, updatePort);
 		// TODO: Time out old client and make a new one
 		std::cout << "WARNING: Connected client tried to reconnect ("
-		          << id << ", " << ip << ":" << updatePort << ")" 
+		          << id << ", " << sender << ":" << updatePort << ")" 
 		          << std::endl;
 	}
 	
@@ -203,16 +237,13 @@ void handshakeHello(sf::Packet &packet,
 	rog << componentAmount;
 
 	// Send response back to sender
-	sock_h.send(rog, sender, port);
+	sendMessage(QueueID::HANDSHAKE, rog, id);
 
 	// Now send current state back to the original sender
-	sendComponents(sender, port, components);
-	
+	sendComponents(id, components);
 }
 
 void handshakeRoleReq(sf::Packet &packet,
-                      sf::IpAddress &sender, 
-                      unsigned short port,
                       anax::World *world,
                       SystemLevelManager system_gm)
 {
@@ -230,7 +261,9 @@ void handshakeRoleReq(sf::Packet &packet,
 
 	// Register Role
 	cmtx.lock();
-	clients[id].role = static_cast<ClientRole>(role);
+	clients[id].role    = static_cast<ClientRole>(role);
+	sf::Uint32 ip       = clients[id].ip;
+	unsigned short port = clients[id].port;
 	cmtx.unlock();
 	
 	// Package Requested Entity
@@ -243,83 +276,52 @@ void handshakeRoleReq(sf::Packet &packet,
 	rog << componentAmount;
 
 	// Send response back to sender
-	sock_h.send(rog, sender, port);
-	sendComponents(sender, port, components);
+	sendMessage(QueueID::HANDSHAKE, rog, id);
+	sendComponents(id, components);
 
 	// Tell everyone that we have a new player
 	// TODO Clean this up post merge with new handshake
 	for (clientpair client : clients) {
 		if (client.first == id) continue;
 		rog = sf::Packet();
-		for (c_list list : components) {
+		for (auto& pair : components) {
 			// NetworkedComponent *nc;
 			// nc = dynamic_cast<NetworkedComponent*>(pair.second);
 			// rog << pair.first.getId();
-			// rog << nc->getID();
+			// rog << nc->ID;
 			// rog << nc->dumpComponent();
-			rog = makeBigPacket(list);
-			sendMessage(tempo::SystemQID::ENTITY_CREATION, 
+			sendMessage(tempo::QueueID::ENTITY_CREATION, 
 			            rog,
 			            client.first);
 		}
 	}
 }
 
-void processNewClientPacket(sf::Packet &packet, 
-                            sf::IpAddress &sender,
-                            unsigned short port,
-                            anax::World *world,
-                            SystemLevelManager system_gm)
+void checkForNewClients(anax::World *world, SystemLevelManager system_gm)
 {
-	uint32_t receiveID = static_cast<uint32_t>(HandshakeID::DEFAULT);
-	packet >> receiveID;
+	tempo::Queue<sf::Packet> *queue = get_system_queue(QueueID::HANDSHAKE);	
+	if (queue->empty()) return;
 
-	switch (static_cast<HandshakeID>(receiveID)) {
-	case HandshakeID::HELLO:
-		std::cout << "New client (" << sender.toString() << ":" << port
-		          << ") Connecting!" << std::endl; 
-		handshakeHello(packet, sender, port, world);
-		break;
-	case HandshakeID::ROLEREQ:
-		handshakeRoleReq(packet, sender, port, world, system_gm);
-		break;
-	default:
-		std::cout << "WARNING: an invalid handshake message was "
-		          << "recieved from " << sender.toString() << ":" 
-	                  << port << " ... ignoring" << std::endl;
-		break;
-	}
-}
+	while (!queue->empty()) {
+		sf::Packet packet = queue->front();
+		queue->pop();
 
-void listenForNewClients(anax::World *world, SystemLevelManager system_gm)
-{
-	// Bind to port
-	if (!bindSocket('h', port_sh)) {
-		std::cout << "Could not bind port " << port_sh << ", used to "
-		          << "listen for new clients." << std::endl;
-		return;
-	}
+		uint32_t receiveID = static_cast<uint32_t>(HandshakeID::DEFAULT);
+		packet >> receiveID;
 
-	std::cout << "New Client Listener Started..." << std::endl;
-
-	// Loop listening for new clients
-	while (true) {
-		sf::Packet packet;
-		sf::IpAddress ip;
-		unsigned short port;
-
-		if (sock_h.receive(packet, ip, port) != sf::Socket::Done) {
-			std::cout << "Error recieving something from new "
-			          << "(connecting) client. Ignoring." 
-			          << std::endl;
-			continue;
+		switch (static_cast<HandshakeID>(receiveID)) {
+		case HandshakeID::HELLO:
+			handshakeHello(packet, world);
+			break;
+		case HandshakeID::ROLEREQ:
+			handshakeRoleReq(packet, world, system_gm);
+			break;
+		default:
+			std::cout << "WARNING: an invalid handshake message was "
+			          << "recieved ... ignoring" << std::endl;
+			break;
 		}
-	
-		processNewClientPacket(packet, ip, port, world, system_gm);
 	}
-
-	// TODO Probably should close the socket but it's a protected function
-	// so I can't.
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -369,7 +371,7 @@ uint32_t findClientID(sf::Uint32 ip, unsigned short port)
 }
 
 
-bool sendMessage(tempo::SystemQID id, 
+bool sendMessage(tempo::QueueID id, 
                  sf::Packet payload, 
                  uint32_t client_id)
 {

@@ -4,16 +4,6 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/network/base.hpp>
-#include <tempo/network/QueueID.hpp>
-#include <tempo/component/ComponentHealth.hpp>
-#include <tempo/component/ComponentPlayerLocal.hpp>
-#include <tempo/component/ComponentPlayerRemote.hpp>
-#include <tempo/component/ComponentStageTranslation.hpp>
-
-#include <iostream>
-#include <glm/fwd.hpp>
-#include <glm/vec2.hpp>
 #include <SFML/Network.hpp>
 
 namespace tempo
@@ -21,6 +11,6 @@ namespace tempo
 
 anax::Entity addComponent(anax::World& w, sf::Packet p);
 
-}
+} // namespace tempo
 
 #endif

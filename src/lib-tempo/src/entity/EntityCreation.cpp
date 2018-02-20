@@ -1,16 +1,34 @@
 #include <tempo/entity/EntityCreation.hpp>
 
-#define CASE(NAME, CID) case ComponentID::CID : 					\
-				if (!e.hasComponent<NAME>()) { 				\
-					e.addComponent<NAME>(part);			\
-				}							\
-				else							\
-				{							\
-					std::cout << "Warning: Reinstanciation of "	\
-						  << "" #NAME 				\
-						  << std::endl;				\
-				}							\
-				break;
+#include <tempo/component/NetworkedComponent.hpp>
+#include <tempo/component/ComponentCombo.hpp>
+#include <tempo/component/ComponentGridAi.hpp>
+#include <tempo/component/ComponentHealth.hpp>
+#include <tempo/component/ComponentPlayerLocal.hpp>
+#include <tempo/component/ComponentPlayerRemote.hpp>
+#include <tempo/component/ComponentStage.hpp>
+#include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentWeapon.hpp>
+
+#include <tempo/network/base.hpp>
+
+#include <glm/fwd.hpp>
+#include <glm/vec2.hpp>
+
+#include <iostream>
+
+#define CASE(NAME, CID)                                              \
+	case ComponentID::CID :                                      \
+		if (!e.hasComponent<NAME>()) {                       \
+			e.addComponent<NAME>(part);                  \
+		} else {                                             \
+			std::cout << "Warning: Reinstanciation of "  \
+				  << "" #NAME                        \
+				  << std::endl;                      \
+		}                                                    \
+		break;
+
 namespace tempo
 {
 
@@ -23,8 +41,7 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 
 	p >> id;
 	auto a = servertolocal.find(id);
-	if (a == servertolocal.end())
-	{
+	if (a == servertolocal.end()) {
 		//Looks like it's a new one
 		std::cout << "Recieved New Entity with server ID " << id.index
 		          << std::endl;
@@ -33,9 +50,7 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 		servertolocal.emplace(id, localid);
 		localtoserver.emplace(localid, id);
 		e.activate();
-	}
-	else
-	{
+	} else {
 		std::cout << "Using current Entity with server ID " << id.index 
 		          << std::endl;
 		localid = a->second;
@@ -43,8 +58,7 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 		e.activate();
 	}
 
-	while (!p.endOfPacket())
-	{
+	while (!p.endOfPacket()) {
 		uint32_t size = 0;
 		p >> size;
 		std::cout << "Splitting packet to size " << size << std::endl;
@@ -54,10 +68,9 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 		std::cout << "Adding Component with ID " << component_id << std::endl;
 		switch (component_id) {
 
-		//Put new Components in here
-		
+		// Put new Components in here	
 		CASE(ComponentHealth, HEALTH)
-		CASE(ComponentPlayerLocal, PLAYER_LOCAL)
+		// CASE(ComponentPlayerLocal, PLAYER_LOCAL)
 		CASE(ComponentStagePosition, STAGE_POSITION)
 		CASE(ComponentStageTranslation, STAGE_TRANSLATION)
 

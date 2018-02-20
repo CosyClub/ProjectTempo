@@ -9,10 +9,9 @@ sf::UdpSocket sock_h;
 
 sf::IpAddress addr_r = "0.0.0.0";
 unsigned short port_ci = 0;
-unsigned short port_co = 0;  // Should be set within the Client or Server 
-unsigned short port_sh = 0;  // at runtime. This way user input/config files
-unsigned short port_si = 0;  // can be used to set address/ports dynamically.
-unsigned short port_so = 0;  
+unsigned short port_co = 0;  // Should be set within the Client or Server
+unsigned short port_si = 0;  // at runtime. This way user input/config files
+unsigned short port_so = 0;  // can be used to set address/ports dynamically.
 unsigned short port_st = 0;
 
 bool bindSocket(char socket, unsigned short port)
@@ -45,18 +44,17 @@ bool bindSocket(char socket, unsigned short port)
 
 bool sortPacket(sf::Packet p)
 {
-	int id; //Should be a tempo::systemQID but they're the same
-	tempo::SystemQID qid;
+	int id; //Should be a tempo::QueueID but they're the same
+	tempo::QueueID qid;
 
-	//Get ID
+	// Get ID
 	p >> id;
 
-	//convert
-	qid = tempo::SystemQID(id);
+	// Convert
+	qid = tempo::QueueID(id);
 
-	//Basic checking
-	if (id <= tempo::QID_RESERVED_BOTTOM || id >= tempo::QID_RESERVED_TOP)
-	{
+	// Basic checking
+	if (id <= tempo::QID_RESERVED_BOTTOM || id >= tempo::QID_RESERVED_TOP) {
 		return false;
 	}
 

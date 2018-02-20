@@ -3,31 +3,19 @@
 namespace tempo
 {
 
-ComponentPlayerLocal::ComponentPlayerLocal()
-{
-	moved_this_beat = false;
-}
-	
 ComponentPlayerLocal::ComponentPlayerLocal(sf::Packet p)
 {
-	p >> moved_this_beat;
-	p >> counter_combo;
-	p >> level_combo;
+	return; // Do nothing as this struct is currently empty
 }
 
-sf::Packet ComponentPlayerLocal::dumpComponent()
-{
-	sf::Packet p;
-	p << moved_this_beat;
-	p << counter_combo;
-	p << level_combo;
-
-	return p;
-}
-
-ComponentID ComponentPlayerLocal::getID()
+ComponentID ComponentPlayerLocal::getId()
 {
 	return ComponentID::PLAYER_LOCAL;
 }
 
+sf::Packet ComponentPlayerLocal::dumpComponent()
+{
+	return sf::Packet();
 }
+
+} // namespace tempo

@@ -33,8 +33,7 @@ struct ComponentHealth : anax::Component, NetworkedComponent
 	//Required for inital network sync
 	ComponentHealth(sf::Packet p);
 	sf::Packet dumpComponent();
-	ComponentID getID();
-
+	ComponentID getId();
 };
 
 } // namespace tempo

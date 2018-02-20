@@ -2,25 +2,20 @@
 
 namespace tempo
 {
-ComponentPlayerRemote::ComponentPlayerRemote()
-{
-	id = ComponentID::PLAYER_REMOTE;
-	moved_this_beat = false;
-}
 
 ComponentPlayerRemote::ComponentPlayerRemote(sf::Packet p)
 {
-	id = ComponentID::PLAYER_REMOTE;
-	p >> moved_this_beat;
+	return; // Do nothing as this struct is currently empty
+}
+
+ComponentID ComponentPlayerRemote::getId()
+{
+	return ComponentID::PLAYER_REMOTE;
 }
 
 sf::Packet ComponentPlayerRemote::dumpComponent()
 {
-	sf::Packet p;
-
-	p << moved_this_beat;
-
-	return p;
+	return sf::Packet();
 }
 
-}
+} // namespace tempo
