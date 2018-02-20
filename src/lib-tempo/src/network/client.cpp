@@ -234,6 +234,7 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 	std::cout << "ROLEREQ STARTING" << std::endl;
 	bool ret = handshakeRoleReq(id, roleID, roleData, world, system_gm);
 	std::cout << "ROLEREQ COMPLETE" << std::endl;
+	world.refresh();
 	return ret;
 }
 

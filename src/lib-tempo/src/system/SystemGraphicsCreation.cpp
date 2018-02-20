@@ -1,8 +1,11 @@
 #include <tempo/system/SystemGraphicsCreation.hpp>
 
+#include <tempo/component/ComponentRender.hpp>
+
 #include <iostream>
 
-namespace tempo {
+namespace tempo 
+{
 
 SystemGraphicsCreation::SystemGraphicsCreation()
 {
@@ -37,4 +40,4 @@ void SystemGraphicsCreation::addEntities(Ogre::SceneManager* scene)
 	}
 }
 
-}
+} // namespace tempo

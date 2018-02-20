@@ -66,12 +66,11 @@ void new_entity_check(anax::World &world, Ogre::SceneManager* scene, tempo::Syst
 		tempo::addComponent(world, p);
 		q->pop();
 	}
+	world.refresh();
 }
 
 int main(int argc, const char** argv)
 {
-	std::cout << glm::pi<float>() << std::endl;
-	
 	tempo::Application app = tempo::initialize_application("RaveCave", 800, 600);
 	if (app.ogre == nullptr || app.window == nullptr || app.render_target == nullptr) {
 		printf("Application initialisation failed, exiting\n");
@@ -163,7 +162,6 @@ int main(int argc, const char** argv)
 	tempo::connectToAndSyncWithServer(role, roleData, world, system_level);
 
 	//Sort out graphics after handshake
-	world.refresh();
 	system_gc.addEntities(scene);
 
 	// Start and Sync Song
@@ -197,9 +195,6 @@ int main(int argc, const char** argv)
 		}
 	}
 
-
-	std::cout << "GOT HERE" << std::endl;
-
 	//camera
 	Ogre::Camera* camera = scene->createCamera("MainCamera");
 	camera->setNearClipDistance(0.01f);
@@ -210,10 +205,6 @@ int main(int argc, const char** argv)
 	node_camera->attachObject(camera);
 	node_camera->setPosition(0, 20, 10);
 	camera->lookAt(0, 0, 0);
-
-
-	std::cout << "DIDN'T GOT HERE" << std::endl;
-
 
 	Ogre::OverlaySystem* OverlaySystem = new Ogre::OverlaySystem();
 	scene->addRenderQueueListener(OverlaySystem);

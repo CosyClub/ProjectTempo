@@ -1,6 +1,7 @@
 #include <tempo/component/ComponentStagePosition.hpp>
 
 #include <glm/vec2.hpp>
+#include <iostream>
 
 namespace tempo
 {
@@ -12,7 +13,7 @@ ComponentStagePosition::ComponentStagePosition(glm::ivec2 bottom_left,
 	setPosition(bottom_left, top_right);
 }
 
-ComponentStagePosition::ComponentStagePosition(glm::ivec2 position) 
+ComponentStagePosition::ComponentStagePosition(glm::ivec2 position)
 	: occupied(0) 
 {
 	setPosition(position);
@@ -54,19 +55,15 @@ glm::ivec2 ComponentStagePosition::getOrigin()
 }
 
 // Required for inital network sync
-ComponentStagePosition::ComponentStagePosition(sf::Packet p)
+ComponentStagePosition::ComponentStagePosition(sf::Packet p) : occupied(0)
 {
 	uint32_t size;
 	p >> size;
 
 	occupied.clear();
 	for (int I = 0; I < size; I++) {
-		uint32_t x;
-		uint32_t y;
-
-		p >> x;
-		p >> y;
-
+		uint32_t x, y;
+		p >> x >> y;
 		occupied.push_back(glm::ivec2(x, y));
 	}
 }
@@ -74,20 +71,11 @@ ComponentStagePosition::ComponentStagePosition(sf::Packet p)
 sf::Packet ComponentStagePosition::dumpComponent()
 {
 	sf::Packet p;
-	uint32_t size;
-
-	size = occupied.size();
+	uint32_t size = occupied.size();
 	p << size;
 
 	for (int I = 0; I < size; I++) {
-		uint32_t x;
-		uint32_t y;
-
-		x = occupied[I].x;
-		y = occupied[I].y;
-		
-		p << x;
-		p << y;
+		p << occupied[I].x << occupied[I].y;
 	}
 	
 	return p;

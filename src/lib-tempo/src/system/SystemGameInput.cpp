@@ -8,7 +8,7 @@ namespace tempo
 void alertServerBrokenCombo(anax::Entity::Id id) 
 {
 	sf::Packet packet;
-	packet << id << static_cast<uint8_t>(MessageCombo::BROKEN_COMBO);
+	packet << localtoserver[id] << static_cast<uint8_t>(MessageCombo::BROKEN_COMBO);
 	sendMessage(QueueID::COMBO_UPDATES, packet);
 }
 
@@ -74,7 +74,7 @@ bool SystemGameInput::handleInput(SDL_Event& e)
 
 			// Tell server we are moving
 			sf::Packet packet;
-			packet << id << dx << dy;
+			packet << localtoserver[id] << dx << dy;
 			sendMessage(QueueID::PLAYER_UPDATES, packet);
 		} else {
 			// Do not move or do anything other than tell the server
