@@ -1,5 +1,5 @@
-#ifndef TEMPO_COMPONENT_GRIDAI_HPP
-#define TEMPO_COMPONENT_GRIDAI_HPP
+#ifndef TEMPO_COMPONENT_GRID_AI_HPP
+#define TEMPO_COMPONENT_GRID_AI_HPP
 
 #include <anax/Component.hpp>
 
@@ -10,8 +10,8 @@ namespace tempo
 
 struct ComponentGridAi : anax::Component, NetworkedComponent
 {
-	// no state needed for AI (yet)
-	
+	ComponentGridAi();
+
 	/////
 	// Required for networking
 	/////

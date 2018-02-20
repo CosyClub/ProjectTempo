@@ -10,6 +10,7 @@ namespace tempo {
 ComponentStage::ComponentStage(const char* stage_file) 
 {	
 	SDL_Surface* level = SDL_LoadBMP(stage_file);
+	this->stage_file = std::string(stage_file); 
 
 	// Load tiles, this can only handles stage_files in positive ZZ
 	for (int y = 0; y < level->h; y++) {
@@ -31,6 +32,26 @@ ComponentStage::ComponentStage(const char* stage_file)
 stage_tiles ComponentStage::getHeights()
 {
 	return tiles;
+}
+		
+/////
+// Required for networking
+/////
+ComponentStage::ComponentStage(sf::Packet p)
+{
+	p >> stage_file;
+}
+
+ComponentID ComponentStage::getId()
+{
+	return ComponentID::STAGE;
+}
+
+sf::Packet ComponentStage::dumpComponent()
+{
+	sf::Packet p;
+	p << stage_file;
+	return p;
 }
 
 } // namespace tempo

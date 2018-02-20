@@ -31,7 +31,7 @@ namespace tempo
 		HANDSHAKE,
 		PLAYER_UPDATES,
 		ENTITY_CREATION,
-		COMBO,
+		COMBO_UPDATES,
 
 		//End of non-reserved zone
 		QID_RESERVED_TOP
@@ -42,7 +42,8 @@ namespace tempo
 		CID_RESERVED_BOTTOM,
 		CID_RESERVED_ERROR,
 		//Start of non-reserved zone
-		
+
+		COMBO,
 		GRID_AI,
 		HEALTH,
 		PICKUP,

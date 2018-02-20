@@ -13,10 +13,10 @@ struct ComponentPickup : anax::Component, NetworkedComponent
 	/////
 	// Required for networking
 	/////
-	ComponentHealth(sf::Packet p);
-	sf::Packet dumpComponent();
+	ComponentPickup(sf::Packet p);
 	ComponentID getId();
-}
+	sf::Packet dumpComponent();
+};
 
 } // namespace tempo
 

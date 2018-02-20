@@ -18,7 +18,7 @@ void SystemCombo::advanceBeat()
 
 bool SystemCombo::checkForUpdates()
 {
-	tempo::Queue<sf::Packet> *queue = get_system_queue(QueueID::COMBO);
+	tempo::Queue<sf::Packet> *queue = get_system_queue(QueueID::COMBO_UPDATES);
 	if (queue->empty()) return false;
 
 	while (!queue->empty()) {

@@ -50,6 +50,7 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/structures.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/time.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentCombo.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentGridAi.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentHealth.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentPickup.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentPlayerLocal.cpp"

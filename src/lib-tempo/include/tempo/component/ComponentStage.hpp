@@ -3,7 +3,7 @@
 
 #include <anax/Component.hpp>
 
-#include <tempo/components/NetworkedComponent.hpp>
+#include <tempo/component/NetworkedComponent.hpp>
 
 #include <glm/fwd.hpp>
 
@@ -20,6 +20,7 @@ struct ComponentStage : anax::Component, NetworkedComponent
 {
 	private:
 		stage_tiles tiles;
+		std::string stage_file;
 	public:
 		// Constructor requires stage file
 		ComponentStage(const char* stage_file);
@@ -30,7 +31,7 @@ struct ComponentStage : anax::Component, NetworkedComponent
 		/////
 		// Required for networking
 		/////
-		ComponentHealth(sf::Packet p);
+		ComponentStage(sf::Packet p);
 		sf::Packet dumpComponent();
 		ComponentID getId();
 };

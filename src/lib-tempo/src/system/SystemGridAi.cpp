@@ -20,22 +20,4 @@ void SystemGridAi::update(){
 	}
 }
 
-/////
-// Required for networking
-/////
-ComponentGridAi(sf::Packet p)
-{
-	return; // does nothing
-}
-
-ComponentID getId()
-{
-	return ComponentID::GRID_AI;
-}
-
-sf::Packet dumpComponent()
-{
-	return sf::Packet(); // does nothing
-}
-
 }

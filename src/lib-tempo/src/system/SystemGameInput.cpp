@@ -9,7 +9,7 @@ void alertServerBrokenCombo(anax::Entity::Id id)
 {
 	sf::Packet packet;
 	packet << id << static_cast<uint8_t>(MessageCombo::BROKEN_COMBO);
-	sendMessage(QueueID::COMBO, packet);
+	sendMessage(QueueID::COMBO_UPDATES, packet);
 }
 
 bool SystemGameInput::handleInput(SDL_Event& e)

@@ -39,7 +39,7 @@ void ComponentCombo::breakCombo()
 /////
 // Required for networking
 /////
-ComponentCombo(sf::Packet p)
+ComponentCombo::ComponentCombo(sf::Packet p)
 {
 	p >> actionedThisBeat
 	  >> comboCounter;
@@ -47,7 +47,7 @@ ComponentCombo(sf::Packet p)
 
 ComponentID ComponentCombo::getId()
 {
-	return ComponentID::COMBO
+	return ComponentID::COMBO;
 }
 
 sf::Packet ComponentCombo::dumpComponent()
