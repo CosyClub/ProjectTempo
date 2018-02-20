@@ -203,8 +203,8 @@ int main(int argc, const char** argv)
 	node_player = entity_player.getComponent<tempo::ComponentRender>().node;
 	Ogre::SceneNode *node_camera = node_player->createChildSceneNode();
 	node_camera->attachObject(camera);
-	node_camera->setPosition(0, 20, 10);
-	camera->lookAt(0, 0, 0);
+	node_camera->setPosition(0, 15, 15);
+	camera->lookAt(5, 0, 0);
 
 	Ogre::OverlaySystem* OverlaySystem = new Ogre::OverlaySystem();
 	scene->addRenderQueueListener(OverlaySystem);
