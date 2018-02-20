@@ -2,9 +2,10 @@
 
 namespace tempo {
 
-ComponentModel::ComponentModel(std::string path)
+ComponentModel::ComponentModel(std::string p, glm::vec3 c)
 {
-	path = path;
+	path = p;
+	color = c;
 }
 
 /////
@@ -13,6 +14,9 @@ ComponentModel::ComponentModel(std::string path)
 ComponentModel::ComponentModel(sf::Packet p)
 {
 	p >> path;
+	p >> color.x;
+	p >> color.y;
+	p >> color.z;
 }
 
 sf::Packet ComponentModel::dumpComponent()
@@ -20,6 +24,9 @@ sf::Packet ComponentModel::dumpComponent()
 	sf::Packet p;
 	
 	p << path;
+	p << color.x;
+	p << color.y;
+	p << color.z;
 
 	return p;
 }

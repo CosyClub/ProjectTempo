@@ -13,9 +13,9 @@ void SystemGridAi::update(){
 		int amount = (rand() % 2) * 2 - 1; //-1 or 1
 
 		if (dir) {
-			//grid_motion.beginMovement(amount, 0);
+			grid_motion.delta = glm::ivec2(amount, 0);
 		} else {
-			//grid_motion.beginMovement(0, amount);
+			grid_motion.delta = glm::ivec2(0, amount);
 		}
 	}
 }
