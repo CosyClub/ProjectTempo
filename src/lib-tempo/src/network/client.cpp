@@ -1,5 +1,10 @@
 #include <tempo/network/client.hpp>
 
+#include <tempo/component/ComponentPlayerLocal.hpp>
+#include <tempo/component/ComponentPlayerRemote.hpp>
+
+#include <tempo/entity/EntityCreation.hpp>
+
 namespace tempo
 {
 
@@ -61,7 +66,7 @@ sf::Int64 timeSyncClient(tempo::Clock *clock)
 	return offset / TIMESYNC_ITERS;
 }
 
-bool sendMessage(tempo::SystemQID id, sf::Packet payload) 
+bool sendMessage(tempo::QueueID id, sf::Packet payload) 
 {
 	sf::Packet message;
 
@@ -73,6 +78,14 @@ bool sendMessage(tempo::SystemQID id, sf::Packet payload)
 	return sock_o.send(message, addr_r, port_si) == sf::Socket::Done;
 }
 
+sf::Packet receiveMessage(QueueID qid) {
+	tempo::Queue<sf::Packet> *queue = get_system_queue(qid);
+	while (queue->empty()) 
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+	sf::Packet packet = queue->front();
+	queue->pop();
+	return packet;
+}
 
 void listenForServerUpdates()
 {
@@ -103,7 +116,6 @@ void listenForServerUpdates()
 }
 
 uint32_t handshakeHello(anax::World& world, 
-		        Ogre::SceneManager *scene,
                         tempo::SystemLevelManager system_gm)
 {
 	// Package up payload
@@ -113,33 +125,27 @@ uint32_t handshakeHello(anax::World& world,
 	packet << port_ci;
 	
 	// Send HELLO
-	sendMessage(SystemQID::HANDSHAKE, packet);
+	sendMessage(QueueID::HANDSHAKE, packet);
 
-	// Wait until we recieve HELLO_ROG
-	tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::HANDSHAKE);
-	while (queue->empty()) {
-		std::cout << ".\n";
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-	}
-
-	// Take response from queue
-	packet = queue->front();
-	queue->pop();
+	// Receive HELLO_ROG
+	packet = receiveMessage(QueueID::HANDSHAKE);
 
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
 	uint32_t id = NO_CLIENT_ID;
-	uint32_t entityCount = 0;
+	uint32_t componentCount = 0;
 	packet >> msg;
 	if (msg == static_cast<uint32_t>(HandshakeID::HELLO_ROG)) {
 		packet >> id;
 		packet >> port_si;
 		packet >> port_st;
-		packet >> entityCount;
-		EntityCreationData e;
-		for (int i = 0; i < entityCount; i++) {
-			packet >> e;
-			newEntity(e, world, scene, system_gm);
+		packet >> componentCount;
+
+		sf::Packet p2;
+		for (int i = 0; i < componentCount; i++) {
+			p2 = receiveMessage(QueueID::HANDSHAKE);
+			std::cout << "Recieved " << i << "/" << componentCount << std::endl;
+			addComponent(world, p2);
 		}
 	} else {
 		std::cout << "We didn't get what we expected when connecting "
@@ -153,7 +159,6 @@ bool handshakeRoleReq(uint32_t id,
                       ClientRole roleID, 
                       ClientRoleData &roleData,
                       anax::World& world,
-		      Ogre::SceneManager *scene,
                       tempo::SystemLevelManager system_gm)
 {
 	// Package up payload
@@ -164,26 +169,24 @@ bool handshakeRoleReq(uint32_t id,
 	packet << roleData;
 	
 	// Send ROLEREQ
-	sendMessage(SystemQID::HANDSHAKE, packet);
+	sendMessage(QueueID::HANDSHAKE, packet);
 	
 	// Wait until we recieve ROLEREQ_ROG
-	tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::HANDSHAKE);
-	while (queue->empty()) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-	}
+	packet = receiveMessage(QueueID::HANDSHAKE);
 
-	// Take response from queue
-	packet = queue->front();
-	queue->pop();
-	
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
+	int componentCount;
 	packet >> msg;
+	packet >> componentCount;
 	if (msg == static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG)) {
 		//TODO Extract entity/response from ROLEREQ_ROG
-		EntityCreationData e;
-		packet >> e;
-		anax::Entity en = newEntity(e, world, scene, system_gm);
+		sf::Packet p2;
+		anax::Entity en;
+		for (int i = 0; i < componentCount; i++) {
+			p2 = receiveMessage(QueueID::HANDSHAKE);
+			en = addComponent(world, p2);
+		}
 		en.removeComponent<tempo::ComponentPlayerRemote>();
 		en.addComponent<tempo::ComponentPlayerLocal>();
 	} else {
@@ -198,7 +201,6 @@ bool handshakeRoleReq(uint32_t id,
 bool connectToAndSyncWithServer(ClientRole roleID, 
                                 ClientRoleData &roleData,
                                 anax::World& world,
-                                Ogre::SceneManager *scene,
                                 tempo::SystemLevelManager system_gm)
 {
 	// Bind outgoing port if not bound
@@ -220,14 +222,20 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 		return false;
 	}
 
-	uint32_t id = handshakeHello(world, scene, system_gm);
+	std::cout << "HELLO STARTING" << std::endl;
+	uint32_t id = handshakeHello(world, system_gm);
+	std::cout << "HELLO COMPLETE" << std::endl;
 	if (id == NO_CLIENT_ID) {
 		std::cout << "Couldn't connect to the server." 
 		          << std::endl;
 		return false;
 	}
 
-	return handshakeRoleReq(id, roleID, roleData, world, scene, system_gm);
+	std::cout << "ROLEREQ STARTING" << std::endl;
+	bool ret = handshakeRoleReq(id, roleID, roleData, world, system_gm);
+	std::cout << "ROLEREQ COMPLETE" << std::endl;
+	world.refresh();
+	return ret;
 }
 
-}
+} // namespace tempo

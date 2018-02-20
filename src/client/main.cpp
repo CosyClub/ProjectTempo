@@ -23,17 +23,20 @@
 #include <tempo/Application.hpp>
 #include <tempo/song.hpp>
 #include <tempo/time.hpp>
-#include <tempo/entity/EntityCreationClient.hpp>
-#include <tempo/entity/GridAi.hpp>
-#include <tempo/entity/Health.hpp>
-#include <tempo/entity/LevelManager.hpp>
+#include <tempo/entity/EntityCreation.hpp>
 #include <tempo/entity/LevelRenderer.hpp>
-#include <tempo/entity/PlayerLocal.hpp>
-#include <tempo/entity/PlayerRemote.hpp>
-#include <tempo/entity/Render.hpp>
-#include <tempo/entity/RenderHealth.hpp>
-#include <tempo/entity/Transform.hpp>
 #include <tempo/network/client.hpp>
+#include <tempo/network/QueueID.hpp>
+#include <tempo/system/SystemRenderHealth.hpp>
+#include <tempo/system/SystemTransform.hpp>
+#include <tempo/system/SystemCombo.hpp>
+#include <tempo/system/SystemGridAi.hpp>
+#include <tempo/system/SystemHealth.hpp>
+#include <tempo/system/SystemLevelManager.hpp>
+#include <tempo/system/SystemGameInput.hpp>
+#include <tempo/system/SystemGraphicsCreation.hpp>
+#include <tempo/system/SystemPlayer.hpp>
+#include <tempo/system/SystemRender.hpp>
 
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>
@@ -41,6 +44,8 @@
 
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
+
+#include <glm/gtc/constants.hpp>
 
 #define BPM 174
 #define DELTA 150
@@ -54,16 +59,14 @@ void sync_time(tempo::Clock& clock, tempo::Song *song)
 
 void new_entity_check(anax::World &world, Ogre::SceneManager* scene, tempo::SystemLevelManager system_level)
 {
-	tempo::Queue<sf::Packet> *q = get_system_queue(tempo::SystemQID::ENTITY_CREATION);
+	tempo::Queue<sf::Packet> *q = get_system_queue(tempo::QueueID::ENTITY_CREATION);
 	while (!q->empty())
 	{
 		sf::Packet p = q->front();
-		tempo::EntityCreationData data;
-		p >> data;
-		anax::Entity e = newEntity(data, world, scene, system_level);
-		int iid = e.getComponent<tempo::ComponentID>().instance_id;
+		tempo::addComponent(world, p);
 		q->pop();
 	}
+	world.refresh();
 }
 
 int main(int argc, const char** argv)
@@ -104,21 +107,23 @@ int main(int argc, const char** argv)
 	                                           );
 	tempo::SystemUpdateTransforms system_update_transforms;
 	tempo::SystemGridAi           system_grid_ai;
-	tempo::SystemPlayerLocal      system_player_local(clock);
-	tempo::SystemPlayerRemote     system_player_remote(clock);
+	tempo::SystemGameInput        system_input(clock);
+	tempo::SystemGraphicsCreation system_gc;
+	tempo::SystemPlayer           system_player(clock);
+	tempo::SystemCombo            system_combo;
 	tempo::SystemHealth           system_health;
 	tempo::RenderHealth           render_health;
-	tempo::SystemID               system_id;
 
 	world.addSystem(system_level);
 	world.addSystem(system_update_transforms);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_render);
-	world.addSystem(system_player_local);
-	world.addSystem(system_player_remote);
+	world.addSystem(system_input);
+	world.addSystem(system_gc);
+	world.addSystem(system_player);
+	world.addSystem(system_combo);
 	world.addSystem(system_health);
 	world.addSystem(render_health);
-	world.addSystem(system_id);
 	world.refresh();
 
 	Ogre::SceneManager* scene = system_render.scene;
@@ -154,7 +159,10 @@ int main(int argc, const char** argv)
 	tempo::ClientRoleData roleData = {"Bilbo Baggins"};
 
 	// Connect to server and handshake information
-	tempo::connectToAndSyncWithServer(role, roleData, world, scene, system_level);
+	tempo::connectToAndSyncWithServer(role, roleData, world, system_level);
+
+	//Sort out graphics after handshake
+	system_gc.addEntities(scene);
 
 	// Start and Sync Song
 	mainsong.start();
@@ -195,11 +203,8 @@ int main(int argc, const char** argv)
 	node_player = entity_player.getComponent<tempo::ComponentRender>().node;
 	Ogre::SceneNode *node_camera = node_player->createChildSceneNode();
 	node_camera->attachObject(camera);
-	node_camera->setPosition(0, 20, 10);
-	camera->lookAt(0, 0, 0);
-
-
-
+	node_camera->setPosition(0, 15, 15);
+	camera->lookAt(5, 0, 0);
 
 	Ogre::OverlaySystem* OverlaySystem = new Ogre::OverlaySystem();
 	scene->addRenderQueueListener(OverlaySystem);
@@ -282,6 +287,7 @@ int main(int argc, const char** argv)
 	
 	while (running) {
 		new_entity_check(world, scene, system_level);
+		system_gc.addEntities(scene);
 
 		float dt = dt_timer.getElapsedTime().asSeconds();
 		dt_timer.restart();
@@ -293,15 +299,13 @@ int main(int argc, const char** argv)
 			click.play();
 
 			system_grid_ai.update();
-
-			system_player_local.advanceBeat();
-			system_player_remote.advanceBeat();
+			system_combo.advanceBeat();
 		}
 
 
-		auto& input  = entity_player.getComponent<tempo::ComponentPlayerLocal>();
+		auto& combo = entity_player.getComponent<tempo::ComponentCombo>();
 		char buffer [50];
-		sprintf (buffer, "Combo: %d", input.counter_combo);
+		sprintf (buffer, "Combo: %d", combo.comboCounter);
 
 		textArea->setCaption(buffer);
 
@@ -315,7 +319,7 @@ int main(int argc, const char** argv)
 
 		SDL_Event e;
 		while (SDL_PollEvent(&e)) {
-			if(!system_player_local.handleInput(e)){
+			if (!system_input.handleInput(e)) {
 				switch (e.type) {
 				case SDL_WINDOWEVENT:
 					switch (e.window.event) {
@@ -347,7 +351,7 @@ int main(int argc, const char** argv)
 		light->setDiffuseColour(light_intensity, light_intensity, light_intensity);
 
 		world.refresh();
-		system_player_remote.update(entity_player.getComponent<tempo::ComponentID>().instance_id, system_id);
+		system_player.update(entity_player.getId(), world);
 		render_health.HealthBarUpdate();
 		system_health.CheckHealth();
 		system_level.update(dt);

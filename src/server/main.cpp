@@ -1,6 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// \file main.cpp
-/// \author Anthony Wharton
 /// \date 2017/11/13
 /// \brief Contains entry point for RaveCave Server
 ////////////////////////////////////////////////////////////////////////////////
@@ -15,9 +14,11 @@
 #include <tempo/time.hpp>
 
 #include <tempo/entity/EntityCreationServer.hpp>
-#include <tempo/entity/LevelManager.hpp>
-#include <tempo/entity/GridAi.hpp>
-#include <tempo/entity/Health.hpp>
+#include <tempo/system/SystemCombo.hpp>
+#include <tempo/system/SystemGridAi.hpp>
+#include <tempo/system/SystemHealth.hpp>
+#include <tempo/system/SystemLevelManager.hpp>
+#include <tempo/system/SystemServerPlayer.hpp>
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>
@@ -50,28 +51,28 @@ int main(int argc, const char** argv) {
 	                                       "../bin/resources/levels/zonesTest.bmp"
 	                                       );
 	// Create Systems
+	tempo::SystemCombo        system_combo;
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemHealth       system_health;
-	tempo::SystemPlayerRemoteServer system_player_remote(clock);
-	tempo::SystemID           system_id;
+	tempo::SystemServerPlayer system_player(clock);
 
 	world.addSystem(system_level);
+	world.addSystem(system_combo);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_health);
-	world.addSystem(system_player_remote);
-	world.addSystem(system_id);
+	world.addSystem(system_player);
 	world.refresh();
 
 	// Create some Test Entities
-	anax::Entity entity_ai1 = tempo::newAI(world, tempo::EID_AI, 5, 5);
-	anax::Entity entity_ai2 = tempo::newAI(world, tempo::EID_AI, 3, 3);
-	anax::Entity entity_ai3 = tempo::newAI(world, tempo::EID_AI, 8, 8);
+	anax::Entity entity_ai1 = tempo::newAI(world, 5, 5);
+	anax::Entity entity_ai2 = tempo::newAI(world, 3, 3);
+	anax::Entity entity_ai3 = tempo::newAI(world, 8, 8);
 	
 	//Destroyables
-	anax::Entity entity_destroyable = tempo::newDestroyable(world, tempo::EID_DES, 2, 2, "Cube");
+	anax::Entity entity_destroyable = tempo::newDestroyable(world, 2, 2, "Cube");
 
 	//NonDestroyables
-	anax::Entity entity_nondestroyable = tempo::newNonDestroyable(world, tempo::EID_NONDES, 5, 5, "Cube");
+	anax::Entity entity_nondestroyable = tempo::newNonDestroyable(world, 5, 5, "Cube");
 
 	//////////////////////////////////
 	// Thread Startup
@@ -93,6 +94,7 @@ int main(int argc, const char** argv) {
 
 		if (clock.passed_beat()) {
 			system_grid_ai.update();
+			system_combo.advanceBeat();
       
 			if (tick++ % 20 == 0)
 				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
@@ -103,10 +105,10 @@ int main(int argc, const char** argv) {
 		last_dt_time = next_dt_time;
 
 		world.refresh();
+		system_combo.checkForUpdates();
 		system_level.update(dt);
 		system_health.CheckHealth();
-		system_player_remote.update(system_id);
-		system_player_remote.advanceBeat();
+		system_player.update(world);
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	}

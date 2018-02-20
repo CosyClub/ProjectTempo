@@ -1,0 +1,23 @@
+#include <tempo/system/SystemGridAi.hpp>
+
+namespace tempo
+{
+
+void SystemGridAi::update(){
+	auto entities = getEntities();
+
+	for(auto& entity : entities){
+		auto& grid_motion = entity.getComponent<tempo::ComponentStageTranslation>();
+
+		int dir = rand() % 2; // between 0 and 1
+		int amount = (rand() % 2) * 2 - 1; //-1 or 1
+
+		if (dir) {
+			grid_motion.delta = glm::ivec2(amount, 0);
+		} else {
+			grid_motion.delta = glm::ivec2(0, amount);
+		}
+	}
+}
+
+}

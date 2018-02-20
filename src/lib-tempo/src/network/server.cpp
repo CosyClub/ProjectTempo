@@ -143,6 +143,60 @@ uint32_t addClient(sf::Uint32 ip,
 	return idCounter++;
 }
 
+typedef std::pair<anax::Entity, std::vector<anax::Component*>> c_list;
+typedef std::vector<c_list> ec_list;
+uint32_t countComponents(anax::Entity entity, ec_list &e_list)
+{
+	// TODO Clean this up post merge with new handshake
+	c_list list;
+	uint32_t result = 0;
+	list.first = entity;
+	result++; //TODO This doesn't make any sense anymore
+	for (auto& component: entity.getComponents()) {
+		NetworkedComponent *nc;
+		nc = dynamic_cast<NetworkedComponent*>(component);
+		if (nc != NULL) {
+			list.second.push_back(component);
+		}
+	}
+	e_list.push_back(list);
+	return result;
+
+}
+
+sf::Packet makeBigPacket(c_list list)
+{
+	anax::Entity e = list.first;
+	sf::Packet p = sf::Packet();
+	p << e.getId();
+	std::cout << "Sending components for entity " << e.getId().index << std::endl;
+	for (anax::Component* c : list.second)
+	{
+		sf::Packet part = sf::Packet();
+		NetworkedComponent *nc;
+		nc = dynamic_cast<NetworkedComponent*>(c);
+		part << nc->getId();
+		sf::Packet part2 = nc->dumpComponent();
+		part << part2;
+		std::cout << "Adding component with ID " << nc->getId()
+		          << " and size " << sf::Uint32(part.getDataSize())
+		          << std::endl;
+		p << sf::Uint32(part.getDataSize());
+		p << part;
+	}
+
+	return p;
+}
+	
+void sendComponents(uint32_t clientID, ec_list &e_list)
+{
+	sf::Packet rog;
+	for (c_list list: e_list) {
+		rog = makeBigPacket(list);
+		sendMessage(QueueID::HANDSHAKE, rog, clientID);
+	}
+}
+
 void handshakeHello(sf::Packet &packet,
                     anax::World *world)
 {
@@ -167,19 +221,28 @@ void handshakeHello(sf::Packet &packet,
 		          << std::endl;
 	}
 	
+	//Work out how many components there are in the world
+	uint32_t componentAmount = 0;
+	ec_list components;
+	for (auto& entity: world->getEntities()) 
+		componentAmount += countComponents(entity, components);
+
+	std::cout << "Found " << componentAmount << " components from "
+	          << world->getEntities().size() << " entities" << std::endl;
+	
 	// Construct HELLO_ROG response
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::HELLO_ROG);
 	rog << id; // TODO change to temporary token
 	rog << port_si;
 	rog << port_st;
-	rog << static_cast<uint32_t>(world->getEntityCount());
-	for (auto& entity: world->getEntities()) {
-		rog << dumpEntity(entity);
-	}
+	rog << componentAmount;
 
 	// Send response back to sender
-	sendMessage(SystemQID::HANDSHAKE, rog, id);
+	sendMessage(QueueID::HANDSHAKE, rog, id);
+
+	// Now send current state back to the original sender
+	sendComponents(id, components);
 }
 
 void handshakeRoleReq(sf::Packet &packet,
@@ -196,7 +259,7 @@ void handshakeRoleReq(sf::Packet &packet,
 
 	// Create Entity for selected role from client
 	// Only creating players for now (spectators are not a thing)	
-	anax::Entity entity = newPlayer(*world, EID::EID_PLAYER, system_gm);
+	anax::Entity entity = newPlayer(*world, system_gm);
 
 	// Register Role
 	cmtx.lock();
@@ -204,31 +267,37 @@ void handshakeRoleReq(sf::Packet &packet,
 	sf::Uint32 ip       = clients[id].ip;
 	unsigned short port = clients[id].port;
 	cmtx.unlock();
-	EntityCreationData data = dumpEntity(entity);
 	
+	// Package Requested Entity
+	ec_list components;
+	uint32_t componentAmount = countComponents(entity, components);
+
 	// Construct ROLEREQ_ROG response
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG);
-	rog << data;
+	rog << componentAmount;
 
-	sf::Packet p_broadcast;
-	p_broadcast << data;
-	
 	// Send response back to sender
-	sendMessage(SystemQID::HANDSHAKE, rog, id);
+	sendMessage(QueueID::HANDSHAKE, rog, id);
+	sendComponents(id, components);
 
-	// Send notification of new entity to all clients
-	for (tempo::clientpair client:clients){
-		if (client.first == id)
-			continue;
-		sendMessage(tempo::SystemQID::ENTITY_CREATION, p_broadcast, client.first);
+	// Tell everyone that we have a new player
+	// TODO Clean this up post merge with new handshake
+	for (clientpair client : clients) {
+		if (client.first == id) continue;
+		rog = sf::Packet();
+		for (c_list list : components) {
+			rog = makeBigPacket(list);
+			sendMessage(tempo::QueueID::ENTITY_CREATION, 
+			            rog,
+			            client.first);
+		}
 	}
-	
 }
 
 void checkForNewClients(anax::World *world, SystemLevelManager system_gm)
 {
-	tempo::Queue<sf::Packet> *queue = get_system_queue(SystemQID::HANDSHAKE);	
+	tempo::Queue<sf::Packet> *queue = get_system_queue(QueueID::HANDSHAKE);	
 	if (queue->empty()) return;
 
 	while (!queue->empty()) {
@@ -300,7 +369,7 @@ uint32_t findClientID(sf::Uint32 ip, unsigned short port)
 }
 
 
-bool sendMessage(tempo::SystemQID id, 
+bool sendMessage(tempo::QueueID id, 
                  sf::Packet payload, 
                  uint32_t client_id)
 {

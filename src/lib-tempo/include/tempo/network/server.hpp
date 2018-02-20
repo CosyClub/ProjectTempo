@@ -1,7 +1,7 @@
 #ifndef TEMPO_NETWORK_SERVER_HPP
 #define TEMPO_NETWORK_SERVER_HPP
 
-#include <tempo/entity/LevelManager.hpp>
+#include <tempo/system/SystemLevelManager.hpp>
 #include <tempo/entity/EntityCreationServer.hpp>
 #include <tempo/network/base.hpp>
 #include <tempo/network/queue.hpp>
@@ -78,7 +78,7 @@ namespace tempo
 	//         such client exists.
 	uint32_t findClientID(sf::Uint32 ip, unsigned short port);
 
-	bool sendMessage(tempo::SystemQID id, 
+	bool sendMessage(tempo::QueueID id, 
                          sf::Packet payload, 
                          uint32_t client_id);
 }

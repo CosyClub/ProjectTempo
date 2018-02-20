@@ -84,6 +84,13 @@ set(TEMPO_ANAX_INCLUDE_DIR
 	"${TEMPO_ANAX_DIR}/include"
 )
 
+set(TEMPO_GLM_DIR
+	"${CMAKE_CURRENT_LIST_DIR}/extlibs/glm"
+	)
+set(TEMPO_GLM_INCLUDE_DIR
+	"${TEMPO_GLM_DIR}"
+)
+
 add_subdirectory(${TEMPO_EXTLIBS_DIR})
 add_subdirectory(src)
 
