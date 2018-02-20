@@ -46,7 +46,7 @@ namespace client {
 
 			glm::ivec2 pos = sp.getOrigin();
 
-			std::cout << "Moved billboard to: " << pos.x << ", " << s.getHeight(pos) << ", " << pos.y << std::endl;
+			//std::cout << "Moved billboard to: " << pos.x << ", " << s.getHeight(pos) << ", " << pos.y << std::endl;
 			sn.node->setPosition(irr::core::vector3df(pos.x, s.getHeight(pos), pos.y));
 			// TODO
 		}

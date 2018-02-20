@@ -26,18 +26,22 @@
 #define DELTA 150
 #define TIME 60000000 / BPM
 
+#include <thread>
+#include <chrono>
 
 using namespace irr;
 
 
-void createEntityStage(anax::World& world){
+anax::Entity createEntityStage(anax::World& world){
 	printf("Creating entity stage\n");
 	anax::Entity entity_stage = world.createEntity();
 	entity_stage.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	entity_stage.activate();
+
+	return entity_stage;
 }
 
-void createEntityPlayer(anax::World& world) {
+anax::Entity createEntityPlayer(anax::World& world) {
 	printf("Creating entity player\n");
 	anax::Entity entity_player = world.createEntity();
 	entity_player.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
@@ -45,6 +49,8 @@ void createEntityPlayer(anax::World& world) {
 	entity_player.addComponent<client::ComponentRenderSceneNode>(nullptr);
 	entity_player.addComponent<client::ComponentKeyInput>();
 	entity_player.activate();
+
+	return entity_player;
 }
 
 int main(int argc, const char** argv){
@@ -66,7 +72,7 @@ int main(int argc, const char** argv){
 	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_OPENGL,
 	                                                irr::core::dimension2d<irr::u32>(800, 600),
 	                                                16,
-	                                                false, false, false, &receiver);
+	                                                false, false, false);
 
 	if(!device){
 		printf("Failed to create Irrlicht Device\n");
@@ -126,15 +132,18 @@ int main(int argc, const char** argv){
 	anax::World world;
 	client::SystemStageRenderer system_stage_renderer;
 	client::SystemRenderSceneNode system_render_scene_node;
+	client::SystemUpdateKeyInput system_update_key_input;
 	world.addSystem(system_stage_renderer);
 	world.addSystem(system_render_scene_node);
+	world.addSystem(system_update_key_input);
 	createEntityStage(world);
-	createEntityPlayer(world);
+	anax::Entity entity_player = createEntityPlayer(world);
 
 	// Setup Systems
 	world.refresh();
 	system_stage_renderer.setup(smgr);
 	system_render_scene_node.setup(smgr);
+	system_update_key_input.setup(device);
 
 	int lastFPS = -1;
 	// In order to do framerate independent movement, we have to know
@@ -158,26 +167,64 @@ int main(int argc, const char** argv){
 			const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
 			then = now;
 
-			core::vector3df nodePosition = billboard->getPosition();
-
-			if(receiver.IsKeyDown(irr::KEY_KEY_W)) {
-			    nodePosition.X -= MOVEMENT_SPEED * frameDeltaTime;
+			{
+				core::vector3df nodePosition = billboard->getPosition();
+				if (receiver.IsKeyDown(irr::KEY_KEY_W)) {
+					nodePosition.X -= MOVEMENT_SPEED * frameDeltaTime;
+				}
+				else if (receiver.IsKeyDown(irr::KEY_KEY_S))
+					nodePosition.X += MOVEMENT_SPEED * frameDeltaTime;
+				if (receiver.IsKeyDown(irr::KEY_KEY_A))
+					nodePosition.Z -= MOVEMENT_SPEED * frameDeltaTime;
+				else if (receiver.IsKeyDown(irr::KEY_KEY_D))
+					nodePosition.Z += MOVEMENT_SPEED * frameDeltaTime;
+				billboard->setPosition(nodePosition);
 			}
-			else if(receiver.IsKeyDown(irr::KEY_KEY_S))
-			    nodePosition.X += MOVEMENT_SPEED * frameDeltaTime;
 
-			if(receiver.IsKeyDown(irr::KEY_KEY_A))
-			    nodePosition.Z -= MOVEMENT_SPEED * frameDeltaTime;
-			else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-			    nodePosition.Z += MOVEMENT_SPEED * frameDeltaTime;
+			system_update_key_input.clear();
+			system_update_key_input.addkey();
 
-			billboard->setPosition(nodePosition);
+			// TODO: move into multiple systems, for now teleport the user
+			// the two systems required are input->transform and transform->apply
+			{
+				std::vector<char> keys = entity_player.getComponent<client::ComponentKeyInput>().keysPressed;
+				tempo::ComponentStagePosition& pos = entity_player.getComponent<tempo::ComponentStagePosition>();
+
+				if (keys.size() > 0) {
+					char key = keys[0];
+					glm::ivec2 new_pos = pos.occupied[0];
+
+					switch (key) {
+					case 'w':
+						new_pos.x -= 1;
+						break;
+					case 'a':
+						new_pos.y -= 1;
+						break;
+					case 's':
+						new_pos.x += 1;
+						break;
+					case 'd':
+						new_pos.y += 1;
+						break;
+					}
+
+					pos.occupied.pop_back();
+					pos.occupied.push_back(new_pos);
+
+					std::cout << "Key pressed: " << key << ":" << new_pos.x << ", " << new_pos.y << std::endl;
+				}
+			}
+
+			system_render_scene_node.update();
 
 			driver->beginScene(true, true);
 			smgr->drawAll();
 			gui_env->drawAll();
 
 			driver->endScene();
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		}
 		else {
 			device->yield();

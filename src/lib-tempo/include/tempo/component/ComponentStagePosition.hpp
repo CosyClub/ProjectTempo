@@ -10,7 +10,7 @@ namespace tempo
 	
 struct ComponentStagePosition : anax::Component 
 {
-	private:
+	public:
 		// A non empty set of all positions that is occupied by this 
 		// entity. The first element is the origin of the entity.
 		std::vector<glm::ivec2> occupied;
