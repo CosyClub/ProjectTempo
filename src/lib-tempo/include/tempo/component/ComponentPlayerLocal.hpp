@@ -1,30 +1,27 @@
 #ifndef TEMPO_COMPONENT_PLAYERLOCAL_HPP
 #define TEMPO_COMPONENT_PLAYERLOCAL_HPP
 
-#include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/component/ComponentStageTranslation.hpp>
-#include <tempo/component/ComponentID.hpp>
-#include <tempo/network/client.hpp>
-#include <tempo/network/QueueID.hpp>
-#include <tempo/time.hpp>
+#include <tempo/component/NetworkedComponent.hpp>
 
-#include <iostream>
-#include <cstdio>
-#include <SDL.h>
+namespace tempo
+{
 
-#undef main // SDL likes to define main
+struct ComponentPlayerLocal : anax::Component, NetworkedComponent 
+{	
+	//Anthony it's broken because you removed all the fucking constructors
+	ComponentPlayerLocal();
 
-namespace tempo{
+	/////
+	// Required for networking
+	/////
+	ComponentPlayerLocal(sf::Packet p);
+	ComponentID getId();
+	sf::Packet dumpComponent();
 
-	struct ComponentPlayerLocal : anax::Component {
-		bool moved_this_beat;
-		unsigned int counter_combo;
-		unsigned int level_combo;
+};
 
-		inline ComponentPlayerLocal() : moved_this_beat(false) {}
-	};
-}
+} // namespace tempo
 
 #endif

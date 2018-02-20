@@ -1,31 +1,25 @@
 #ifndef TEMPO_COMPONENT_PLAYERREMOTE_HPP
 #define TEMPO_COMPONENT_PLAYERREMOTE_HPP
 
-#include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/component/ComponentStageTranslation.hpp>
-#include <tempo/system/SystemID.hpp>
-#include <tempo/network/queue.hpp>
-#include <tempo/network/QueueID.hpp>
-#include <tempo/time.hpp>
+#include <tempo/component/NetworkedComponent.hpp>
 
-#include <SDL.h>
-#include <iostream>
-#include <cstdio>
-#include <stdexcept>
+namespace tempo
+{
 
-#undef main // SDL likes to define main
+struct ComponentPlayerRemote : anax::Component, NetworkedComponent 
+{
+	ComponentPlayerRemote();
 
-namespace tempo{
+	/////
+	// Required for networking
+	/////
+	ComponentPlayerRemote(sf::Packet p);
+	ComponentID getId();
+	sf::Packet dumpComponent();
+};
 
-	struct ComponentPlayerRemote : anax::Component 
-	{
-		bool moved_this_beat;
-
-		inline ComponentPlayerRemote() : moved_this_beat(false) {}
-	};
-
-}
+} // namespace tempo
 
 #endif

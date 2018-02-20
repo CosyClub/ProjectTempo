@@ -10,18 +10,21 @@
 #include <OgreMath.h>
 #include <OgreVector3.h>
 
-namespace tempo{
-	struct ComponentTransform : anax::Component {
-		/// \brief Offset from world origin to entity's local origin
-		Ogre::Vector3    position;
+namespace tempo
+{
 
-		/// \brief Rotation of the entity about its local origin
-		Ogre::Quaternion rotation;
+struct ComponentTransform : anax::Component {
+	/// \brief Offset from world origin to entity's local origin
+	Ogre::Vector3    position;
 
-		ComponentTransform();
-		ComponentTransform(Ogre::Vector3 pos);
-		ComponentTransform(Ogre::Real x, Ogre::Real y, Ogre::Real z);
-	};
-}
+	/// \brief Rotation of the entity about its local origin
+	Ogre::Quaternion rotation;
+
+	ComponentTransform();
+	ComponentTransform(Ogre::Vector3 pos);
+	ComponentTransform(Ogre::Real x, Ogre::Real y, Ogre::Real z);
+};
+
+} // namespace tempo
 
 #endif
