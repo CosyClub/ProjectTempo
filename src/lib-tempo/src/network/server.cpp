@@ -185,7 +185,7 @@ sf::Packet makeBigPacket(c_list list)
 	return p;
 }
 	
-void sendComponents(uint32_t clientID, ec_list &list)
+void sendComponents(uint32_t clientID, ec_list &e_list)
 {
 	sf::Packet rog;
 	for (c_list list: e_list) {
