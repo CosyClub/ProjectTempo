@@ -286,12 +286,8 @@ void handshakeRoleReq(sf::Packet &packet,
 	for (clientpair client : clients) {
 		if (client.first == id) continue;
 		rog = sf::Packet();
-		for (auto& pair : components) {
-			// NetworkedComponent *nc;
-			// nc = dynamic_cast<NetworkedComponent*>(pair.second);
-			// rog << pair.first.getId();
-			// rog << nc->ID;
-			// rog << nc->dumpComponent();
+		for (c_list list : components) {
+			rog = makeBigPacket(list);
 			sendMessage(tempo::QueueID::ENTITY_CREATION, 
 			            rog,
 			            client.first);
