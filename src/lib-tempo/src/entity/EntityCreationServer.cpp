@@ -4,6 +4,7 @@
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/component/ComponentModel.hpp>
+#include <tempo/component/ComponentHealth.hpp>
 #include <glm/vec2.hpp>
 
 namespace tempo

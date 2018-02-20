@@ -163,14 +163,7 @@ int main(int argc, const char** argv)
 	tempo::connectToAndSyncWithServer(role, roleData, world, system_level);
 
 	//Sort out graphics after handshake
-	std::cout << "WORLD HAS " << world.getEntities().size() << " ENTITIES" << std::endl;
-	for (auto entity : world.getEntities())
-	{
-		std::cout << "Evaluating entity " << tempo::localtoserver[entity.getId()].index << std::endl;
-		std::cout << "Entity has model " << entity.hasComponent<tempo::ComponentModel>() <<std::endl;
-		std::cout << "Entity has position " << entity.hasComponent<tempo::ComponentStagePosition>() <<std::endl;
-		std::cout << std::endl;
-	}
+	world.refresh();
 	system_gc.addEntities(scene);
 
 	// Start and Sync Song
