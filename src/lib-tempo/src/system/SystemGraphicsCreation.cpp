@@ -18,6 +18,7 @@ void SystemGraphicsCreation::addEntities(Ogre::SceneManager* scene)
 			std::cout << "Adding render component to entity with server ID " << entity.getId().index << std::endl;
 			std::string path = entity.getComponent<ComponentModel>().path;
 			entity.addComponent<ComponentRender>(scene, path);
+			glm::vec3 color = entity.getComponent<ComponentModel>().color;
 			Ogre::SceneNode* node = entity.getComponent<ComponentRender>().node;
 
 			Ogre::BillboardSet* Pset = scene->createBillboardSet();
@@ -26,7 +27,8 @@ void SystemGraphicsCreation::addEntities(Ogre::SceneManager* scene)
 			Pset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
 			Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
 			Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
-			player->setColour(Ogre::ColourValue::Red);
+			std::cout << "setting color " << color.x << ":" << color.y << ":" << color.z << std::endl;
+			player->setColour(Ogre::ColourValue(color.x, color.y, color.z));
 
 			node->attachObject(Pset);
 		}
