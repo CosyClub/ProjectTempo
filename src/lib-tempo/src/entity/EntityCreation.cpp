@@ -69,6 +69,8 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 		switch (component_id) {
 
 		// Put new Components in here	
+		CASE(ComponentCombo, COMBO)
+		CASE(ComponentGridAi, GRID_AI)
 		CASE(ComponentHealth, HEALTH)
 		CASE(ComponentPlayerLocal, PLAYER_LOCAL)
 		CASE(ComponentStagePosition, STAGE_POSITION)

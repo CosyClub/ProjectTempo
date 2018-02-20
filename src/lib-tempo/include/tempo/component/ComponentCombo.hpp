@@ -3,6 +3,8 @@
 
 #include <anax/Component.hpp>
 
+#include <tempo/component/NetworkedComponent.hpp>
+
 namespace tempo
 {
 
@@ -13,7 +15,7 @@ enum MessageCombo {
 };
 
 // Component captures a combo mechanic for the entity with this component.
-struct ComponentCombo : anax::Component 
+struct ComponentCombo : anax::Component, NetworkedComponent 
 {
 	bool actionedThisBeat;
 	unsigned int comboCounter;
@@ -34,6 +36,12 @@ struct ComponentCombo : anax::Component
 	// called.
 	void breakCombo();
 
+	/////
+	// Required for networking
+	/////
+	ComponentCombo(sf::Packet p);
+	ComponentID getId();
+	sf::Packet dumpComponent();
 };
 
 } // namespace tempo

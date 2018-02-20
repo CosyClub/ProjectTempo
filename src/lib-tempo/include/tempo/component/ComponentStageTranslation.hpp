@@ -20,7 +20,9 @@ struct ComponentStageTranslation : anax::Component, NetworkedComponent
 	// Creates the stage translation with no delta
 	ComponentStageTranslation();
 	
-	//Required for inital network sync
+	/////
+	// Required for inital network sync
+	/////
 	ComponentStageTranslation(sf::Packet p);
 	sf::Packet dumpComponent();
 	ComponentID getId();

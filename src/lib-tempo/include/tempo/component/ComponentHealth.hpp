@@ -3,7 +3,6 @@
 
 #include <anax/Component.hpp>
 
-#include <tempo/network/QueueID.hpp>
 #include <tempo/component/NetworkedComponent.hpp>
 
 namespace tempo {
@@ -30,7 +29,9 @@ struct ComponentHealth : anax::Component, NetworkedComponent
 	//                         (can be ±)
 	void HealthUpdate(int32_t delta_health);
 
-	//Required for inital network sync
+	/////
+	// Required for networking
+	/////
 	ComponentHealth(sf::Packet p);
 	sf::Packet dumpComponent();
 	ComponentID getId();

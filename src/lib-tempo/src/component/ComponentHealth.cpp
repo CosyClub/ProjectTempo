@@ -28,6 +28,9 @@ void ComponentHealth::HealthUpdate(int delta_health) {
 
 }
 
+/////
+// Required for networking
+/////
 ComponentHealth::ComponentHealth(sf::Packet p)
 {
 	p >> max_health;
@@ -49,3 +52,4 @@ ComponentID ComponentHealth::getId()
 }
 
 } // namespace tempo
+

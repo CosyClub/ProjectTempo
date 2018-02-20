@@ -29,7 +29,9 @@ struct ComponentStagePosition : anax::Component, NetworkedComponent
 		// Returns the origin of the entity.
 		glm::ivec2 getOrigin();
 
-		//Required for inital network sync
+		/////
+		// Required for inital network sync
+		/////
 		ComponentStagePosition(sf::Packet p);
 		sf::Packet dumpComponent();
 		ComponentID getId();
