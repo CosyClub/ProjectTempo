@@ -23,6 +23,6 @@ struct ComponentWeapon : anax::Component
 	float GetDamage(glm::vec2 offset);
 };
 
-}
+} // namespace tempo
 
 #endif

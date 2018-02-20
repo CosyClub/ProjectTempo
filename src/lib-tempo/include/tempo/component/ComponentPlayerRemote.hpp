@@ -2,6 +2,7 @@
 #define TEMPO_COMPONENT_PLAYERREMOTE_HPP
 
 #include <anax/Component.hpp>
+
 #include <tempo/component/NetworkedComponent.hpp>
 
 namespace tempo
@@ -9,10 +10,11 @@ namespace tempo
 
 struct ComponentPlayerRemote : anax::Component, NetworkedComponent 
 {
-	//Anthony it's broken because you removed all the fucking constructors
 	ComponentPlayerRemote();
 
-	// Required for inital network sync	
+	/////
+	// Required for networking
+	/////
 	ComponentPlayerRemote(sf::Packet p);
 	ComponentID getId();
 	sf::Packet dumpComponent();
