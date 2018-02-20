@@ -27,8 +27,8 @@ namespace client {
 				sn.node,
 				size,
 				pos, // fix alignment
-				-1, 
-				top_color, 
+				-1,
+				top_color,
 				bottom_color);
 		}
 
@@ -45,7 +45,7 @@ namespace client {
 			client::ComponentRenderSceneNode& sn = entity.getComponent<client::ComponentRenderSceneNode>();
 
 			glm::ivec2 pos = sp.getOrigin();
-			
+
 			std::cout << "Moved billboard to: " << pos.x << ", " << s.getHeight(pos) << ", " << pos.y << std::endl;
 			sn.node->setPosition(irr::core::vector3df(pos.x, s.getHeight(pos), pos.y));
 			// TODO
