@@ -39,21 +39,22 @@ namespace tempo
 
 	enum ComponentID
 	{
-		CID_RESERVED_BOTTOM,
-		CID_RESERVED_ERROR,
+		CID_RESERVED_BOTTOM,			//0
+		CID_RESERVED_ERROR,			//1
 		//Start of non-reserved zone
 
-		COMBO,
-		GRID_AI,
-		HEALTH,
-		PICKUP,
-		PLAYER_LOCAL,
-		PLAYER_REMOTE,
-		STAGE,
-		STAGE_POSITION,
-		STAGE_TRANSLATION,
-		TRANSFORM,
-		WEAPON,
+		COMBO,					//2
+		GRID_AI,				//3
+		HEALTH,					//4
+		MODEL,					//5
+		PICKUP,					//6
+		PLAYER_LOCAL,				//7
+		PLAYER_REMOTE,				//8
+		STAGE,					//9
+		STAGE_POSITION,				//10
+		STAGE_TRANSLATION,			//11
+		TRANSFORM,				//12
+		WEAPON,					//13
 		
 		//End of non-reserved zone
 		CID_RESERVED_TOP

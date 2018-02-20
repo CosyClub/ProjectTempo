@@ -178,7 +178,7 @@ sf::Packet makeBigPacket(c_list list)
 		std::cout << "Adding component with ID " << nc->getId() << std::endl;
 		part << nc->getId();
 		part << nc->dumpComponent();
-		p << sf::Uint64(part.getDataSize());
+		p << sf::Uint32(part.getDataSize());
 		p << part;
 	}
 

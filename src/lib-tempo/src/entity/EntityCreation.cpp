@@ -4,6 +4,7 @@
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/component/ComponentHealth.hpp>
+#include <tempo/component/ComponentModel.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/component/ComponentStage.hpp>
@@ -72,7 +73,9 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 		CASE(ComponentCombo, COMBO)
 		CASE(ComponentGridAi, GRID_AI)
 		CASE(ComponentHealth, HEALTH)
+		CASE(ComponentModel, MODEL)
 		CASE(ComponentPlayerLocal, PLAYER_LOCAL)
+		CASE(ComponentPlayerRemote, PLAYER_REMOTE)
 		CASE(ComponentStagePosition, STAGE_POSITION)
 		CASE(ComponentStageTranslation, STAGE_TRANSLATION)
 
@@ -84,7 +87,11 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 		}
 	}
 
-	
+	e.activate();	
+	std::cout << "Finished processing Entity with server ID " << id.index 
+	          << " and " << e.getComponentTypeList().count()
+	          << " components and validity " 
+	          << e.isValid() << std::endl;
 
 	return e;
 }

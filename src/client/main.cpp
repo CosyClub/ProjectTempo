@@ -26,6 +26,7 @@
 #include <tempo/entity/EntityCreation.hpp>
 #include <tempo/entity/LevelRenderer.hpp>
 #include <tempo/network/client.hpp>
+#include <tempo/network/QueueID.hpp>
 #include <tempo/system/SystemRenderHealth.hpp>
 #include <tempo/system/SystemTransform.hpp>
 #include <tempo/system/SystemCombo.hpp>
@@ -33,6 +34,7 @@
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 #include <tempo/system/SystemGameInput.hpp>
+#include <tempo/system/SystemGraphicsCreation.hpp>
 #include <tempo/system/SystemPlayer.hpp>
 #include <tempo/system/SystemRender.hpp>
 
@@ -107,6 +109,7 @@ int main(int argc, const char** argv)
 	tempo::SystemUpdateTransforms system_update_transforms;
 	tempo::SystemGridAi           system_grid_ai;
 	tempo::SystemGameInput        system_input(clock);
+	tempo::SystemGraphicsCreation system_gc;
 	tempo::SystemPlayer           system_player(clock);
 	tempo::SystemCombo            system_combo;
 	tempo::SystemHealth           system_health;
@@ -117,6 +120,7 @@ int main(int argc, const char** argv)
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_render);
 	world.addSystem(system_input);
+	world.addSystem(system_gc);
 	world.addSystem(system_player);
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
@@ -158,6 +162,17 @@ int main(int argc, const char** argv)
 	// Connect to server and handshake information
 	tempo::connectToAndSyncWithServer(role, roleData, world, system_level);
 
+	//Sort out graphics after handshake
+	std::cout << "WORLD HAS " << world.getEntities().size() << " ENTITIES" << std::endl;
+	for (auto entity : world.getEntities())
+	{
+		std::cout << "Evaluating entity " << tempo::localtoserver[entity.getId()].index << std::endl;
+		std::cout << "Entity has model " << entity.hasComponent<tempo::ComponentModel>() <<std::endl;
+		std::cout << "Entity has position " << entity.hasComponent<tempo::ComponentStagePosition>() <<std::endl;
+		std::cout << std::endl;
+	}
+	system_gc.addEntities(scene);
+
 	// Start and Sync Song
 	mainsong.start();
 	sync_time(clock, &mainsong);
@@ -189,6 +204,9 @@ int main(int argc, const char** argv)
 		}
 	}
 
+
+	std::cout << "GOT HERE" << std::endl;
+
 	//camera
 	Ogre::Camera* camera = scene->createCamera("MainCamera");
 	camera->setNearClipDistance(0.01f);
@@ -201,6 +219,7 @@ int main(int argc, const char** argv)
 	camera->lookAt(0, 0, 0);
 
 
+	std::cout << "DIDN'T GOT HERE" << std::endl;
 
 
 	Ogre::OverlaySystem* OverlaySystem = new Ogre::OverlaySystem();
@@ -284,6 +303,7 @@ int main(int argc, const char** argv)
 	
 	while (running) {
 		new_entity_check(world, scene, system_level);
+		system_gc.addEntities(scene);
 
 		float dt = dt_timer.getElapsedTime().asSeconds();
 		dt_timer.restart();
