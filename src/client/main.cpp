@@ -155,7 +155,7 @@ int main(int argc, const char** argv){
 			const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
 			then = now;
 
-			system_update_key_input.addkey();
+			system_update_key_input.addKeys();
 
 			// TODO: move into multiple systems, for now teleport the user
 			// the two systems required are input->transform and transform->apply
@@ -163,7 +163,7 @@ int main(int argc, const char** argv){
 				std::vector<char> keys = entity_player.getComponent<client::ComponentKeyInput>().keysPressed;
 				tempo::ComponentStagePosition& pos = entity_player.getComponent<tempo::ComponentStagePosition>();
 
-				if (keys.size() > 0) {
+				for (int i = 0; i < keys.size(); i++) {
 					char key = keys[0];
 					glm::ivec2 new_pos = pos.occupied[0];
 

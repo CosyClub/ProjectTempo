@@ -8,27 +8,21 @@ namespace client {
 		device->setEventReceiver(&receiver);
 	}
 
-	void SystemUpdateKeyInput::addkey() {
+	void SystemUpdateKeyInput::addKeys() {
 		auto entities = getEntities();
 
 		for (auto entity : entities)
 		{
 			client::ComponentKeyInput& ki = entity.getComponent<client::ComponentKeyInput>();
 
-			if(receiver.IsKeyDown(irr::KEY_KEY_W)) {
-			    ki.keysPressed.push_back('w');
-			}
-			else if(receiver.IsKeyDown(irr::KEY_KEY_S))
-			    ki.keysPressed.push_back('s');
-
-			if(receiver.IsKeyDown(irr::KEY_KEY_A)) {
-			    ki.keysPressed.push_back('a');
-			}
-			else if(receiver.IsKeyDown(irr::KEY_KEY_D)) {
-			    ki.keysPressed.push_back('d');
-			}
+			// add all keys that were queued up
+			ki.keysPressed = receiver.getChars();
 		}
+
+		// clear the keys in the reciever
+		receiver.clearChars();
 	}
+
 	void SystemUpdateKeyInput::clear() {
 		auto entities = getEntities();
 
