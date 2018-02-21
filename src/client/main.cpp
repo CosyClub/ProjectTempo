@@ -104,11 +104,19 @@ int main(int argc, const char** argv){
 		camera_node->setPosition(irr::core::vector3df(10.0f, 10.0f, 10.0f));
 		camera_node->setTarget(irr::core::vector3df(0.0f, 0.0f, 0.0f));
 	}
-	irr::scene::ISceneNode* light_node = smgr->addLightSceneNode(
-	  0,
-		irr::core::vector3df(0.0f, 10.0f, 0.0f),
+	irr::scene::ISceneNode* camera_light = smgr->addLightSceneNode(
+		camera_node,
+		irr::core::vector3df(0.0f, 0.0f, 0.0f),
 		irr::video::SColorf(1.0f, 1.0f, 1.0f),
 		10.0f);
+
+
+	// debug static light
+	irr::scene::ISceneNode* light_node = smgr->addLightSceneNode(
+		0,
+		irr::core::vector3df(10.0f, 10.0f, 10.0f),
+		irr::video::SColorf(1.0f, 1.0f, 1.0f),
+		5.0f);
 
 	irr::core::dimension2d<irr::f32> size(1.0f, 2.0f);
 	irr::core::vector3df position(0.0f, 0.0f, 0.0f);
