@@ -98,11 +98,10 @@ int main(int argc, const char** argv){
 		float rotate = -100.0f;
 		float translate = -100.0f;
 		float zoom = 100.0f;
-		float distance = 10.0f;
+		float distance = 15.0f;
 		camera_node = smgr->addCameraSceneNodeMaya(nullptr, rotate, translate, zoom, -1, distance);
 		device->getCursorControl()->setVisible(true);
-		camera_node->setPosition(irr::core::vector3df(10.0f, 10.0f, 10.0f));
-		camera_node->setTarget(irr::core::vector3df(0.0f, 0.0f, 0.0f));
+		camera_node->setTarget(irr::core::vector3df(10.0f, 0.0f, 10.0f));
 	}
 	irr::scene::ISceneNode* light_node = smgr->addLightSceneNode(
 		camera_node,
@@ -224,7 +223,7 @@ int main(int argc, const char** argv){
 
 			driver->endScene();
 
-			std::this_thread::sleep_for(std::chrono::milliseconds(20));
+			std::this_thread::sleep_for(std::chrono::milliseconds(33));
 		}
 		else {
 			device->yield();
