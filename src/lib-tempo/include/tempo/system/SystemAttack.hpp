@@ -10,8 +10,14 @@ namespace tempo{
 
 struct SystemAttack : anax::System<anax::Requires<ComponentHealth>> {
 
-	SystemAttack();
-	~SystemAttack();
+	// Attack
+	// If attack is made, all attackable entities (have ComonentHealth)
+	// are checked to see if they are inside the attack range
+	//
+	// Arguments:
+	//          anax::Entity attacker - The entity that has chosen to attack
+	// Returns:
+	//          void
 	void Attack(anax::Entity attacker);
 };
 
