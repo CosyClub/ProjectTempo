@@ -1,4 +1,12 @@
+#include <glm/glm.hpp>
+
+#include <tempo/mask.hpp>
+
 #include <tempo/system/SystemAttack.hpp>
+
+#include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentWeapon.hpp>
+
 
 namespace tempo{
 
@@ -9,20 +17,35 @@ SystemAttack::SystemAttack()
 
 //BeAttacked
 
-SystemAttack::Attack(anax::Entity attacker){
+void SystemAttack::Attack(anax::Entity attacker){
 
-	glm::ivec2 Attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
+	glm::ivec2 attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
 	auto& weapon = attacker.getComponent<tempo::ComponentWeapon>();
 	Mask m = weapon.damage;
 
-	glm::ivec2 centre = m.centre
+	glm::ivec2 centre = m.centre;
 	glm::ivec2 size = m.size;
 
 	auto entities = getEntities();
 
 	for (auto& entity : entities) {
 
+		glm::ivec2 pos = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
 		auto& health = entity.getComponent<tempo::ComponentHealth>();
+
+		for(int y = 0; y<size.y; y++){
+			for(int x = 0; x<size.x; x++){
+
+				if(attackerpos.x + x == pos.x && attackerpos.y + y == pos.y){
+
+
+					glm::ivec2 offset = {x,y};
+					float damage = weapon.GetDamage(offset);
+					health.HealthUpdate(damage);
+				}
+
+			}
+		}
 
 	}
 

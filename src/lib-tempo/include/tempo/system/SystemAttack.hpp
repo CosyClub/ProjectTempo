@@ -4,15 +4,15 @@
 #include <anax/System.hpp>
 #include <anax/Component.hpp>
 
-#include <tempo/component/ComponentWeapon.hpp>
+#include <tempo/component/ComponentHealth.hpp>
 
 namespace tempo{
 
 struct SystemAttack : anax::System<anax::Requires<ComponentHealth>> {
 
 	SystemAttack();
-	Attack(anax::Entity attacker);
 	~SystemAttack();
+	void Attack(anax::Entity attacker);
 };
 
 }
