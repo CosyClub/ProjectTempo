@@ -47,8 +47,8 @@
 
 #include <glm/gtc/constants.hpp>
 
-#define BPM 174
-#define DELTA 150
+#define BPM 120
+#define DELTA 200
 #define TIME 60000000 / BPM
 
 void sync_time(tempo::Clock& clock, tempo::Song *song)
@@ -71,6 +71,7 @@ void new_entity_check(anax::World &world, Ogre::SceneManager* scene, tempo::Syst
 
 int main(int argc, const char** argv)
 {
+
 	tempo::Application app = tempo::initialize_application("RaveCave", 800, 600);
 	if (app.ogre == nullptr || app.window == nullptr || app.render_target == nullptr) {
 		printf("Application initialisation failed, exiting\n");
@@ -135,6 +136,7 @@ int main(int argc, const char** argv)
 	// Note, IF statement is to change ports for local development, bit
 	// hacky and should be removed in due course!
 	tempo::addr_r = "127.0.0.1";
+	if (argc == 2) tempo::addr_r = argv[1];
 	if (tempo::addr_r == "127.0.0.1") {
 		std::srand (time(NULL));
 		int d = std::rand() % 10;
@@ -165,8 +167,8 @@ int main(int argc, const char** argv)
 	system_gc.addEntities(scene);
 
 	// Start and Sync Song
-	mainsong.start();
-	sync_time(clock, &mainsong);
+	// mainsong.start();
+	// sync_time(clock, &mainsong);
 	mainsong.set_volume(20.f);
 	long offset = 0;
 
