@@ -43,7 +43,7 @@ Mask::Mask()
 {
 	centre = glm::ivec2(0,0);
 	size = glm::ivec2(0,0);
-	int*mask = NULL;
+	int* mask = NULL;
 }
 
 Mask::~Mask()
@@ -71,9 +71,9 @@ float Mask::get_value(int x, int y)
 	pos.x += x;
 	pos.y += y;
 	std::cout << pos.x << ":" << pos.y << std::endl; //TODO remove
-	if (pos.x <  0      or
-	    pos.y <  0      or
-	    pos.x >= size.x or
+	if (pos.x <  0      ||
+	    pos.y <  0      ||
+	    pos.x >= size.x ||
 	    pos.y >= size.y   )
 	{
 		return 0; // out of bounds

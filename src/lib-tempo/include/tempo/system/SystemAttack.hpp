@@ -12,9 +12,6 @@ struct SystemAttack : anax::System<anax::Requires<ComponentWeapon>> {
 
 	SystemAttack();
 	~SystemAttack();
-
-	void onEntityAdded(anax::Entity& e);
-	void onEntityRemoved(anax::Entity& e);
 };
 
 }

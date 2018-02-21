@@ -4,6 +4,13 @@ namespace tempo{
 
 SystemAttack::SystemAttack()
 {
+	auto entities = getEntities();
+
+	for (auto& entity : entities) {
+		auto& weapon = entity.getComponent<tempo::ComponentWeapon>();
+		Mask m = weapon.damage;
+
+	}
 }
 
 SystemAttack::~SystemAttack()
@@ -17,7 +24,7 @@ SystemAttack::~SystemAttack()
 // 	}
 // 	else
 // 	{
-// 		std::cout << "Entity with ID " << instance_id 
+// 		std::cout << "Entity with ID " << instance_id
 // 		          << " not found in map" << std::endl;
 // 		throw std::out_of_range("Entity not found in map");
 // 	}

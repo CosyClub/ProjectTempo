@@ -12,6 +12,6 @@ namespace tempo
 
 	float ComponentWeapon::GetDamage(glm::vec2 offset)
 	{
-		//TODO
+		return damage.get_value(offset);
 	}
 }
