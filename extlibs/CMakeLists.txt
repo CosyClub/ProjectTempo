@@ -19,6 +19,7 @@ execute_process(COMMAND cmake
 	-DOGRE_BUILD_RENDERSYSTEM_GLES2=OFF
 	-DOGRE_BUILD_RENDERSYSTEM_Direct3D9=OFF
 	-DOGRE_BUILD_RENDERSYSTEM_Direct3D11=OFF
+	-DOGRE_BUILD_COMPONENT_OVERLAY=ON
 	-DOGRE_BUILD_SAMPLES=OFF
 	-DOGRE_INSTALL_SAMPLES=OFF
 	-DOGRE_BUILD_TOOLS=OFF
@@ -76,3 +77,14 @@ configure_file(
 	"${TEMPO_ANAX_INCLUDE_DIR}/anax/Config.hpp"
 	COPYONLY
 )
+
+##########################################
+# GLM
+##########################################
+# Extract archive
+execute_process(COMMAND cmake -E tar xf glm-0.9.8.5.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+# Build libraries
+##########################################
+# GLM
+add_subdirectory(glm)
+

@@ -1,5 +1,7 @@
 #include <tempo/entity/TileMask.hpp>
 
+#include <glm/vec2.hpp>
+
 namespace tempo {
 	TileMask::_AccessHelper TileMask::operator[](int x){
 		return { this, (u08)x };
@@ -36,7 +38,7 @@ namespace tempo {
 	/// \param center_delta The delta between the center of this entity and the center of the other
 	/// \return TileMask representing the common tiles occupied by both Entities
 	/////////////////////////////////////////////////////////////////////
-	TileMask TileMask::isCollidingWith(const TileMask& other, Vec2s center_delta) const{
+	TileMask TileMask::isCollidingWith(const TileMask& other, glm::vec2 center_delta) const{
 		TileMask other_relative = other.getTranslated(center_delta);
 		return *this & other_relative;
 	}
