@@ -164,28 +164,20 @@ int main(int argc, const char** argv){
 				tempo::ComponentStagePosition& pos = entity_player.getComponent<tempo::ComponentStagePosition>();
 
 				for (int i = 0; i < keys.size(); i++) {
-					char key = keys[0];
-					glm::ivec2 new_pos = pos.occupied[0];
-
-					switch (key) {
+					switch (keys[i]) {
 					case 'w':
-						new_pos.x -= 1;
+						pos.occupied[0].x -= 1;
 						break;
 					case 'a':
-						new_pos.y -= 1;
+						pos.occupied[0].y -= 1;
 						break;
 					case 's':
-						new_pos.x += 1;
+						pos.occupied[0].x += 1;
 						break;
 					case 'd':
-						new_pos.y += 1;
+						pos.occupied[0].y += 1;
 						break;
 					}
-
-					pos.occupied.pop_back();
-					pos.occupied.push_back(new_pos);
-
-					std::cout << "Key pressed: " << key << ":" << new_pos.x << ", " << new_pos.y << std::endl;
 				}
 			}
 
