@@ -10,13 +10,11 @@
 
 namespace tempo{
 
-//SystemCanBeAttacked
 SystemAttack::SystemAttack()
 {
 }
 
-//BeAttacked
-
+//
 void SystemAttack::Attack(anax::Entity attacker){
 
 	glm::ivec2 attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
@@ -30,6 +28,11 @@ void SystemAttack::Attack(anax::Entity attacker){
 
 	for (auto& entity : entities) {
 
+		//TODO:: Check whether this stays
+		if(entity.getId() == attacker.getId()){
+			continue;
+		}
+
 		glm::ivec2 pos = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
 		auto& health = entity.getComponent<tempo::ComponentHealth>();
 
@@ -37,7 +40,6 @@ void SystemAttack::Attack(anax::Entity attacker){
 			for(int x = 0; x<size.x; x++){
 
 				if(attackerpos.x + x == pos.x && attackerpos.y + y == pos.y){
-
 
 					glm::ivec2 offset = {x,y};
 					float damage = weapon.GetDamage(offset);
