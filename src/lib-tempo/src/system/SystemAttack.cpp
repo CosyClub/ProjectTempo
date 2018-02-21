@@ -2,16 +2,35 @@
 
 namespace tempo{
 
+//SystemCanBeAttacked
 SystemAttack::SystemAttack()
 {
+}
+
+//BeAttacked
+
+SystemAttack::Attack(anax::Entity attacker){
+
+	glm::ivec2 Attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
+	auto& weapon = attacker.getComponent<tempo::ComponentWeapon>();
+	Mask m = weapon.damage;
+
+	glm::ivec2 centre = m.centre
+	glm::ivec2 size = m.size;
+
 	auto entities = getEntities();
 
 	for (auto& entity : entities) {
-		auto& weapon = entity.getComponent<tempo::ComponentWeapon>();
-		Mask m = weapon.damage;
+
+		auto& health = entity.getComponent<tempo::ComponentHealth>();
 
 	}
+
 }
+
+//Get Mask positions
+//Get positions of all attackable things (contain HealthComponent)
+//if any match: entity.healthupdate();
 
 SystemAttack::~SystemAttack()
 {

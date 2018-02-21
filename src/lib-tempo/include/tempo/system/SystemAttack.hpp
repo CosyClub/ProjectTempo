@@ -8,9 +8,10 @@
 
 namespace tempo{
 
-struct SystemAttack : anax::System<anax::Requires<ComponentWeapon>> {
+struct SystemAttack : anax::System<anax::Requires<ComponentHealth>> {
 
 	SystemAttack();
+	Attack(anax::Entity attacker);
 	~SystemAttack();
 };
 
