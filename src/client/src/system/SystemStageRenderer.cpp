@@ -8,7 +8,7 @@
 
 #include <glm/vec2.hpp>
 
-#include <cstdio>
+#include <iostream>
 
 namespace {
 	class FloorSceneNode : public irr::scene::ISceneNode {
@@ -90,23 +90,25 @@ namespace {
 			return material;
 		}
 	};
+
+	void addFloorTilesToScene(irr::scene::ISceneManager* smgr,
+	                          irr::scene::IMesh* mesh,
+	                          tempo::stage_tiles& tiles) {
+	  for(unsigned int i = 0; i < tiles.size(); ++i){
+
+		  irr::scene::IMeshSceneNode* node = smgr->addMeshSceneNode(mesh, 0);
+		  float grid_x = std::get<0>(tiles[i]).x;
+		  float grid_y = std::get<0>(tiles[i]).y;
+		  float height = std::get<1>(tiles[i]);
+
+		  node->setPosition(irr::core::vector3df(grid_x, height, grid_y));
+	  }
+	}
 }
 
 namespace client {
 	void SystemStageRenderer::setup(irr::scene::ISceneManager* smgr){
 		printf("SystemStageRenderer initializing\n");
-
-		// generate testing hills plane mesh
-		//irr::scene::IAnimatedMesh* mesh_hills = smgr->addHillPlaneMesh("test_hill_mesh",
-		//                                                               irr::core::dimension2d<irr::f32>(  1,   1), // tile size
-		//                                                               irr::core::dimension2d<irr::u32>(100, 100), // tile count
-		//                                                               nullptr,  // material
-		//                                                               1.0f      // hill height
-		//                                                               );
-		//irr::scene::IAnimatedMeshSceneNode* node_hills = smgr->addAnimatedMeshSceneNode(mesh_hills);
-		//if (node_hills){
-		//	node_hills->setPosition(irr::core::vector3df(0, 0, 0));
-		//}
 
 		auto entities = getEntities();
 		auto entity = std::begin(entities);
@@ -114,6 +116,12 @@ namespace client {
 
 		tempo::stage_tiles tiles = stage.getHeights();
 
-		FloorSceneNode* floor_node = new FloorSceneNode(smgr->getRootSceneNode(), smgr, tiles);
+		irr::scene::IMesh* mesh_floor_tile = smgr->getMesh("resources/meshes/tile.obj");
+		if (!mesh_floor_tile){
+			std::cout << "Failed to load floor tile mesh\n" << std::endl;
+			return;
+		}
+
+		addFloorTilesToScene(smgr, mesh_floor_tile, tiles);
 	}
 } // namespace client
