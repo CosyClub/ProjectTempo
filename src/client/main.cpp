@@ -284,6 +284,9 @@ int main(int argc, const char** argv)
 	int frame_counter = 0;
 
 	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	sf::Clock frame_clock = sf::Clock();
+	frame_clock.restart();
+	sf::Time min_frame_time = sf::microseconds(1000000 / 60);
 	
 	while (running) {
 		new_entity_check(world, scene, system_level);
@@ -293,10 +296,10 @@ int main(int argc, const char** argv)
 		dt_timer.restart();
 
 		if (clock.passed_beat()) {
+			click.play();
 			if (tick++ % 20 == 0)
 				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
       
-			click.play();
 
 			system_grid_ai.update();
 			system_combo.advanceBeat();
@@ -357,9 +360,14 @@ int main(int argc, const char** argv)
 		system_level.update(dt);
 		system_update_transforms.update(system_level);
 		logic_time = dt_timer.getElapsedTime();
-		system_render.render(dt);
-		render_time = dt_timer.getElapsedTime() - logic_time;
-		SDL_GL_SwapWindow(app.window);
+
+		if (frame_clock.getElapsedTime() > min_frame_time) 
+		{
+			frame_clock.restart();
+			system_render.render(dt);
+			render_time = dt_timer.getElapsedTime() - logic_time;
+			SDL_GL_SwapWindow(app.window);
+		}
 
 		++frame_counter;
 		if (fps_timer.getElapsedTime().asSeconds() > 0.5f) {
