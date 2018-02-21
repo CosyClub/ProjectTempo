@@ -168,7 +168,7 @@ int main(int argc, const char** argv)
 
 	// Start and Sync Song
 	// mainsong.start();
-	// sync_time(clock, &mainsong);
+	sync_time(clock, &mainsong);
 	mainsong.set_volume(20.f);
 	long offset = 0;
 
