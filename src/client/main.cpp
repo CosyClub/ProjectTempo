@@ -70,7 +70,7 @@ int main(int argc, const char** argv){
 
 	KeyInput receiver;
 	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_OPENGL,
-	                                                irr::core::dimension2d<irr::u32>(800, 600),
+	                                                irr::core::dimension2d<irr::u32>(1280, 720),
 	                                                16,
 	                                                false, false, false);
 
@@ -103,12 +103,12 @@ int main(int argc, const char** argv){
 		device->getCursorControl()->setVisible(true);
 		camera_node->setTarget(irr::core::vector3df(10.0f, 0.0f, 10.0f));
 	}
+	// debug dynamic light
 	irr::scene::ISceneNode* camera_light = smgr->addLightSceneNode(
 		camera_node,
 		irr::core::vector3df(0.0f, 0.0f, 0.0f),
 		irr::video::SColorf(1.0f, 1.0f, 1.0f),
 		10.0f);
-
 
 	// debug static light
 	irr::scene::ISceneNode* light_node = smgr->addLightSceneNode(
@@ -116,24 +116,6 @@ int main(int argc, const char** argv){
 		irr::core::vector3df(10.0f, 10.0f, 10.0f),
 		irr::video::SColorf(1.0f, 1.0f, 1.0f),
 		5.0f);
-
-	irr::core::dimension2d<irr::f32> size(1.0f, 2.0f);
-	irr::core::vector3df position(0.0f, 0.0f, 0.0f);
-	irr::video::SColor red(255, 255, 0, 0);
-	irr::scene::ISceneNode* billboard = smgr->addBillboardSceneNode(
-		nullptr,
-		size,
-		position,
-		-1,
-		red,
-		red);
-		//  if (anim)
-		//  {
-		// 		 billboard->addAnimator(anim);
-		// 		 anim->drop();
-		//  }
-	scene::ISceneNodeAnimator* anim =
-						 smgr->createFlyCircleAnimator(core::vector3df(0,0,30), 20.0f);
 
 	// Create World
 	anax::World world;
@@ -158,8 +140,7 @@ int main(int argc, const char** argv){
 	u32 then = device->getTimer()->getTime();
 
 	// This is the movemen speed in units per second.
-	const f32 MOVEMENT_SPEED = 5.f;
-
+	const f32 MOVEMENT_SPEED = 1.0f;
 
 	mainsong.start();
 	//sync_time(clock, &mainsong);
@@ -174,21 +155,6 @@ int main(int argc, const char** argv){
 			const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
 			then = now;
 
-			{
-				core::vector3df nodePosition = billboard->getPosition();
-				if (receiver.IsKeyDown(irr::KEY_KEY_W)) {
-					nodePosition.X -= MOVEMENT_SPEED * frameDeltaTime;
-				}
-				else if (receiver.IsKeyDown(irr::KEY_KEY_S))
-					nodePosition.X += MOVEMENT_SPEED * frameDeltaTime;
-				if (receiver.IsKeyDown(irr::KEY_KEY_A))
-					nodePosition.Z -= MOVEMENT_SPEED * frameDeltaTime;
-				else if (receiver.IsKeyDown(irr::KEY_KEY_D))
-					nodePosition.Z += MOVEMENT_SPEED * frameDeltaTime;
-				billboard->setPosition(nodePosition);
-			}
-
-			system_update_key_input.clear();
 			system_update_key_input.addkey();
 
 			// TODO: move into multiple systems, for now teleport the user
