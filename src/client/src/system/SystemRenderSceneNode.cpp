@@ -9,7 +9,7 @@ namespace client {
 		std::cout << "SystemRenderSceneNode initializing" << std::endl;
 
 		irr::core::dimension2d<irr::f32> size(1.0f, 2.0f);
-		irr::core::vector3df pos(0.0f, 0.0f+size.Height / 2, 0.0f);
+		irr::core::vector3df pos(0.0f, 0.0f + size.Height / 2, 0.0f);
 		irr::video::SColor top_color(255, 255, 0, 0);
 		irr::video::SColor bottom_color(255, 255, 0, 0);
 
