@@ -38,8 +38,6 @@ namespace tempo
 	////////////////////////////////////////////////////////////////////////
 	/// Client ID & Roles
 	
-	static uint32_t clientID = NO_CLIENT_ID;
-	
 	// Enum with all possible client roles.
 	enum ClientRole {
 		NO_ROLE,

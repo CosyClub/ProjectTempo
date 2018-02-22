@@ -6,15 +6,15 @@
 namespace tempo{
 
 	void SystemUpdateTransforms::update(SystemLevelManager& level){
-		auto entities = getEntities();
+		// auto entities = getEntities();
 
-		for(auto& entity : entities){
-			auto& trans = entity.getComponent<ComponentTransform>();
-			auto& pos   = entity.getComponent<ComponentStagePosition>();
-			auto& gm    = entity.getComponent<ComponentStageTranslation>();
+		// for(auto& entity : entities){
+			// auto& trans = entity.getComponent<ComponentTransform>();
+			// auto& pos   = entity.getComponent<ComponentStagePosition>();
+			// auto& gm    = entity.getComponent<ComponentStageTranslation>();
 
-			assert(false);
-			{
+			// assert(false);
+			// {
 				//float motion_progress = gm.getMotionProgress();
 				//glm::vec2 delta = gm.getCurrentMovement();
 				//glm::vec2 position = pos.getPosition();
@@ -35,7 +35,7 @@ namespace tempo{
 				//trans.position.y += (-(a*a) + 0.25f) * gm.max_jump_height * 2.0f;
 				//// Add motion to get between current tile height and target
 				//trans.position.y += Ogre::Math::lerp(0.0f, target_height - current_height, motion_progress);
-			}	
-		}
+			// }	
+		// }
 	}
 }

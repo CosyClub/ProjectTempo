@@ -14,7 +14,7 @@ namespace tempo
 struct SystemCombo : anax::System<anax::Requires<ComponentCombo>> 
 {
 	void advanceBeat();
-	bool checkForUpdates();
+	void checkForUpdates();
 };
 
 } // namespace tempo

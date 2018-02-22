@@ -28,16 +28,17 @@ namespace client {
 			sn.node = smgr->addEmptySceneNode();
 			if (m.isMesh){
 			std::cout << "Adding mesh" << std::endl;
-				irr::scene::IMesh *mesh = smgr->getMesh(path);
+				// irr::scene::IMesh *mesh = smgr->getMesh(path);
 				std::cout << m.path << std::endl;
 				std::cout << path.c_str() << std::endl;
-				irr::scene::IMeshSceneNode *meshNode = smgr->addMeshSceneNode(mesh, 
-				                                                              sn.node);
+				// irr::scene::IMeshSceneNode *meshNode = smgr->addMeshSceneNode(mesh, 
+				//                                                               sn.node);
 			}
 			else{
 			std::cout << "Adding billboard" << std::endl;
 			sn.node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
-			irr::scene::IBillboardSceneNode* billboard = smgr->addBillboardSceneNode(
+			// irr::scene::IBillboardSceneNode* billboard = 
+			smgr->addBillboardSceneNode(
 				sn.node,
 				size,
 				pos, // fix alignment

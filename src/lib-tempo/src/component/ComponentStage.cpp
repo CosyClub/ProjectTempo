@@ -44,7 +44,7 @@ stage_tiles ComponentStage::getHeights()
 
 float ComponentStage::getHeight(glm::ivec2 position) 
 {
-	for (int i = 0; i < tiles.size(); i++) {
+	for (unsigned int i = 0; i < tiles.size(); i++) {
 		std::tuple<glm::ivec2, float> tile = tiles[i];
 		glm::ivec2 pos = std::get<0>(tile);
 		if (pos == position) {

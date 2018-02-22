@@ -31,7 +31,7 @@ namespace tempo{
 		return existsTile(position.x, position.y);
  	}
 
-	bool SystemLevelManager::existsTile(int x, int y) {
+	bool SystemLevelManager::existsTile(unsigned int x, unsigned int y) {
 		if( x < 0  || x >= tile_heights.size() ||
 	    	y < 0  || y >= tile_heights[0].size() )
 			return false;
@@ -77,8 +77,8 @@ namespace tempo{
 		SDL_Surface* level = SDL_LoadBMP(fileName);
 
 		// Clear out any existing tiles
-		for(int x = 0; x < tile_heights.size(); ++x){
-			for(int y = 0; y < tile_heights[x].size(); ++y){
+		for(unsigned int x = 0; x < tile_heights.size(); ++x){
+			for(unsigned int y = 0; y < tile_heights[x].size(); ++y){
 				tile_heights[x][y] = NO_TILE;
 			}
 		}
@@ -112,9 +112,9 @@ namespace tempo{
 				int bpp = level->format->BytesPerPixel;
 				/* Here p is the address to the pixel we want to retrieve */
 				Uint8 *p = (Uint8 *)level->pixels + y * level->pitch + x * bpp;
-				uint32_t pixel = 0;
+				// uint32_t pixel = 0;
 
-				pixel = p[0] | p[1] << 8 | p[2] << 16;
+				// pixel = p[0] | p[1] << 8 | p[2] << 16;
 
 				//std::cout << (int) p[0]<<" "<<(int) p[1]<<" "<< (int) p[2]<<std::endl;
 
@@ -159,9 +159,6 @@ namespace tempo{
 			}
 
 			glm::vec2 target_tile = pos.getOccupied()[0] + gm.delta;
-			float current_height = this->getHeight(pos.getOccupied()[0]);
-			float target_height  = this->getHeight(target_tile);
-			float delta_height   = target_height - current_height;
 
 			// Work out if entity is allowed to go to its current target
 			// This depends on:

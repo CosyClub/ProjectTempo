@@ -17,10 +17,10 @@ void SystemCombo::advanceBeat()
 	}
 }
 
-bool SystemCombo::checkForUpdates()
+void SystemCombo::checkForUpdates()
 {
 	tempo::Queue<sf::Packet> *queue = get_system_queue(QueueID::COMBO_UPDATES);
-	if (queue->empty()) return false;
+	if (queue->empty()) return;
 
 	while (!queue->empty()) {
 		sf::Packet update = queue->front();
@@ -39,7 +39,6 @@ bool SystemCombo::checkForUpdates()
 			break;
 		}
 	}
-	
 }
 
 } // namespace tempo

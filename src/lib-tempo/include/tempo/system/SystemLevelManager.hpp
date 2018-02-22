@@ -52,7 +52,7 @@ namespace tempo{
 		SystemLevelManager(anax::World&, const char* heightMap, const char* zoneMap);
 
 		bool existsTile(glm::vec2 position);
-		bool existsTile(int x, int y);
+		bool existsTile(unsigned int x, unsigned int y);
 
 		void deleteTile(glm::vec2 position);
 		void createTile(glm::vec2 position);

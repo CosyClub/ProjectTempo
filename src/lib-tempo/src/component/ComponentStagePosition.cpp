@@ -21,7 +21,7 @@ ComponentStagePosition::ComponentStagePosition(glm::ivec2 position)
 
 void ComponentStagePosition::movePosition(glm::ivec2 delta)
 {
-	for (int i = 0; i < occupied.size(); i++) {
+	for (unsigned int i = 0; i < occupied.size(); i++) {
 		occupied[i] = occupied[i] + delta;
 	}
 }
@@ -61,7 +61,7 @@ ComponentStagePosition::ComponentStagePosition(sf::Packet p) : occupied(0)
 	p >> size;
 
 	occupied.clear();
-	for (int I = 0; I < size; I++) {
+	for (unsigned int i = 0; i < size; i++) {
 		uint32_t x, y;
 		p >> x >> y;
 		occupied.push_back(glm::ivec2(x, y));
@@ -74,8 +74,8 @@ sf::Packet ComponentStagePosition::dumpComponent()
 	uint32_t size = occupied.size();
 	p << size;
 
-	for (int I = 0; I < size; I++) {
-		p << occupied[I].x << occupied[I].y;
+	for (unsigned int i = 0; i < size; i++) {
+		p << occupied[i].x << occupied[i].y;
 	}
 	
 	return p;

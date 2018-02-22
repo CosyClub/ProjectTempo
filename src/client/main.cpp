@@ -201,7 +201,7 @@ int main(int argc, const char** argv){
 	// mainsong.start();
 	sync_time(clock, &mainsong);
 	mainsong.set_volume(20.f);
-	long offset = 0;
+	// long offset = 0;
 
 	// Player
 	/* anax::Entity entity_player = tempo::newPlayer(world, scene, 0, tempo::EID_PLAYER, system_level, 2, 2); */
@@ -232,14 +232,16 @@ int main(int argc, const char** argv){
 		camera_node->setTarget(irr::core::vector3df(10.0f, 0.0f, 10.0f));
 	}
 	// debug dynamic light
-	irr::scene::ISceneNode* camera_light = smgr->addLightSceneNode(
+	// irr::scene::ISceneNode* camera_light = 
+	smgr->addLightSceneNode(
 		camera_node,
 		irr::core::vector3df(0.0f, 0.0f, 0.0f),
 		irr::video::SColorf(1.0f, 1.0f, 1.0f),
 		10.0f);
 
 	// debug static light
-	irr::scene::ISceneNode* light_node = smgr->addLightSceneNode(
+	// irr::scene::ISceneNode* light_node = 
+	smgr->addLightSceneNode(
 		0,
 		irr::core::vector3df(10.0f, 10.0f, 10.0f),
 		irr::video::SColorf(1.0f, 1.0f, 1.0f),
@@ -251,19 +253,19 @@ int main(int argc, const char** argv){
 	/////////////////////////////////////////////////
 	// Main loop
 	
-	int lastFPS = -1;
+	// int lastFPS = -1;
 
 	sf::Clock fps_timer;
 	sf::Clock dt_timer;
 	sf::Time logic_time;
 	sf::Time render_time;
-	bool running = true;
+	// bool running = true;
 	int frame_counter = 0;
 
 	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	sf::Clock frame_clock = sf::Clock();
 	frame_clock.restart();
-	sf::Time min_frame_time = sf::microseconds(1000000 / 60);
+	// sf::Time min_frame_time = sf::microseconds(1000000 / 60);
 
 	printf("Entering main loop\n");
 	while(device->run()){
@@ -312,7 +314,7 @@ int main(int argc, const char** argv){
 			std::vector<char> keys = entity_player.getComponent<client::ComponentKeyInput>().keysPressed;
 			tempo::ComponentStagePosition& pos = entity_player.getComponent<tempo::ComponentStagePosition>();
 
-			for (int i = 0; i < keys.size(); i++) {
+			for (unsigned int i = 0; i < keys.size(); i++) {
 				switch (keys[i]) {
 				case 'w':
 					pos.occupied[0].y -= 1;
@@ -340,7 +342,7 @@ int main(int argc, const char** argv){
 
 		++frame_counter;
 		if (fps_timer.getElapsedTime().asSeconds() > 0.5f) {
-			float seconds = fps_timer.getElapsedTime().asSeconds();
+			// float seconds = fps_timer.getElapsedTime().asSeconds();
 			/* printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds), */
 			/* 	100 * (float)( */
 			/* 		render_time.asMicroseconds() */

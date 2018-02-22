@@ -44,7 +44,6 @@ void timeSyncHandler(tempo::Clock *clock, sf::TcpSocket *client)
 	sf::Int64 org    = 0; // STATE:  Time when message departed from peer
 	sf::Int64 rec    = 0; // STATE:  Time when we recieved from the peer
 	sf::Int64 xmt    = 0; // STATE:  Time when we transmitted to the peer
-	sf::Int64 offset = 0; // Final Result
 	
 	for (int i = 0; i < TIMESYNC_ITERS; i++) {	
 		// Time Sync Exchange: t(n+0) -> t(n+1)
@@ -125,7 +124,7 @@ void timeSyncServer(tempo::Clock *clock)
 		}
 
 		// Clean up finished threads
-		for (int i = 0; i < clientSockets.size(); i++) {
+		for (unsigned int i = 0; i < clientSockets.size(); i++) {
 			if (ithTimeSyncCheck(clientSockets, clientThreads, i)) {
 				delete clientSockets.at(i);
 				clientSockets.erase(clientSockets.begin() + i);

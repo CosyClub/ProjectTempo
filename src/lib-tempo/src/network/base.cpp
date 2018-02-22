@@ -68,7 +68,7 @@ bool sortPacket(sf::Packet p)
 sf::Packet& operator <<(sf::Packet& p1, sf::Packet& p2)
 {
 	uint8_t temp;
-	for (int I = 0; I < p2.getDataSize(); I++)
+	for (unsigned int i = 0; i < p2.getDataSize(); i++)
 	{
 		p2 >> temp;
 		p1 << temp;
@@ -131,7 +131,7 @@ sf::Packet splitPacket(sf::Packet& packet, uint32_t size)
 {
 	uint8_t data = 0;
 	sf::Packet p;
-	for (int I = 0; I < size; I++)
+	for (unsigned int i = 0; i < size; i++)
 	{
 		packet >> data;
 		p << data;

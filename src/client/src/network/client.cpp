@@ -25,7 +25,7 @@ sf::Int64 timeSyncClient(tempo::Clock *clock)
 	sf::Int64 T3     = 0; // PACKET: Current pakcet time of departure
 	sf::Int64 T4     = 0; // PACKET: Current packet time of arrival
 	sf::Int64 org    = 0; // STATE:  Time when message departed from peer
-	sf::Int64 rec    = 0; // STATE:  Time when we recieved from the peer
+	// sf::Int64 rec    = 0; // STATE:  Time when we recieved from the peer
 	sf::Int64 xmt    = 0; // STATE:  Time when we transmitted to the peer
 	sf::Int64 offset = 0; // Final Result
 
@@ -56,7 +56,7 @@ sf::Int64 timeSyncClient(tempo::Clock *clock)
 			return 0;
 		}
 		org = T3;
-		rec = T4;
+		// rec = T4;
 
 		// Calculate offset 
 		offset += ((T2 - T1) + (T3 - T4)) / 2;
@@ -142,7 +142,7 @@ uint32_t handshakeHello(anax::World& world,
 		packet >> componentCount;
 
 		sf::Packet p2;
-		for (int i = 0; i < componentCount; i++) {
+		for (unsigned int i = 0; i < componentCount; i++) {
 			p2 = receiveMessage(QueueID::HANDSHAKE);
 			std::cout << "Recieved " << i << "/" << componentCount << std::endl;
 			addComponent(world, p2);

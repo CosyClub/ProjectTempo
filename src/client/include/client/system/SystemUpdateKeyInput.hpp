@@ -10,14 +10,13 @@
 
 #include <mutex>
 
-namespace {
-	class KeyInput : public irr::IEventReceiver
-	{
+class KeyInput : public irr::IEventReceiver
+{
 	private:
 		// A list of characters that have been recieved
 		std::vector<char> chars;
 		std::mutex chars_mutex;
-
+	
 	public:
 		// This is the one method that we have to implement
 		virtual bool OnEvent(const irr::SEvent& event)
@@ -29,21 +28,20 @@ namespace {
 					chars.push_back(event.KeyInput.Char);
 				}
 			}
-
+	
 			return false;
 		}
-
+	
 		std::vector<char> getChars() {
 			std::lock_guard<std::mutex> lock(chars_mutex);
 			return chars;
 		}
-
+	
 		void clearChars() {
 			std::lock_guard<std::mutex> lock(chars_mutex);
 			chars.clear();
 		}
-	};
-}
+};
 
 namespace client {
 
