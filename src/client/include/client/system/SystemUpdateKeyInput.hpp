@@ -1,48 +1,59 @@
 #ifndef CLIENT_SYSTEM_UPDATE_KEY_INPUT_HPP
 #define CLIENT_SYSTEM_UPDATE_KEY_INPUT_HPP
 
-#include <irrlicht.h>
-#include <anax/System.hpp>
 #include <client/component/ComponentKeyInput.hpp>
 
-class KeyInput : public irr::IEventReceiver
-{
-private:
-	// We use this array to store the current state of each key
-	bool KeyIsDown[irr::KEY_KEY_CODES_COUNT];
+#include <anax/System.hpp>
+#include <anax/World.hpp>
 
-public:
-	// This is the one method that we have to implement
-	virtual bool OnEvent(const irr::SEvent& event)
+#include <irrlicht.h>
+
+#include <mutex>
+
+namespace {
+	class KeyInput : public irr::IEventReceiver
 	{
-		// Remember whether each key is down or up
-		if (event.EventType == irr::EET_KEY_INPUT_EVENT)
-			KeyIsDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
+	private:
+		// A list of characters that have been recieved
+		std::vector<char> chars;
+		std::mutex chars_mutex;
 
-		return false;
-	}
+	public:
+		// This is the one method that we have to implement
+		virtual bool OnEvent(const irr::SEvent& event)
+		{
+			// Remember whether each key is down or up
+			if (event.KeyInput.PressedDown && event.EventType == irr::EET_KEY_INPUT_EVENT) {
+				if (event.KeyInput.Char != 0) {
+					std::lock_guard<std::mutex> lock(chars_mutex);
+					chars.push_back(event.KeyInput.Char);
+				}
+			}
 
-	// This is used to check whether a key is being held down
-	virtual bool IsKeyDown(irr::EKEY_CODE keyCode) const
-	{
-		return KeyIsDown[keyCode];
-	}
+			return false;
+		}
 
-	KeyInput()
-	{
-		for (irr::u32 i=0; i<irr::KEY_KEY_CODES_COUNT; ++i)
-			KeyIsDown[i] = false;
-	}
-};
+		std::vector<char> getChars() {
+			std::lock_guard<std::mutex> lock(chars_mutex);
+			return chars;
+		}
+
+		void clearChars() {
+			std::lock_guard<std::mutex> lock(chars_mutex);
+			chars.clear();
+		}
+	};
+}
 
 namespace client {
 
-	// Initalises all rendering for the static stage
 	class SystemUpdateKeyInput : public anax::System<anax::Requires<client::ComponentKeyInput>> {
 		KeyInput receiver;
 	public:
 		void setup(irr::IrrlichtDevice* device);
-		void addkey();
+		// clears and updates the keys in each component
+		void addKeys();
+		// possibly not needed
 		void clear();
 	};
 } // namespace client

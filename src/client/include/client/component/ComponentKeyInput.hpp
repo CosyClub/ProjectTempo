@@ -4,15 +4,11 @@
 #include <anax/Component.hpp>
 
 namespace client{
+	// Entities with this component will perform actions on keyboard inputs
+	struct ComponentKeyInput : anax::Component {
+		std::vector<char> keysPressed;
 
-struct ComponentKeyInput : anax::Component {
-
-	std::vector<char> keysPressed;
-
-	ComponentKeyInput();
-
-};
-
+	};
 }
 
 #endif
