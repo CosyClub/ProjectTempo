@@ -3,50 +3,43 @@
 #include <tempo/mask.hpp>
 
 #include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
 
 #include <tempo/system/SystemAttack.hpp>
 
 namespace tempo{
 
-void SystemAttack::Attack(anax::Entity attacker){
+void SystemAttack::Attack(anax::Entity attacker)
+{
 
 	//Attacker
 	glm::ivec2 attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
+	glm::ivec2 rot = attacker.getComponent<tempo::ComponentStageRotation>().facing;
 	auto& weapon = attacker.getComponent<tempo::ComponentWeapon>();
 	Mask m = weapon.damage;
-	glm::ivec2 size = m.size;
 
 	//Victim
 	auto entities = getEntities();
 
 	for (auto& entity : entities) {
 
-		//TODO:: Check whether this stays
-		if(entity.getId() == attacker.getId()){
-			continue;
-		}
-
+		//TODO some team system
 
 		glm::ivec2 pos = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
 		auto& health = entity.getComponent<tempo::ComponentHealth>();
 
-		//loop through all tiles that will recieve an attack
-		for(int y = 0; y<size.y; y++){
-			for(int x = 0; x<size.x; x++){
+		glm::vec2 forward = rot;
+		glm::vec2 left = glm::ivec2(rot.y * -1, rot.x * -1); //Hacky cross product
 
-				//If Victim is located on one of the attacked tiles
-				if(attackerpos.x + x == pos.x && attackerpos.y + y == pos.y){
+		glm::vec2 diff = pos - attackerpos;
+		glm::ivec2 relative_diff = glm::ivec2(glm::dot(diff, left), glm::dot(diff, forward));
 
-					glm::ivec2 offset = {x,y};
-					float damage = weapon.GetDamage(offset);
-					health.HealthUpdate(damage);
-				}
-
-			}
-		}
-
+		float damage = weapon.GetDamage(relative_diff);
+		std::cout << "hit entity " << entity.getId().index
+		          << " for " << damage << std::endl;
+		health.HealthUpdate( -1 * damage );	
 	}
-
 }
+
 }
