@@ -29,6 +29,7 @@ anax::Entity newPlayer(anax::World& world, tempo::SystemLevelManager system_grid
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
 	entity_player.addComponent<tempo::ComponentModel>("", glm::vec3(255, 0, 0), false);
 	entity_player.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	entity_player.addComponent<tempo::ComponentHealth>(1);
 	
 	entity_player.activate();
 
@@ -46,6 +47,7 @@ anax::Entity newAI(anax::World& world, int x, int y)
 	entity_ai.addComponent<tempo::ComponentStageTranslation>();
 	entity_ai.addComponent<tempo::ComponentModel>("", glm::vec3(0, 255, 0), false);
 	entity_ai.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	entity_ai.addComponent<tempo::ComponentHealth>(1);
 	entity_ai.activate();
 
 	return entity_ai;
