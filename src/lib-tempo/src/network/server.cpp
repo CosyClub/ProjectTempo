@@ -1,5 +1,16 @@
 #include <tempo/network/server.hpp>
 
+#include <tempo/component/ComponentCombo.hpp>
+#include <tempo/component/ComponentGridAi.hpp>
+#include <tempo/component/ComponentHealth.hpp>
+#include <tempo/component/ComponentModel.hpp>
+#include <tempo/component/ComponentPlayerLocal.hpp>
+#include <tempo/component/ComponentPlayerRemote.hpp>
+#include <tempo/component/ComponentStage.hpp>
+#include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentWeapon.hpp>
+
 namespace tempo
 {
 
@@ -143,24 +154,31 @@ uint32_t addClient(sf::Uint32 ip,
 	return idCounter++;
 }
 
+#define ADD_COMPONENT(ENT, LST, CMP) \
+	if (ENT.hasComponent<CMP>()) { \
+		LST.push_back(&ENT.getComponent<CMP>()); \
+	}
+
 typedef std::pair<anax::Entity, std::vector<anax::Component*>> c_list;
 typedef std::vector<c_list> ec_list;
-uint32_t countComponents(anax::Entity entity, ec_list &e_list)
+void countComponents(anax::Entity entity, ec_list &e_list)
 {
 	// TODO Clean this up post merge with new handshake
 	c_list list;
-	uint32_t result = 0;
 	list.first = entity;
-	result++; //TODO This doesn't make any sense anymore
-	for (auto& component: entity.getComponents()) {
-		NetworkedComponent *nc;
-		nc = dynamic_cast<NetworkedComponent*>(component);
-		if (nc != NULL) {
-			list.second.push_back(component);
-		}
-	}
+	
+	// Put new Components in here	
+	ADD_COMPONENT(entity, list.second, ComponentCombo)
+	ADD_COMPONENT(entity, list.second, ComponentGridAi)
+	ADD_COMPONENT(entity, list.second, ComponentHealth)
+	ADD_COMPONENT(entity, list.second, ComponentModel)
+	ADD_COMPONENT(entity, list.second, ComponentPlayerLocal)
+	ADD_COMPONENT(entity, list.second, ComponentPlayerRemote)
+	ADD_COMPONENT(entity, list.second, ComponentStage)
+	ADD_COMPONENT(entity, list.second, ComponentStagePosition)
+	ADD_COMPONENT(entity, list.second, ComponentStageTranslation)
+
 	e_list.push_back(list);
-	return result;
 
 }
 
@@ -224,8 +242,10 @@ void handshakeHello(sf::Packet &packet,
 	//Work out how many components there are in the world
 	uint32_t componentAmount = 0;
 	ec_list components;
-	for (auto& entity: world->getEntities()) 
-		componentAmount += countComponents(entity, components);
+	for (auto& entity: world->getEntities()) {
+		countComponents(entity, components);
+		componentAmount++;
+	}
 
 	std::cout << "Found " << componentAmount << " components from "
 	          << world->getEntities().size() << " entities" << std::endl;
@@ -264,18 +284,16 @@ void handshakeRoleReq(sf::Packet &packet,
 	// Register Role
 	cmtx.lock();
 	clients[id].role    = static_cast<ClientRole>(role);
-	sf::Uint32 ip       = clients[id].ip;
-	unsigned short port = clients[id].port;
 	cmtx.unlock();
 	
 	// Package Requested Entity
 	ec_list components;
-	uint32_t componentAmount = countComponents(entity, components);
+	countComponents(entity, components);
 
 	// Construct ROLEREQ_ROG response
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG);
-	rog << componentAmount;
+	rog << 1;
 
 	// Send response back to sender
 	sendMessage(QueueID::HANDSHAKE, rog, id);
