@@ -214,6 +214,7 @@ int main(int argc, const char** argv){
 		}
 	}
 	entity_player.addComponent<client::ComponentKeyInput>();
+	entity_player.activate();
 
 	irr::scene::ICameraSceneNode* camera_node;
 	if (false) {
