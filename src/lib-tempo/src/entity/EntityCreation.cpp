@@ -1,6 +1,7 @@
 #include <tempo/entity/EntityCreation.hpp>
 
 #include <tempo/component/NetworkedComponent.hpp>
+#include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/component/ComponentHealth.hpp>
@@ -73,6 +74,7 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 		switch (component_id) {
 
 		// Put new Components in here	
+		CASE(ComponentAOEIndicator, AOEINDICATOR)
 		CASE(ComponentCombo, COMBO)
 		CASE(ComponentGridAi, GRID_AI)
 		CASE(ComponentHealth, HEALTH)

@@ -153,6 +153,9 @@ namespace tempo
 	sf::Packet& operator <<(sf::Packet& packet, const anax::Entity::Id id);
 	sf::Packet& operator >>(sf::Packet& packet, anax::Entity::Id& id);
 
+	sf::Packet& operator <<(sf::Packet& packet, const sf::Time &t);
+	sf::Packet& operator >>(sf::Packet& packet, sf::Time& t);
+
 	sf::Packet& operator <<(sf::Packet& packet, const glm::vec2 &v);
 	sf::Packet& operator >>(sf::Packet& packet, glm::vec2& v);
 

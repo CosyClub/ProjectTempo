@@ -1,5 +1,6 @@
 #include <tempo/network/server.hpp>
 
+#include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/component/ComponentHealth.hpp>
@@ -169,6 +170,7 @@ sf::Packet packageComponents(anax::Entity entity)
 	
 	packet << entity.getId();
 	// Put new Components in here	
+	ADD_COMPONENT(entity, packet, ComponentAOEIndicator)
 	ADD_COMPONENT(entity, packet, ComponentCombo)
 	ADD_COMPONENT(entity, packet, ComponentGridAi)
 	ADD_COMPONENT(entity, packet, ComponentHealth)
