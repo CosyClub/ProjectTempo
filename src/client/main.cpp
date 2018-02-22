@@ -13,6 +13,7 @@
 
 #include <tempo/network/QueueID.hpp>
 // #include <tempo/system/SystemRenderHealth.hpp>
+#include <tempo/system/SystemAttack.hpp>
 #include <tempo/system/SystemTransform.hpp>
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
@@ -37,6 +38,7 @@
 #include <client/component/ComponentKeyInput.hpp>
 
 #include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
 
 #include <glm/vec2.hpp>
 
@@ -123,6 +125,7 @@ int main(int argc, const char** argv){
 	                                           "../bin/resources/levels/levelTest.bmp",
 	                                           "../bin/resources/levels/zonesTest.bmp"
 	                                           );
+	tempo::SystemAttack           system_attack;
 	tempo::SystemUpdateTransforms system_update_transforms;
 	tempo::SystemGridAi           system_grid_ai;
 	tempo::SystemGameInput        system_input(clock);
@@ -145,7 +148,7 @@ int main(int argc, const char** argv){
 	world.addSystem(system_level);
 	world.addSystem(system_update_transforms);
 	world.addSystem(system_grid_ai);
-	// world.addSystem(system_render);
+	world.addSystem(system_attack);
 	world.addSystem(system_input);
 	world.addSystem(system_gc);
 	world.addSystem(system_player);
@@ -313,20 +316,28 @@ int main(int argc, const char** argv){
 		{
 			std::vector<char> keys = entity_player.getComponent<client::ComponentKeyInput>().keysPressed;
 			tempo::ComponentStagePosition& pos = entity_player.getComponent<tempo::ComponentStagePosition>();
+			tempo::ComponentStageRotation& rot = entity_player.getComponent<tempo::ComponentStageRotation>();
 
 			for (unsigned int i = 0; i < keys.size(); i++) {
 				switch (keys[i]) {
 				case 'w':
-					pos.occupied[0].y -= 1;
+					pos.occupied[0] += tempo::NORTH;
+					rot = tempo::NORTH;
 					break;
 				case 'a':
-					pos.occupied[0].x += 1;
+					pos.occupied[0] += tempo::WEST;
+					rot = tempo::WEST;
 					break;
 				case 's':
-					pos.occupied[0].y += 1;
+					pos.occupied[0] += tempo::SOUTH;
+					rot = tempo::SOUTH;
 					break;
 				case 'd':
-					pos.occupied[0].x -= 1;
+					pos.occupied[0] += tempo::EAST;
+					rot = tempo::EAST;
+					break;
+				case 'e':
+					system_attack.Attack(entity_player);
 					break;
 				}
 			}

@@ -8,21 +8,28 @@
 #include <anax/Component.hpp>
 #include <glm/glm.hpp>
 
+#include <tempo/component/NetworkedComponent.hpp>
+
 #include <SFML/System/Time.hpp>
 
 namespace tempo
 {
 
-struct ComponentWeapon : anax::Component
+struct ComponentWeapon : anax::Component, NetworkedComponent
 {
-	int attack_rate;
-	sf::Time last_attack;
 	Mask damage;
 
-	ComponentWeapon(int rate, Mask m);
+	ComponentWeapon(Mask& m);
 	float GetDamage(glm::vec2 offset);
+
+	/////
+	// Required for inital network sync
+	/////
+	ComponentWeapon(sf::Packet p);
+	sf::Packet dumpComponent();
+	ComponentID getId();
 };
 
-} // namespace tempo
+}
 
 #endif

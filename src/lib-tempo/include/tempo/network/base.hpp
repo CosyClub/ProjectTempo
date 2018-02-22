@@ -10,6 +10,9 @@
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
 
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+
 #include <iostream>
 
 namespace tempo
@@ -149,6 +152,18 @@ namespace tempo
 
 	sf::Packet& operator <<(sf::Packet& packet, const anax::Entity::Id id);
 	sf::Packet& operator >>(sf::Packet& packet, anax::Entity::Id& id);
+
+	sf::Packet& operator <<(sf::Packet& packet, const glm::vec2 &v);
+	sf::Packet& operator >>(sf::Packet& packet, glm::vec2& v);
+
+	sf::Packet& operator <<(sf::Packet& packet, const glm::ivec2 &v);
+	sf::Packet& operator >>(sf::Packet& packet, glm::ivec2& v);
+
+	sf::Packet& operator <<(sf::Packet& packet, const glm::vec3 &v);
+	sf::Packet& operator >>(sf::Packet& packet, glm::vec3& v);
+
+	sf::Packet& operator <<(sf::Packet& packet, const glm::ivec3 &v);
+	sf::Packet& operator >>(sf::Packet& packet, glm::ivec3& v);
 
 	sf::Packet splitPacket(sf::Packet& packet, uint32_t size);
 
