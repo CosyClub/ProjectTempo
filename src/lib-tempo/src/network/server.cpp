@@ -9,6 +9,7 @@
 #include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/component/ComponentStage.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
 
@@ -167,8 +168,8 @@ uint32_t addClient(sf::Uint32 ip,
 sf::Packet packageComponents(anax::Entity entity)
 {
 	sf::Packet packet;
-	
 	packet << entity.getId();
+
 	// Put new Components in here	
 	ADD_COMPONENT(entity, packet, ComponentAOEIndicator)
 	ADD_COMPONENT(entity, packet, ComponentCombo)
@@ -179,7 +180,9 @@ sf::Packet packageComponents(anax::Entity entity)
 	ADD_COMPONENT(entity, packet, ComponentPlayerRemote)
 	ADD_COMPONENT(entity, packet, ComponentStage)
 	ADD_COMPONENT(entity, packet, ComponentStagePosition)
+	ADD_COMPONENT(entity, packet, ComponentStageRotation)
 	ADD_COMPONENT(entity, packet, ComponentStageTranslation)
+	ADD_COMPONENT(entity, packet, ComponentWeapon)
 
 	return packet;
 }
