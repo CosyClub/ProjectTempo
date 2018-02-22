@@ -126,11 +126,11 @@ int main(int argc, const char** argv){
 	tempo::SystemUpdateTransforms system_update_transforms;
 	tempo::SystemGridAi           system_grid_ai;
 	tempo::SystemGameInput        system_input(clock);
-	// tempo::SystemGraphicsCreation system_gc;
 	tempo::SystemPlayer           system_player(clock);
 	tempo::SystemCombo            system_combo;
 	tempo::SystemHealth           system_health;
 	// tempo::RenderHealth           render_health;
+	client::SystemGraphicsCreation system_gc;
 	client::SystemStageRenderer system_stage_renderer;
 	client::SystemRenderSceneNode system_render_scene_node;
 	client::SystemUpdateKeyInput system_update_key_input;
@@ -147,7 +147,7 @@ int main(int argc, const char** argv){
 	world.addSystem(system_grid_ai);
 	// world.addSystem(system_render);
 	world.addSystem(system_input);
-	// world.addSystem(system_gc);
+	world.addSystem(system_gc);
 	world.addSystem(system_player);
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
@@ -192,7 +192,8 @@ int main(int argc, const char** argv){
 	tempo::connectToAndSyncWithServer(role, roleData, world, system_level);
 
 	//Sort out graphics after handshake
-	// system_gc.addEntities(scene);
+	system_gc.addEntities(driver, smgr);
+	world.refresh();
 
 	// Start and Sync Song
 	// mainsong.start();
@@ -210,6 +211,7 @@ int main(int argc, const char** argv){
 			break;
 		}
 	}
+	entity_player.addComponent<client::ComponentKeyInput>();
 
 	irr::scene::ICameraSceneNode* camera_node;
 	if (false) {
@@ -268,7 +270,7 @@ int main(int argc, const char** argv){
 		//add new clients
 		new_entity_check(world, system_level);
 		//Add new graphics stuff
-		// system_gc.addEntities(scene);
+		system_gc.addEntities(driver, smgr);
 		
 		world.refresh();
 		system_player.update(entity_player.getId(), world);

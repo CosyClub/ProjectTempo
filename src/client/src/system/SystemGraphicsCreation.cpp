@@ -2,41 +2,48 @@
 
 #include <iostream>
 
-namespace tempo 
+namespace client 
 {
 
 SystemGraphicsCreation::SystemGraphicsCreation()
 {
 }
 
-void SystemGraphicsCreation::addEntities()
+void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver *driver,
+                                         irr::scene::ISceneManager *manager)
 {
 	auto entities = getEntities();
 	for (auto& entity : entities)
 	{
-		// if (!entity.hasComponent<ComponentRender>())
-		// {
-		// 	std::cout << "Adding render component to entity with server ID " << entity.getId().index << std::endl;
-		// 	std::string path = entity.getComponent<ComponentModel>().path;
-		// 	entity.addComponent<ComponentRender>(scene, path);
-		// 	glm::vec3 color = entity.getComponent<ComponentModel>().color;
-		// 	Ogre::SceneNode* node = entity.getComponent<ComponentRender>().node;
+		// tempo::ComponentModel model = entity.getComponent<tempo::ComponentModel>();	
+		// tempo::ComponentStagePosition pos = entity.getComponent<tempo::ComponentStagePosition>();	
+		// glm::ivec2 origin = pos.getOrigin();
 
-		// 	Ogre::BillboardSet* Pset = scene->createBillboardSet();
-		// 	Pset->setMaterialName("rectangleSprite");
-		// 	Pset->setDefaultDimensions(0.5, 1.5);
-		// 	Pset->setBillboardType(Ogre::BBT_ORIENTED_COMMON);
-		// 	Pset->setCommonDirection(Ogre::Vector3(0, 1, 0));
-		// 	Ogre::Billboard* player = Pset->createBillboard(0, 0.75, 0);
-		// 	std::cout << "setting color " << color.x << ":" << color.y << ":" << color.z << std::endl;
-		// 	player->setColour(Ogre::ColourValue(color.x, color.y, color.z));
+		if (!entity.hasComponent<client::ComponentRenderSceneNode>())
+		{
+			// irr::io::path path(model.path.c_str());
 
-		// 	node->attachObject(Pset);
-		// }
+			// glm::vec3 c = model.color;
+			// irr::video::SColor color(255, c.x, c.y, c.z);
 
-		// Ogre::SceneNode* node = entity.getComponent<ComponentRender>().node;
-		// glm::ivec2 pos = entity.getComponent<ComponentStagePosition>().getOrigin();
-		// node->setPosition(Ogre::Vector3(pos.x, 0, pos.y));
+			// irr::scene::ISceneNode *node;
+
+			// if (model.isMesh)
+			// {
+			// 	irr::scene::IAnimatedMesh *mesh = manager->getMesh(path);
+			// 	node = manager->addAnimatedMeshSceneNode(mesh);
+			// }
+			// else
+			// {
+			// 	irr::core::dimension2d<irr::f32> size(1, 2);
+			// 	node = manager->addBillboardSceneNode(NULL,
+			// 	                                       size);
+			// 	// node->setMaterialTexture(0, driver->getTexture(path));
+			// 	node->getMaterial(0).DiffuseColor = color;
+			// }
+
+			entity.addComponent<ComponentRenderSceneNode>(nullptr);
+		}
 	}
 }
 

@@ -3,6 +3,7 @@
 
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStage.hpp>
+#include <tempo/component/ComponentModel.hpp>
 
 #include <client/component/ComponentRenderSceneNode.hpp>
 
@@ -14,7 +15,8 @@ namespace client {
 	class SystemRenderSceneNode : public anax::System<anax::Requires<
 			tempo::ComponentStage,
 			tempo::ComponentStagePosition,
-			client::ComponentRenderSceneNode>> {
+			client::ComponentRenderSceneNode,
+			tempo::ComponentModel>> {
 	public:
 		// Creates a static red square for all components with positions and render nodes
 		void setup(irr::scene::ISceneManager* smgr);
