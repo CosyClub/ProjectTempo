@@ -45,7 +45,6 @@ void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver *driver,
 			// }
 
 			entity.addComponent<ComponentRenderSceneNode>(nullptr);
-			entity.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 			entity.activate();
 		}
 	}
