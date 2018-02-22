@@ -51,14 +51,14 @@ Mask::~Mask()
 	free(mask);
 }
 
-Mask& Mask::operator=(const Mask& m)
-{
-	centre = m.centre;
-	size = m.size;
+// Mask& Mask::operator=(const Mask& m)
+// {
+// 	centre = m.centre;
+// 	size = m.size;
 
-	mask = (float*) malloc(m.size.x * m.size.y * sizeof(float));
-	memcpy(mask, m.mask, m.size.x * m.size.y * sizeof(float));
-}
+// 	mask = (float*) malloc(m.size.x * m.size.y * sizeof(float));
+// 	memcpy(mask, m.mask, m.size.x * m.size.y * sizeof(float));
+// }
 
 float Mask::get_value(glm::ivec2 offset)
 {

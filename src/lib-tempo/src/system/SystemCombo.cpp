@@ -1,5 +1,6 @@
 #include <tempo/system/SystemCombo.hpp>
 
+#include <tempo/network/base.hpp>
 #include <tempo/network/QueueID.hpp>
 #include <tempo/network/queue.hpp>
 
@@ -25,7 +26,7 @@ bool SystemCombo::checkForUpdates()
 		sf::Packet update = queue->front();
 		queue->pop();
 	
-		int     id;
+		anax::Entity::Id id;
 		uint8_t message;
 		update >> id >> message;
 

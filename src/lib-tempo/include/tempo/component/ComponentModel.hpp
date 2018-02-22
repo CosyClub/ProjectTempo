@@ -11,10 +11,11 @@ namespace tempo {
 
 struct ComponentModel : anax::Component, NetworkedComponent
 {
+	bool isMesh;
 	std::string path;
 	glm::vec3 color;
 
-	ComponentModel(std::string p, glm::vec3 c);
+	ComponentModel(std::string p, glm::vec3 c, bool mesh);
 
 	/////
 	// Required for networking

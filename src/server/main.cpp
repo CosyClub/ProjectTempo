@@ -29,8 +29,8 @@
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
 
-#define BPM 174              // Beats per minutes
-#define PLAYER_DELTA 150     // Delta around a beat a player can hit (millisecs)
+#define BPM 120              // Beats per minutes
+#define PLAYER_DELTA 200     // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
 int main(int argc, const char** argv) {
@@ -69,10 +69,10 @@ int main(int argc, const char** argv) {
 	anax::Entity entity_ai3 = tempo::newAI(world, 8, 8);
 	
 	//Destroyables
-	anax::Entity entity_destroyable = tempo::newDestroyable(world, 2, 2, "Cube");
+	anax::Entity entity_destroyable = tempo::newDestroyable(world, 4, 4, "Cube");
 
 	//NonDestroyables
-	anax::Entity entity_nondestroyable = tempo::newNonDestroyable(world, 5, 5, "Cube");
+	anax::Entity entity_nondestroyable = tempo::newNonDestroyable(world, 6, 6, "Cube");
 
 	//////////////////////////////////
 	// Thread Startup

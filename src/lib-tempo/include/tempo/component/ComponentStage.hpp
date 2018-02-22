@@ -6,6 +6,7 @@
 #include <tempo/component/NetworkedComponent.hpp>
 
 #include <glm/fwd.hpp>
+#include <glm/vec2.hpp>
 
 #include <tuple>
 
@@ -29,6 +30,9 @@ struct ComponentStage : anax::Component, NetworkedComponent
 
 		// Gets a list of 
 		stage_tiles getHeights();
+
+		// Get height at
+		float getHeight(glm::ivec2 position);
 	
 		/////
 		// Required for networking

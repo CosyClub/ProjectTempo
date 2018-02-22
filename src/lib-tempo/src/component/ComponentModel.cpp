@@ -2,10 +2,11 @@
 
 namespace tempo {
 
-ComponentModel::ComponentModel(std::string p, glm::vec3 c)
+ComponentModel::ComponentModel(std::string p, glm::vec3 c, bool mesh)
 {
 	path = p;
 	color = c;
+	isMesh = mesh;
 }
 
 /////
@@ -17,6 +18,7 @@ ComponentModel::ComponentModel(sf::Packet p)
 	p >> color.x;
 	p >> color.y;
 	p >> color.z;
+	p >> isMesh;
 }
 
 sf::Packet ComponentModel::dumpComponent()
@@ -27,6 +29,7 @@ sf::Packet ComponentModel::dumpComponent()
 	p << color.x;
 	p << color.y;
 	p << color.z;
+	p << isMesh;
 
 	return p;
 }

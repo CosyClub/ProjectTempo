@@ -1,5 +1,4 @@
 set(TEMPO_LIB_TEMPO_HEADERS
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Application.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/config.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/mask.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/model.hpp"
@@ -14,7 +13,6 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentPickup.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentPlayerLocal.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentPlayerRemote.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentRender.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentStage.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentStagePosition.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentStageTranslation.hpp"
@@ -23,29 +21,23 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/NetworkedComponent.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreation.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreationServer.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/LevelRenderer.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/TileMask.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/math/fft.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/base.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/client.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/queue.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/QueueID.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/server.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemAttack.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemCombo.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemGameInput.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemGraphicsCreation.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemGridAi.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemHealth.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemLevelManager.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemPlayer.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemServerPlayer.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemRender.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemRenderHealth.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemTransform.hpp"
 )
 
 set(TEMPO_LIB_TEMPO_SOURCE
-	"${CMAKE_CURRENT_LIST_DIR}/src/Application.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/mask.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/model.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/song.cpp"
@@ -58,7 +50,6 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentPickup.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentPlayerLocal.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentPlayerRemote.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRender.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentStage.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentStagePosition.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentStageTranslation.cpp"
@@ -66,24 +57,19 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentWeapon.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/EntityCreation.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/EntityCreationServer.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/entity/LevelRenderer.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/TileMask.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/math/fft.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/network/base.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/network/client.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/network/queue.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/network/QueueID.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/network/server.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemAttack.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemCombo.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGameInput.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGraphicsCreation.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGridAi.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemHealth.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemLevelManager.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemPlayer.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemServerPlayer.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRender.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderHealth.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTransform.cpp"
 )
 
@@ -93,7 +79,6 @@ add_library(lib_tempo STATIC
 )
 
 target_include_directories(lib_tempo PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
-target_include_directories(lib_tempo PRIVATE ${TEMPO_OGRE_INCLUDE_DIR})
 target_include_directories(lib_tempo PRIVATE ${TEMPO_SDL2_INCLUDE_DIR})
 target_include_directories(lib_tempo PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
 target_include_directories(lib_tempo PRIVATE ${TEMPO_ANAX_INCLUDE_DIR})

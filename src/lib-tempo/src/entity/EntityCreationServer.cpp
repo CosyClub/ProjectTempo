@@ -25,7 +25,8 @@ anax::Entity newPlayer(anax::World& world, tempo::SystemLevelManager system_grid
 	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(5,5));
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
-	entity_player.addComponent<tempo::ComponentModel>("", glm::vec3(1, 0, 0));
+	entity_player.addComponent<tempo::ComponentModel>("", glm::vec3(255, 0, 0), false);
+	entity_player.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	
 	entity_player.activate();
 
@@ -40,7 +41,8 @@ anax::Entity newAI(anax::World& world, int x, int y)
 	entity_ai.addComponent<tempo::ComponentGridAi>();
 	entity_ai.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x,y));
 	entity_ai.addComponent<tempo::ComponentStageTranslation>();
-	entity_ai.addComponent<tempo::ComponentModel>("", glm::vec3(0, 1, 0));
+	entity_ai.addComponent<tempo::ComponentModel>("", glm::vec3(0, 255, 0), false);
+	entity_ai.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	entity_ai.activate();
 
 	return entity_ai;
@@ -54,7 +56,9 @@ anax::Entity newDestroyable(anax::World& world, int x, int y, std::string mesh_n
 
 	entity_object.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x,y));
 	entity_object.addComponent<tempo::ComponentStageTranslation>();
-	entity_object.addComponent<tempo::ComponentModel>("", glm::vec3(0, 0, 1));
+	entity_object.addComponent<tempo::ComponentModel>("resources/meshes/Cube.mesh",
+	                                                   glm::vec3(0, 0, 255), true);
+	entity_object.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 
 	entity_object.activate();
 
@@ -71,7 +75,9 @@ anax::Entity newNonDestroyable(anax::World& world, int x, int y, std::string mes
 
 	entity_object.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x,y));
 	entity_object.addComponent<tempo::ComponentStageTranslation>();
-	entity_object.addComponent<tempo::ComponentModel>("", glm::vec3(0, 0, 1));
+	entity_object.addComponent<tempo::ComponentModel>("resources/meshes/Cube.mesh",
+	                                                   glm::vec3(0, 0, 255), true);
+	entity_object.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 
 	entity_object.activate();
 
