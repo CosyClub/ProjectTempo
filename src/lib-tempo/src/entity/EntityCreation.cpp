@@ -9,6 +9,7 @@
 #include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/component/ComponentStage.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
 
@@ -78,6 +79,7 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 		CASE(ComponentPlayerRemote, PLAYER_REMOTE)
 		CASE(ComponentStage, STAGE)
 		CASE(ComponentStagePosition, STAGE_POSITION)
+		CASE(ComponentStageRotation, STAGE_ROTATION)
 		CASE(ComponentStageTranslation, STAGE_TRANSLATION)
 
 		//End of new Component Zone

@@ -52,9 +52,10 @@ namespace tempo
 		PLAYER_REMOTE,				//8
 		STAGE,					//9
 		STAGE_POSITION,				//10
-		STAGE_TRANSLATION,			//11
-		TRANSFORM,				//12
-		WEAPON,					//13
+		STAGE_ROTATION,				//11
+		STAGE_TRANSLATION,			//12
+		TRANSFORM,				//13
+		WEAPON,					//14
 		
 		//End of non-reserved zone
 		CID_RESERVED_TOP
