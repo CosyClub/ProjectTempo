@@ -81,6 +81,7 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 		CASE(ComponentStagePosition, STAGE_POSITION)
 		CASE(ComponentStageRotation, STAGE_ROTATION)
 		CASE(ComponentStageTranslation, STAGE_TRANSLATION)
+		CASE(ComponentWeapon, WEAPON)
 
 		//End of new Component Zone
 		default :

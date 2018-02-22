@@ -6,6 +6,8 @@
 #include <tempo/component/ComponentModel.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
+#include <tempo/component/ComponentWeapon.hpp>
+#include <tempo/mask.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
@@ -20,6 +22,10 @@ anax::Entity newPlayer(anax::World& world, tempo::SystemLevelManager system_grid
 
 	// not refactored
 	//entity_player.addComponent<tempo::ComponentStagePosition>(system_grid_motion.spawn());
+	//
+	float arr[6] = {0, 0, 0,
+	                1, 1, 1};
+	Mask m(glm::ivec2(1, 0), arr, glm::ivec2(3, 2));
 	
 	// refactored
 	entity_player.addComponent<tempo::ComponentCombo>();
@@ -29,6 +35,7 @@ anax::Entity newPlayer(anax::World& world, tempo::SystemLevelManager system_grid
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
 	entity_player.addComponent<tempo::ComponentModel>("", glm::vec3(255, 0, 0), false);
 	entity_player.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	entity_player.addComponent<tempo::ComponentWeapon>(m);
 	entity_player.addComponent<tempo::ComponentHealth>(1);
 	
 	entity_player.activate();
