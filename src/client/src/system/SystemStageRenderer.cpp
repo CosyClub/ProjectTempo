@@ -27,14 +27,16 @@ namespace {
 		  irr::video::SMaterial& material_side = node->getMaterial(0);
 		  irr::video::SMaterial& material_top  = node->getMaterial(1);
 
-		  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMask.png"));
+
 
 		  material_top.Shininess = 0.0f;
 		  material_top.SpecularColor.set(255, 0, 0, 0);
+		  material_top.DiffuseColor.set(255, 200,   0,   0);
 		  if((int)grid_x % 2 == (int)grid_y % 2){
+			  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOn.png"));
 			  material_top.EmissiveColor.set(255, 200,   0,   0);
 		  } else {
-			  material_top.EmissiveColor.set(255,   0,   0, 100);
+			  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
 		  }
 	  }
 	}

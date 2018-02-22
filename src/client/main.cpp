@@ -86,7 +86,7 @@ int main(int argc, const char** argv){
 	irr::gui::IGUIEnvironment* gui_env = device->getGUIEnvironment();
 
 	// Debug
-	smgr->setAmbientLight(irr::video::SColorf(0.1f, 0.1f, 0.1f));
+	smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
 
 	irr::scene::ICameraSceneNode* camera_node;
 	if (false) {
