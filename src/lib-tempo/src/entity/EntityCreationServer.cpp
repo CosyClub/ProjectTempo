@@ -56,7 +56,8 @@ anax::Entity newDestroyable(anax::World& world, int x, int y, std::string mesh_n
 
 	entity_object.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x,y));
 	entity_object.addComponent<tempo::ComponentStageTranslation>();
-	entity_object.addComponent<tempo::ComponentModel>("", glm::vec3(0, 0, 255), true);
+	entity_object.addComponent<tempo::ComponentModel>("resources/meshes/Cube.mesh",
+	                                                   glm::vec3(0, 0, 255), true);
 	entity_object.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 
 	entity_object.activate();
@@ -74,7 +75,8 @@ anax::Entity newNonDestroyable(anax::World& world, int x, int y, std::string mes
 
 	entity_object.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x,y));
 	entity_object.addComponent<tempo::ComponentStageTranslation>();
-	entity_object.addComponent<tempo::ComponentModel>("", glm::vec3(0, 0, 255), true);
+	entity_object.addComponent<tempo::ComponentModel>("resources/meshes/Cube.mesh",
+	                                                   glm::vec3(0, 0, 255), true);
 	entity_object.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 
 	entity_object.activate();

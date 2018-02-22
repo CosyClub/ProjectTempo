@@ -69,10 +69,10 @@ int main(int argc, const char** argv) {
 	anax::Entity entity_ai3 = tempo::newAI(world, 8, 8);
 	
 	//Destroyables
-	anax::Entity entity_destroyable = tempo::newDestroyable(world, 2, 2, "Cube");
+	anax::Entity entity_destroyable = tempo::newDestroyable(world, 4, 4, "Cube");
 
 	//NonDestroyables
-	anax::Entity entity_nondestroyable = tempo::newNonDestroyable(world, 5, 5, "Cube");
+	anax::Entity entity_nondestroyable = tempo::newNonDestroyable(world, 6, 6, "Cube");
 
 	//////////////////////////////////
 	// Thread Startup
