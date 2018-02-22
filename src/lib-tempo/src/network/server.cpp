@@ -153,67 +153,35 @@ uint32_t addClient(sf::Uint32 ip,
 	return idCounter++;
 }
 
-#define ADD_COMPONENT(ENT, LST, CMP) \
+#define ADD_COMPONENT(ENT, PKT, CMP) \
 	if (ENT.hasComponent<CMP>()) { \
-		LST.push_back(&ENT.getComponent<CMP>()); \
+		sf::Packet part; \
+		part << ENT.getComponent<CMP>().getId(); \
+		sf::Packet part2 = ENT.getComponent<CMP>().dumpComponent(); \
+		part << part2; \
+		PKT << sf::Uint32(part.getDataSize()); \
+		PKT << part; \
 	}
 
-typedef std::pair<anax::Entity, std::vector<anax::Component*>> c_list;
-typedef std::vector<c_list> ec_list;
-void countComponents(anax::Entity entity, ec_list &e_list)
+sf::Packet packageComponents(anax::Entity entity)
 {
-	// TODO Clean this up post merge with new handshake
-	c_list list;
-	list.first = entity;
+	sf::Packet packet;
 	
+	packet << entity.getId();
 	// Put new Components in here	
-	ADD_COMPONENT(entity, list.second, ComponentCombo)
-	ADD_COMPONENT(entity, list.second, ComponentGridAi)
-	ADD_COMPONENT(entity, list.second, ComponentHealth)
-	ADD_COMPONENT(entity, list.second, ComponentModel)
-	ADD_COMPONENT(entity, list.second, ComponentPlayerLocal)
-	ADD_COMPONENT(entity, list.second, ComponentPlayerRemote)
-	ADD_COMPONENT(entity, list.second, ComponentStage)
-	ADD_COMPONENT(entity, list.second, ComponentStagePosition)
-	ADD_COMPONENT(entity, list.second, ComponentStageTranslation)
+	ADD_COMPONENT(entity, packet, ComponentCombo)
+	ADD_COMPONENT(entity, packet, ComponentGridAi)
+	ADD_COMPONENT(entity, packet, ComponentHealth)
+	ADD_COMPONENT(entity, packet, ComponentModel)
+	ADD_COMPONENT(entity, packet, ComponentPlayerLocal)
+	ADD_COMPONENT(entity, packet, ComponentPlayerRemote)
+	ADD_COMPONENT(entity, packet, ComponentStage)
+	ADD_COMPONENT(entity, packet, ComponentStagePosition)
+	ADD_COMPONENT(entity, packet, ComponentStageTranslation)
 
-	e_list.push_back(list);
-
-}
-
-sf::Packet makeBigPacket(c_list list)
-{
-	anax::Entity e = list.first;
-	sf::Packet p = sf::Packet();
-	p << e.getId();
-	std::cout << "Sending components for entity " << e.getId().index << std::endl;
-	for (anax::Component* c : list.second)
-	{
-		sf::Packet part = sf::Packet();
-		NetworkedComponent *nc;
-		nc = dynamic_cast<NetworkedComponent*>(c);
-		part << nc->getId();
-		sf::Packet part2 = nc->dumpComponent();
-		part << part2;
-		std::cout << "Adding component with ID " << nc->getId()
-		          << " and size " << sf::Uint32(part.getDataSize())
-		          << std::endl;
-		p << sf::Uint32(part.getDataSize());
-		p << part;
-	}
-
-	return p;
+	return packet;
 }
 	
-void sendComponents(uint32_t clientID, ec_list &e_list)
-{
-	sf::Packet rog;
-	for (c_list list: e_list) {
-		rog = makeBigPacket(list);
-		sendMessage(QueueID::HANDSHAKE, rog, clientID);
-	}
-}
-
 void handshakeHello(sf::Packet &packet,
                     anax::World *world)
 {
@@ -239,29 +207,28 @@ void handshakeHello(sf::Packet &packet,
 	}
 	
 	//Work out how many components there are in the world
-	uint32_t componentAmount = 0;
-	ec_list components;
+	uint32_t packetAmount = 0;
+	std::vector<sf::Packet> componentPackets;
 	for (auto& entity: world->getEntities()) {
-		countComponents(entity, components);
-		componentAmount++;
+		componentPackets.push_back(packageComponents(entity));
+		packetAmount++;
 	}
 
-	std::cout << "Found " << componentAmount << " components from "
-	          << world->getEntities().size() << " entities" << std::endl;
-	
 	// Construct HELLO_ROG response
 	sf::Packet rog;
 	rog << static_cast<uint32_t>(HandshakeID::HELLO_ROG);
 	rog << id; // TODO change to temporary token
 	rog << port_si;
 	rog << port_st;
-	rog << componentAmount;
+	rog << packetAmount;
 
 	// Send response back to sender
 	sendMessage(QueueID::HANDSHAKE, rog, id);
 
 	// Now send current state back to the original sender
-	sendComponents(id, components);
+	for (sf::Packet p : componentPackets) {
+		sendMessage(QueueID::HANDSHAKE, p, id);
+	}
 }
 
 void handshakeRoleReq(sf::Packet &packet,
@@ -278,16 +245,13 @@ void handshakeRoleReq(sf::Packet &packet,
 
 	// Create Entity for selected role from client
 	// Only creating players for now (spectators are not a thing)
-	anax::Entity entity = newPlayer(*world, system_gm);
+	anax::Entity newEntity = newPlayer(*world, system_gm);	
+	sf::Packet newPlayer = packageComponents(newEntity);
 
 	// Register Role
 	cmtx.lock();
 	clients[id].role    = static_cast<ClientRole>(role);
 	cmtx.unlock();
-	
-	// Package Requested Entity
-	ec_list components;
-	countComponents(entity, components);
 
 	// Construct ROLEREQ_ROG response
 	sf::Packet rog;
@@ -296,19 +260,14 @@ void handshakeRoleReq(sf::Packet &packet,
 
 	// Send response back to sender
 	sendMessage(QueueID::HANDSHAKE, rog, id);
-	sendComponents(id, components);
+	sendMessage(QueueID::HANDSHAKE, newPlayer, id);
 
 	// Tell everyone that we have a new player
 	// TODO Clean this up post merge with new handshake
 	for (clientpair client : clients) {
 		if (client.first == id) continue;
-		rog = sf::Packet();
-		for (c_list list : components) {
-			rog = makeBigPacket(list);
-			sendMessage(tempo::QueueID::ENTITY_CREATION, 
-			            rog,
-			            client.first);
-		}
+		sendMessage(tempo::QueueID::ENTITY_CREATION, newPlayer, 
+		            client.first);
 	}
 }
 
