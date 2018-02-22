@@ -6,6 +6,7 @@
 #include <anax/System.hpp>
 
 #include <ISceneManager.h>
+#include <IVideoDriver.h>
 
 namespace client {
 
@@ -13,7 +14,7 @@ namespace client {
 	class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentStage>> {
 	public:
 		// Creates a static irrlitch scene node based on the component stage heights
-		void setup(irr::scene::ISceneManager* smgr);
+		void setup(irr::scene::ISceneManager* smgr, irr::video::IVideoDriver* driver);
 
 	};
 } // namespace client

@@ -104,18 +104,18 @@ int main(int argc, const char** argv){
 		camera_node->setTarget(irr::core::vector3df(10.0f, 0.0f, 10.0f));
 	}
 	// debug dynamic light
-	irr::scene::ISceneNode* camera_light = smgr->addLightSceneNode(
-		camera_node,
-		irr::core::vector3df(0.0f, 0.0f, 0.0f),
-		irr::video::SColorf(1.0f, 1.0f, 1.0f),
-		10.0f);
-
+	//irr::scene::ISceneNode* camera_light = smgr->addLightSceneNode(
+	//                                                               camera_node,
+	//                                                               irr::core::vector3df(0.0f, 0.0f, 0.0f),
+	//                                                               irr::video::SColorf(0.8f, 0.8f, 0.8f),
+	//                                                               10.0f);
 	// debug static light
-	irr::scene::ISceneNode* light_node = smgr->addLightSceneNode(
-		0,
-		irr::core::vector3df(10.0f, 10.0f, 10.0f),
-		irr::video::SColorf(1.0f, 1.0f, 1.0f),
-		5.0f);
+	irr::scene::ILightSceneNode* light_node = smgr->addLightSceneNode(
+	                                                             0,
+	                                                             irr::core::vector3df(10.0f, 10.0f, 10.0f),
+	                                                             irr::video::SColorf(0.8f, 0.8f, 0.8f),
+	                                                             5.0f);
+	irr::video::SLight& light_data = light_node->getLightData();
 
 	// Create World
 	anax::World world;
@@ -130,7 +130,7 @@ int main(int argc, const char** argv){
 
 	// Setup Systems
 	world.refresh();
-	system_stage_renderer.setup(smgr);
+	system_stage_renderer.setup(smgr, driver);
 	system_render_scene_node.setup(smgr);
 	system_update_key_input.setup(device);
 
@@ -154,6 +154,10 @@ int main(int argc, const char** argv){
 			const u32 now = device->getTimer()->getTime();
 			const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
 			then = now;
+
+			float light_intensity = (sin((float)now * 0.01f) + 1.0f) / 2.0f;
+
+			light_data.DiffuseColor.set(1, light_intensity * 0.3f, light_intensity, light_intensity * 0.3f);
 
 			system_update_key_input.addKeys();
 

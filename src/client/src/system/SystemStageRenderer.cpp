@@ -12,6 +12,7 @@
 
 namespace {
 	void addFloorTilesToScene(irr::scene::ISceneManager* smgr,
+	                          irr::video::IVideoDriver*  driver,
 	                          irr::scene::IMesh* mesh,
 	                          tempo::stage_tiles& tiles) {
 	  for(unsigned int i = 0; i < tiles.size(); ++i){
@@ -22,12 +23,26 @@ namespace {
 		  float height = std::get<1>(tiles[i]);
 
 		  node->setPosition(irr::core::vector3df(grid_x, height, grid_y));
+
+		  irr::video::SMaterial& material_side = node->getMaterial(0);
+		  irr::video::SMaterial& material_top  = node->getMaterial(1);
+
+		  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMask.png"));
+
+		  material_top.Shininess = 0.0f;
+		  material_top.SpecularColor.set(255, 0, 0, 0);
+		  if((int)grid_x % 2 == (int)grid_y % 2){
+			  material_top.EmissiveColor.set(255, 200,   0,   0);
+		  } else {
+			  material_top.EmissiveColor.set(255,   0,   0, 100);
+		  }
 	  }
 	}
 }
 
 namespace client {
-	void SystemStageRenderer::setup(irr::scene::ISceneManager* smgr){
+	void SystemStageRenderer::setup(irr::scene::ISceneManager* smgr,
+	                                irr::video::IVideoDriver*  driver){
 		printf("SystemStageRenderer initializing\n");
 
 		auto entities = getEntities();
@@ -42,6 +57,6 @@ namespace client {
 			return;
 		}
 
-		addFloorTilesToScene(smgr, mesh_floor_tile, tiles);
+		addFloorTilesToScene(smgr, driver, mesh_floor_tile, tiles);
 	}
 } // namespace client
