@@ -10,26 +10,41 @@ namespace client {
 
 		irr::core::dimension2d<irr::f32> size(1.0f, 2.0f);
 		irr::core::vector3df pos(0.0f, 0.0f + size.Height / 2, 0.0f);
-		irr::video::SColor top_color(255, 255, 0, 0);
-		irr::video::SColor bottom_color(255, 255, 0, 0);
 
 		auto entities = getEntities();
 
 		for (auto entity : entities)
 		{
-			std::cout << "Adding billboard" << std::endl;
 			client::ComponentRenderSceneNode& sn = entity.getComponent<client::ComponentRenderSceneNode>();
+			tempo::ComponentModel& m = entity.getComponent<tempo::ComponentModel>();
+
+			//Get color from componentmodel
+			irr::video::SColor color(255, m.color.x, m.color.y, m.color.z);
+
+			//get path from componentmodel
+			irr::io::path path(m.path.c_str());
 
 			// a billboard has its origin in the centre, this node is used for alignement
 			sn.node = smgr->addEmptySceneNode();
+			if (m.isMesh){
+			std::cout << "Adding mesh" << std::endl;
+				irr::scene::IMesh *mesh = smgr->getMesh(path);
+				std::cout << m.path << std::endl;
+				std::cout << path.c_str() << std::endl;
+				irr::scene::IMeshSceneNode *meshNode = smgr->addMeshSceneNode(mesh, 
+				                                                              sn.node);
+			}
+			else{
+			std::cout << "Adding billboard" << std::endl;
 			sn.node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
 			irr::scene::IBillboardSceneNode* billboard = smgr->addBillboardSceneNode(
 				sn.node,
 				size,
 				pos, // fix alignment
 				-1,
-				top_color,
-				bottom_color);
+				color,
+				color);
+			}
 		}
 
 		update();
