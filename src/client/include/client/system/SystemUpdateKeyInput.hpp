@@ -23,8 +23,8 @@ namespace {
 		virtual bool OnEvent(const irr::SEvent& event)
 		{
 			// Remember whether each key is down or up
-			if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
-				if (event.KeyInput.PressedDown && event.KeyInput.Char != 0) {
+			if (event.KeyInput.PressedDown && event.EventType == irr::EET_KEY_INPUT_EVENT) {
+				if (event.KeyInput.Char != 0) {
 					std::lock_guard<std::mutex> lock(chars_mutex);
 					chars.push_back(event.KeyInput.Char);
 				}
