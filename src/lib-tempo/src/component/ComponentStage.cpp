@@ -16,7 +16,8 @@ void ComponentStage::loadLevel(const char* stage_file)
 		for (int x = 0; x < level->w; x++) {
 			int bpp = level->format->BytesPerPixel;
 			// Here p is the address to the pixel we want to retrieve
-			Uint8 *p = (Uint8 *)level->pixels + y * level->pitch + x * bpp;
+			Uint8 *p = (Uint8 *)level->pixels + y 
+			                  * level->pitch + x * bpp;
 			uint32_t pixel = 0;
 			pixel = *p;
 
@@ -39,6 +40,19 @@ ComponentStage::ComponentStage(const char* stage_file)
 stage_tiles ComponentStage::getHeights()
 {
 	return tiles;
+}
+
+float ComponentStage::getHeight(glm::ivec2 position) 
+{
+	for (int i = 0; i < tiles.size(); i++) {
+		std::tuple<glm::ivec2, float> tile = tiles[i];
+		glm::ivec2 pos = std::get<0>(tile);
+		if (pos == position) {
+			return std::get<1>(tile);
+		}
+	}
+
+	return -10.0f;
 }
 		
 /////

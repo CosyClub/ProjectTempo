@@ -6,8 +6,7 @@ set(EXTLIBS_DIR      "${CMAKE_CURRENT_LIST_DIR}/extlibs")
 
 set(CMAKE_MODULE_PATH
 	${CMAKE_MODULE_PATH}
-	"${CMAKE_CURRENT_LIST_DIR}/extlibs/ogre-1.10.8/CMake/Utils"
-	"${CMAKE_CURRENT_LIST_DIR}/extlibs/ogre-1.10.8/CMake/Packages")
+)
 
 #Support YCM completion for Raef and Anthony
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -18,6 +17,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 set(TEMPO_LIB_DIR "${CMAKE_CURRENT_LIST_DIR}/lib")
 set(TEMPO_BIN_DIR "${CMAKE_CURRENT_LIST_DIR}/bin")
+set(TEMPO_EXTLIBS_DIR "${CMAKE_CURRENT_LIST_DIR}/extlibs")
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY         "${TEMPO_LIB_DIR}")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG   "${TEMPO_LIB_DIR}")
@@ -30,27 +30,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${TEMPO_LIB_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${TEMPO_BIN_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${TEMPO_BIN_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${TEMPO_BIN_DIR}")
-
-set(OGRE_STATIC ON)
-
-
-set(TEMPO_EXTLIBS_DIR "${CMAKE_CURRENT_LIST_DIR}/extlibs")
-set(TEMPO_LIB_DIR     "${CMAKE_CURRENT_LIST_DIR}/libs")
-
-set(TEMPO_OGRE_DIR
-	"${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/"
-)
-set(TEMPO_OGRE_INCLUDE_DIR
-	"${TEMPO_OGRE_DIR}/OgreMain/include;"
-	"${TEMPO_OGRE_DIR}/include;"
-	"${TEMPO_OGRE_DIR}/RenderSystems/GL/include;"
-	"${TEMPO_OGRE_DIR}/RenderSystems/GL3Plus/include;"
-	"${TEMPO_OGRE_DIR}/RenderSystems/GLSupport/include;"
-)
-set(TEMPO_OGRE_LIBRARY_DIR
-	"${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/lib;"
-	"${TEMPO_EXTLIBS_DIR}/ogre-1.10.9/Dependencies/lib"
-	)
 
 set(TEMPO_SFML_DIR
 	"${TEMPO_EXTLIBS_DIR}/SFML-2.4.2"
@@ -66,10 +45,6 @@ set(TEMPO_SDL2_INCLUDE_DIR
 	"${TEMPO_SDL2_DIR}/include"
 )
 
-set(TEMPO_OGRE_OVERLAY_INCLUDE_DIR
-	"${TEMPO_OGRE_DIR}/Components/Overlay/include"
-)
-
 set(TEMPO_LIB_TEMPO_DIR
 	"${CMAKE_CURRENT_LIST_DIR}/src/lib-tempo"
 	)
@@ -82,13 +57,20 @@ set(TEMPO_ANAX_DIR
 	)
 set(TEMPO_ANAX_INCLUDE_DIR
 	"${TEMPO_ANAX_DIR}/include"
-)
+	)
 
 set(TEMPO_GLM_DIR
 	"${CMAKE_CURRENT_LIST_DIR}/extlibs/glm"
 	)
 set(TEMPO_GLM_INCLUDE_DIR
 	"${TEMPO_GLM_DIR}"
+)
+
+set(TEMPO_IRRLICHT_DIR
+	"${CMAKE_CURRENT_LIST_DIR}/extlibs/irrlicht-1.8.4"
+)
+set(TEMPO_IRRLICHT_INCLUDE_DIR
+	"${TEMPO_IRRLICHT_DIR}/include"
 )
 
 add_subdirectory(${TEMPO_EXTLIBS_DIR})

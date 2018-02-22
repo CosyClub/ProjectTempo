@@ -9,9 +9,6 @@
 #include <tempo/component/ComponentTransform.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 
-#include <OgreMath.h>
-#include <OgreVector3.h>
-
 namespace tempo{
 
 	/////////////////////////////////////////////////////////////////////

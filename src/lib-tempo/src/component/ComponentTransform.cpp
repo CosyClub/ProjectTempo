@@ -5,14 +5,14 @@ namespace tempo{
 		// empty body
 	}
 
-	ComponentTransform::ComponentTransform(Ogre::Vector3 pos) : ComponentTransform(pos.x, pos.y, pos.z){
+	ComponentTransform::ComponentTransform(glm::vec3 pos) : ComponentTransform(pos.x, pos.y, pos.z){
 		// empty body
 	}
 
-	ComponentTransform::ComponentTransform(Ogre::Real x, Ogre::Real y, Ogre::Real z) {
+	ComponentTransform::ComponentTransform(float x, float y, float z) {
 		this->position.x = x;
 		this->position.y = y;
 		this->position.z = z;
-		this->rotation= Ogre::Quaternion();
+		this->rotation   = glm::quat();
 	}
 }
