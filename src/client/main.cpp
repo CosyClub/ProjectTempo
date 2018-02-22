@@ -191,9 +191,11 @@ int main(int argc, const char** argv){
 	// Connect to server and handshake information
 	tempo::connectToAndSyncWithServer(role, roleData, world, system_level);
 
-	//Sort out graphics after handshake
+	//Sort out graphics after handshake	
+	world.refresh();
 	system_gc.addEntities(driver, smgr);
 	world.refresh();
+	system_render_scene_node.setup(smgr);
 
 	// Start and Sync Song
 	// mainsong.start();
