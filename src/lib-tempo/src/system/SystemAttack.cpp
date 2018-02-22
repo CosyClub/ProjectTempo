@@ -36,8 +36,11 @@ void SystemAttack::Attack(anax::Entity attacker)
 		glm::ivec2 relative_diff = glm::ivec2(glm::dot(diff, left), glm::dot(diff, forward));
 
 		float damage = weapon.GetDamage(relative_diff);
-		std::cout << "hit entity " << entity.getId().index
-		          << " for " << damage << std::endl;
+		if ( damage != 0 )
+		{
+			std::cout << "hit entity " << entity.getId().index
+			          << " for " << damage << std::endl;
+		}
 		health.HealthUpdate( -1 * damage );	
 	}
 }
