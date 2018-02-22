@@ -1,64 +1,25 @@
 #include <tempo/mask.hpp>
 
-#include <iostream>
-
 namespace tempo
 {
 
-Mask::Mask(int x, int y, float* data, int w, int h)
+Mask::Mask(glm::ivec2 centre, float* data, glm::ivec2 size)
 {
-	mask = (float*) malloc(w * h * sizeof(float));
-	memcpy(mask, data, w * h * sizeof(float));
+	ctr = centre;
+	sz = size;
 
-	centre.x = x;
-	centre.y = y;
-
-	for (int I = 0; I < w; I++)
+	for ( int I = 0; I < sz.x * sz.y; I++ )
 	{
-		for(int J = 0; J < h; J++)
-		{
-			std::cout << mask[I + J * w] << std::endl;
-		}
+		mask.push_back(data[I]);
 	}
-
-	size.x = w;
-	size.y = h;
-}
-
-Mask::Mask(glm::ivec2 centre, float* data, int w, int h)
-{
-	Mask(centre.x, centre.y, data, w, h);
-}
-
-Mask::Mask(const Mask& m)
-{
-	centre = m.centre;
-	size = m.size;
-
-	mask = (float*) malloc(m.size.x * m.size.y * sizeof(float));
-	memcpy(mask, m.mask, m.size.x * m.size.y * sizeof(float));
 }
 
 Mask::Mask()
 {
-	centre = glm::ivec2(0,0);
-	size = glm::ivec2(0,0);
-	int* mask = NULL;
+	ctr = glm::ivec2(0,0);
+	sz = glm::ivec2(0,0);
+	mask = std::vector<float>();
 }
-
-Mask::~Mask()
-{
-	free(mask);
-}
-
-// Mask& Mask::operator=(const Mask& m)
-// {
-// 	centre = m.centre;
-// 	size = m.size;
-
-// 	mask = (float*) malloc(m.size.x * m.size.y * sizeof(float));
-// 	memcpy(mask, m.mask, m.size.x * m.size.y * sizeof(float));
-// }
 
 float Mask::get_value(glm::ivec2 offset)
 {
@@ -67,21 +28,52 @@ float Mask::get_value(glm::ivec2 offset)
 
 float Mask::get_value(int x, int y)
 {
-	glm::ivec2 pos = centre;
+	glm::ivec2 pos = ctr;
 	pos.x += x;
 	pos.y += y;
-	std::cout << pos.x << ":" << pos.y << std::endl; //TODO remove
 	if (pos.x <  0      ||
 	    pos.y <  0      ||
-	    pos.x >= size.x ||
-	    pos.y >= size.y   )
+	    pos.x >= sz.x   ||
+	    pos.y >= sz.y   )
 	{
 		return 0; // out of bounds
 	}
 	else
 	{
-		return mask[size.x * pos.y + pos.x]; //Maybe works?
+		return mask[sz.x * pos.y + pos.x]; //Maybe works?
 	}
 }
 
+sf::Packet& operator <<(sf::Packet& packet, const tempo::Mask& m)
+{
+	packet << m.ctr;
+	packet << m.sz;
+
+	for (int I = 0; I < m.sz.x * m.sz.y; I++)
+	{
+		packet << m.mask[I];
+	}
+
+	return packet;
 }
+
+sf::Packet& operator >>(sf::Packet& packet, tempo::Mask& m)
+{
+	packet >> m.ctr;
+	packet >> m.sz;
+
+	m.mask = std::vector<float>();
+
+	for (int I = 0; I < m.sz.x * m.sz.y; I++)
+	{
+		float tmp;
+		packet >> tmp;
+		m.mask.push_back(tmp);
+	}
+
+	return packet;
+}
+
+
+}
+

@@ -2,9 +2,11 @@
 #define TEMPO_MASK_HPP
 
 #include <tempo/config.hpp>
+#include <tempo/network/base.hpp>
+
 #include <glm/glm.hpp>
 
-#include <string.h>
+#include <SFML/Network.hpp>
 
 namespace tempo
 {
@@ -13,23 +15,21 @@ class Mask
 {
 	public:
 
-	Mask(glm::ivec2 centre, float* data, int w, int h);
-	Mask(int x, int y, float* data, int w, int h);
-	Mask(const Mask& m);
+	glm::ivec2 ctr;
+	glm::ivec2 sz;
+	std::vector<float> mask;
+
 	Mask();
+	Mask(glm::ivec2 centre, float* data, glm::ivec2 size);
 
-	~Mask();
-
-	Mask& operator=(const Mask& m);
 
 	float get_value(glm::ivec2 offset);
 	float get_value(int x, int y);
 
-	glm::ivec2 centre;
-	glm::ivec2 size;
-
-	float* mask;
 };
+
+sf::Packet& operator <<(sf::Packet& packet, const tempo::Mask& m);
+sf::Packet& operator >>(sf::Packet& packet, tempo::Mask& m);
 
 }
 
