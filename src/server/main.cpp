@@ -29,8 +29,8 @@
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
 
-#define BPM 174              // Beats per minutes
-#define PLAYER_DELTA 150     // Delta around a beat a player can hit (millisecs)
+#define BPM 120              // Beats per minutes
+#define PLAYER_DELTA 200     // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
 int main(int argc, const char** argv) {

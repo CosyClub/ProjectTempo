@@ -47,8 +47,8 @@
 
 #include <glm/gtc/constants.hpp>
 
-#define BPM 174
-#define DELTA 150
+#define BPM 120
+#define DELTA 200
 #define TIME 60000000 / BPM
 
 void sync_time(tempo::Clock& clock, tempo::Song *song)
@@ -71,6 +71,7 @@ void new_entity_check(anax::World &world, Ogre::SceneManager* scene, tempo::Syst
 
 int main(int argc, const char** argv)
 {
+
 	tempo::Application app = tempo::initialize_application("RaveCave", 800, 600);
 	if (app.ogre == nullptr || app.window == nullptr || app.render_target == nullptr) {
 		printf("Application initialisation failed, exiting\n");
@@ -135,6 +136,7 @@ int main(int argc, const char** argv)
 	// Note, IF statement is to change ports for local development, bit
 	// hacky and should be removed in due course!
 	tempo::addr_r = "127.0.0.1";
+	if (argc == 2) tempo::addr_r = argv[1];
 	if (tempo::addr_r == "127.0.0.1") {
 		std::srand (time(NULL));
 		int d = std::rand() % 10;
@@ -165,7 +167,7 @@ int main(int argc, const char** argv)
 	system_gc.addEntities(scene);
 
 	// Start and Sync Song
-	mainsong.start();
+	// mainsong.start();
 	sync_time(clock, &mainsong);
 	mainsong.set_volume(20.f);
 	long offset = 0;
@@ -284,6 +286,9 @@ int main(int argc, const char** argv)
 	int frame_counter = 0;
 
 	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	sf::Clock frame_clock = sf::Clock();
+	frame_clock.restart();
+	sf::Time min_frame_time = sf::microseconds(1000000 / 60);
 	
 	while (running) {
 		new_entity_check(world, scene, system_level);
@@ -293,10 +298,10 @@ int main(int argc, const char** argv)
 		dt_timer.restart();
 
 		if (clock.passed_beat()) {
+			click.play();
 			if (tick++ % 20 == 0)
 				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
       
-			click.play();
 
 			system_grid_ai.update();
 			system_combo.advanceBeat();
@@ -357,9 +362,14 @@ int main(int argc, const char** argv)
 		system_level.update(dt);
 		system_update_transforms.update(system_level);
 		logic_time = dt_timer.getElapsedTime();
-		system_render.render(dt);
-		render_time = dt_timer.getElapsedTime() - logic_time;
-		SDL_GL_SwapWindow(app.window);
+
+		if (frame_clock.getElapsedTime() > min_frame_time) 
+		{
+			frame_clock.restart();
+			system_render.render(dt);
+			render_time = dt_timer.getElapsedTime() - logic_time;
+			SDL_GL_SwapWindow(app.window);
+		}
 
 		++frame_counter;
 		if (fps_timer.getElapsedTime().asSeconds() > 0.5f) {
