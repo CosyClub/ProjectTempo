@@ -20,6 +20,8 @@
 
 #include <iostream>
 
+#include <cassert>
+
 #define CASE(NAME, CID)                                              \
 	case ComponentID::CID :                                      \
 		if (!e.hasComponent<NAME>()) {                       \
@@ -88,6 +90,7 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 			std::cout << "WARNING: Unimplemented deserialisation of"
 				     " recieved component occured, ignoring." 
 			          << std::endl;
+			assert(false);
 		}
 	}
 
