@@ -76,6 +76,7 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 		CASE(ComponentModel, MODEL)
 		CASE(ComponentPlayerLocal, PLAYER_LOCAL)
 		CASE(ComponentPlayerRemote, PLAYER_REMOTE)
+		CASE(ComponentStage, STAGE)
 		CASE(ComponentStagePosition, STAGE_POSITION)
 		CASE(ComponentStageTranslation, STAGE_TRANSLATION)
 
