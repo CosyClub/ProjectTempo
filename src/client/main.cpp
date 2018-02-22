@@ -13,6 +13,7 @@
 
 #include <tempo/network/QueueID.hpp>
 // #include <tempo/system/SystemRenderHealth.hpp>
+#include <tempo/system/SystemAttack.hpp>
 #include <tempo/system/SystemTransform.hpp>
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
@@ -124,6 +125,7 @@ int main(int argc, const char** argv){
 	                                           "../bin/resources/levels/levelTest.bmp",
 	                                           "../bin/resources/levels/zonesTest.bmp"
 	                                           );
+	tempo::SystemAttack           system_attack;
 	tempo::SystemUpdateTransforms system_update_transforms;
 	tempo::SystemGridAi           system_grid_ai;
 	tempo::SystemGameInput        system_input(clock);
@@ -146,7 +148,7 @@ int main(int argc, const char** argv){
 	world.addSystem(system_level);
 	world.addSystem(system_update_transforms);
 	world.addSystem(system_grid_ai);
-	// world.addSystem(system_render);
+	world.addSystem(system_attack);
 	world.addSystem(system_input);
 	world.addSystem(system_gc);
 	world.addSystem(system_player);
@@ -331,6 +333,9 @@ int main(int argc, const char** argv){
 				case 'd':
 					pos.occupied[0] += tempo::EAST;
 					rot = tempo::EAST;
+					break;
+				case 'e':
+					system_attack.Attack(entity_player);
 					break;
 				}
 			}
