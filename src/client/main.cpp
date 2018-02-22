@@ -37,6 +37,7 @@
 #include <client/component/ComponentKeyInput.hpp>
 
 #include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
 
 #include <glm/vec2.hpp>
 
@@ -311,20 +312,25 @@ int main(int argc, const char** argv){
 		{
 			std::vector<char> keys = entity_player.getComponent<client::ComponentKeyInput>().keysPressed;
 			tempo::ComponentStagePosition& pos = entity_player.getComponent<tempo::ComponentStagePosition>();
+			tempo::ComponentStageRotation& rot = entity_player.getComponent<tempo::ComponentStageRotation>();
 
 			for (int i = 0; i < keys.size(); i++) {
 				switch (keys[i]) {
 				case 'w':
-					pos.occupied[0].y -= 1;
+					pos.occupied[0] += tempo::NORTH;
+					rot = tempo::NORTH;
 					break;
 				case 'a':
-					pos.occupied[0].x += 1;
+					pos.occupied[0] += tempo::WEST;
+					rot = tempo::WEST;
 					break;
 				case 's':
-					pos.occupied[0].y += 1;
+					pos.occupied[0] += tempo::SOUTH;
+					rot = tempo::SOUTH;
 					break;
 				case 'd':
-					pos.occupied[0].x -= 1;
+					pos.occupied[0] += tempo::EAST;
+					rot = tempo::EAST;
 					break;
 				}
 			}
