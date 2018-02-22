@@ -139,4 +139,34 @@ sf::Packet splitPacket(sf::Packet& packet, uint32_t size)
 	return p;
 }
 
+sf::Packet& operator <<(sf::Packet& p, const glm::vec2& v)
+{
+	return p << v.x << v.y;
+}
+
+sf::Packet& operator >>(sf::Packet& p, glm::vec2& v)
+{
+	return p >> v.x >> v.y;	
+}
+
+sf::Packet& operator <<(sf::Packet& p, const glm::ivec2& v)
+{
+	return p << v.x << v.y;
+}
+
+sf::Packet& operator >>(sf::Packet& p, glm::ivec2& v)
+{
+	return p >> v.x >> v.y;	
+}
+
+sf::Packet& operator <<(sf::Packet& p, const glm::vec3& v)
+{
+	return p << v.x << v.y << v.z;
+}
+
+sf::Packet& operator >>(sf::Packet& p, glm::vec3& v)
+{
+	return p >> v.x >> v.y << v.z;	
+}
+
 }
