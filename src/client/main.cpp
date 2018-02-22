@@ -315,16 +315,16 @@ int main(int argc, const char** argv){
 			for (int i = 0; i < keys.size(); i++) {
 				switch (keys[i]) {
 				case 'w':
-					pos.occupied[0].x -= 1;
-					break;
-				case 'a':
 					pos.occupied[0].y -= 1;
 					break;
-				case 's':
+				case 'a':
 					pos.occupied[0].x += 1;
 					break;
-				case 'd':
+				case 's':
 					pos.occupied[0].y += 1;
+					break;
+				case 'd':
+					pos.occupied[0].x -= 1;
 					break;
 				}
 			}
