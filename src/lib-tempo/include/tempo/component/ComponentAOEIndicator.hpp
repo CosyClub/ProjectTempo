@@ -15,9 +15,11 @@ struct ComponentAOEIndicator : anax::Component, NetworkedComponent
 {
 
 	sf::Time duration;
-	std::vector<glm::vec2> tiles;
+	std::vector<glm::ivec2> tiles;
 
-	ComponentAOEIndicator(sf::Time duration, std::vector<glm::vec2> tiles);
+	ComponentAOEIndicator();
+
+	ComponentAOEIndicator(sf::Time duration, std::vector<glm::ivec2> tiles);
 
 	ComponentAOEIndicator(sf::Packet p);
 	sf::Packet dumpComponent();

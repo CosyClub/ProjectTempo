@@ -11,6 +11,7 @@ Mask::Mask(glm::ivec2 centre, float* data, glm::ivec2 size)
 	for ( int I = 0; I < sz.x * sz.y; I++ )
 	{
 		mask.push_back(data[I]);
+		if (data[I] != 0) positions.push_back(glm::vec2(I % sz.x, I / sz.x));
 	}
 }
 
@@ -54,6 +55,14 @@ sf::Packet& operator <<(sf::Packet& packet, const tempo::Mask& m)
 		packet << m.mask[I];
 	}
 
+	uint32_t size = m.positions.size();
+	packet << size;
+
+	for ( int I = 0; I < size; I++ )
+	{
+		packet << m.positions[I];
+	}
+
 	return packet;
 }
 
@@ -69,6 +78,18 @@ sf::Packet& operator >>(sf::Packet& packet, tempo::Mask& m)
 		float tmp;
 		packet >> tmp;
 		m.mask.push_back(tmp);
+	}
+
+	uint32_t size;
+	packet >> size;
+
+	m.positions = std::vector<glm::ivec2>();
+
+	for ( int I = 0; I < size; I++ )
+	{
+		glm::ivec2 tmp_vec;
+		packet >> tmp_vec;
+		m.positions.push_back(tmp_vec);
 	}
 
 	return packet;

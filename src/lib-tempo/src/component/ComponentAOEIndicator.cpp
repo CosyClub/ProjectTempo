@@ -2,7 +2,13 @@
 
 namespace tempo {
 
-ComponentAOEIndicator::ComponentAOEIndicator(sf::Time duration, std::vector<glm::vec2> tiles)
+ComponentAOEIndicator::ComponentAOEIndicator()
+{
+	this->duration = sf::Time::Zero;
+	this->tiles = std::vector<glm::ivec2>();
+}
+
+ComponentAOEIndicator::ComponentAOEIndicator(sf::Time duration, std::vector<glm::ivec2> tiles)
 {
 	this->duration = duration;
 	this->tiles = tiles;

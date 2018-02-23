@@ -2,11 +2,14 @@
 
 #include <tempo/mask.hpp>
 
+#include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
 
 #include <tempo/system/SystemAttack.hpp>
+
+#include <cassert>
 
 namespace tempo{
 
@@ -43,6 +46,16 @@ void SystemAttack::Attack(anax::Entity attacker)
 		}
 		health.HealthUpdate( -1 * damage );	
 	}
+
+	if ( ! attacker.hasComponent<ComponentAOEIndicator>() )
+	{
+		std::cout << "Entity does not contain ComponentAOEIndicator" << std::endl;
+		assert(false);
+	}
+
+	ComponentAOEIndicator aoe = attacker.getComponent<ComponentAOEIndicator>();
+	aoe.duration = sf::seconds(0.1);
+	aoe.tiles = m.positions;
 }
 
 }

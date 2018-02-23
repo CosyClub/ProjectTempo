@@ -1,5 +1,6 @@
 #include <tempo/entity/EntityCreationServer.hpp>
 
+#include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
@@ -36,6 +37,7 @@ anax::Entity newPlayer(anax::World& world, tempo::SystemLevelManager system_grid
 	entity_player.addComponent<tempo::ComponentModel>("", glm::vec3(255, 0, 0), false);
 	entity_player.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	entity_player.addComponent<tempo::ComponentWeapon>(m);
+	entity_player.addComponent<tempo::ComponentAOEIndicator>();
 	entity_player.addComponent<tempo::ComponentHealth>(1);
 	
 	entity_player.activate();
