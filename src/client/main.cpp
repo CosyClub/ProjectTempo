@@ -303,7 +303,7 @@ int main(int argc, const char** argv){
 			continue;
 		}
 		
-
+		system_update_key_input.clear();
 		system_update_key_input.addKeys();
 
 		// TODO: move into multiple systems, for now teleport the user
@@ -314,6 +314,7 @@ int main(int argc, const char** argv){
 			tempo::ComponentStageRotation& rot = entity_player.getComponent<tempo::ComponentStageRotation>();
 
 			for (unsigned int i = 0; i < keys.size(); i++) {
+				std::cout << keys[i] << ", " << keys.size() << std::endl;
 				switch (keys[i]) {
 				case 'w':
 					pos.occupied[0] += tempo::NORTH;

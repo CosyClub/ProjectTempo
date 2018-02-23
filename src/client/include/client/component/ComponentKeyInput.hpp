@@ -12,7 +12,7 @@ namespace client
 
 	// Entities with this component will perform actions on keyboard inputs
 	struct ComponentKeyInput : anax::Component {
-		std::vector<client::KeyEvent> keysPressed;
+		std::vector<KeyEvent> keysPressed;
 	};
 }
 

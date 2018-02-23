@@ -16,7 +16,9 @@ namespace client {
 			client::ComponentKeyInput& ki = entity.getComponent<client::ComponentKeyInput>();
 
 			// add all keys that were queued up
-			ki.keysPressed = receiver.getChars();
+			std::vector<char> keys = receiver.getChars();
+			ki.keysPressed.insert(ki.keysPressed.end(),
+			                      keys.begin(), keys.end());
 		}
 
 		// clear the keys in the reciever
