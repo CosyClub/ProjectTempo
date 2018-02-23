@@ -22,13 +22,8 @@ namespace tempo{
 struct SystemServerAttack : anax::System<anax::Requires<ComponentHealth,
                                                   ComponentStagePosition>> {
 
-	void Attack(anax::Entity attacker);
 	void Sync(anax::World& w);
 
-	enum Messages {
-		ATTACK,
-		DELAYED_ATTACK,
-	};
 };
 
 }

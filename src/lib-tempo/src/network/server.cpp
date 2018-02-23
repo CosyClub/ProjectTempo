@@ -349,6 +349,23 @@ uint32_t findClientID(sf::Uint32 ip, unsigned short port)
 	return NO_CLIENT_ID;
 }
 
+bool sendMessage(tempo::QueueID id, sf::Packet p)
+{
+	tempo::Queue<sf::Packet> *q = get_system_queue(id);
+	q->push(p);
+	return true;
+}
+
+bool broadcastMessage(tempo::QueueID id, sf::Packet p)
+{
+	bool result = true;
+	for (auto client : clients)
+	{
+		result &= sendMessage(id, p, client.first);
+	}
+
+	return result;
+}
 
 bool sendMessage(tempo::QueueID id, 
                  sf::Packet payload, 

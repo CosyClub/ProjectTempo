@@ -1,10 +1,9 @@
-#include <client/system/SystemAttack.hpp>
+#include <tempo/system/SystemAttack.hpp>
 
 namespace tempo{
 
 void SystemAttack::Attack(anax::Entity attacker)
 {
-
 	//Attacker
 	glm::ivec2 attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
 	glm::ivec2 rot = attacker.getComponent<tempo::ComponentStageRotation>().facing;
@@ -42,23 +41,25 @@ void SystemAttack::Attack(anax::Entity attacker)
 	}
 
 	sf::Packet p;
-	p << SystemServerAttack::Messages::ATTACK;
+	p << Messages::ATTACK;
 	p << localtoserver[attacker.getId()]; 
 	sendMessage(QueueID::SYSTEM_ATTACK, p);
-
-	//if ( ! attacker.hasComponent<ComponentAOEIndicator>() )
-	//{
-	//	std::cout << "Entity does not contain ComponentAOEIndicator" << std::endl;
-	//	//Qi-Rui says that everything that attacks should have one of these
-	//	assert( false );
-	//}
-
-	// ComponentAOEIndicator aoe = attacker.getComponent<ComponentAOEIndicator>();
-	// aoe.duration = sf::seconds( 0.1 );
-	// aoe.tiles = m.positions;
 }
 
-void SystemAttack::Sync(anax::World& w)
+void SystemAttack::Broadcast(anax::World& w)
+{
+	tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_ATTACK);
+
+	while( ! q->empty() )
+	{
+		sf::Packet p = q->front();
+		q->pop();
+
+		broadcastMessage(QueueID::SYSTEM_ATTACK, p);
+	}
+}
+
+void SystemAttack::Recieve(anax::World& w)
 {
 	tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_ATTACK);
 
@@ -77,7 +78,7 @@ void SystemAttack::Sync(anax::World& w)
 
 		switch( code )
 		{
-			case SystemServerAttack::Messages::ATTACK:
+			case Messages::ATTACK:
 				{
 
 				if ( ! e.hasComponent<ComponentAOEIndicator>() )
@@ -93,7 +94,7 @@ void SystemAttack::Sync(anax::World& w)
 				  
 				}
 				break;
-			case SystemServerAttack::Messages::DELAYED_ATTACK:
+			case Messages::DELAYED_ATTACK:
 				//TODO
 				break;
 			default:

@@ -8,12 +8,12 @@
 #include <tempo/entity/EntityCreation.hpp>
 // #include <tempo/entity/LevelRenderer.hpp>
 #include <client/network/client.hpp>
-#include <client/system/SystemAttack.hpp>
 #include <client/system/SystemGameInput.hpp>
 #include <client/system/SystemGraphicsCreation.hpp>
 
 #include <tempo/network/QueueID.hpp>
 // #include <tempo/system/SystemRenderHealth.hpp>
+#include <tempo/system/SystemAttack.hpp>
 #include <tempo/system/SystemTransform.hpp>
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
@@ -283,7 +283,7 @@ int main(int argc, const char** argv){
 		world.refresh();
 		system_player.update(entity_player.getId(), world);
 		// render_health.HealthBarUpdate();
-		system_attack.Sync(world);
+		system_attack.Recieve(world);
 		system_health.CheckHealth();
 		system_level.update(dt);
 		system_update_transforms.update(system_level);

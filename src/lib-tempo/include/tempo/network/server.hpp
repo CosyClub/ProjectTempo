@@ -78,6 +78,10 @@ namespace tempo
 	//         such client exists.
 	uint32_t findClientID(sf::Uint32 ip, unsigned short port);
 
+	bool sendMessage(tempo::QueueID id, sf::Packet p);
+
+	bool broadcastMessage(tempo::QueueID, sf::Packet p);
+
 	bool sendMessage(tempo::QueueID id, 
                          sf::Packet payload, 
                          uint32_t client_id);

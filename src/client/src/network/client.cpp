@@ -238,4 +238,9 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 	return ret;
 }
 
+bool broadcastMessage(QueueID id, sf::Packet p)
+{
+	assert(false); //I think this should nevevr happen
+}
+
 } // namespace tempo

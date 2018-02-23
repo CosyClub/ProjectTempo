@@ -9,10 +9,9 @@
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
-#include <tempo/system/SystemServerAttack.hpp>
 
 #include <tempo/network/QueueID.hpp>
-#include <client/network/client.hpp>
+#include <tempo/network/base.hpp>
 #include <tempo/mask.hpp>
 
 #include <glm/glm.hpp>
@@ -33,7 +32,13 @@ struct SystemAttack : anax::System<anax::Requires<ComponentHealth,
 	//          void
 	void Attack(anax::Entity attacker);
 
-	void Sync(anax::World& w);
+	void Broadcast(anax::World& w);
+	void Recieve(anax::World& w);
+
+	enum Messages {
+		ATTACK,
+		DELAYED_ATTACK,
+	};
 };
 
 }

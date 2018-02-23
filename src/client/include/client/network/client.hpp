@@ -15,6 +15,8 @@
 #include <iostream>
 #include <thread>
 
+#include <cassert>
+
 namespace tempo
 {
 	// timeSyncClient
@@ -75,6 +77,8 @@ namespace tempo
 	                                ClientRoleData &roleData,
 	                                anax::World& world,
                                         tempo::SystemLevelManager system_gm);
+
+	bool broadcastMessage(QueueID id, sf::Packet p);
 
 }
 
