@@ -48,11 +48,10 @@ void sync_time(tempo::Clock& clock, tempo::Song *song)
 	clock.set_time(clock.get_time() + sf::microseconds(offset), song);
 }
 
-void new_entity_check(anax::World &world, tempo::SystemLevelManager system_level)
+void new_entity_check(anax::World &world)
 {
 	tempo::Queue<sf::Packet> *q = get_system_queue(tempo::QueueID::ENTITY_CREATION);
-	while (!q->empty())
-	{
+	while (!q->empty()) {
 		sf::Packet p = q->front();
 		tempo::addComponent(world, p);
 		q->pop();
@@ -271,7 +270,7 @@ int main(int argc, const char** argv){
 		dt_timer.restart();
 
 		//add new clients
-		new_entity_check(world, system_level);
+		new_entity_check(world);
 		//Add new graphics stuff
 		system_gc.addEntities(driver, smgr);
 		system_render_scene_node.setup(smgr);

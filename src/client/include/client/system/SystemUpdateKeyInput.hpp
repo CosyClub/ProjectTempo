@@ -45,7 +45,9 @@ class KeyInput : public irr::IEventReceiver
 
 namespace client {
 
-	class SystemUpdateKeyInput : public anax::System<anax::Requires<client::ComponentKeyInput>> {
+	class SystemUpdateKeyInput : public anax::System<anax::Requires<client::ComponentKeyInput>>
+	{
+	private:
 		KeyInput receiver;
 	public:
 		void setup(irr::IrrlichtDevice* device);

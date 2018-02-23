@@ -11,7 +11,7 @@
 
 namespace tempo
 {
-	
+
 // Represents a translation on the stage
 struct ComponentStageTranslation : anax::Component, NetworkedComponent
 {
