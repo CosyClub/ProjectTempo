@@ -154,7 +154,7 @@ uint32_t addClient(sf::Uint32 ip,
 	return idCounter++;
 }
 
-#define ADD_COMPONENT(ENT, PKT, CMP) \
+#define ADD_COMPONENT(ENT, CNT, PKT, CMP) \
 	if (ENT.hasComponent<CMP>()) { \
 		sf::Packet part; \
 		part << ENT.getComponent<CMP>().getId(); \
@@ -162,24 +162,38 @@ uint32_t addClient(sf::Uint32 ip,
 		part << part2; \
 		PKT << sf::Uint32(part.getDataSize()); \
 		PKT << part; \
+		CNT++; \
 	}
 
 sf::Packet packageComponents(anax::Entity entity)
 {
 	sf::Packet packet;
 	packet << entity.getId();
+
+	// Temporary measure for some form of bad error checking
+	uint32_t c = 0;
 	
 	// Put new Components in here
-	ADD_COMPONENT(entity, packet, ComponentCombo)
-	ADD_COMPONENT(entity, packet, ComponentGridAi)
-	ADD_COMPONENT(entity, packet, ComponentHealth)
-	ADD_COMPONENT(entity, packet, ComponentModel)
-	ADD_COMPONENT(entity, packet, ComponentPlayerLocal)
-	ADD_COMPONENT(entity, packet, ComponentPlayerRemote)
-	ADD_COMPONENT(entity, packet, ComponentStage)
-	ADD_COMPONENT(entity, packet, ComponentStagePosition)
-	ADD_COMPONENT(entity, packet, ComponentStageRotation)
-	ADD_COMPONENT(entity, packet, ComponentStageTranslation)
+	ADD_COMPONENT(entity, c, packet, ComponentCombo)
+	ADD_COMPONENT(entity, c, packet, ComponentGridAi)
+	ADD_COMPONENT(entity, c, packet, ComponentHealth)
+	ADD_COMPONENT(entity, c, packet, ComponentModel)
+	ADD_COMPONENT(entity, c, packet, ComponentPlayerLocal)
+	ADD_COMPONENT(entity, c, packet, ComponentPlayerRemote)
+	ADD_COMPONENT(entity, c, packet, ComponentStage)
+	ADD_COMPONENT(entity, c, packet, ComponentStagePosition)
+	ADD_COMPONENT(entity, c, packet, ComponentStageRotation)
+	ADD_COMPONENT(entity, c, packet, ComponentStageTranslation)
+	ADD_COMPONENT(entity, c, packet, ComponentWeapon)
+
+	if (c < entity.getComponentTypeList().count()) {
+		std::cout << "WARNING: /Some/ components where not serialised "
+		          << "when sending Entity ID: " << entity.getId()
+		          << std::endl << "Did you forget add a component to "
+		          << "the server without adding NetworkedComponent "
+		          << "methods?" << std::endl;
+		assert(false);
+	}
 
 	return packet;
 }
