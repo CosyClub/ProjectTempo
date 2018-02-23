@@ -6,8 +6,6 @@
 
 namespace client {
 	void SystemRenderSceneNode::setup(irr::scene::ISceneManager* smgr) {
-		std::cout << "SystemRenderSceneNode initializing" << std::endl;
-
 		irr::core::dimension2d<irr::f32> size(1.0f, 2.0f);
 		irr::core::vector3df pos(0.0f, 0.0f + size.Height / 2, 0.0f);
 
@@ -16,6 +14,7 @@ namespace client {
 		for (auto entity : entities)
 		{
 			client::ComponentRenderSceneNode& sn = entity.getComponent<client::ComponentRenderSceneNode>();
+			if (sn.node != nullptr) continue;
 			tempo::ComponentModel& m = entity.getComponent<tempo::ComponentModel>();
 
 			//Get color from componentmodel

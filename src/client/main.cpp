@@ -274,6 +274,7 @@ int main(int argc, const char** argv){
 		new_entity_check(world, system_level);
 		//Add new graphics stuff
 		system_gc.addEntities(driver, smgr);
+		system_render_scene_node.setup(smgr);
 		
 		world.refresh();
 		system_player.update(entity_player.getId(), world);
