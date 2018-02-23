@@ -1,26 +1,20 @@
-#include <glm/glm.hpp>
-
-#include <tempo/mask.hpp>
-
-#include <tempo/component/ComponentAOEIndicator.hpp>
-#include <tempo/component/ComponentStagePosition.hpp>
-#include <tempo/component/ComponentStageRotation.hpp>
-#include <tempo/component/ComponentWeapon.hpp>
-
-#include <tempo/system/SystemAttack.hpp>
-
-#include <cassert>
+#include <tempo/system/SystemServerAttack.hpp>
 
 namespace tempo{
 
-void SystemAttack::Attack(anax::Entity attacker)
+void SystemServerAttack::Attack(anax::Entity attacker)
 {
 
-	//Attacker
+	//ServerServerAttacker
 	glm::ivec2 attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
 	glm::ivec2 rot = attacker.getComponent<tempo::ComponentStageRotation>().facing;
 	auto& weapon = attacker.getComponent<tempo::ComponentWeapon>();
 	Mask m = weapon.damage;
+
+	if (weapon.isDelayed)
+	{
+		
+	}
 
 	//Victim
 	auto entities = getEntities();
@@ -45,17 +39,31 @@ void SystemAttack::Attack(anax::Entity attacker)
 			          << " for " << damage << std::endl;
 		}
 		health.HealthUpdate( -1 * damage );	
-	}
+	
+	
+		sf::Packet p;
+		p << SystemServerAttack::Messages::ATTACK;
+		p << localtoserver[attacker.getId()]; 
 
-	if ( ! attacker.hasComponent<ComponentAOEIndicator>() )
+		tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_ATTACK);
+		q->push(p); //Send to other server  queue
+	}
+}
+
+void SystemServerAttack::Sync(anax::World& w)
+{
+	tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_ATTACK);
+
+	while( ! q->empty() )
 	{
-		std::cout << "Entity does not contain ComponentAOEIndicator" << std::endl;
-		assert(false);
-	}
+		sf::Packet p = q->front();
+		q->pop();
 
-	ComponentAOEIndicator aoe = attacker.getComponent<ComponentAOEIndicator>();
-	aoe.duration = sf::seconds(0.1);
-	aoe.tiles = m.positions;
+		for (auto& client : clients)
+		{
+			sendMessage(QueueID::SYSTEM_ATTACK, p, client.first);
+		}
+	}
 }
 
 }

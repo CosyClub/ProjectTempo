@@ -32,6 +32,7 @@ namespace tempo
 		PLAYER_UPDATES,
 		ENTITY_CREATION,
 		COMBO_UPDATES,
+		SYSTEM_ATTACK,
 
 		//End of non-reserved zone
 		QID_RESERVED_TOP

@@ -17,6 +17,8 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRenderSceneNode.cpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentKeyInput.hpp
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentKeyInput.cpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemAttack.hpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemAttack.cpp
 
 	${CMAKE_CURRENT_LIST_DIR}/main.cpp
 )
