@@ -1,49 +1,42 @@
-#include <cstdio>
-#include <iostream>
-#include <irrlicht.h>
-
-// #include <tempo/Application.hpp>
-// #include <tempo/song.hpp>
-// #include <tempo/time.hpp>
-#include <tempo/entity/EntityCreation.hpp>
-// #include <tempo/entity/LevelRenderer.hpp>
+#include <client/component/ComponentKeyInput.hpp>
+#include <client/component/ComponentRenderSceneNode.hpp>
 #include <client/network/client.hpp>
 #include <client/system/SystemGameInput.hpp>
 #include <client/system/SystemGraphicsCreation.hpp>
+#include <client/system/SystemStageRenderer.hpp>
+#include <client/system/SystemRenderSceneNode.hpp>
+#include <client/system/SystemUpdateKeyInput.hpp>
 
+#include <tempo/song.hpp>
+#include <tempo/time.hpp>
+#include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
+#include <tempo/entity/EntityCreation.hpp>
 #include <tempo/network/QueueID.hpp>
-// #include <tempo/system/SystemRenderHealth.hpp>
 #include <tempo/system/SystemAttack.hpp>
-#include <tempo/system/SystemTransform.hpp>
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 #include <tempo/system/SystemPlayer.hpp>
-// #include <tempo/system/SystemRender.hpp>
+#include <tempo/system/SystemTransform.hpp>
+
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
 
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Time.hpp>
-#include <tempo/song.hpp>
-#include <tempo/time.hpp>
 
-
-#include <client/system/SystemStageRenderer.hpp>
-#include <client/system/SystemRenderSceneNode.hpp>
-#include <client/system/SystemUpdateKeyInput.hpp>
-#include <client/component/ComponentRenderSceneNode.hpp>
-#include <client/component/ComponentKeyInput.hpp>
-
-#include <tempo/component/ComponentStagePosition.hpp>
-#include <tempo/component/ComponentStageRotation.hpp>
+#include <irrlicht.h>
 
 #include <glm/vec2.hpp>
 
-#include <thread>
 #include <chrono>
+#include <cstdio>
+#include <functional> // maybe not needed (std::ref when calling listenForServerUpdates())
+#include <iostream>
+#include <thread>
 
 #define BPM 120
 #define DELTA 200
@@ -186,7 +179,10 @@ int main(int argc, const char** argv){
 	tempo::bindSocket('o', tempo::port_co);
 
 	// Start Listener Thread to catch server updates after connecting
-	std::thread listener (tempo::listenForServerUpdates);
+	std::atomic<bool> running(true);
+	std::thread listener(tempo::listenForServerUpdates, std::ref(running));
+	// Hack to allow printouts to line up a bit nicer :)
+	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
 	tempo::ClientRole role = tempo::ClientRole::PLAYER;
 	tempo::ClientRoleData roleData = {"Bilbo Baggins"};
@@ -262,7 +258,6 @@ int main(int argc, const char** argv){
 	sf::Clock dt_timer;
 	sf::Time logic_time;
 	sf::Time render_time;
-	// bool running = true;
 	int frame_counter = 0;
 
 	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
@@ -367,9 +362,11 @@ int main(int argc, const char** argv){
 		}
 
 	}
+	running.store(false);
 	printf("Left main loop\n");
 
 	device->drop();
+	listener.join();
 
 	return 0;
 }

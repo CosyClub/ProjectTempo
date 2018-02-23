@@ -262,11 +262,11 @@ void handshakeRoleReq(sf::Packet &packet,
 	// Create Entity for selected role from client
 	// Only creating players for now (spectators are not a thing)
 	anax::Entity newEntity = newPlayer(*world, system_gm);	
-	sf::Packet newPlayer = packageComponents(newEntity);
+	sf::Packet   newPlayer = packageComponents(newEntity);
 
 	// Register Role
 	cmtx.lock();
-	clients[id].role    = static_cast<ClientRole>(role);
+	clients[id].role = static_cast<ClientRole>(role);
 	cmtx.unlock();
 
 	// Construct ROLEREQ_ROG response
@@ -275,7 +275,7 @@ void handshakeRoleReq(sf::Packet &packet,
 	rog << 1;
 
 	// Send response back to sender
-	sendMessage(QueueID::HANDSHAKE, rog, id);
+	sendMessage(QueueID::HANDSHAKE, rog,       id);
 	sendMessage(QueueID::HANDSHAKE, newPlayer, id);
 
 	// Tell everyone that we have a new player

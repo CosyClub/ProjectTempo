@@ -77,6 +77,8 @@ int main(int argc, const char** argv) {
 	//////////////////////////////////
 	// Thread Startup
 	std::thread timeSyncThread (tempo::timeSyncServer, &clock);
+	// Hack to allow printouts to line up a bit nicer :)
+	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	std::thread clientUpdatesThread (tempo::listenForClientUpdates);
 	tempo::bindSocket('o', tempo::port_so);
 

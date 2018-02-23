@@ -46,7 +46,7 @@ namespace tempo
 	//
 	// Returns:
 	//         void (is a thread)
-	void listenForServerUpdates();
+	void listenForServerUpdates(std::atomic<bool>& running);
 
 	// connectToAndSyncWithServer
 	// WARNING: This requires the listenForServerUpdates thread to have

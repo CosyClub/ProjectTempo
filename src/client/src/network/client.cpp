@@ -87,7 +87,7 @@ sf::Packet receiveMessage(QueueID qid) {
 	return packet;
 }
 
-void listenForServerUpdates()
+void listenForServerUpdates(std::atomic<bool>& running)
 {
 	// Bind to port
 	if (!bindSocket('i', port_ci)) {
@@ -98,19 +98,27 @@ void listenForServerUpdates()
 
 	std::cout << "Server Update Listener Started..." << std::endl;
 
+	sock_i.setBlocking(false);
 	sf::IpAddress ip;
 	unsigned short port;
-	while (true) {
-		sf::Packet packet;
-		if (sock_i.receive(packet, ip, port) != sf::Socket::Done) {
+	sf::Packet packet;
+
+	while (running.load()) {
+		sf::Socket::Status status = sock_i.receive(packet, ip, port);
+		if (status == sf::Socket::Error || status == sf::Socket::Disconnected) {
 			std::cout << "Error recieving server update. Ignoring."
 			          << std::endl;
 			continue;
 		}
 
 		// Sort packet into respective system.
-		sortPacket(packet);
+		if (status == sf::Socket::Done) {
+			sortPacket(packet);
+			packet = sf::Packet();
+		}
 	}
+
+	std::cout << "Server Update Listener Closed." << std::endl;
 
 	return;
 }
