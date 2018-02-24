@@ -6,6 +6,7 @@
 namespace client {
 	void SystemUpdateKeyInput::setup(irr::IrrlichtDevice* device) {
 		device->setEventReceiver(&receiver);
+		receiver.init();
 	}
 
 	void SystemUpdateKeyInput::addKeys() {
@@ -16,7 +17,7 @@ namespace client {
 			client::ComponentKeyInput& ki = entity.getComponent<client::ComponentKeyInput>();
 
 			// add all keys that were queued up
-			std::vector<char> keys = receiver.getChars();
+			std::vector<client::KeyEvent> keys = receiver.getChars();
 			ki.keysPressed.insert(ki.keysPressed.end(),
 			                      keys.begin(), keys.end());
 		}

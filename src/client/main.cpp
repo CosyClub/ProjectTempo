@@ -147,7 +147,7 @@ int main(int argc, const char** argv){
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
 	// world.addSystem(render_health);
-	
+
 	createEntityStage(world);
 	world.refresh();
 
@@ -189,7 +189,7 @@ int main(int argc, const char** argv){
 	// Connect to server and handshake information
 	tempo::connectToAndSyncWithServer(role, roleData, world, system_level);
 
-	//Sort out graphics after handshake	
+	//Sort out graphics after handshake
 	world.refresh();
 	system_gc.addEntities(driver, smgr);
 	world.refresh();
@@ -230,7 +230,7 @@ int main(int argc, const char** argv){
 		camera_node->setTarget(irr::core::vector3df(10.0f, 0.0f, 10.0f));
 	}
 	// debug dynamic light
-	// irr::scene::ISceneNode* camera_light = 
+	// irr::scene::ISceneNode* camera_light =
 	smgr->addLightSceneNode(
 		camera_node,
 		irr::core::vector3df(0.0f, 0.0f, 0.0f),
@@ -238,7 +238,7 @@ int main(int argc, const char** argv){
 		10.0f);
 
 	// debug static light
-	// irr::scene::ISceneNode* light_node = 
+	// irr::scene::ISceneNode* light_node =
 	smgr->addLightSceneNode(
 		0,
 		irr::core::vector3df(10.0f, 10.0f, 10.0f),
@@ -250,7 +250,7 @@ int main(int argc, const char** argv){
 
 	/////////////////////////////////////////////////
 	// Main loop
-	
+
 	// int lastFPS = -1;
 
 	sf::Clock fps_timer;
@@ -274,7 +274,7 @@ int main(int argc, const char** argv){
 		//Add new graphics stuff
 		system_gc.addEntities(driver, smgr);
 		system_render_scene_node.setup(smgr);
-		
+
 		world.refresh();
 		system_player.update(entity_player.getId(), world);
 		// render_health.HealthBarUpdate();
@@ -286,7 +286,7 @@ int main(int argc, const char** argv){
 			click.play();
 			if (tick++ % 20 == 0)
 				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
-      
+
 
 			system_grid_ai.update();
 			system_combo.advanceBeat();
@@ -302,20 +302,20 @@ int main(int argc, const char** argv){
 			device->yield();
 			continue;
 		}
-		
+
 		system_update_key_input.clear();
 		system_update_key_input.addKeys();
 
 		// TODO: move into multiple systems, for now teleport the user
 		// the two systems required are input->transform and transform->apply
 		{
-			std::vector<char> keys = entity_player.getComponent<client::ComponentKeyInput>().keysPressed;
+			std::vector<client::KeyEvent> keys = entity_player.getComponent<client::ComponentKeyInput>().keysPressed;
 			tempo::ComponentStagePosition& pos = entity_player.getComponent<tempo::ComponentStagePosition>();
 			tempo::ComponentStageRotation& rot = entity_player.getComponent<tempo::ComponentStageRotation>();
 
 			for (unsigned int i = 0; i < keys.size(); i++) {
-				std::cout << keys[i] << ", " << keys.size() << std::endl;
-				switch (keys[i]) {
+				std::cout << keys[i].key << ", release: "<< keys[i].press << keys.size() << std::endl;
+				switch (keys[i].key) {
 				case 'w':
 					pos.occupied[0] += tempo::NORTH;
 					rot = tempo::NORTH;
