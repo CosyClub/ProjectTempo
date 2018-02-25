@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project("ProjectTempo")
 set(GLOBAL PROPERTY USE_FOLDERS ON)
 
-set(EXTLIBS_DIR      "${CMAKE_CURRENT_LIST_DIR}/extlibs")
+set(EXTLIBS_DIR "${CMAKE_CURRENT_LIST_DIR}/extlibs")
 
 set(CMAKE_MODULE_PATH
 	${CMAKE_MODULE_PATH}
@@ -81,3 +81,10 @@ if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)" OR CMAKE_CL_64)
 else ()
 	file(COPY "${TEMPO_EXTLIBS_DIR}/SFML-2.4.2/extlibs/bin/x86/openal32.dll" DESTINATION "${TEMPO_BIN_DIR}")
 endif ()
+
+add_custom_target(copy_compile_commands ALL)
+add_custom_command(
+	TARGET copy_compile_commands POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy
+		${CMAKE_BINARY_DIR}/compile_commands.json
+		${CMAKE_CURRENT_LIST_DIR}/compile_commands.json)
