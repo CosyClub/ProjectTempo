@@ -147,29 +147,14 @@ namespace tempo{
 			auto& pos = entity.getComponent<ComponentStagePosition>();
 			auto& gm = entity.getComponent<ComponentStageTranslation>();
 
-			// NOTE Can be removed, all this does is animation of characters
-			if (gm.delta.x != 0 || gm.delta.y != 0) {
-				// gm.setMotionProgress(gm.getMotionProgress() + (dt * gm.movement_speed) / gm.getCurrentMovement().length());
-				// if(gm.getMotionProgress() >= 1){
-				// 	pos.setPosition(pos.getPosition() + gm.getCurrentMovement());
-				// 	gm.setDelta({0,0});
-				// 	gm.setMotionProgress(0);
-				// 	gm.setTargetLocked(false);
-				// }
-			}
-
 			glm::vec2 target_tile = pos.getOccupied()[0] + gm.delta;
-
-			// Work out if entity is allowed to go to its current target
-			// This depends on:
-			// - Delta height between tiles
-			// - If target tile is already occupied by another entity
+			
 			bool can_make_move = true;
 
-			// (NAH) Check height difference
-
-			if (!existsTile(target_tile)) 
+			if (!existsTile(target_tile)) { 
+				std::cout << "Tile does not exist!\n";
 				can_make_move = false;
+			}
 
 			// :TODO:OPT: this might be quite slow - for each entityV
 			// check all others, might want to build quadtree / 2d boolean array
@@ -181,8 +166,9 @@ namespace tempo{
 				
 				// Terrible hack sorry lads
 				if ((pos.getOccupied()[0] + gm.delta).x == pos_candidate.getOccupied()[0].x &&
-				    (pos.getOccupied()[0] + gm.delta).y == pos_candidate.getOccupied()[0].y)
+				    (pos.getOccupied()[0] + gm.delta).y == pos_candidate.getOccupied()[0].y) {
 					can_make_move = false;
+				}
 			}
 
 			// :TODO: If multiple entities try to jump into same tile simultaneously

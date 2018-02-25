@@ -123,8 +123,7 @@ void listenForServerUpdates(std::atomic<bool>& running)
 	return;
 }
 
-uint32_t handshakeHello(anax::World& world, 
-                        tempo::SystemLevelManager system_gm)
+uint32_t handshakeHello(anax::World& world)
 {
 	// Package up payload
 	sf::Packet packet;
@@ -166,8 +165,7 @@ uint32_t handshakeHello(anax::World& world,
 bool handshakeRoleReq(uint32_t id,
                       ClientRole roleID,
                       ClientRoleData &roleData,
-                      anax::World& world,
-                      tempo::SystemLevelManager system_gm)
+                      anax::World& world)
 {
 	// Package up payload
 	sf::Packet packet;
@@ -208,8 +206,7 @@ bool handshakeRoleReq(uint32_t id,
 
 bool connectToAndSyncWithServer(ClientRole roleID,
                                 ClientRoleData &roleData,
-                                anax::World& world,
-                                tempo::SystemLevelManager system_gm)
+                                anax::World& world)
 {
 	// Bind outgoing port if not bound
 	if (sock_o.getLocalPort() == 0) {
@@ -231,7 +228,7 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 	}
 
 	std::cout << "HELLO STARTING" << std::endl;
-	uint32_t id = handshakeHello(world, system_gm);
+	uint32_t id = handshakeHello(world);
 	std::cout << "HELLO COMPLETE" << std::endl;
 	if (id == NO_CLIENT_ID) {
 		std::cout << "Couldn't connect to the server." 
@@ -240,7 +237,7 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 	}
 
 	std::cout << "ROLEREQ STARTING" << std::endl;
-	bool ret = handshakeRoleReq(id, roleID, roleData, world, system_gm);
+	bool ret = handshakeRoleReq(id, roleID, roleData, world);
 	std::cout << "ROLEREQ COMPLETE" << std::endl;
 	world.refresh();
 	return ret;

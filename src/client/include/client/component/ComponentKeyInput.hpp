@@ -6,7 +6,7 @@
 namespace client
 {
 	struct KeyEvent {
-		char key;   // The key that was pressed
+		char key;    // The key that was pressed
 		bool press;  // true iff. key press; false iff. key release.
 
 		KeyEvent(char k, bool p) : key(k), press(p) {}

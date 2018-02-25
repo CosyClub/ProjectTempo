@@ -1,14 +1,15 @@
 #include <client/component/ComponentKeyInput.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
 #include <client/network/client.hpp>
-#include <client/system/SystemGameInput.hpp>
 #include <client/system/SystemGraphicsCreation.hpp>
+#include <client/system/SystemParseKeyInput.hpp>
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
 
 #include <tempo/song.hpp>
 #include <tempo/time.hpp>
+#include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/entity/EntityCreation.hpp>
@@ -117,44 +118,37 @@ int main(int argc, const char** argv){
 	                                           "../bin/resources/levels/levelTest.bmp",
 	                                           "../bin/resources/levels/zonesTest.bmp"
 	                                           );
-	tempo::SystemAttack           system_attack;
-	tempo::SystemUpdateTransforms system_update_transforms;
-	tempo::SystemGridAi           system_grid_ai;
-	tempo::SystemGameInput        system_input(clock);
-	tempo::SystemPlayer           system_player(clock);
-	tempo::SystemCombo            system_combo;
-	tempo::SystemHealth           system_health;
-	// tempo::RenderHealth           render_health;
+	tempo::SystemAttack            system_attack;
+	tempo::SystemUpdateTransforms  system_update_transforms;
+	tempo::SystemGridAi            system_grid_ai;
+	tempo::SystemPlayer            system_player(clock);
+	tempo::SystemCombo             system_combo;
+	tempo::SystemHealth            system_health;
 	client::SystemGraphicsCreation system_gc;
-	client::SystemStageRenderer system_stage_renderer;
-	client::SystemRenderSceneNode system_render_scene_node;
-	client::SystemUpdateKeyInput system_update_key_input;
+	client::SystemStageRenderer    system_stage_renderer;
+	client::SystemRenderSceneNode  system_render_scene_node;
+	client::SystemUpdateKeyInput   system_update_key_input;
+	client::SystemParseKeyInput    system_parse_key_input;
 
-
-	// Setup Systems
-	// world.refresh();
-
-	world.addSystem(system_stage_renderer);
-	world.addSystem(system_render_scene_node);
-	world.addSystem(system_update_key_input);
 	world.addSystem(system_level);
+	world.addSystem(system_attack);
 	world.addSystem(system_update_transforms);
 	world.addSystem(system_grid_ai);
-	world.addSystem(system_attack);
-	world.addSystem(system_input);
-	world.addSystem(system_gc);
 	world.addSystem(system_player);
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
-	// world.addSystem(render_health);
-
+	world.addSystem(system_gc);
+	world.addSystem(system_stage_renderer);
+	world.addSystem(system_render_scene_node);
+	world.addSystem(system_update_key_input);
+	world.addSystem(system_parse_key_input);
+	
 	createEntityStage(world);
 	world.refresh();
 
 	system_stage_renderer.setup(smgr);
 	system_render_scene_node.setup(smgr);
 	system_update_key_input.setup(device);
-
 
 	// Set up remote address, local ports and remote handshake port
 	// Note, IF statement is to change ports for local development, bit
@@ -187,7 +181,7 @@ int main(int argc, const char** argv){
 	tempo::ClientRoleData roleData = {"Bilbo Baggins"};
 
 	// Connect to server and handshake information
-	tempo::connectToAndSyncWithServer(role, roleData, world, system_level);
+	tempo::connectToAndSyncWithServer(role, roleData, world);
 
 	//Sort out graphics after handshake
 	world.refresh();
@@ -268,20 +262,7 @@ int main(int argc, const char** argv){
 	while(device->run()){
 		float dt = dt_timer.getElapsedTime().asSeconds();
 		dt_timer.restart();
-
-		//add new clients
-		new_entity_check(world);
-		//Add new graphics stuff
-		system_gc.addEntities(driver, smgr);
-		system_render_scene_node.setup(smgr);
-
-		world.refresh();
-		system_player.update(entity_player.getId(), world);
-		// render_health.HealthBarUpdate();
-		system_health.CheckHealth();
-		system_level.update(dt);
-		system_update_transforms.update(system_level);
-
+		
 		if (clock.passed_beat()) {
 			click.play();
 			if (tick++ % 20 == 0)
@@ -292,75 +273,67 @@ int main(int argc, const char** argv){
 			system_combo.advanceBeat();
 		}
 
+		/////
+		// System Calls
+		/////
 
-		auto& combo = entity_player.getComponent<tempo::ComponentCombo>();
-		char buffer [50];
-		sprintf (buffer, "Combo: %d", combo.comboCounter);
+		// Check for new entities from server
+		new_entity_check(world);
+		system_gc.addEntities(driver, smgr);
+		system_render_scene_node.setup(smgr);
+		world.refresh();
+		
+		// Recieve player updates from the server
+		system_player.update(entity_player.getId(), world);
+		
+		// Deal with local input
+		system_update_key_input.clear();
+		system_update_key_input.addKeys();
+		system_parse_key_input.parseInput(clock);
 
-		if (! device->isWindowActive())
-		{
+		// TODO Make movement system
+		for (anax::Entity e : world.getEntities()) {
+			if (e.hasComponent<tempo::ComponentStageTranslation>() &&
+			    e.hasComponent<tempo::ComponentStagePosition>()) {
+				tempo::ComponentStageTranslation st = e.getComponent<tempo::ComponentStageTranslation>();
+				if (st.delta.x == 0 && st.delta.y == 0) continue;
+				e.getComponent<tempo::ComponentStagePosition>().occupied[0] += st.delta;
+				std::cout << "Delta before: (" << st.delta.x << "," << st.delta.y << ") ";
+				st.delta = {0,0};
+				std::cout << "Delta after: (" << st.delta.x << "," << st.delta.y << ")\n";
+			}
+		}
+
+		// Deprecated/To-be-worked-on
+		system_health.CheckHealth();
+	
+		// Graphics updates
+		system_render_scene_node.update();
+
+		if (! device->isWindowActive()) {
 			device->yield();
 			continue;
 		}
 
-		system_update_key_input.clear();
-		system_update_key_input.addKeys();
-
-		// TODO: move into multiple systems, for now teleport the user
-		// the two systems required are input->transform and transform->apply
-		{
-			std::vector<client::KeyEvent> keys = entity_player.getComponent<client::ComponentKeyInput>().keysPressed;
-			tempo::ComponentStagePosition& pos = entity_player.getComponent<tempo::ComponentStagePosition>();
-			tempo::ComponentStageRotation& rot = entity_player.getComponent<tempo::ComponentStageRotation>();
-
-			for (unsigned int i = 0; i < keys.size(); i++) {
-				std::cout << keys[i].key << ", release: "<< keys[i].press << keys.size() << std::endl;
-				switch (keys[i].key) {
-				case 'w':
-					pos.occupied[0] += tempo::NORTH;
-					rot = tempo::NORTH;
-					break;
-				case 'a':
-					pos.occupied[0] += tempo::WEST;
-					rot = tempo::WEST;
-					break;
-				case 's':
-					pos.occupied[0] += tempo::SOUTH;
-					rot = tempo::SOUTH;
-					break;
-				case 'd':
-					pos.occupied[0] += tempo::EAST;
-					rot = tempo::EAST;
-					break;
-				case 'e':
-					system_attack.Attack(entity_player);
-					break;
-				}
-			}
-		}
-		system_render_scene_node.update();
-
 		driver->beginScene(true, true);
 		smgr->drawAll();
 		gui_env->drawAll();
-
 		driver->endScene();
 
-
-		++frame_counter;
-		if (fps_timer.getElapsedTime().asSeconds() > 0.5f) {
+		// ++frame_counter;
+		// if (fps_timer.getElapsedTime().asSeconds() > 0.5f) {
 			// float seconds = fps_timer.getElapsedTime().asSeconds();
-			/* printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds), */
-			/* 	100 * (float)( */
-			/* 		render_time.asMicroseconds() */
-			/* 		) / ( */
-			/* 			logic_time.asMicroseconds() + */
-			/* 			render_time.asMicroseconds())); */
-			/* printf("Logic time  (μs): %d\n",  logic_time.asMicroseconds()); */
-			/* printf("Render time (μs): %d\n", render_time.asMicroseconds()); */
-			fps_timer.restart();
-			frame_counter = 0;
-		}
+			// printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds),
+			// 	100 * (float)(
+			// 		render_time.asMicroseconds()
+			// 		) / (
+			// 			logic_time.asMicroseconds() +
+			// 			render_time.asMicroseconds()));
+			// printf("Logic time  (μs): %d\n",  logic_time.asMicroseconds());
+			// printf("Render time (μs): %d\n", render_time.asMicroseconds());
+			// fps_timer.restart();
+			// frame_counter = 0;
+		// }
 
 	}
 	running.store(false);

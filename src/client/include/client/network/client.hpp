@@ -73,8 +73,7 @@ namespace tempo
 	//         void - nothing is returned. Note side effects above.
 	bool connectToAndSyncWithServer(ClientRole roleID, 
 	                                ClientRoleData &roleData,
-	                                anax::World& world,
-                                        tempo::SystemLevelManager system_gm);
+	                                anax::World& world);
 
 }
 

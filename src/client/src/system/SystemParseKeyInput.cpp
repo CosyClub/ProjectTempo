@@ -1,19 +1,64 @@
-#include <client/system/SystemGameInput.hpp>
-#include <client/network/client.hpp>
+#include <client/system/SystemParseKeyInput.hpp>
 
-namespace tempo
+#include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
+
+#include <glm/vec2.hpp>
+
+#include <iostream>
+
+namespace client
 {
 
-void alertServerBrokenCombo(anax::Entity::Id id) 
-{
-	// sf::Packet packet;
-	// packet << localtoserver[id]
-	//        << static_cast<uint8_t>(MessageCombo::BROKEN_COMBO);
-	// sendMessage(QueueID::COMBO_UPDATES, packet);
+void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing) {
+	if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
+		entity.getComponent<tempo::ComponentStageTranslation>().delta = delta;
+	}
+	if (entity.hasComponent<tempo::ComponentStageRotation>()) {
+		entity.getComponent<tempo::ComponentStageRotation>().facing = facing;
+	}
 }
 
-bool SystemGameInput::handleInput(SDL_Event& e)
+void processKeyPressEvent(char key, anax::Entity &entity) {
+	switch (key) {
+	case 'w':
+		std::cout << "Moving NORTH\n";
+		addMovement(entity, tempo::NORTH, tempo::NORTH);
+		break;
+	case 'a':
+		std::cout << "Moving WEST\n";
+		addMovement(entity, tempo::WEST, tempo::WEST);
+		break;
+	case 's':
+		std::cout << "Moving SOUTH\n";
+		addMovement(entity, tempo::SOUTH, tempo::SOUTH);
+		break;
+	case 'd':
+		std::cout << "Moving EAST\n";
+		addMovement(entity, tempo::EAST, tempo::EAST);
+		break;
+	case 'e':
+		// system_attack.Attack(entity_player);
+		break;
+	}
+}
+
+void SystemParseKeyInput::parseInput(tempo::Clock &clock)
 {
+	for (auto entity : getEntities()) {
+		ComponentKeyInput ke = entity.getComponent<ComponentKeyInput>();
+	
+		for (unsigned int i = 0; i < ke.keysPressed.size(); i++) {
+			std::cout << "Key Event " << (int) ke.keysPressed[i].key << std::endl;
+			if (ke.keysPressed[i].press) {
+				processKeyPressEvent(ke.keysPressed[i].key,
+				                     entity);
+			}
+		}
+	}
+}
+// bool SystemGameInput::handleInput(SDL_Event& e)
+// {
 	// if (e.type != SDL_KEYDOWN) return false;
 
 	// int dx;
@@ -83,7 +128,7 @@ bool SystemGameInput::handleInput(SDL_Event& e)
 	// 	}
 	// }
 
-	return true;
-}
+	// return true;
+// }
 
 } //namespace tempo
