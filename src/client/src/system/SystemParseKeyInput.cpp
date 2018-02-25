@@ -25,22 +25,18 @@ void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity) {
 	switch (key) {
 	case irr::KEY_KEY_W: 
 	case irr::KEY_UP:
-		std::cout << "Moving NORTH\n";
 		addMovement(entity, tempo::NORTH, tempo::NORTH);
 		break;
 	case irr::KEY_KEY_A:
 	case irr::KEY_LEFT:
-		std::cout << "Moving WEST\n";
 		addMovement(entity, tempo::WEST, tempo::WEST);
 		break;
 	case irr::KEY_KEY_S:
 	case irr::KEY_DOWN:
-		std::cout << "Moving SOUTH\n";
 		addMovement(entity, tempo::SOUTH, tempo::SOUTH);
 		break;
 	case irr::KEY_KEY_D:
 	case irr::KEY_RIGHT:
-		std::cout << "Moving EAST\n";
 		addMovement(entity, tempo::EAST, tempo::EAST);
 		break;
 	case irr::KEY_KEY_E:
@@ -56,7 +52,9 @@ void SystemParseKeyInput::parseInput(tempo::Clock &clock)
 		ComponentKeyInput ke = entity.getComponent<ComponentKeyInput>();
 	
 		for (unsigned int i = 0; i < ke.keysPressed.size(); i++) {
-			std::cout << "Key Event " << (int) ke.keysPressed[i].key << std::endl;
+			std::cout << "Key " 
+				  << (ke.keysPressed[i].press ? "Pressed " : "Released ") 
+				  << ke.keysPressed[i].key << std::endl;
 			if (ke.keysPressed[i].press) {
 				processKeyPressEvent(ke.keysPressed[i].key,
 				                     entity);

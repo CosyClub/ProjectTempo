@@ -274,10 +274,6 @@ int main(int argc, const char** argv){
 			system_combo.advanceBeat();
 		}
 
-		/////
-		// System Calls
-		/////
-
 		// Check for new entities from server
 		new_entity_check(world);
 		system_gc.addEntities(driver, smgr);
@@ -299,9 +295,7 @@ int main(int argc, const char** argv){
 				tempo::ComponentStageTranslation st = e.getComponent<tempo::ComponentStageTranslation>();
 				if (st.delta.x == 0 && st.delta.y == 0) continue;
 				e.getComponent<tempo::ComponentStagePosition>().occupied[0] += st.delta;
-				std::cout << "Delta before: (" << st.delta.x << "," << st.delta.y << ") ";
 				st.delta = {0,0};
-				std::cout << "Delta after: (" << st.delta.x << "," << st.delta.y << ")\n";
 			}
 		}
 
@@ -311,7 +305,7 @@ int main(int argc, const char** argv){
 		// Graphics updates
 		system_render_scene_node.update();
 
-		if (! device->isWindowActive()) {
+		if (!device->isWindowActive()) {
 			device->yield();
 			continue;
 		}
