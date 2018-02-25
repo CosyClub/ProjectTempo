@@ -3,6 +3,55 @@
 
 #include <iostream>
 
+
+
+bool KeyInput::OnEvent(const irr::SEvent & event) {
+
+if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
+		// if key is Pressed Down
+		if (event.KeyInput.PressedDown == true) {
+			// If key was not down before
+			if (keyState[event.KeyInput.Key] != DOWN && keyState[event.KeyInput.Key] != PRESSED) {
+				keyState[event.KeyInput.Key] = PRESSED; // Set to Pressed
+				std::lock_guard<std::mutex> lock(chars_mutex);
+				chars.push_back(client::KeyEvent(event.KeyInput.Key, true ));
+			}
+			else {
+				// if key was down before
+				keyState[event.KeyInput.Key] = DOWN; // Set to Down
+			}
+		}
+		else {
+				// if the key is down
+				if (keyState[event.KeyInput.Key] != UP) {
+					keyState[event.KeyInput.Key] = RELEASED; // Set to Released
+					std::lock_guard<std::mutex> lock(chars_mutex);
+					chars.push_back(client::KeyEvent(event.KeyInput.Key, false ));
+				}
+		}
+}
+return false;
+}
+
+void KeyInput::init() {
+	for (int i = 0; i <= irr::KEY_KEY_CODES_COUNT; i++)
+	{
+		keyState[i] = UP;
+	}
+}
+
+
+std::vector<client::KeyEvent> KeyInput::getChars() {
+	std::lock_guard<std::mutex> lock(chars_mutex);
+	return chars;
+}
+
+void KeyInput::clearChars() {
+	std::lock_guard<std::mutex> lock(chars_mutex);
+	chars.clear();
+}
+
+
 namespace client {
 	void SystemUpdateKeyInput::setup(irr::IrrlichtDevice* device) {
 		device->setEventReceiver(&receiver);

@@ -18,56 +18,19 @@ class KeyInput : public irr::IEventReceiver
 	keyStatesENUM keyState[irr::KEY_KEY_CODES_COUNT];
 	private:
 		// A list of characters that have been recieved
-		std::vector<client::KeyEvent> chars;
 		std::mutex chars_mutex;
 
 	public:
+		std::vector<client::KeyEvent> chars;
 
-		virtual bool OnEvent(const irr::SEvent & event) {
+		virtual bool OnEvent(const irr::SEvent & event);
 
-		if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
-				// if key is Pressed Down
-				if (event.KeyInput.PressedDown == true) {
-					// If key was not down before
-					if (keyState[event.KeyInput.Key] != DOWN && keyState[event.KeyInput.Key] != PRESSED) {
-						keyState[event.KeyInput.Key] = PRESSED; // Set to Pressed
-						std::lock_guard<std::mutex> lock(chars_mutex);
-						chars.push_back(client::KeyEvent(event.KeyInput.Key, true ));
-					}
-					else {
-						// if key was down before
-						keyState[event.KeyInput.Key] = DOWN; // Set to Down
-					}
-				}
-				else {
-						// if the key is down
-						if (keyState[event.KeyInput.Key] != UP) {
-							keyState[event.KeyInput.Key] = RELEASED; // Set to Released
-							std::lock_guard<std::mutex> lock(chars_mutex);
-							chars.push_back(client::KeyEvent(event.KeyInput.Key, false ));
-						}
-				}
-		}
-		return false;
-	}
-
-		void init() {
-			for (int i = 0; i <= irr::KEY_KEY_CODES_COUNT; i++)
-			{
-				keyState[i] = UP;
-			}
-		}
+		void init();
 
 
-		std::vector<client::KeyEvent> getChars() {
-			std::lock_guard<std::mutex> lock(chars_mutex);
-			return chars;
-		}
+		std::vector<client::KeyEvent> getChars();
 
-		void clearChars() {
-			std::lock_guard<std::mutex> lock(chars_mutex);
-			chars.clear();
-		}
+		void clearChars();
 };
 
 namespace client {
