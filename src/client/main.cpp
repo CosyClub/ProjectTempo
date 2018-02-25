@@ -153,7 +153,6 @@ int main(int argc, const char** argv){
 
 	system_stage_renderer.setup(smgr);
 	system_render_scene_node.setup(smgr);
-	system_update_key_input.setup(device);
 
 
 	// Set up remote address, local ports and remote handshake port
@@ -229,6 +228,8 @@ int main(int argc, const char** argv){
 		device->getCursorControl()->setVisible(true);
 		camera_node->setTarget(irr::core::vector3df(10.0f, 0.0f, 10.0f));
 	}
+
+		system_update_key_input.setup(device);
 	// debug dynamic light
 	// irr::scene::ISceneNode* camera_light =
 	smgr->addLightSceneNode(
@@ -314,26 +315,28 @@ int main(int argc, const char** argv){
 			tempo::ComponentStageRotation& rot = entity_player.getComponent<tempo::ComponentStageRotation>();
 
 			for (unsigned int i = 0; i < keys.size(); i++) {
-				std::cout << keys[i].key << ", release: "<< keys[i].press << keys.size() << std::endl;
+				std::cout << (int) keys[i].key << ", release: "<< keys[i].press << keys.size() << std::endl;
 				switch (keys[i].key) {
-				case 'w':
+				case irr::KEY_KEY_W:
 					pos.occupied[0] += tempo::NORTH;
 					rot = tempo::NORTH;
 					break;
-				case 'a':
+				case irr::KEY_KEY_A:
 					pos.occupied[0] += tempo::WEST;
 					rot = tempo::WEST;
 					break;
-				case 's':
+				case irr::KEY_KEY_S:
 					pos.occupied[0] += tempo::SOUTH;
 					rot = tempo::SOUTH;
 					break;
-				case 'd':
+				case irr::KEY_KEY_D:
 					pos.occupied[0] += tempo::EAST;
 					rot = tempo::EAST;
 					break;
-				case 'e':
+				case irr::KEY_KEY_E:
 					system_attack.Attack(entity_player);
+					break;
+				default:
 					break;
 				}
 			}
