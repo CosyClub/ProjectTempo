@@ -22,7 +22,7 @@ class KeyInput : public irr::IEventReceiver
 		std::mutex chars_mutex;
 
 	public:
-		// // This is the one method that we have to implement
+		// This is the one method that we have to implement
 		// virtual bool OnEvent(const irr::SEvent& event) {
 		// 	// Remember whether each key is down or up
 		// 	if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
@@ -61,6 +61,7 @@ class KeyInput : public irr::IEventReceiver
 						}
 				}
 		}
+		return false;
 	}
 
 		void init() {
