@@ -6,7 +6,7 @@
 namespace client {
 	void SystemUpdateKeyInput::setup(irr::IrrlichtDevice* device) {
 		device->setEventReceiver(&receiver);
-		receiver.init();
+		//receiver.init();
 	}
 
 	void SystemUpdateKeyInput::addKeys() {

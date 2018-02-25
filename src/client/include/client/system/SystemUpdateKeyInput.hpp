@@ -1,6 +1,6 @@
 #ifndef CLIENT_SYSTEM_UPDATE_KEY_INPUT_HPP
 #define CLIENT_SYSTEM_UPDATE_KEY_INPUT_HPP
-
+#include <iostream>
 #include <client/component/ComponentKeyInput.hpp>
 
 #include <anax/System.hpp>
@@ -22,19 +22,6 @@ class KeyInput : public irr::IEventReceiver
 		std::mutex chars_mutex;
 
 	public:
-		// This is the one method that we have to implement
-		// virtual bool OnEvent(const irr::SEvent& event) {
-		// 	// Remember whether each key is down or up
-		// 	if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
-		// 		if (event.KeyInput.Char != 0) {
-		// 			std::lock_guard<std::mutex> lock(chars_mutex);
-		//
-		// 			chars.push_back(client::KeyEvent(event.KeyInput.Char, !event.KeyInput.PressedDown ));
-		// 		}
-		// 	}
-		//
-		// 	return false;
-		// }
 
 		virtual bool OnEvent(const irr::SEvent & event) {
 
@@ -45,7 +32,7 @@ class KeyInput : public irr::IEventReceiver
 					if (keyState[event.KeyInput.Key] != DOWN && keyState[event.KeyInput.Key] != PRESSED) {
 						keyState[event.KeyInput.Key] = PRESSED; // Set to Pressed
 						std::lock_guard<std::mutex> lock(chars_mutex);
-						chars.push_back(client::KeyEvent(event.KeyInput.Char, true ));
+						chars.push_back(client::KeyEvent(event.KeyInput.Key, true ));
 					}
 					else {
 						// if key was down before
@@ -57,7 +44,7 @@ class KeyInput : public irr::IEventReceiver
 						if (keyState[event.KeyInput.Key] != UP) {
 							keyState[event.KeyInput.Key] = RELEASED; // Set to Released
 							std::lock_guard<std::mutex> lock(chars_mutex);
-							chars.push_back(client::KeyEvent(event.KeyInput.Char, false ));
+							chars.push_back(client::KeyEvent(event.KeyInput.Key, false ));
 						}
 				}
 		}

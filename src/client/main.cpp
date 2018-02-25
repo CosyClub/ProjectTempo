@@ -148,7 +148,6 @@ int main(int argc, const char** argv){
 
 	system_stage_renderer.setup(smgr);
 	system_render_scene_node.setup(smgr);
-	system_update_key_input.setup(device);
 
 	// Set up remote address, local ports and remote handshake port
 	// Note, IF statement is to change ports for local development, bit
@@ -223,6 +222,8 @@ int main(int argc, const char** argv){
 		device->getCursorControl()->setVisible(true);
 		camera_node->setTarget(irr::core::vector3df(10.0f, 0.0f, 10.0f));
 	}
+
+		system_update_key_input.setup(device);
 	// debug dynamic light
 	// irr::scene::ISceneNode* camera_light =
 	smgr->addLightSceneNode(
