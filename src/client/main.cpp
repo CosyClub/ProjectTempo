@@ -203,7 +203,7 @@ int main(int argc, const char** argv){
 			 j++;
 			 j = j % 14;
 
-			 system_stage_renderer.setColour({8,8}, driver, j);
+			 system_stage_renderer.updateStage({8,8}, driver, j);
 			 click.play();
 			}
 

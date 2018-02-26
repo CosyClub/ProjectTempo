@@ -68,7 +68,7 @@ namespace client {
 		tile_nodes = addFloorTilesToScene(smgr, driver, mesh_floor_tile, tiles);
 	}
 
-	void SystemStageRenderer::setColour(glm::ivec2 pos, irr::video::IVideoDriver*  driver, int j){
+	void SystemStageRenderer::updateStage(glm::ivec2 pos, irr::video::IVideoDriver*  driver, int j) {
 		for(unsigned int i = 0; i < this->tile_nodes.size(); ++i){
 				irr::scene::IMeshSceneNode* node = std::get<1>(this->tile_nodes[i]);
 
@@ -80,146 +80,99 @@ namespace client {
 			  material_top.DiffuseColor.set(255, 200,   0,   0);
 			switch (j) {
 			case 0: {
-				if((int)(std::get<0>(this->tile_nodes[i]).x  % 2) == (int)(std::get<0>(this->tile_nodes[i]).y % 2)){
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-					material_top.EmissiveColor.set(255, 200,   0,   0);
-				} else {
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-				}
+				checkerBoardPattern(driver, node, material_side, material_top, i, j);
 				break;
 			}
 			case 1: {
-				if((int)(std::get<0>(this->tile_nodes[i]).x  % 2) != (int)(std::get<0>(this->tile_nodes[i]).y % 2)){
-				  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-				  material_top.EmissiveColor.set(255, 200,   0,   0);
-			  } else {
-				  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-			  }
+				checkerBoardPattern(driver, node, material_side, material_top, i, j);
 				break;
 			}
 			case 2: {
-				if((int)!(std::get<0>(this->tile_nodes[i]).x % 5 == 0)){
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-					material_top.EmissiveColor.set(255, 200,   0,   0);
-				} else {
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-				}
+				linePattern(driver, node, material_side, material_top, 0, 5, i, 0);
 				break;
 			}
 			case 3: {
-				if((int)!(std::get<0>(this->tile_nodes[i]).x % 5 == 1)){
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-					material_top.EmissiveColor.set(255, 200,   0,   0);
-				} else {
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-				}
+				linePattern(driver, node, material_side, material_top, 0, 5, i, 1);
 				break;
 			}
 			case 4: {
-				if((int)!(std::get<0>(this->tile_nodes[i]).x % 5 == 2)){
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-					material_top.EmissiveColor.set(255, 200,   0,   0);
-				} else {
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-				}
+				linePattern(driver, node, material_side, material_top, 0, 5, i, 2);
 				break;
 			}
 			case 5: {
-				if((int)!(std::get<0>(this->tile_nodes[i]).x % 5 == 3)){
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-					material_top.EmissiveColor.set(255, 200,   0,   0);
-				} else {
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-				}
+				linePattern(driver, node, material_side, material_top, 0, 5, i, 3);
 				break;
 			}
 			case 6: {
-				if((int)!(std::get<0>(this->tile_nodes[i]).x % 5 == 4)){
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-					material_top.EmissiveColor.set(255, 200,   0,   0);
-				} else {
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-				}
+				linePattern(driver, node, material_side, material_top, 0, 5, i, 4);
 				break;
 			}
 			case 7: {
-				if((int)(std::get<0>(this->tile_nodes[i]).x  % 2) == (int)(std::get<0>(this->tile_nodes[i]).y % 2)){
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-					material_top.EmissiveColor.set(255, 200,   0,   0);
-				} else {
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-				}
+				checkerBoardPattern(driver, node, material_side, material_top, i, j);
 				break;
 			}
 			case 8: {
-				if((int)(std::get<0>(this->tile_nodes[i]).x  % 2) != (int)(std::get<0>(this->tile_nodes[i]).y % 2)){
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-					material_top.EmissiveColor.set(255, 200,   0,   0);
-				} else {
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-				}
+				checkerBoardPattern(driver, node, material_side, material_top, i, j);
 				break;
 			}
 			case 9: {
-				if((int)!(std::get<0>(this->tile_nodes[i]).y % 5 == 0)){
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-					material_top.EmissiveColor.set(255, 200,   0,   0);
-				} else {
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-				}
+				linePattern(driver, node, material_side, material_top, 1, 5, i, 0);
 				break;
 			}
 			case 10: {
-				if((int)!(std::get<0>(this->tile_nodes[i]).y % 5 == 1)){
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-					material_top.EmissiveColor.set(255, 200,   0,   0);
-				} else {
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-				}
+				linePattern(driver, node, material_side, material_top, 1, 5, i, 1);
 				break;
 			}
 			case 11: {
-				if((int)!(std::get<0>(this->tile_nodes[i]).y % 5 == 2)){
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-					material_top.EmissiveColor.set(255, 200,   0,   0);
-				} else {
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-				}
+				linePattern(driver, node, material_side, material_top, 1, 5, i, 2);
 				break;
 			}
 			case 12: {
-				if((int)!(std::get<0>(this->tile_nodes[i]).y % 5 == 3)){
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-					material_top.EmissiveColor.set(255, 200,   0,   0);
-				} else {
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-				}
+				linePattern(driver, node, material_side, material_top, 1, 5, i, 3);
 				break;
 			}
 			case 13: {
-				if((int)!(std::get<0>(this->tile_nodes[i]).y % 5 == 4)){
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-					material_top.EmissiveColor.set(255, 200,   0,   0);
-				} else {
-					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-					material_top.EmissiveColor.set(255, 0,   200,   0);
-				}
+				linePattern(driver, node, material_side, material_top, 1, 5, i, 4);
 				break;
 			}
 		 }
 		}
 	}
+
+	void SystemStageRenderer::checkerBoardPattern(irr::video::IVideoDriver*  driver,
+																							  irr::scene::IMeshSceneNode* node,
+											 												  irr::video::SMaterial& material_side,
+																							  irr::video::SMaterial& material_top,
+																								int i,
+																						    int j) {
+
+		if(((int)(std::get<0>(this->tile_nodes[i]).x  % 2) == (int)(std::get<0>(this->tile_nodes[i]).y % 2)) ^ (j % 2)) {
+			node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+			material_top.EmissiveColor.set(255, 200,   0,   0);
+		} else {
+			node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+			material_top.EmissiveColor.set(255, 0,   200,   0);
+		}
+
+	}
+
+
+	void SystemStageRenderer::linePattern(irr::video::IVideoDriver*  driver,
+																				irr::scene::IMeshSceneNode* node,
+																				irr::video::SMaterial& material_side,
+																				irr::video::SMaterial& material_top,
+																				int orientation,
+																				int size,
+																				int i,
+																				int j) {
+
+	if((int)!(std::get<0>(this->tile_nodes[i])[orientation] % size == j)){
+		node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+		material_top.EmissiveColor.set(255, 200,   0,   0);
+	} else {
+		node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+		material_top.EmissiveColor.set(255, 0,   200,   0);
+	}
+}
+
 } // namespace client
