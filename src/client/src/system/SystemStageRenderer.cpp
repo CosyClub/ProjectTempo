@@ -37,13 +37,7 @@ namespace {
 
 		  material_top.Shininess = 0.0f;
 		  material_top.SpecularColor.set(255, 0, 0, 0);
-		  material_top.DiffuseColor.set(255, 200,   0,   0);
-		  if((int)grid_x % 2 == (int)grid_y % 2){
-			  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-			  material_top.EmissiveColor.set(255, 200,   0,   0);
-		  } else {
-			  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-		  }
+		  material_top.DiffuseColor.set(255, 10,   10,   10);
 	  }
 
 		return temp_nodes;
@@ -72,8 +66,18 @@ namespace client {
 
 	void SystemStageRenderer::updateStage(glm::ivec4 colour1, glm::ivec4 colour2, irr::video::IVideoDriver*  driver, int j) {
 
+		auto entities = getEntities();
+		auto entity = std::begin(entities);
+		auto& stage   = entity->getComponent<tempo::ComponentStage>();
+
+		std::vector<std::tuple<glm::ivec2, float>> heights = stage.getHeights();
+
 		for(unsigned int i = 0; i < this->tile_nodes.size(); ++i){
 				irr::scene::IMeshSceneNode* node = std::get<1>(this->tile_nodes[i]);
+
+				if(std::get<1>(heights[i]) >= 5){
+					continue;
+				}
 
 				irr::video::SMaterial& material_side = node->getMaterial(0);
 				irr::video::SMaterial& material_top  = node->getMaterial(1);
