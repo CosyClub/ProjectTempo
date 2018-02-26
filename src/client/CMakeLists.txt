@@ -13,6 +13,10 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentKeyInput.hpp
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentKeyInput.cpp
 
+	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/IAxialBillboardSceneNode.h
+	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/CAxialBillboardSceneNode.h
+	${CMAKE_CURRENT_LIST_DIR}/src/misc/CAxialBillboardSceneNode.cpp
+
 	${CMAKE_CURRENT_LIST_DIR}/main.cpp
 )
 
