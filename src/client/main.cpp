@@ -21,6 +21,7 @@
 #include <tempo/component/ComponentStagePosition.hpp>
 
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 
 #define BPM 174
 #define DELTA 150
@@ -203,7 +204,7 @@ int main(int argc, const char** argv){
 			 j++;
 			 j = j % 22;
 
-			 system_stage_renderer.updateStage({8,8}, driver, j);
+			 system_stage_renderer.updateStage({255,255,0,0},{255,0,0,255}, driver, j);
 			 click.play();
 			}
 

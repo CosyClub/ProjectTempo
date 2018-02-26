@@ -6,6 +6,8 @@
 #include <IAnimatedMeshSceneNode.h>
 #include <irrlicht.h> // :TODO: sort out includes
 
+#include <glm/vec4.hpp>
+#include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 
 #include <iostream>
@@ -68,7 +70,7 @@ namespace client {
 		tile_nodes = addFloorTilesToScene(smgr, driver, mesh_floor_tile, tiles);
 	}
 
-	void SystemStageRenderer::updateStage(glm::ivec2 pos, irr::video::IVideoDriver*  driver, int j) {
+	void SystemStageRenderer::updateStage(glm::ivec4 colour1,glm::ivec4 colour2, irr::video::IVideoDriver*  driver, int j) {
 		for(unsigned int i = 0; i < this->tile_nodes.size(); ++i){
 				irr::scene::IMeshSceneNode* node = std::get<1>(this->tile_nodes[i]);
 

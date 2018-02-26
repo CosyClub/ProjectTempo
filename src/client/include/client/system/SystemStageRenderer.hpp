@@ -21,7 +21,7 @@ namespace client {
 		// Creates a static irrlitch scene node based on the component stage heights
 		void setup(irr::scene::ISceneManager* smgr, irr::video::IVideoDriver* driver);
 
-		void updateStage(glm::ivec2 pos, irr::video::IVideoDriver*  driver, int j);
+		void updateStage(glm::ivec4 colour1, glm::ivec4 colour2, irr::video::IVideoDriver*  driver, int j);
 
 	private:
 		void checkerBoardPattern(irr::video::IVideoDriver*  driver,
