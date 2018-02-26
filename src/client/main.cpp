@@ -21,6 +21,7 @@
 #include <tempo/component/ComponentStagePosition.hpp>
 
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 
 #define BPM 174
 #define DELTA 150
@@ -86,7 +87,7 @@ int main(int argc, const char** argv){
 	irr::gui::IGUIEnvironment* gui_env = device->getGUIEnvironment();
 
 	// Debug
-	smgr->setAmbientLight(irr::video::SColorf(0.1f, 0.1f, 0.1f));
+	smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
 
 	irr::scene::ICameraSceneNode* camera_node;
 	if (false) {
@@ -104,18 +105,18 @@ int main(int argc, const char** argv){
 		camera_node->setTarget(irr::core::vector3df(10.0f, 0.0f, 10.0f));
 	}
 	// debug dynamic light
-	irr::scene::ISceneNode* camera_light = smgr->addLightSceneNode(
-		camera_node,
-		irr::core::vector3df(0.0f, 0.0f, 0.0f),
-		irr::video::SColorf(1.0f, 1.0f, 1.0f),
-		10.0f);
-
+	//irr::scene::ISceneNode* camera_light = smgr->addLightSceneNode(
+	//                                                               camera_node,
+	//                                                               irr::core::vector3df(0.0f, 0.0f, 0.0f),
+	//                                                               irr::video::SColorf(0.8f, 0.8f, 0.8f),
+	//                                                               10.0f);
 	// debug static light
-	irr::scene::ISceneNode* light_node = smgr->addLightSceneNode(
-		0,
-		irr::core::vector3df(10.0f, 10.0f, 10.0f),
-		irr::video::SColorf(1.0f, 1.0f, 1.0f),
-		5.0f);
+	irr::scene::ILightSceneNode* light_node = smgr->addLightSceneNode(
+	                                                             0,
+	                                                             irr::core::vector3df(10.0f, 10.0f, 10.0f),
+	                                                             irr::video::SColorf(0.8f, 0.8f, 0.8f),
+	                                                             5.0f);
+	irr::video::SLight& light_data = light_node->getLightData();
 
 	// Create World
 	anax::World world;
@@ -130,7 +131,7 @@ int main(int argc, const char** argv){
 
 	// Setup Systems
 	world.refresh();
-	system_stage_renderer.setup(smgr);
+	system_stage_renderer.setup(smgr, driver);
 	system_render_scene_node.setup(smgr);
 	system_update_key_input.setup(device);
 
@@ -142,18 +143,36 @@ int main(int argc, const char** argv){
 	// This is the movemen speed in units per second.
 	const f32 MOVEMENT_SPEED = 1.0f;
 
+ sf::Clock fps_timer;
+ sf::Clock dt_timer;
+ sf::Time logic_time;
+ sf::Time render_time;
+ int frame_counter = 0;
+
+ sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+ sf::Clock frame_clock = sf::Clock();
+ frame_clock.restart();
+
 	mainsong.start();
 	//sync_time(clock, &mainsong);
-	mainsong.set_volume(20.f);
+	//mainsong.set_volume(20.f);
 	long offset = 0;
-
+	int j = 0;
 	printf("Entering main loop\n");
 	while(device->run()){
 		if (device->isWindowActive()) {
+
+			float dt = dt_timer.getElapsedTime().asSeconds();
+			dt_timer.restart();
+
 			// Work out a frame delta time.
 			const u32 now = device->getTimer()->getTime();
 			const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
 			then = now;
+
+			// float light_intensity = (sin((float)now * 0.01f) + 1.0f) / 2.0f;
+			//
+			// light_data.DiffuseColor.set(1, light_intensity * 0.3f, light_intensity, light_intensity * 0.3f);
 
 			system_update_key_input.addKeys();
 
@@ -180,6 +199,14 @@ int main(int argc, const char** argv){
 					}
 				}
 			}
+			if (clock.passed_beat()) {
+			 std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
+			 j++;
+			 j = j % 22;
+
+			 system_stage_renderer.updateStage({255,255,0,0},{255,0,255,0}, driver, j);
+			 click.play();
+			}
 
 			system_render_scene_node.update();
 
@@ -189,7 +216,20 @@ int main(int argc, const char** argv){
 
 			driver->endScene();
 
-			//std::this_thread::sleep_for(std::chrono::milliseconds(33));
+		// 	++frame_counter;
+		// if (fps_timer.getElapsedTime().asSeconds() > 0.5f) {
+		// 	float seconds = fps_timer.getElapsedTime().asSeconds();
+		// 	printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds),
+		// 		100 * (float)(
+		// 			render_time.asMicroseconds()
+		// 			) / (
+		// 				logic_time.asMicroseconds() +
+		// 				render_time.asMicroseconds()));
+		// 	printf("Logic time  (μs): %d\n",  logic_time.asMicroseconds());
+		// 	printf("Render time (μs): %d\n", render_time.asMicroseconds());
+		// 	fps_timer.restart();
+		// 	frame_counter = 0;
+		// }
 		}
 		else {
 			device->yield();
