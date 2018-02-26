@@ -33,7 +33,7 @@ namespace {
 		  material_top.SpecularColor.set(255, 0, 0, 0);
 		  material_top.DiffuseColor.set(255, 200,   0,   0);
 		  if((int)grid_x % 2 == (int)grid_y % 2){
-			  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOn.png"));
+			  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
 			  material_top.EmissiveColor.set(255, 200,   0,   0);
 		  } else {
 			  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
