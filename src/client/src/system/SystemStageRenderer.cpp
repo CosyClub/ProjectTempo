@@ -87,7 +87,7 @@ namespace client {
 					material_top.EmissiveColor.set(255, 0,   200,   0);
 			  }
 			}
-			else {
+			else if(j==1) {
 				if((int)(std::get<0>(this->tile_nodes[i]).x  % 2) != (int)(std::get<0>(this->tile_nodes[i]).y % 2)){
 				  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
 				  material_top.EmissiveColor.set(255, 200,   0,   0);
@@ -96,6 +96,115 @@ namespace client {
 					material_top.EmissiveColor.set(255, 0,   200,   0);
 			  }
 			}
+			else if(j==2) {
+				if((int)!(std::get<0>(this->tile_nodes[i]).x % 5 == 0)){
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+					material_top.EmissiveColor.set(255, 200,   0,   0);
+				} else {
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+				}
+			}
+			else if(j==3) {
+				if((int)!(std::get<0>(this->tile_nodes[i]).x % 5 == 1)){
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+					material_top.EmissiveColor.set(255, 200,   0,   0);
+				} else {
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+				}
+			}
+			else if(j==4) {
+				if((int)!(std::get<0>(this->tile_nodes[i]).x % 5 == 2)){
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+					material_top.EmissiveColor.set(255, 200,   0,   0);
+				} else {
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+				}
+			}
+			else if(j==5) {
+				if((int)!(std::get<0>(this->tile_nodes[i]).x % 5 == 3)){
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+					material_top.EmissiveColor.set(255, 200,   0,   0);
+				} else {
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+				}
+			}
+			else if(j==6) {
+				if((int)!(std::get<0>(this->tile_nodes[i]).x % 5 == 4)){
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+					material_top.EmissiveColor.set(255, 200,   0,   0);
+				} else {
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+				}
+			}
+			if(j==7){
+				if((int)(std::get<0>(this->tile_nodes[i]).x  % 2) == (int)(std::get<0>(this->tile_nodes[i]).y % 2)){
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+					material_top.EmissiveColor.set(255, 200,   0,   0);
+				} else {
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+				}
+			}
+			else if(j==8) {
+				if((int)(std::get<0>(this->tile_nodes[i]).x  % 2) != (int)(std::get<0>(this->tile_nodes[i]).y % 2)){
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+					material_top.EmissiveColor.set(255, 200,   0,   0);
+				} else {
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+				}
+			}
+			else if(j==9) {
+				if((int)!(std::get<0>(this->tile_nodes[i]).y % 5 == 0)){
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+					material_top.EmissiveColor.set(255, 200,   0,   0);
+				} else {
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+				}
+			}
+			else if(j==10) {
+				if((int)!(std::get<0>(this->tile_nodes[i]).y % 5 == 1)){
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+					material_top.EmissiveColor.set(255, 200,   0,   0);
+				} else {
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+				}
+			}
+			else if(j==11) {
+				if((int)!(std::get<0>(this->tile_nodes[i]).y % 5 == 2)){
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+					material_top.EmissiveColor.set(255, 200,   0,   0);
+				} else {
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+				}
+			}
+			else if(j==12) {
+				if((int)!(std::get<0>(this->tile_nodes[i]).y % 5 == 3)){
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+					material_top.EmissiveColor.set(255, 200,   0,   0);
+				} else {
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+				}
+			}
+			else if(j==13) {
+				if((int)!(std::get<0>(this->tile_nodes[i]).y % 5 == 4)){
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+					material_top.EmissiveColor.set(255, 200,   0,   0);
+				} else {
+					node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+				}
+			}
+
 		}
 	}
 } // namespace client

@@ -200,12 +200,9 @@ int main(int argc, const char** argv){
 			}
 			if (clock.passed_beat()) {
 			 std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
-			 if(j == 0){
-				 j=1;
-			 }
-			 else {
-				 j = 0;
-			 }
+			 j++;
+			 j = j % 14;
+
 			 system_stage_renderer.setColour({8,8}, driver, j);
 			 click.play();
 			}
