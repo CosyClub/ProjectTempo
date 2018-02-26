@@ -11,23 +11,27 @@
 #include <iostream>
 
 namespace {
-	void addFloorTilesToScene(irr::scene::ISceneManager* smgr,
+	client::stage_nodes addFloorTilesToScene(irr::scene::ISceneManager* smgr,
 	                          irr::video::IVideoDriver*  driver,
 	                          irr::scene::IMesh* mesh,
 	                          tempo::stage_tiles& tiles) {
+
+		client::stage_nodes temp_nodes;
+
 	  for(unsigned int i = 0; i < tiles.size(); ++i){
 
 		  irr::scene::IMeshSceneNode* node = smgr->addMeshSceneNode(mesh, 0);
+
 		  float grid_x = std::get<0>(tiles[i]).x;
 		  float grid_y = std::get<0>(tiles[i]).y;
 		  float height = std::get<1>(tiles[i]);
+
+			temp_nodes.push_back(std::make_tuple(glm::ivec2(grid_y, grid_x), node));
 
 		  node->setPosition(irr::core::vector3df(grid_x, height, grid_y));
 
 		  irr::video::SMaterial& material_side = node->getMaterial(0);
 		  irr::video::SMaterial& material_top  = node->getMaterial(1);
-
-
 
 		  material_top.Shininess = 0.0f;
 		  material_top.SpecularColor.set(255, 0, 0, 0);
@@ -39,6 +43,8 @@ namespace {
 			  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
 		  }
 	  }
+
+		return temp_nodes;
 	}
 }
 
@@ -59,6 +65,6 @@ namespace client {
 			return;
 		}
 
-		addFloorTilesToScene(smgr, driver, mesh_floor_tile, tiles);
+		tile_nodes = addFloorTilesToScene(smgr, driver, mesh_floor_tile, tiles);
 	}
 } // namespace client
