@@ -58,6 +58,7 @@ void SystemParseKeyInput::parseInput(tempo::Clock &clock)
 	for (auto entity : getEntities()) {
 		ComponentKeyInput ke = entity.getComponent<ComponentKeyInput>();
 
+		for (unsigned int i = 0; i < ke.keysPressed.size(); i++) {
 			if (ke.keysPressed[i].press) {
 				processKeyPressEvent(ke.keysPressed[i].key,
 				                     entity);
