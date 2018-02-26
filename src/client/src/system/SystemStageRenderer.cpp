@@ -70,7 +70,8 @@ namespace client {
 		tile_nodes = addFloorTilesToScene(smgr, driver, mesh_floor_tile, tiles);
 	}
 
-	void SystemStageRenderer::updateStage(glm::ivec4 colour1,glm::ivec4 colour2, irr::video::IVideoDriver*  driver, int j) {
+	void SystemStageRenderer::updateStage(glm::ivec4 colour1, glm::ivec4 colour2, irr::video::IVideoDriver*  driver, int j) {
+
 		for(unsigned int i = 0; i < this->tile_nodes.size(); ++i){
 				irr::scene::IMeshSceneNode* node = std::get<1>(this->tile_nodes[i]);
 
@@ -90,7 +91,7 @@ namespace client {
 			case 10:
 			case 11:
 			case 12: {
-				checkerBoardPattern(driver, node, material_side, material_top, i, j);
+				checkerBoardPattern(driver, node, material_side, material_top, colour1, colour2, i, j);
 				break;
 			}
 			case 4:
@@ -99,7 +100,7 @@ namespace client {
 			case 7:
 			case 8:
 			 {
-				linePattern(driver, node, material_side, material_top, 0, 5, i, j-4);
+				linePattern(driver, node, material_side, material_top, colour1, colour2, 0, 5, i, j-4);
 				break;
 			}
 			case 13:
@@ -107,14 +108,14 @@ namespace client {
 			case 15:
 			case 16:
 			case 17: {
-				linePattern(driver, node, material_side, material_top, 1, 5, i, j-13);
+				linePattern(driver, node, material_side, material_top, colour1, colour2, 1, 5, i, j-13);
 				break;
 			}
 			case 18:
 			case 19:
 			case 20:
 			case 21: {
-				squarePattern(driver, node, material_side, material_top, 1, 12, i, j);
+				squarePattern(driver, node, material_side, material_top, colour1, colour2, 1, 12, i, j);
 				break;
 			}
 		 }
@@ -125,15 +126,17 @@ namespace client {
 																							  irr::scene::IMeshSceneNode* node,
 											 												  irr::video::SMaterial& material_side,
 																							  irr::video::SMaterial& material_top,
+																								glm::ivec4 colour1,
+																								glm::ivec4 colour2,
 																								int i,
 																						    int j) {
 
 		if(((int)(std::get<0>(this->tile_nodes[i]).x  % 2) == (int)(std::get<0>(this->tile_nodes[i]).y % 2)) ^ (j % 2)) {
 			node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-			material_top.EmissiveColor.set(255, 200,   0,   0);
+			material_top.EmissiveColor.set(colour1[0], colour1[1], colour1[2], colour1[3]);
 		} else {
 			node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-			material_top.EmissiveColor.set(255, 0,   200,   0);
+			material_top.EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
 		}
 
 	}
@@ -143,6 +146,8 @@ namespace client {
 																				irr::scene::IMeshSceneNode* node,
 																				irr::video::SMaterial& material_side,
 																				irr::video::SMaterial& material_top,
+																				glm::ivec4 colour1,
+																				glm::ivec4 colour2,
 																				int orientation,
 																				int size,
 																				int i,
@@ -150,10 +155,10 @@ namespace client {
 
 	if((int)!(std::get<0>(this->tile_nodes[i])[orientation] % size == j)){
 		node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-		material_top.EmissiveColor.set(255, 200,   0,   0);
+		material_top.EmissiveColor.set(colour1[0], colour1[1], colour1[2], colour1[3]);
 	} else {
 		node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-		material_top.EmissiveColor.set(255, 0,   200,   0);
+		material_top.EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
 	}
 }
 
@@ -161,6 +166,8 @@ namespace client {
 																					irr::scene::IMeshSceneNode* node,
 																					irr::video::SMaterial& material_side,
 																					irr::video::SMaterial& material_top,
+																					glm::ivec4 colour1,
+																					glm::ivec4 colour2,
 																					int orientation,
 																					int size,
 																					int i,
@@ -179,10 +186,10 @@ namespace client {
 		^ (j%2)){ // alternating
 
 		node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-		material_top.EmissiveColor.set(255, 200,   0,   0);
+		material_top.EmissiveColor.set(colour1[0], colour1[1], colour1[2], colour1[3]);
 	} else {
 		node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-		material_top.EmissiveColor.set(255, 0,   200,   0);
+		material_top.EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
 	}
 }
 

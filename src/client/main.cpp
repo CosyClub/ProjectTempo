@@ -204,7 +204,7 @@ int main(int argc, const char** argv){
 			 j++;
 			 j = j % 22;
 
-			 system_stage_renderer.updateStage({255,255,0,0},{255,0,0,255}, driver, j);
+			 system_stage_renderer.updateStage({255,255,0,0},{255,0,255,0}, driver, j);
 			 click.play();
 			}
 
