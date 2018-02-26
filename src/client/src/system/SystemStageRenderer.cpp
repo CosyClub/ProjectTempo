@@ -79,60 +79,28 @@ namespace client {
 			  material_top.SpecularColor.set(255, 0, 0, 0);
 			  material_top.DiffuseColor.set(255, 200,   0,   0);
 			switch (j) {
-			case 0: {
-				checkerBoardPattern(driver, node, material_side, material_top, i, j);
-				break;
-			}
-			case 1: {
-				checkerBoardPattern(driver, node, material_side, material_top, i, j);
-				break;
-			}
-			case 2: {
-				linePattern(driver, node, material_side, material_top, 0, 5, i, 0);
-				break;
-			}
-			case 3: {
-				linePattern(driver, node, material_side, material_top, 0, 5, i, 1);
-				break;
-			}
-			case 4: {
-				linePattern(driver, node, material_side, material_top, 0, 5, i, 2);
-				break;
-			}
-			case 5: {
-				linePattern(driver, node, material_side, material_top, 0, 5, i, 3);
-				break;
-			}
-			case 6: {
-				linePattern(driver, node, material_side, material_top, 0, 5, i, 4);
-				break;
-			}
-			case 7: {
-				checkerBoardPattern(driver, node, material_side, material_top, i, j);
-				break;
-			}
+			case 0:
+			case 1:
+			case 7:
 			case 8: {
 				checkerBoardPattern(driver, node, material_side, material_top, i, j);
 				break;
 			}
-			case 9: {
-				linePattern(driver, node, material_side, material_top, 1, 5, i, 0);
+			case 2:
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			 {
+				linePattern(driver, node, material_side, material_top, 0, 5, i, j-2);
 				break;
 			}
-			case 10: {
-				linePattern(driver, node, material_side, material_top, 1, 5, i, 1);
-				break;
-			}
-			case 11: {
-				linePattern(driver, node, material_side, material_top, 1, 5, i, 2);
-				break;
-			}
-			case 12: {
-				linePattern(driver, node, material_side, material_top, 1, 5, i, 3);
-				break;
-			}
+			case 9:
+			case 10:
+			case 11:
+			case 12:
 			case 13: {
-				linePattern(driver, node, material_side, material_top, 1, 5, i, 4);
+				linePattern(driver, node, material_side, material_top, 1, 5, i, j-9);
 				break;
 			}
 		 }
