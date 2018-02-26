@@ -67,4 +67,35 @@ namespace client {
 
 		tile_nodes = addFloorTilesToScene(smgr, driver, mesh_floor_tile, tiles);
 	}
+
+	void SystemStageRenderer::setColour(glm::ivec2 pos, irr::video::IVideoDriver*  driver, int j){
+		for(unsigned int i = 0; i < this->tile_nodes.size(); ++i){
+				irr::scene::IMeshSceneNode* node = std::get<1>(this->tile_nodes[i]);
+
+				irr::video::SMaterial& material_side = node->getMaterial(0);
+				irr::video::SMaterial& material_top  = node->getMaterial(1);
+
+				material_top.Shininess = 0.0f;
+			  material_top.SpecularColor.set(255, 0, 0, 0);
+			  material_top.DiffuseColor.set(255, 200,   0,   0);
+			if(j==0){
+			  if((int)(std::get<0>(this->tile_nodes[i]).x  % 2) == (int)(std::get<0>(this->tile_nodes[i]).y % 2)){
+				  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+				  material_top.EmissiveColor.set(255, 200,   0,   0);
+			  } else {
+				  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+			  }
+			}
+			else {
+				if((int)(std::get<0>(this->tile_nodes[i]).x  % 2) != (int)(std::get<0>(this->tile_nodes[i]).y % 2)){
+				  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+				  material_top.EmissiveColor.set(255, 200,   0,   0);
+			  } else {
+				  node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
+					material_top.EmissiveColor.set(255, 0,   200,   0);
+			  }
+			}
+		}
+	}
 } // namespace client

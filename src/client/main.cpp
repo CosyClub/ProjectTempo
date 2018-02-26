@@ -142,14 +142,35 @@ int main(int argc, const char** argv){
 	// This is the movemen speed in units per second.
 	const f32 MOVEMENT_SPEED = 1.0f;
 
+ sf::Clock dt_timer;
+ sf::Time logic_time;
+ sf::Time render_time;
+ int frame_counter = 0;
+
+ sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+ sf::Clock frame_clock = sf::Clock();
+ frame_clock.restart();
+
 	mainsong.start();
 	//sync_time(clock, &mainsong);
 	mainsong.set_volume(20.f);
 	long offset = 0;
-
+	int j = 0;
 	printf("Entering main loop\n");
 	while(device->run()){
 		if (device->isWindowActive()) {
+
+			float dt = dt_timer.getElapsedTime().asSeconds();
+			dt_timer.restart();
+
+			if (clock.passed_beat()) {
+			 click.play();
+			 if (tick++ % 20 == 0)
+				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
+
+				system_stage_renderer.setColour({8,8}, driver, j);
+			}
+
 			// Work out a frame delta time.
 			const u32 now = device->getTimer()->getTime();
 			const f32 frameDeltaTime = (f32)(now - then) / 1000.f; // Time in seconds
@@ -158,6 +179,13 @@ int main(int argc, const char** argv){
 			float light_intensity = (sin((float)now * 0.01f) + 1.0f) / 2.0f;
 
 			light_data.DiffuseColor.set(1, light_intensity * 0.3f, light_intensity, light_intensity * 0.3f);
+
+			if(j == 0){
+				j=1;
+			}
+			else {
+				j = 0;
+			}
 
 			system_update_key_input.addKeys();
 

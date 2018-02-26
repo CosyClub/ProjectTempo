@@ -21,6 +21,8 @@ namespace client {
 		// Creates a static irrlitch scene node based on the component stage heights
 		void setup(irr::scene::ISceneManager* smgr, irr::video::IVideoDriver* driver);
 
+		void setColour(glm::ivec2 pos, irr::video::IVideoDriver*  driver, int j);
+
 	};
 } // namespace client
 
