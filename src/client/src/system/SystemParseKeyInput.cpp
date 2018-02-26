@@ -21,9 +21,16 @@ void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing) {
 	}
 }
 
+void resetMovement(anax::Entity &entity) {
+	if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
+		entity.getComponent<tempo::ComponentStageTranslation>().delta = {0,0};
+	}
+}
+
+
 void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity) {
 	switch (key) {
-	case irr::KEY_KEY_W: 
+	case irr::KEY_KEY_W:
 	case irr::KEY_UP:
 		addMovement(entity, tempo::NORTH, tempo::NORTH);
 		break;
@@ -50,14 +57,12 @@ void SystemParseKeyInput::parseInput(tempo::Clock &clock)
 {
 	for (auto entity : getEntities()) {
 		ComponentKeyInput ke = entity.getComponent<ComponentKeyInput>();
-	
-		for (unsigned int i = 0; i < ke.keysPressed.size(); i++) {
-			std::cout << "Key " 
-				  << (ke.keysPressed[i].press ? "Pressed " : "Released ") 
-				  << ke.keysPressed[i].key << std::endl;
+
 			if (ke.keysPressed[i].press) {
 				processKeyPressEvent(ke.keysPressed[i].key,
 				                     entity);
+			} else {
+				resetMovement(entity);
 			}
 		}
 	}
