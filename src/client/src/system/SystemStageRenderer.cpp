@@ -111,9 +111,8 @@ namespace client {
 			case 18:
 			case 19:
 			case 20:
-			case 21:
-			case 22: {
-				squarePattern(driver, node, material_side, material_top, 1, 5, i, j-18);
+			case 21: {
+				squarePattern(driver, node, material_side, material_top, 1, 12, i, j);
 				break;
 			}
 		 }
@@ -165,21 +164,10 @@ namespace client {
 																					int i,
 																					int j) {
 
-  // int d_x = abs((std::get<0>(this->tile_nodes[i]).x) - centrePoint.x);
-	// int d_y = abs((std::get<0>(this->tile_nodes[i]).y) - centrePoint.y);
-	//
-	// if(d_x % 3  ^ d_y % 3) {
-	// 	node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
-	// 	material_top.EmissiveColor.set(255, 200,   0,   0);
-	// } else {
-	// 	node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskOff.png"));
-	// 	material_top.EmissiveColor.set(255, 0,   200,   0);
-	// }
+  glm::ivec2 centrePoint;
+	centrePoint.x = std::get<0>(this->tile_nodes[i]).x - std::get<0>(this->tile_nodes[i]).x % size + size / 2;
+	centrePoint.y = std::get<0>(this->tile_nodes[i]).y - std::get<0>(this->tile_nodes[i]).y % size + size / 2;
 
-	// if(((int)(std::get<0>(this->tile_nodes[i]).x % size == 0) ||
- 	// 		(int)(std::get<0>(this->tile_nodes[i]).x % size == size - 1)) ||
-	// 	 ((int)(std::get<0>(this->tile_nodes[i]).y % size == 0) ||
-	// 	  (int)(std::get<0>(this->tile_nodes[i]).y % size == size - 1))){
 	int dx = abs(std::get<0>(this->tile_nodes[i]).x - centrePoint.x);
 	int dy = abs(std::get<0>(this->tile_nodes[i]).y - centrePoint.y);
 

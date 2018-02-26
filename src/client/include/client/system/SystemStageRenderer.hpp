@@ -24,7 +24,6 @@ namespace client {
 		void updateStage(glm::ivec2 pos, irr::video::IVideoDriver*  driver, int j);
 
 	private:
-		glm::ivec2 centrePoint = {5, 10};
 		void checkerBoardPattern(irr::video::IVideoDriver*  driver,
 														 irr::scene::IMeshSceneNode* node,
 		 												 irr::video::SMaterial& material_side,

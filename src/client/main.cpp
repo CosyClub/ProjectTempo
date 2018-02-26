@@ -201,8 +201,7 @@ int main(int argc, const char** argv){
 			if (clock.passed_beat()) {
 			 std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
 			 j++;
-			 if(j > 22)
-				 j = 18;
+			 j = j % 22;
 
 			 system_stage_renderer.updateStage({8,8}, driver, j);
 			 click.play();
