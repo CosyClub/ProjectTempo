@@ -176,10 +176,18 @@ namespace client {
 	// 	material_top.EmissiveColor.set(255, 0,   200,   0);
 	// }
 
-	if(((int)(std::get<0>(this->tile_nodes[i]).x % size == 0) ||
- 			(int)(std::get<0>(this->tile_nodes[i]).x % size == size - 1)) ||
-		 ((int)(std::get<0>(this->tile_nodes[i]).y % size == 0) ||
-		  (int)(std::get<0>(this->tile_nodes[i]).y % size == size - 1))){
+	// if(((int)(std::get<0>(this->tile_nodes[i]).x % size == 0) ||
+ 	// 		(int)(std::get<0>(this->tile_nodes[i]).x % size == size - 1)) ||
+	// 	 ((int)(std::get<0>(this->tile_nodes[i]).y % size == 0) ||
+	// 	  (int)(std::get<0>(this->tile_nodes[i]).y % size == size - 1))){
+	int dx = abs(std::get<0>(this->tile_nodes[i]).x - centrePoint.x);
+	int dy = abs(std::get<0>(this->tile_nodes[i]).y - centrePoint.y);
+
+	if((((dx%2 ==0 && dy ==0) || (dx > 0 && dx %2 ==0 && dy<dx))|| //columns
+		((dy%2 ==0 && dx ==0) || (dy > 0 && dy %2 ==0 && dx<dy))|| //rows
+		(dx == dy && dx %2 ==0 && dy %2 ==0)) //corners
+		^ (j%2)){ // alternating
+
 		node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
 		material_top.EmissiveColor.set(255, 200,   0,   0);
 	} else {
