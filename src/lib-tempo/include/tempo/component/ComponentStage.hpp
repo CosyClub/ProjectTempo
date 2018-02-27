@@ -10,14 +10,14 @@
 
 #include <tuple>
 
-namespace tempo 
+namespace tempo
 {
 
 // This implementation may change without notice
 typedef std::vector<std::tuple<glm::ivec2, float>> stage_tiles;
 
 // An entity that is bound by the world stage
-struct ComponentStage : anax::Component, NetworkedComponent 
+struct ComponentStage : anax::Component, NetworkedComponent
 {
 	private:
 		stage_tiles tiles;
@@ -28,12 +28,15 @@ struct ComponentStage : anax::Component, NetworkedComponent
 		// Constructor requires stage file
 		ComponentStage(const char* stage_file);
 
-		// Gets a list of 
+		// Gets a list of
 		stage_tiles getHeights();
 
 		// Get height at
 		float getHeight(glm::ivec2 position);
-	
+
+		//Returns true if there is a tile at position
+		bool existstTile(glm::ivec2 position);
+
 		/////
 		// Required for networking
 		/////

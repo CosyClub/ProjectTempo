@@ -16,7 +16,7 @@ void ComponentStage::loadLevel(const char* stage_file)
 		for (int x = 0; x < level->w; x++) {
 			int bpp = level->format->BytesPerPixel;
 			// Here p is the address to the pixel we want to retrieve
-			Uint8 *p = (Uint8 *)level->pixels + y 
+			Uint8 *p = (Uint8 *)level->pixels + y
 			                  * level->pitch + x * bpp;
 			uint32_t pixel = 0;
 			pixel = *p;
@@ -31,7 +31,7 @@ void ComponentStage::loadLevel(const char* stage_file)
 	}
 }
 
-ComponentStage::ComponentStage(const char* stage_file) 
+ComponentStage::ComponentStage(const char* stage_file)
 {
 	this->stage_file = std::string(stage_file);
 	loadLevel(stage_file);
@@ -42,7 +42,7 @@ stage_tiles ComponentStage::getHeights()
 	return tiles;
 }
 
-float ComponentStage::getHeight(glm::ivec2 position) 
+float ComponentStage::getHeight(glm::ivec2 position)
 {
 	for (unsigned int i = 0; i < tiles.size(); i++) {
 		std::tuple<glm::ivec2, float> tile = tiles[i];
@@ -54,7 +54,20 @@ float ComponentStage::getHeight(glm::ivec2 position)
 
 	return -10.0f;
 }
-		
+
+bool ComponentStage::existstTile(glm::ivec2 position)
+{
+	for (unsigned int i = 0; i < tiles.size(); i++) {
+		std::tuple<glm::ivec2, float> tile = tiles[i];
+		glm::ivec2 pos = std::get<0>(tile);
+		if (pos == position) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 /////
 // Required for networking
 /////
