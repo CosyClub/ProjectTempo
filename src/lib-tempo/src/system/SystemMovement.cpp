@@ -18,10 +18,18 @@ void SystemMovement::processTranslation()
 			tempo::ComponentStageTranslation &st = entity.getComponent<tempo::ComponentStageTranslation>();
 			if (st.delta.x == 0 && st.delta.y == 0) continue;
 
-			glm::ivec2& position = entity.getComponent<tempo::ComponentStagePosition>().occupied[0];
+			bool can_move = true;
+			auto& positions = entity.getComponent<tempo::ComponentStagePosition>().occupied;
 
-			if(stage.existstTile(position + st.delta)) {
-				position += st.delta;
+			for(auto& position : positions) {
+				if(!stage.existstTile(position + st.delta))
+					can_move = false;
+			}
+
+			if(can_move) {
+				for(auto& position : positions) {
+					position += st.delta;
+				}
 			}
 
 			st.delta = {0,0};
