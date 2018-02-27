@@ -292,7 +292,7 @@ int main(int argc, const char** argv){
 		for (anax::Entity e : world.getEntities()) {
 			if (e.hasComponent<tempo::ComponentStageTranslation>() &&
 			    e.hasComponent<tempo::ComponentStagePosition>()) {
-				tempo::ComponentStageTranslation st = e.getComponent<tempo::ComponentStageTranslation>();
+				tempo::ComponentStageTranslation &st = e.getComponent<tempo::ComponentStageTranslation>();
 				if (st.delta.x == 0 && st.delta.y == 0) continue;
 				e.getComponent<tempo::ComponentStagePosition>().occupied[0] += st.delta;
 				st.delta = {0,0};

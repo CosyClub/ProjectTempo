@@ -21,13 +21,6 @@ void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing) {
 	}
 }
 
-void resetMovement(anax::Entity &entity) {
-	if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
-		entity.getComponent<tempo::ComponentStageTranslation>().delta = {0,0};
-	}
-}
-
-
 void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity) {
 	switch (key) {
 	case irr::KEY_KEY_W:
@@ -62,8 +55,6 @@ void SystemParseKeyInput::parseInput(tempo::Clock &clock)
 			if (ke.keysPressed[i].press) {
 				processKeyPressEvent(ke.keysPressed[i].key,
 				                     entity);
-			} else {
-				resetMovement(entity);
 			}
 		}
 	}
