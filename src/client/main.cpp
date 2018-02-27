@@ -19,6 +19,7 @@
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
+#include <tempo/system/SystemMovement.hpp>
 #include <tempo/system/SystemPlayer.hpp>
 #include <tempo/system/SystemTransform.hpp>
 
@@ -124,6 +125,7 @@ int main(int argc, const char** argv){
 	tempo::SystemPlayer            system_player(clock);
 	tempo::SystemCombo             system_combo;
 	tempo::SystemHealth            system_health;
+	tempo::SystemMovement          system_movement;
 	client::SystemGraphicsCreation system_gc;
 	client::SystemStageRenderer    system_stage_renderer;
 	client::SystemRenderSceneNode  system_render_scene_node;
@@ -142,7 +144,8 @@ int main(int argc, const char** argv){
 	world.addSystem(system_render_scene_node);
 	world.addSystem(system_update_key_input);
 	world.addSystem(system_parse_key_input);
-	
+	world.addSystem(system_movement);
+
 	createEntityStage(world);
 	world.refresh();
 
@@ -263,7 +266,7 @@ int main(int argc, const char** argv){
 	while(device->run()){
 		float dt = dt_timer.getElapsedTime().asSeconds();
 		dt_timer.restart();
-		
+
 		if (clock.passed_beat()) {
 			click.play();
 			if (tick++ % 20 == 0)
@@ -279,29 +282,19 @@ int main(int argc, const char** argv){
 		system_gc.addEntities(driver, smgr);
 		system_render_scene_node.setup(smgr);
 		world.refresh();
-		
+
 		// Recieve player updates from the server
 		system_player.update(entity_player.getId(), world);
-		
+
 		// Deal with local input
 		system_update_key_input.clear();
 		system_update_key_input.addKeys();
 		system_parse_key_input.parseInput(clock);
-
-		// TODO Make movement system
-		for (anax::Entity e : world.getEntities()) {
-			if (e.hasComponent<tempo::ComponentStageTranslation>() &&
-			    e.hasComponent<tempo::ComponentStagePosition>()) {
-				tempo::ComponentStageTranslation &st = e.getComponent<tempo::ComponentStageTranslation>();
-				if (st.delta.x == 0 && st.delta.y == 0) continue;
-				e.getComponent<tempo::ComponentStagePosition>().occupied[0] += st.delta;
-				st.delta = {0,0};
-			}
-		}
+		system_movement.processTranslation();
 
 		// Deprecated/To-be-worked-on
 		system_health.CheckHealth();
-	
+
 		// Graphics updates
 		system_render_scene_node.update();
 
