@@ -23,13 +23,23 @@ namespace client {
 			// a billboard has its origin in the centre, this node is used for alignement
 			sn.node = smgr->addEmptySceneNode();
 			sn.node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
-			irr::scene::IBillboardSceneNode* billboard = smgr->addBillboardSceneNode(
-				sn.node,
-				size,
-				pos, // fix alignment
-				-1,
-				top_color,
-				bottom_color);
+
+		// 	irr::scene::IBillboardSceneNode* billboard = smgr->addBillboardSceneNode(
+		// 		sn.node,
+		// 		size,
+		// 		pos, // fix alignment
+		// 		-1,
+		// 		top_color,
+		// 		bottom_color);
+		// }
+
+		irr::scene::CAxialBillboardSceneNode* billboard = new irr::scene::CAxialBillboardSceneNode(
+			sn.node,
+			smgr,
+			100,
+			pos,
+			irr::core::vector3df(-50.f, 20.f, 0.f),
+			20);
 		}
 
 		update();
