@@ -113,10 +113,28 @@ int main(int argc, const char** argv){
 	// debug static light
 	irr::scene::ILightSceneNode* light_node = smgr->addLightSceneNode(
 	                                                             0,
-	                                                             irr::core::vector3df(10.0f, 10.0f, 10.0f),
+	                                                             irr::core::vector3df(10.0f, 5.0f, 10.0f),
 	                                                             irr::video::SColorf(0.8f, 0.8f, 0.8f),
 	                                                             5.0f);
 	irr::video::SLight& light_data = light_node->getLightData();
+
+
+	// :TODO: remove -> debuging light by moving and adding billboard
+	{
+		scene::ISceneNodeAnimator* anim =
+			smgr->createFlyCircleAnimator (core::vector3df(10,5,10),5.0f, -0.003f);
+		light_node->addAnimator(anim);
+		anim->drop();
+
+		scene::IBillboardSceneNode* bill =
+			smgr->addBillboardSceneNode(light_node, core::dimension2d<f32>(0.5, 0.5));
+
+		bill->setMaterialFlag(video::EMF_LIGHTING, false);
+		bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
+		bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
+		bill->setMaterialTexture(0, driver->getTexture("resources/materials/textures/particlewhite.bmp"));
+	}
+
 
 	// Create World
 	anax::World world;
