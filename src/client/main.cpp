@@ -40,9 +40,9 @@
 #include <iostream>
 #include <thread>
 
-#define BPM 120
-#define DELTA 200
-#define TIME 60000000 / BPM
+#define BPM 120              // Beats per minutes
+#define DELTA 125            // Delta around a beat a player can hit (millisecs)
+#define TIME 60000000 / BPM  // Time between beats (microsecs)
 
 void sync_time(tempo::Clock& clock, tempo::Song *song)
 {
@@ -243,37 +243,35 @@ int main(int argc, const char** argv){
 		irr::video::SColorf(1.0f, 1.0f, 1.0f),
 		5.0f);
 
-	// // Create World
-	// anax::World world;
-
 	/////////////////////////////////////////////////
 	// Main loop
-
-	// int lastFPS = -1;
-
-	sf::Clock fps_timer;
-	sf::Clock dt_timer;
-	sf::Time logic_time;
-	sf::Time render_time;
 	int frame_counter = 0;
+	sf::Clock fps_timer;
+	// sf::Clock dt_timer;
 
 	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	sf::Clock frame_clock = sf::Clock();
 	frame_clock.restart();
-	// sf::Time min_frame_time = sf::microseconds(1000000 / 60);
 
 	printf("Entering main loop\n");
 	while(device->run()){
-		float dt = dt_timer.getElapsedTime().asSeconds();
-		dt_timer.restart();
+		// float dt = dt_timer.getElapsedTime().asSeconds();
+		// dt_timer.restart();
+	
+		if (clock.passed_delta_start()) {
+			// std::cout << "Start" << std::endl;
+		}
 
 		if (clock.passed_beat()) {
 			click.play();
 			if (tick++ % 20 == 0)
 				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
 
-
 			system_grid_ai.update();
+		}
+	
+		if (clock.passed_delta_end()) {
+			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 		}
 
@@ -308,20 +306,14 @@ int main(int argc, const char** argv){
 		gui_env->drawAll();
 		driver->endScene();
 
-		// ++frame_counter;
-		// if (fps_timer.getElapsedTime().asSeconds() > 0.5f) {
-			// float seconds = fps_timer.getElapsedTime().asSeconds();
-			// printf("FPS: %i (%.1f% render)\n", (int)(frame_counter / seconds),
-			// 	100 * (float)(
-			// 		render_time.asMicroseconds()
-			// 		) / (
-			// 			logic_time.asMicroseconds() +
-			// 			render_time.asMicroseconds()));
-			// printf("Logic time  (μs): %d\n",  logic_time.asMicroseconds());
-			// printf("Render time (μs): %d\n", render_time.asMicroseconds());
-			// fps_timer.restart();
-			// frame_counter = 0;
-		// }
+		++frame_counter;
+		if (fps_timer.getElapsedTime().asSeconds() > 1.0f) {
+			float seconds = fps_timer.getElapsedTime().asSeconds();
+			std::cout << "FPS: " << (int)(frame_counter / seconds)
+			          << std::endl;
+			fps_timer.restart();
+			frame_counter = 0;
+		}
 
 	}
 	running.store(false);

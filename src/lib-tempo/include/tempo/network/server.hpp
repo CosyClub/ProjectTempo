@@ -55,7 +55,7 @@ namespace tempo
 	//
 	// Returns:
 	//         void (is a thread)
-	void checkForNewClients(anax::World *world, SystemLevelManager system_grid_motion);
+	void checkForNewClients(anax::World *world);
 
 	// listenForClientUpdates
 	// WARNING: Should be run on separate thread.

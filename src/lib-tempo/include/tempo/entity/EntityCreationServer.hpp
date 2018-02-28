@@ -13,8 +13,7 @@
 namespace tempo
 {
 
-anax::Entity newPlayer(anax::World& world, 
-                       SystemLevelManager system_grid_motion);
+anax::Entity newPlayer(anax::World& world);
 
 anax::Entity newAI(anax::World& world,
                    int x,

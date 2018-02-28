@@ -30,7 +30,7 @@
 #include <anax/Entity.hpp>
 
 #define BPM 120              // Beats per minutes
-#define PLAYER_DELTA 200     // Delta around a beat a player can hit (millisecs)
+#define PLAYER_DELTA 125     // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
 int main(int argc, const char** argv) {
@@ -46,17 +46,13 @@ int main(int argc, const char** argv) {
 	//////////////////////////////////
 	// Set up ECS
 	anax::World world;
-	tempo::SystemLevelManager system_level(world,
-	                                       "../bin/resources/levels/levelTest.bmp",
-	                                       "../bin/resources/levels/zonesTest.bmp"
-	                                       );
+	
 	// Create Systems
 	tempo::SystemCombo        system_combo;
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemHealth       system_health;
 	tempo::SystemServerPlayer system_player(clock);
 
-	world.addSystem(system_level);
 	world.addSystem(system_combo);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_health);
@@ -92,7 +88,7 @@ int main(int argc, const char** argv) {
 	// Main loop, with beat printouts
 	while (true) {
 		// Handshake call, DO NOT REMOVE
-		checkForNewClients(&world, system_level);
+		tempo::checkForNewClients(&world);
 
 		if (clock.passed_beat()) {
 			system_grid_ai.update();
@@ -108,7 +104,6 @@ int main(int argc, const char** argv) {
 
 		world.refresh();
 		system_combo.checkForUpdates();
-		system_level.update(dt);
 		system_health.CheckHealth();
 		system_player.update(world);
 

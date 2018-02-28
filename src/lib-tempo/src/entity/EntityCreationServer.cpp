@@ -14,7 +14,7 @@
 namespace tempo
 {
 
-anax::Entity newPlayer(anax::World& world, tempo::SystemLevelManager system_grid_motion) {
+anax::Entity newPlayer(anax::World& world) {
 
 	//TODO:: Add Entity to Specific Tile
 

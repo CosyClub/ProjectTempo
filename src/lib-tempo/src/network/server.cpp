@@ -247,9 +247,7 @@ void handshakeHello(sf::Packet &packet,
 	}
 }
 
-void handshakeRoleReq(sf::Packet &packet,
-                      anax::World *world,
-                      SystemLevelManager system_gm)
+void handshakeRoleReq(sf::Packet &packet, anax::World *world)
 {
 	// Extract data from packet
 	uint32_t id = NO_CLIENT_ID;
@@ -261,7 +259,7 @@ void handshakeRoleReq(sf::Packet &packet,
 
 	// Create Entity for selected role from client
 	// Only creating players for now (spectators are not a thing)
-	anax::Entity newEntity = newPlayer(*world, system_gm);	
+	anax::Entity newEntity = newPlayer(*world);
 	sf::Packet   newPlayer = packageComponents(newEntity);
 
 	// Register Role
@@ -287,7 +285,7 @@ void handshakeRoleReq(sf::Packet &packet,
 	}
 }
 
-void checkForNewClients(anax::World *world, SystemLevelManager system_gm)
+void checkForNewClients(anax::World *world)
 {
 	tempo::Queue<sf::Packet> *queue = get_system_queue(QueueID::HANDSHAKE);	
 	if (queue->empty()) return;
@@ -304,7 +302,7 @@ void checkForNewClients(anax::World *world, SystemLevelManager system_gm)
 			handshakeHello(packet, world);
 			break;
 		case HandshakeID::ROLEREQ:
-			handshakeRoleReq(packet, world, system_gm);
+			handshakeRoleReq(packet, world);
 			break;
 		default:
 			std::cout << "WARNING: an invalid handshake message was "

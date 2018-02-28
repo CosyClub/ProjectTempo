@@ -1,5 +1,6 @@
 #include <client/system/SystemParseKeyInput.hpp>
 
+#include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 
@@ -12,35 +13,66 @@
 namespace client
 {
 
-void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing) {
-	if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
-		entity.getComponent<tempo::ComponentStageTranslation>().delta = delta;
-	}
+void addMovement(anax::Entity &entity,
+                 glm::ivec2 delta,
+                 tempo::Facing facing,
+                 bool withinDelta)
+{
 	if (entity.hasComponent<tempo::ComponentStageRotation>()) {
 		entity.getComponent<tempo::ComponentStageRotation>().facing = facing;
 	}
+
+	if (!withinDelta) {
+		std::cout << "Actioned outside of delta" << std::endl;
+		return;
+	}
+	
+	if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
+		entity.getComponent<tempo::ComponentStageTranslation>().delta = delta;
+	}
 }
 
-void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity) {
+void updateCombo(anax::Entity &entity, bool withinDelta) 
+{
+	if (entity.hasComponent<tempo::ComponentCombo>()) {
+		tempo::ComponentCombo &c = entity.getComponent<tempo::ComponentCombo>();
+		if (withinDelta) {
+			c.performAction();
+		} else {
+			c.breakCombo();
+		}
+		std::cout << "Combo: " << c.comboCounter << std::endl;
+	}
+}
+
+void processKeyPressEvent(irr::EKEY_CODE key,
+                          anax::Entity &entity,
+                          bool withinDelta)
+{
 	switch (key) {
 	case irr::KEY_KEY_W:
 	case irr::KEY_UP:
-		addMovement(entity, tempo::NORTH, tempo::NORTH);
+		addMovement(entity, tempo::NORTH, tempo::NORTH, withinDelta);
+		updateCombo(entity, withinDelta);
 		break;
 	case irr::KEY_KEY_A:
 	case irr::KEY_LEFT:
-		addMovement(entity, tempo::WEST, tempo::WEST);
+		addMovement(entity, tempo::WEST, tempo::WEST, withinDelta);
+		updateCombo(entity, withinDelta);
 		break;
 	case irr::KEY_KEY_S:
 	case irr::KEY_DOWN:
-		addMovement(entity, tempo::SOUTH, tempo::SOUTH);
+		addMovement(entity, tempo::SOUTH, tempo::SOUTH, withinDelta);
+		updateCombo(entity, withinDelta);
 		break;
 	case irr::KEY_KEY_D:
 	case irr::KEY_RIGHT:
-		addMovement(entity, tempo::EAST, tempo::EAST);
+		addMovement(entity, tempo::EAST, tempo::EAST, withinDelta);
+		updateCombo(entity, withinDelta);
 		break;
 	case irr::KEY_KEY_E:
 		// system_attack.Attack(entity_player);
+		updateCombo(entity, withinDelta);
 		break;
 	default: break;
 	}
@@ -51,10 +83,14 @@ void SystemParseKeyInput::parseInput(tempo::Clock &clock)
 	for (auto entity : getEntities()) {
 		ComponentKeyInput ke = entity.getComponent<ComponentKeyInput>();
 
+		bool withinDelta = false;
+		if (clock.within_delta()) withinDelta = true;
+
 		for (unsigned int i = 0; i < ke.keysPressed.size(); i++) {
 			if (ke.keysPressed[i].press) {
 				processKeyPressEvent(ke.keysPressed[i].key,
-				                     entity);
+				                     entity,
+				                     withinDelta);
 			}
 		}
 	}

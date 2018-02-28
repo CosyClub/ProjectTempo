@@ -2,12 +2,16 @@
 
 namespace tempo
 {
+	/////
 	// Public
-	Clock::Clock(sf::Time first_beat, sf::Time offset)
+	/////
+	Clock::Clock(sf::Time first_beat, sf::Time delta)
 	{
+		passed_ds = true;
+		passed_de = false;
 		next_beat = first_beat;
 		last_beat = sf::Time::Zero;
-		delta = offset;
+		this->delta = delta;
 	}
 
 	sf::Time Clock::get_time()
@@ -18,9 +22,10 @@ namespace tempo
 	void Clock::set_time(sf::Time t, tempo::Song *song)
 	{
 		cache_time();
-		sf::Time delta = t - time;
+		sf::Time time_to_skip = t - time;
 		time = t;
-		song->skip(delta);
+		song->skip(time_to_skip);
+		update_beat();
         }
 
 	bool Clock::passed_beat()
@@ -33,17 +38,25 @@ namespace tempo
 		return false;
 	}
 
-	void Clock::set_next_beat(sf::Time t)
+	bool Clock::passed_delta_start()
 	{
 		cache_time();
-		next_beat = t;
+		if (!passed_ds && (time > (next_beat - delta))) {
+			passed_ds = true;
+			return true;
+		}
+		return false;
 	}
 
-	bool Clock::within_delta()
+	bool Clock::passed_delta_end()
 	{
 		cache_time();
-		return (until_beat() < delta || since_beat() < delta);
-        }
+		if (!passed_de && (time > (last_beat + delta))) {
+			passed_de = true;
+			return true;
+		}
+		return false;
+	}
 
 	float Clock::beat_progress()
 	{
@@ -60,6 +73,18 @@ namespace tempo
 		return time - last_beat;
 	}
 
+	void Clock::set_next_beat(sf::Time t)
+	{
+		cache_time();
+		next_beat = t;
+	}
+
+	bool Clock::within_delta()
+	{
+		cache_time();
+		return (until_beat() < delta || since_beat() < delta);
+        }
+
 	// Private
 	void Clock::cache_time()
 	{
@@ -70,9 +95,11 @@ namespace tempo
 	{
 		cache_time();
 		while (next_beat < time) {
-			sf::Time delta = next_beat - last_beat;
+			sf::Time beat_length = next_beat - last_beat;
 			last_beat = next_beat;
-			next_beat = last_beat + delta;
+			next_beat = last_beat + beat_length;
 		}
+		passed_ds = false;
+		passed_de = false;
 	}
 }
