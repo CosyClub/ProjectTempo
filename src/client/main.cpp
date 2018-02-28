@@ -213,6 +213,7 @@ int main(int argc, const char** argv){
 	}
 	entity_player.addComponent<client::ComponentKeyInput>();
 	entity_player.activate();
+	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
 
 	irr::scene::ICameraSceneNode* camera_node;
 	if (false) {
@@ -221,13 +222,18 @@ int main(int argc, const char** argv){
 		camera_node = smgr->addCameraSceneNodeFPS(nullptr, rotateSpeed, moveSpeed);
 		device->getCursorControl()->setVisible(false);
 	} else {
-		float rotate = -100.0f;
-		float translate = -100.0f;
-		float zoom = 100.0f;
-		float distance = 15.0f;
-		camera_node = smgr->addCameraSceneNodeMaya(nullptr, rotate, translate, zoom, -1, distance);
+		float rotate = 0.0f;
+		float translate = 0.0f; //-100
+		float zoom = 0.0f; //100
+		float distance = 0.0f;
+		// camera_node = smgr->addCameraSceneNodeMaya(sn.node, rotate, translate, zoom, -1, distance);
+		// camera_node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
+		camera_node = smgr->addCameraSceneNode();
+		camera_node->setParent(sn.node);
+		camera_node->setPosition(irr::core::vector3df(14, 9,0));
+		camera_node->setTarget(sn.node->getPosition());
+		//camera_node->setRotation(irr::core::vector3df(0,0,90));
 		device->getCursorControl()->setVisible(true);
-		camera_node->setTarget(irr::core::vector3df(10.0f, 0.0f, 10.0f));
 	}
 
 	//irr::scene::ISceneNode* camera_light = smgr->addLightSceneNode(
@@ -271,7 +277,7 @@ int main(int argc, const char** argv){
 
 			j++;
 			j = j % 22;
-			system_stage_renderer.updateStage({255,255,0,0},{255,0,255,0}, driver, j);
+			system_stage_renderer.updateStage({255,175,0,0},{255,50,50,50}, driver, j);
 			system_grid_ai.update();
 		}
 
@@ -301,6 +307,8 @@ int main(int argc, const char** argv){
 
 		// Graphics updates
 		system_render_scene_node.update();
+		//TODO: Make a system for updating camera position
+		camera_node->setTarget(sn.node->getPosition());
 
 		if (!device->isWindowActive()) {
 			device->yield();
