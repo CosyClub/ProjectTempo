@@ -24,7 +24,7 @@ namespace client {
 		void updateStage(glm::ivec4 colour1, glm::ivec4 colour2, irr::video::IVideoDriver*  driver, int j);
 
 	private:
-		void checkerBoardPattern(irr::video::IVideoDriver*  driver,
+		inline void checkerBoardPattern(irr::video::IVideoDriver*  driver,
 													   irr::scene::IMeshSceneNode* node,
 	 												   irr::video::SMaterial& material_side,
 													   irr::video::SMaterial& material_top,
@@ -33,7 +33,7 @@ namespace client {
 														 int i,
 												     int j);
 
-	 void linePattern(irr::video::IVideoDriver*  driver,
+	 inline void linePattern(irr::video::IVideoDriver*  driver,
 										irr::scene::IMeshSceneNode* node,
 										irr::video::SMaterial& material_side,
 										irr::video::SMaterial& material_top,
@@ -44,7 +44,7 @@ namespace client {
 										int i,
 										int j);
 
-	void squarePattern(irr::video::IVideoDriver*  driver,
+	inline void squarePattern(irr::video::IVideoDriver*  driver,
 										 irr::scene::IMeshSceneNode* node,
 										 irr::video::SMaterial& material_side,
 										 irr::video::SMaterial& material_top,
