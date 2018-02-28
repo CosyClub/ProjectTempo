@@ -33,6 +33,7 @@
 #include <irrlicht.h>
 
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 
 #include <chrono>
 #include <cstdio>
@@ -109,10 +110,10 @@ int main(int argc, const char** argv){
 	irr::scene::ISceneManager* smgr    = device->getSceneManager();
 	irr::gui::IGUIEnvironment* gui_env = device->getGUIEnvironment();
 	// Debug
-	smgr->setAmbientLight(irr::video::SColorf(0.1f, 0.1f, 0.1f));
+	smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
 
 	/////////////////////////////////////////////////
-	// Setup scene
+	// Setup ECS
 	anax::World world;
 	// tempo::SystemRender           system_render(app);
 	tempo::SystemLevelManager     system_level(world,
@@ -132,6 +133,7 @@ int main(int argc, const char** argv){
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemParseKeyInput    system_parse_key_input;
 
+  // Add Systems
 	world.addSystem(system_level);
 	world.addSystem(system_attack);
 	world.addSystem(system_update_transforms);
@@ -149,7 +151,9 @@ int main(int argc, const char** argv){
 	createEntityStage(world);
 	world.refresh();
 
-	system_stage_renderer.setup(smgr);
+	// Initialise Systems
+	system_update_key_input.setup(device);
+	system_stage_renderer.setup(smgr, driver);
 	system_render_scene_node.setup(smgr);
 
 	// Set up remote address, local ports and remote handshake port
@@ -226,28 +230,26 @@ int main(int argc, const char** argv){
 		camera_node->setTarget(irr::core::vector3df(10.0f, 0.0f, 10.0f));
 	}
 
-		system_update_key_input.setup(device);
-	// debug dynamic light
-	// irr::scene::ISceneNode* camera_light =
-	smgr->addLightSceneNode(
-		camera_node,
-		irr::core::vector3df(0.0f, 0.0f, 0.0f),
-		irr::video::SColorf(1.0f, 1.0f, 1.0f),
-		10.0f);
-
+	//irr::scene::ISceneNode* camera_light = smgr->addLightSceneNode(
+	//                                                               camera_node,
+	//                                                               irr::core::vector3df(0.0f, 0.0f, 0.0f),
+	//                                                               irr::video::SColorf(0.8f, 0.8f, 0.8f),
+	//                                                               10.0f);
 	// debug static light
-	// irr::scene::ISceneNode* light_node =
-	smgr->addLightSceneNode(
-		0,
-		irr::core::vector3df(10.0f, 10.0f, 10.0f),
-		irr::video::SColorf(1.0f, 1.0f, 1.0f),
-		5.0f);
+	irr::scene::ILightSceneNode* light_node = smgr->addLightSceneNode(
+																															 0,
+																															 irr::core::vector3df(10.0f, 10.0f, 10.0f),
+																															 irr::video::SColorf(0.8f, 0.8f, 0.8f),
+																															 5.0f);
+	irr::video::SLight& light_data = light_node->getLightData();
 
 	/////////////////////////////////////////////////
 	// Main loop
 	int frame_counter = 0;
 	sf::Clock fps_timer;
 	// sf::Clock dt_timer;
+
+	int j = 0;
 
 	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	sf::Clock frame_clock = sf::Clock();
@@ -257,7 +259,7 @@ int main(int argc, const char** argv){
 	while(device->run()){
 		// float dt = dt_timer.getElapsedTime().asSeconds();
 		// dt_timer.restart();
-	
+
 		if (clock.passed_delta_start()) {
 			// std::cout << "Start" << std::endl;
 		}
@@ -267,9 +269,12 @@ int main(int argc, const char** argv){
 			if (tick++ % 20 == 0)
 				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
 
+			j++;
+			j = j % 22;
+			system_stage_renderer.updateStage({255,255,0,0},{255,0,255,0}, driver, j);
 			system_grid_ai.update();
 		}
-	
+
 		if (clock.passed_delta_end()) {
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
