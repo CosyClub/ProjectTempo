@@ -20,6 +20,9 @@ namespace {
 
 		client::stage_nodes temp_nodes;
 
+		irr::video::ITexture* wall_diffuse_map = driver->getTexture("resources/materials/walls/cobblestone.png");
+		irr::video::ITexture* wall_normal_map  = driver->getTexture("resources/materials/walls/cobblestone_n.png");
+
 	  for(unsigned int i = 0; i < tiles.size(); ++i){
 
 		  irr::scene::IMeshSceneNode* node = smgr->addMeshSceneNode(mesh, 0);
@@ -37,8 +40,9 @@ namespace {
 		  irr::video::SMaterial& material_side = node->getMaterial(0);
 		  irr::video::SMaterial& material_top  = node->getMaterial(1);
 
-		  material_side.setTexture(0,
-		                           driver->getTexture("resources/materials/rockwall.jpg"));
+		  material_side.setTexture(0, wall_diffuse_map);
+		  material_side.setTexture(1, wall_normal_map);
+		  material_side.MaterialType = irr::video::EMT_NORMAL_MAP_SOLID;
 
 		  material_top.Shininess = 0.0f;
 		  material_top.SpecularColor.set(255, 0, 0, 0);
