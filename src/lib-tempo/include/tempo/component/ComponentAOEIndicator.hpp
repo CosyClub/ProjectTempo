@@ -21,6 +21,9 @@ struct ComponentAOEIndicator : anax::Component, NetworkedComponent
 
 	ComponentAOEIndicator(sf::Time duration, std::vector<glm::ivec2> tiles);
 
+	/////
+	// Required for networking
+	/////
 	ComponentAOEIndicator(sf::Packet p);
 	sf::Packet dumpComponent();
 	ComponentID getId();

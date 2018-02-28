@@ -1,15 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
-/// \file main.cpp
-/// \date 2017/11/13
-/// \brief Contains entry point for RaveCave Server
-////////////////////////////////////////////////////////////////////////////////
-
 #define AM_SERVER
-
-#include <iostream>
-#include <cstdio>
-#include <thread>
-#include <vector>
 
 #include <tempo/time.hpp>
 
@@ -30,6 +19,12 @@
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
 
+#include <iostream>
+#include <cstdio>
+#include <thread>
+#include <vector>
+
+
 #define BPM 120              // Beats per minutes
 #define PLAYER_DELTA 125     // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
@@ -49,17 +44,17 @@ int main(int argc, const char** argv) {
 	anax::World world;
 	
 	// Create Systems
+	tempo::SystemAttack       system_attack;
 	tempo::SystemCombo        system_combo;
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemHealth       system_health;
 	tempo::SystemServerPlayer system_player(clock);
-	tempo::SystemAttack system_attack;
 
+	world.addSystem(system_attack);
 	world.addSystem(system_combo);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_health);
 	world.addSystem(system_player);
-	world.addSystem(system_attack);
 	world.refresh();
 
 	// Create some Test Entities
@@ -79,11 +74,11 @@ int main(int argc, const char** argv) {
 	// Hack to allow printouts to line up a bit nicer :)
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	std::thread clientUpdatesThread (tempo::listenForClientUpdates);
+	
 	tempo::bindSocket('o', tempo::port_so);
 
-	sf::Clock dt_timer;
-
-	float last_dt_time = dt_timer.getElapsedTime().asSeconds();
+	// sf::Clock dt_timer;
+	// float last_dt_time = dt_timer.getElapsedTime().asSeconds();
 
 	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	tick++;
@@ -92,6 +87,15 @@ int main(int argc, const char** argv) {
 	while (true) {
 		// Handshake call, DO NOT REMOVE
 		tempo::checkForNewClients(&world);
+		world.refresh();
+		
+		// float next_dt_time = dt_timer.getElapsedTime().asSeconds();
+		// float dt = next_dt_time - last_dt_time;
+		// last_dt_time = next_dt_time;
+		
+		if (clock.passed_delta_start()) {
+			// std::cout << "Start" << std::endl;
+		}
 
 		if (clock.passed_beat()) {
 			system_grid_ai.update();
@@ -101,11 +105,11 @@ int main(int argc, const char** argv) {
 				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
 		}
 
-		float next_dt_time = dt_timer.getElapsedTime().asSeconds();
-		float dt = next_dt_time - last_dt_time;
-		last_dt_time = next_dt_time;
+		if (clock.passed_delta_end()) {
+			// std::cout << "End" << std::endl;
+			system_combo.advanceBeat();
+		}
 
-		world.refresh();
 		system_attack.Broadcast(world);
 		system_combo.checkForUpdates();
 		system_health.CheckHealth();

@@ -1,6 +1,5 @@
 #include <tempo/system/SystemMovement.hpp>
 
-
 namespace tempo
 {
 
@@ -33,7 +32,6 @@ void SystemMovement::processTranslation()
 			}
 
 			st.delta = {0,0};
-
 		}
 	}
 }

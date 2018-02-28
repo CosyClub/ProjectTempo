@@ -5,23 +5,15 @@
 #include <anax/Component.hpp>
 
 #include <tempo/component/ComponentHealth.hpp>
-#include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
-#include <tempo/component/ComponentStageRotation.hpp>
-#include <tempo/component/ComponentWeapon.hpp>
-
-#include <tempo/network/QueueID.hpp>
-#include <tempo/network/base.hpp>
-#include <tempo/mask.hpp>
-
-#include <glm/glm.hpp>
 #include <cassert>
 
-namespace tempo{
+namespace tempo
+{
 
 struct SystemAttack : anax::System<anax::Requires<ComponentHealth,
-                                                  ComponentStagePosition>> {
-
+                                                  ComponentStagePosition>> 
+{
 	// Attack
 	// If attack is made, all attackable entities (have ComonentHealth)
 	// are checked to see if they are inside the attack range

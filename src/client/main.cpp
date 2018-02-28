@@ -258,10 +258,14 @@ int main(int argc, const char** argv){
 		// float dt = dt_timer.getElapsedTime().asSeconds();
 		// dt_timer.restart();
 	
+		////////////////
+		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
 			// std::cout << "Start" << std::endl;
 		}
 
+		////////////////
+		// Events at "Beat Passed"
 		if (clock.passed_beat()) {
 			click.play();
 			if (tick++ % 20 == 0)
@@ -270,33 +274,41 @@ int main(int argc, const char** argv){
 			system_grid_ai.update();
 		}
 	
+		////////////////
+		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
 			// std::cout << "End" << std::endl;
+			system_movement.processTranslation();
 			system_combo.advanceBeat();
 		}
 
-		// Check for new entities from server
-		new_entity_check(world);
-		system_gc.addEntities(driver, smgr);
-		system_render_scene_node.setup(smgr);
-		world.refresh();
+		////////////////
+		// Events all the time
+		{		
+			// Check for new entities from server
+			new_entity_check(world);
+			system_gc.addEntities(driver, smgr);
+			system_render_scene_node.setup(smgr);
+			world.refresh();
 
-		// Recieve player updates from the server
-		system_player.update(entity_player.getId(), world);
+			// Recieve player updates from the server
+			system_player.update(entity_player.getId(), world);
 
-		// Deal with local input
-		system_update_key_input.clear();
-		system_update_key_input.addKeys();
-		system_parse_key_input.parseInput(clock);
-		system_movement.processTranslation();
-		system_attack.Recieve(world);
+			// Deal with local input
+			system_update_key_input.clear();
+			system_update_key_input.addKeys();
+			system_parse_key_input.parseInput(clock);
 
-		// Deprecated/To-be-worked-on
-		system_health.CheckHealth();
+			// Deprecated/To-be-worked-on
+			system_attack.Recieve(world);
+			system_health.CheckHealth();
 
-		// Graphics updates
-		system_render_scene_node.update();
+			// Graphics updates
+			system_render_scene_node.update();
+		}
 
+		////////////////
+		// Rendering Code
 		if (!device->isWindowActive()) {
 			device->yield();
 			continue;
@@ -316,7 +328,8 @@ int main(int argc, const char** argv){
 			frame_counter = 0;
 		}
 
-	}
+	} // main loop
+
 	running.store(false);
 	printf("Left main loop\n");
 

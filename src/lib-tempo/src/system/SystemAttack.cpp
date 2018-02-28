@@ -1,6 +1,17 @@
 #include <tempo/system/SystemAttack.hpp>
 
-namespace tempo{
+#include <tempo/component/ComponentAOEIndicator.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
+#include <tempo/component/ComponentWeapon.hpp>
+
+#include <tempo/network/QueueID.hpp>
+#include <tempo/network/base.hpp>
+#include <tempo/mask.hpp>
+
+#include <glm/glm.hpp>
+
+namespace tempo
+{
 
 void SystemAttack::Attack(anax::Entity attacker)
 {
