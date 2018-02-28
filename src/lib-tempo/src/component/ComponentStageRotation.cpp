@@ -3,10 +3,10 @@
 namespace tempo
 {
 
-glm::ivec2 NORTH = glm::ivec2( 0, -1);
-glm::ivec2 EAST  = glm::ivec2(-1,  0);
-glm::ivec2 SOUTH = glm::ivec2( 0,  1);
-glm::ivec2 WEST  = glm::ivec2( 1,  0);
+glm::ivec2 NORTH = glm::ivec2(-1,  0);
+glm::ivec2 EAST  = glm::ivec2( 0,  1);
+glm::ivec2 SOUTH = glm::ivec2( 1,  0);
+glm::ivec2 WEST  = glm::ivec2( 0, -1);
 
 ComponentStageRotation::ComponentStageRotation(Facing f)
 {

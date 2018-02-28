@@ -23,9 +23,7 @@ void ComponentStage::loadLevel(const char* stage_file)
 
 			if (pixel > 0) {
 				int height = (int)(pixel - 127) / 25.6;
-				tiles.push_back(std::make_tuple(
-							glm::ivec2(x, y),
-							height));
+				tiles.push_back(std::make_tuple(glm::ivec2(y,x), height));
 			}
 		}
 	}
