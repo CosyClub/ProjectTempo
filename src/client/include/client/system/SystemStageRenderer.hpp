@@ -25,18 +25,14 @@ namespace client {
 
 	private:
 		void checkerBoardPattern(irr::video::IVideoDriver*  driver,
-													   irr::scene::IMeshSceneNode* node,
 	 												   irr::video::SMaterial& material_side,
-													   irr::video::SMaterial& material_top,
 														 glm::ivec4 colour1,
 														 glm::ivec4 colour2,
 														 int i,
 												     int j);
 
 	 void linePattern(irr::video::IVideoDriver*  driver,
-										irr::scene::IMeshSceneNode* node,
 										irr::video::SMaterial& material_side,
-										irr::video::SMaterial& material_top,
 										glm::ivec4 colour1,
 										glm::ivec4 colour2,
 										int orientation,
@@ -45,9 +41,7 @@ namespace client {
 										int j);
 
 	void squarePattern(irr::video::IVideoDriver*  driver,
-										 irr::scene::IMeshSceneNode* node,
 										 irr::video::SMaterial& material_side,
-										 irr::video::SMaterial& material_top,
 										 glm::ivec4 colour1,
 										 glm::ivec4 colour2,
 										 int orientation,
