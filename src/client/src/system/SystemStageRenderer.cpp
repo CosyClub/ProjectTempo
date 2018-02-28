@@ -37,6 +37,9 @@ namespace {
 		  irr::video::SMaterial& material_side = node->getMaterial(0);
 		  irr::video::SMaterial& material_top  = node->getMaterial(1);
 
+		  material_side.setTexture(0,
+		                           driver->getTexture("resources/materials/rockwall.jpg"));
+
 		  material_top.Shininess = 0.0f;
 		  material_top.SpecularColor.set(255, 0, 0, 0);
 		  material_top.DiffuseColor.set(255, 10,   10,   10);
