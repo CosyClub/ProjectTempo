@@ -133,7 +133,7 @@ int main(int argc, const char** argv){
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemParseKeyInput    system_parse_key_input;
 
-  // Add Systems
+	// Add Systems
 	world.addSystem(system_level);
 	world.addSystem(system_attack);
 	world.addSystem(system_update_transforms);
@@ -202,7 +202,6 @@ int main(int argc, const char** argv){
 	// long offset = 0;
 
 	// Player
-	/* anax::Entity entity_player = tempo::newPlayer(world, scene, 0, tempo::EID_PLAYER, system_level, 2, 2); */
 	// TODO: use better way to find out player, for now this is a search
 	anax::Entity entity_player;
 	for (auto& entity : world.getEntities()) {
@@ -236,18 +235,18 @@ int main(int argc, const char** argv){
 		device->getCursorControl()->setVisible(true);
 	}
 
-	//irr::scene::ISceneNode* camera_light = smgr->addLightSceneNode(
-	//                                                               camera_node,
-	//                                                               irr::core::vector3df(0.0f, 0.0f, 0.0f),
-	//                                                               irr::video::SColorf(0.8f, 0.8f, 0.8f),
-	//                                                               10.0f);
+	// irr::scene::ISceneNode* camera_light;
+	// camera_light = smgr->addLightSceneNode(camera_node,
+	//                                        irr::core::vector3df(0.0f, 0.0f, 0.0f),
+	//                                        irr::video::SColorf(0.8f, 0.8f, 0.8f),
+	//                                        10.0f);
 	// debug static light
-	irr::scene::ILightSceneNode* light_node = smgr->addLightSceneNode(
-																															 0,
-																															 irr::core::vector3df(10.0f, 10.0f, 10.0f),
-																															 irr::video::SColorf(0.8f, 0.8f, 0.8f),
-																															 5.0f);
-	irr::video::SLight& light_data = light_node->getLightData();
+	irr::scene::ILightSceneNode* light_node;
+	light_node = smgr->addLightSceneNode(0,
+	                                     irr::core::vector3df(10.0f, 10.0f, 10.0f),
+	                                     irr::video::SColorf(0.8f, 0.8f, 0.8f),
+	                                     5.0f);
+	// irr::video::SLight& light_data = light_node->getLightData();
 
 	/////////////////////////////////////////////////
 	// Main loop
@@ -266,10 +265,14 @@ int main(int argc, const char** argv){
 		// float dt = dt_timer.getElapsedTime().asSeconds();
 		// dt_timer.restart();
 
+		////////////////
+		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
 			// std::cout << "Start" << std::endl;
 		}
 
+		////////////////
+		// Events at "Beat Passed"
 		if (clock.passed_beat()) {
 			click.play();
 			if (tick++ % 20 == 0)
@@ -281,35 +284,43 @@ int main(int argc, const char** argv){
 			system_grid_ai.update();
 		}
 
+		////////////////
+		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
 			// std::cout << "End" << std::endl;
+			system_movement.processTranslation();
 			system_combo.advanceBeat();
 		}
 
-		// Check for new entities from server
-		new_entity_check(world);
-		system_gc.addEntities(driver, smgr);
-		system_render_scene_node.setup(smgr);
-		world.refresh();
+		////////////////
+		// Events all the time
+		{
+			// Check for new entities from server
+			new_entity_check(world);
+			system_gc.addEntities(driver, smgr);
+			system_render_scene_node.setup(smgr);
+			world.refresh();
 
-		// Recieve player updates from the server
-		system_player.update(entity_player.getId(), world);
+			// Recieve player updates from the server
+			system_player.update(entity_player.getId(), world);
 
-		// Deal with local input
-		system_update_key_input.clear();
-		system_update_key_input.addKeys();
-		system_parse_key_input.parseInput(clock);
-		system_movement.processTranslation();
-		system_attack.Recieve(world);
+			// Deal with local input
+			system_update_key_input.clear();
+			system_update_key_input.addKeys();
+			system_parse_key_input.parseInput(clock);
 
-		// Deprecated/To-be-worked-on
-		system_health.CheckHealth();
+			// Deprecated/To-be-worked-on
+			system_attack.Recieve(world);
+			system_health.CheckHealth();
 
-		// Graphics updates
-		system_render_scene_node.update();
-		//TODO: Make a system for updating camera position
-		camera_node->setTarget(sn.node->getPosition());
+			// Graphics updates
+			system_render_scene_node.update();
+			//TODO: Make a system for updating camera position
+			camera_node->setTarget(sn.node->getPosition());
+		}
 
+		////////////////
+		// Rendering Code
 		if (!device->isWindowActive()) {
 			device->yield();
 			continue;
@@ -329,7 +340,8 @@ int main(int argc, const char** argv){
 			frame_counter = 0;
 		}
 
-	}
+	} // main loop
+
 	running.store(false);
 	printf("Left main loop\n");
 
