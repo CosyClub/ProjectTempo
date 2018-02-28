@@ -18,6 +18,7 @@ class Mask
 	glm::ivec2 ctr;
 	glm::ivec2 sz;
 	std::vector<float> mask;
+	std::vector<glm::ivec2> positions;
 
 	Mask();
 	Mask(glm::ivec2 centre, float* data, glm::ivec2 size);

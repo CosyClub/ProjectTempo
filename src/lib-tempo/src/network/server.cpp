@@ -1,5 +1,6 @@
 #include <tempo/network/server.hpp>
 
+#include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/component/ComponentHealth.hpp>
@@ -174,6 +175,7 @@ sf::Packet packageComponents(anax::Entity entity)
 	uint32_t c = 0;
 	
 	// Put new Components in here
+	ADD_COMPONENT(entity, c, packet, ComponentAOEIndicator)
 	ADD_COMPONENT(entity, c, packet, ComponentCombo)
 	ADD_COMPONENT(entity, c, packet, ComponentGridAi)
 	ADD_COMPONENT(entity, c, packet, ComponentHealth)
@@ -358,6 +360,23 @@ uint32_t findClientID(sf::Uint32 ip, unsigned short port)
 	return NO_CLIENT_ID;
 }
 
+bool sendMessage(tempo::QueueID id, sf::Packet p)
+{
+	tempo::Queue<sf::Packet> *q = get_system_queue(id);
+	q->push(p);
+	return true;
+}
+
+bool broadcastMessage(tempo::QueueID id, sf::Packet p)
+{
+	bool result = true;
+	for (auto client : clients)
+	{
+		result &= sendMessage(id, p, client.first);
+	}
+
+	return result;
+}
 
 bool sendMessage(tempo::QueueID id, 
                  sf::Packet payload, 

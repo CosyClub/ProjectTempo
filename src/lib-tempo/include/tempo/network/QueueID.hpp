@@ -32,6 +32,7 @@ namespace tempo
 		PLAYER_UPDATES,
 		ENTITY_CREATION,
 		COMBO_UPDATES,
+		SYSTEM_ATTACK,
 
 		//End of non-reserved zone
 		QID_RESERVED_TOP
@@ -43,19 +44,20 @@ namespace tempo
 		CID_RESERVED_ERROR,			//1
 		//Start of non-reserved zone
 
-		COMBO,					//2
-		GRID_AI,				//3
-		HEALTH,					//4
-		MODEL,					//5
-		PICKUP,					//6
-		PLAYER_LOCAL,				//7
-		PLAYER_REMOTE,				//8
-		STAGE,					//9
-		STAGE_POSITION,				//10
-		STAGE_ROTATION,				//11
-		STAGE_TRANSLATION,			//12
-		TRANSFORM,				//13
-		WEAPON,					//14
+		AOEINDICATOR,				//2
+		COMBO,					//3
+		GRID_AI,				//4
+		HEALTH,					//5
+		MODEL,					//6
+		PICKUP,					//7
+		PLAYER_LOCAL,				//8
+		PLAYER_REMOTE,				//9
+		STAGE,					//10
+		STAGE_POSITION,				//11
+		STAGE_ROTATION,				//12
+		STAGE_TRANSLATION,			//13
+		TRANSFORM,				//14
+		WEAPON,					//15
 		
 		//End of non-reserved zone
 		CID_RESERVED_TOP

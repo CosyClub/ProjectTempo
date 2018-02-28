@@ -139,6 +139,25 @@ sf::Packet splitPacket(sf::Packet& packet, uint32_t size)
 	return p;
 }
 
+sf::Packet& operator <<(sf::Packet& p, const sf::Time& t)
+{
+	sf::Int64 microseconds;
+	microseconds = t.asMicroseconds();
+	p << microseconds;
+
+	return p;	
+}
+
+sf::Packet& operator >>(sf::Packet& p, sf::Time& t)
+{
+	sf::Int64 microseconds;
+
+	p >> microseconds;
+	t = sf::microseconds(microseconds);
+
+	return p;	
+}
+
 sf::Packet& operator <<(sf::Packet& p, const glm::vec2& v)
 {
 	return p << v.x << v.y;

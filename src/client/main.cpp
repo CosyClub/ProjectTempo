@@ -289,6 +289,7 @@ int main(int argc, const char** argv){
 		system_update_key_input.addKeys();
 		system_parse_key_input.parseInput(clock);
 		system_movement.processTranslation();
+		system_attack.Recieve(world);
 
 		// Deprecated/To-be-worked-on
 		system_health.CheckHealth();

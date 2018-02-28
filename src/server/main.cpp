@@ -19,6 +19,7 @@
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 #include <tempo/system/SystemServerPlayer.hpp>
+#include <tempo/system/SystemAttack.hpp>
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>
@@ -52,11 +53,13 @@ int main(int argc, const char** argv) {
 	tempo::SystemGridAi       system_grid_ai;
 	tempo::SystemHealth       system_health;
 	tempo::SystemServerPlayer system_player(clock);
+	tempo::SystemAttack system_attack;
 
 	world.addSystem(system_combo);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_health);
 	world.addSystem(system_player);
+	world.addSystem(system_attack);
 	world.refresh();
 
 	// Create some Test Entities
@@ -103,6 +106,7 @@ int main(int argc, const char** argv) {
 		last_dt_time = next_dt_time;
 
 		world.refresh();
+		system_attack.Broadcast(world);
 		system_combo.checkForUpdates();
 		system_health.CheckHealth();
 		system_player.update(world);
