@@ -10,7 +10,20 @@ set(CMAKE_MODULE_PATH
 
 #Support YCM completion for Raef and Anthony
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set (CMAKE_CXX_STANDARD 11)
+
+# Force c++ 11 standard
+macro(use_cxx11)
+	if (CMAKE_VERSION VERSION_LESS "3.1")
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+      set (CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
+ 		else ()
+ 			message(FATAL_ERROR "Unable to enable c++11 support on this platform!")
+    endif ()
+  else ()
+    set (CMAKE_CXX_STANDARD 11)
+  endif ()
+endmacro(use_cxx11)
+use_cxx11()
 
 # :TODO: have some way of configuring this
 set(CMAKE_BUILD_TYPE Debug)
