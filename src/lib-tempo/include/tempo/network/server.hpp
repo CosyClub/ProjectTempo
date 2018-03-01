@@ -1,7 +1,7 @@
 #ifndef TEMPO_NETWORK_SERVER_HPP
 #define TEMPO_NETWORK_SERVER_HPP
 
-#include <tempo/entity/LevelManager.hpp>
+#include <tempo/system/SystemLevelManager.hpp>
 #include <tempo/entity/EntityCreationServer.hpp>
 #include <tempo/network/base.hpp>
 #include <tempo/network/queue.hpp>
@@ -48,15 +48,14 @@ namespace tempo
 	void timeSyncServer(tempo::Clock *clock);
 
 	// listenForNewClients
-	// WARNING: Should be run on separate thread.
-	// Listens for and orchestrates initialisation of new clients on 
+	// Checks for and orchestrates initialisation of new clients on 
 	// `port_sh`.
 	//
 	// TODO: Write parameters
 	//
 	// Returns:
 	//         void (is a thread)
-	void listenForNewClients(anax::World *world, SystemLevelManager system_grid_motion);
+	void checkForNewClients(anax::World *world);
 
 	// listenForClientUpdates
 	// WARNING: Should be run on separate thread.
@@ -79,7 +78,11 @@ namespace tempo
 	//         such client exists.
 	uint32_t findClientID(sf::Uint32 ip, unsigned short port);
 
-	bool sendMessage(tempo::SystemQID id, 
+	bool sendMessage(tempo::QueueID id, sf::Packet p);
+
+	bool broadcastMessage(tempo::QueueID, sf::Packet p);
+
+	bool sendMessage(tempo::QueueID id, 
                          sf::Packet payload, 
                          uint32_t client_id);
 }

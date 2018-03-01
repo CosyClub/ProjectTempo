@@ -20,6 +20,7 @@ namespace tempo
 		void set_volume(float volume); // Volume from 0 - 100
 		void inc_volume(float volume);
 		void dec_volume(float volume);
+		void next_beat();
 
 		private:
 		sf::SoundBuffer buffer;

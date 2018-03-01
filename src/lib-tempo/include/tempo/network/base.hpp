@@ -1,14 +1,17 @@
 #ifndef TEMPO_NETWORK_BASE_HPP
 #define TEMPO_NETWORK_BASE_HPP
 
-#include <tempo/entity/SystemQID.hpp>
-#include <tempo/entity/SystemQID.hpp>
+#include <anax/World.hpp>
+
 #include <tempo/network/queue.hpp>
-#include <tempo/network/queue.hpp>
+#include <tempo/network/QueueID.hpp>
 #include <tempo/structures.hpp>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
+
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 
 #include <iostream>
 
@@ -19,17 +22,17 @@ namespace tempo
 
 	// Default Address
 	#define DEFAULT_ADDR "0.0.0.0"
-	// Default Port for Hand Shake (HS) protocol
-	#define DEFAULT_PORT_HS  1337
 	// Default Port for Incoming Socket
-        #define DEFAULT_PORT_IN  1338
+        #define DEFAULT_PORT_IN  1337
 	// Default Port for the Outgoing Socket
-	#define DEFAULT_PORT_OUT 1339
+	#define DEFAULT_PORT_OUT 1338
 	// Default Port for Time Sync (TS) protocol
-	#define DEFAULT_PORT_TS  1340
+	#define DEFAULT_PORT_TS  1339
 
 	// Wait time for time sync protocol (millisecs)
-	#define TIMESYNC_DELTA 500
+	#define TIMESYNC_DELTA 100
+	// Number of times to repeat time sync exchange
+	#define TIMESYNC_ITERS 10
 
 	// Reserved client ID for a null client
 	#define NO_CLIENT_ID 0
@@ -37,8 +40,6 @@ namespace tempo
 
 	////////////////////////////////////////////////////////////////////////
 	/// Client ID & Roles
-	
-	static uint32_t clientID = NO_CLIENT_ID;
 	
 	// Enum with all possible client roles.
 	enum ClientRole {
@@ -68,16 +69,14 @@ namespace tempo
 	/// Sockets & IP Addresses & Ports
 	extern sf::UdpSocket sock_i;  // Incoming  Socket
 	extern sf::UdpSocket sock_o;  // Outgoing  Socket
-	extern sf::UdpSocket sock_h;  // Handshake Socket (Server only)
 	// TCP Time Sync Sockets dealt with in functions dynamically
 
 	static sf::IpAddress addr_l = sf::IpAddress::getLocalAddress();
 	extern sf::IpAddress addr_r;  // Remote Address
 	extern unsigned short port_ci;  // Client Incoming Port
 	extern unsigned short port_co;  // Client Outgoing Port
-	extern unsigned short port_sh;  // Server Hand Shake Port (Primary Port)
 	extern unsigned short port_si;  // Server Incoming Port
-	extern unsigned short port_so;  // Server OutGoing Port
+	extern unsigned short port_so;  // Server Outgoing Port
 	extern unsigned short port_st;  // Server Time Sync Port
 
 	////////////////////////////////////////////////////////////////////////
@@ -150,6 +149,30 @@ namespace tempo
 	// 	sf::Packet p >> tempo::ClientRoleData c
 	sf::Packet& operator <<(sf::Packet &p, const ClientRoleData &c);
 	sf::Packet& operator >>(sf::Packet &p, ClientRoleData &c);
+
+	sf::Packet& operator <<(sf::Packet& packet, const anax::Entity::Id id);
+	sf::Packet& operator >>(sf::Packet& packet, anax::Entity::Id& id);
+
+	sf::Packet& operator <<(sf::Packet& packet, const sf::Time &t);
+	sf::Packet& operator >>(sf::Packet& packet, sf::Time& t);
+
+	sf::Packet& operator <<(sf::Packet& packet, const glm::vec2 &v);
+	sf::Packet& operator >>(sf::Packet& packet, glm::vec2& v);
+
+	sf::Packet& operator <<(sf::Packet& packet, const glm::ivec2 &v);
+	sf::Packet& operator >>(sf::Packet& packet, glm::ivec2& v);
+
+	sf::Packet& operator <<(sf::Packet& packet, const glm::vec3 &v);
+	sf::Packet& operator >>(sf::Packet& packet, glm::vec3& v);
+
+	sf::Packet& operator <<(sf::Packet& packet, const glm::ivec3 &v);
+	sf::Packet& operator >>(sf::Packet& packet, glm::ivec3& v);
+
+	sf::Packet splitPacket(sf::Packet& packet, uint32_t size);
+
+	extern bool sendMessage(tempo::QueueID id, sf::Packet p);
+	extern bool broadcastMessage(tempo::QueueID id, sf::Packet p);
+
 
 }
 

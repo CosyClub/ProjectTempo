@@ -1,98 +1,108 @@
 #include <tempo/entity/EntityCreation.hpp>
 
+#include <tempo/component/NetworkedComponent.hpp>
+#include <tempo/component/ComponentAOEIndicator.hpp>
+#include <tempo/component/ComponentCombo.hpp>
+#include <tempo/component/ComponentGridAi.hpp>
+#include <tempo/component/ComponentHealth.hpp>
+#include <tempo/component/ComponentModel.hpp>
+#include <tempo/component/ComponentPlayerLocal.hpp>
+#include <tempo/component/ComponentPlayerRemote.hpp>
+#include <tempo/component/ComponentStage.hpp>
+#include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
+#include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentWeapon.hpp>
+
+#include <tempo/network/base.hpp>
+
+#include <glm/fwd.hpp>
+#include <glm/vec2.hpp>
+
+#include <iostream>
+
+#include <cassert>
+
+#define CASE(NAME, CID)                                              \
+	case ComponentID::CID :                                      \
+		if (!e.hasComponent<NAME>()) {                       \
+			e.addComponent<NAME>(part);                  \
+		} else {                                             \
+			std::cout << "Warning: Reinstanciation of "  \
+				  << "" #NAME                        \
+				  << std::endl;                      \
+		}                                                    \
+		break;
+
 namespace tempo
 {
 
-/* EntityCreationData* newEntity(EID type_id, Vec2s pos){ */
-
-/* 	EntityCreationData* entity = new EntityCreationData; */
-/* 	entity->type_id = type_id; */
-/* 	entity->position = pos; */
-
-/* 	switch (entity->type_id){ */
-/* 		case EID_PLAYER: */
-/* 			entity->entity_type.player.some_data_for_player = EID_PLAYER; */
-/* 			printf("\n\n\n\n%d\n\n\n\n\n", entity->entity_type.player.some_data_for_player); */
-/* 			break; */
-/* 		case EID_AI: */
-/* 			entity->entity_type.ai.some_data_for_ai = EID_AI; */
-/* 			printf("\n\n\n\n%d\n\n\n\n\n", entity->entity_type.ai.some_data_for_ai); */
-/* 			break; */
-/* 		case EID_DES: */
-/* 			entity->entity_type.destroyable.some_data_for_destroyable = EID_DES; */
-/* 			printf("\n\n\n\n%d\n\n\n\n\n", entity->entity_type.destroyable.some_data_for_destroyable); */
-/* 			break; */
-/* 		case EID_NONDES: */
-/* 			entity->entity_type.nondestroyable.some_data_for_nondestroyable = EID_NONDES; */
-/* 			printf("\n\n\n\n%d\n\n\n\n\n", entity->entity_type.nondestroyable.some_data_for_nondestroyable); */
-/* 			break; */
-/* 		default: printf("Missed all\n"); */
-/* 	} */
-
-/* 	return entity; */
-/* } */
-
-sf::Packet& operator <<(sf::Packet& packet, const EntityCreationData& data)
+anax::Entity addComponent(anax::World& w, sf::Packet p)
 {
-	packet << data.type_id;
-	packet << data.position;
-	packet << data.instance_id;
-	packet << data.entity_type;
-	return packet;
-}
+	anax::Entity::Id id;
+	anax::Entity::Id localid;
+	anax::Entity e;
+	tempo::ComponentID component_id;
 
-sf::Packet& operator <<(sf::Packet& packet, const Entity_Type& type)
-{
-	uint8_t *data = (uint8_t*)(&type);
-
-	for (int I = 0; I < sizeof(Entity_Type); I++)
-	{
-		packet << data[I];
+	p >> id;
+	auto a = servertolocal.find(id);
+	if (a == servertolocal.end()) {
+		//Looks like it's a new one
+		std::cout << "Recieved New Entity with server ID " << id.index
+		          << std::endl;
+		e = w.createEntity();
+		localid = e.getId();
+		servertolocal.emplace(id, localid);
+		localtoserver.emplace(localid, id);
+		e.activate();
+	} else {
+		std::cout << "Using current Entity with server ID " << id.index 
+		          << std::endl;
+		localid = a->second;
+		e = anax::Entity(w, localid);
+		e.activate();
 	}
 
-	return packet;
-}
+	while (!p.endOfPacket()) {
+		uint32_t size = 0;
+		p >> size;
+		std::cout << "Splitting packet to size " << size << std::endl;
+		sf::Packet part = splitPacket(p, size);
 
-sf::Packet& operator <<(sf::Packet& packet, const glm::vec2& vec)
-{
-	packet << vec.x;
-	packet << vec.y;
+		part >> component_id;
+		std::cout << "Adding Component with ID " << component_id << std::endl;
+		switch (component_id) {
 
-	return packet;
-}
+		// Put new Components in here	
+		CASE(ComponentAOEIndicator, AOEINDICATOR)
+		CASE(ComponentCombo, COMBO)
+		CASE(ComponentGridAi, GRID_AI)
+		CASE(ComponentHealth, HEALTH)
+		CASE(ComponentModel, MODEL)
+		CASE(ComponentPlayerLocal, PLAYER_LOCAL)
+		CASE(ComponentPlayerRemote, PLAYER_REMOTE)
+		CASE(ComponentStage, STAGE)
+		CASE(ComponentStagePosition, STAGE_POSITION)
+		CASE(ComponentStageRotation, STAGE_ROTATION)
+		CASE(ComponentStageTranslation, STAGE_TRANSLATION)
+		CASE(ComponentWeapon, WEAPON)
 
-sf::Packet& operator >>(sf::Packet& packet, EntityCreationData& data)
-{
-	int tmp;
-
-	packet >> tmp;
-	data.type_id = (EID)tmp;
-	packet >> data.position;
-	packet >> data.instance_id;
-	packet >> data.entity_type;
-	return packet;
-}
-
-sf::Packet& operator >>(sf::Packet& packet, Entity_Type& type)
-{
-	uint8_t *data = (uint8_t*)(&type);
-
-	uint8_t c;
-	for (int I = 0; I < sizeof(Entity_Type); I++)
-	{
-		packet >> c;
-		data[I] = c;
+		//End of new Component Zone
+		default :
+			std::cout << "WARNING: Unimplemented deserialisation of"
+				     " recieved component occured, ignoring." 
+			          << std::endl;
+			assert(false);
+		}
 	}
 
-	return packet;
+	e.activate();	
+	std::cout << "Finished processing Entity with server ID " << id.index 
+	          << " and " << e.getComponentTypeList().count()
+	          << " components and validity " 
+	          << e.isValid() << std::endl;
+
+	return e;
 }
 
-sf::Packet& operator >>(sf::Packet& packet, glm::vec2& vec)
-{
-	packet >> vec.x;
-	packet >> vec.y;
-
-	return packet;
-}
-
-}
+} // namespace tempo
