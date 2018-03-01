@@ -25,35 +25,32 @@ namespace client {
 
 	private:
 		inline void checkerBoardPattern(irr::video::IVideoDriver*  driver,
-													   irr::scene::IMeshSceneNode* node,
-	 												   irr::video::SMaterial& material_side,
-													   irr::video::SMaterial& material_top,
-														 glm::ivec4 colour1,
-														 glm::ivec4 colour2,
-														 int i,
-												     int j);
+		                                irr::scene::IMeshSceneNode* node,
+	                                        irr::video::SMaterial& material_top,
+		                                glm::ivec4 colour1,
+		                                glm::ivec4 colour2,
+		                                int i,
+		                                int j);
 
-	 inline void linePattern(irr::video::IVideoDriver*  driver,
-										irr::scene::IMeshSceneNode* node,
-										irr::video::SMaterial& material_side,
-										irr::video::SMaterial& material_top,
-										glm::ivec4 colour1,
-										glm::ivec4 colour2,
-										int orientation,
-										int size,
-										int i,
-										int j);
+		inline void linePattern(irr::video::IVideoDriver*  driver,
+		                        irr::scene::IMeshSceneNode* node,
+		                        irr::video::SMaterial& material_top,
+		                        glm::ivec4 colour1,
+		                        glm::ivec4 colour2,
+		                        int orientation,
+		                        int size,
+		                        int i,
+		                        int j);
 
-	inline void squarePattern(irr::video::IVideoDriver*  driver,
-										 irr::scene::IMeshSceneNode* node,
-										 irr::video::SMaterial& material_side,
-										 irr::video::SMaterial& material_top,
-										 glm::ivec4 colour1,
-										 glm::ivec4 colour2,
-										 int orientation,
-										 int size,
-										 int i,
-										 int j);
+		inline void squarePattern(irr::video::IVideoDriver*  driver,
+		                          irr::scene::IMeshSceneNode* node,
+		                          irr::video::SMaterial& material_top,
+		                          glm::ivec4 colour1,
+		                          glm::ivec4 colour2,
+		                          int orientation,
+		                          int size,
+		                          int i,
+		                          int j);
 
 	};
 } // namespace client

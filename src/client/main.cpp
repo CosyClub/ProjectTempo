@@ -282,11 +282,11 @@ int main(int argc, const char** argv){
 
 			j++;
 			j = j % 22;
-			sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
+			// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
 			system_stage_renderer.updateStage({255,175,0,0},{255,50,50,50}, driver, j);
-			sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
-			std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
-			          << std::endl;
+			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
+			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
+			          // << std::endl;
 
 			system_grid_ai.update();
 		}
