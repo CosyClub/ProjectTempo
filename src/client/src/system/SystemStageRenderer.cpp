@@ -20,6 +20,9 @@ namespace {
 
 		client::stage_nodes temp_nodes;
 
+		irr::video::ITexture* wall_diffuse_map = driver->getTexture("resources/materials/walls/cobblestone.png");
+		irr::video::ITexture* wall_normal_map  = driver->getTexture("resources/materials/walls/cobblestone_n.png");
+
 	  for(unsigned int i = 0; i < tiles.size(); ++i){
 
 		  irr::scene::IMeshSceneNode* node = smgr->addMeshSceneNode(mesh, 0);
@@ -33,8 +36,14 @@ namespace {
 		  node->setPosition(irr::core::vector3df(grid_x, height, grid_y));
 			node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
 
+		  printf("Floor mat count: %i\n", node->getMaterialCount());
+
 		  irr::video::SMaterial& material_side = node->getMaterial(0);
 		  irr::video::SMaterial& material_top  = node->getMaterial(1);
+
+		  material_side.setTexture(0, wall_diffuse_map);
+		  material_side.setTexture(1, wall_normal_map);
+		  material_side.MaterialType = irr::video::EMT_NORMAL_MAP_SOLID;
 
 		  material_top.Shininess = 0.0f;
 		  material_top.SpecularColor.set(255, 0, 0, 0);
@@ -84,57 +93,51 @@ namespace client {
 				irr::video::SMaterial& material_top  = node->getMaterial(1);
 
 				material_top.Shininess = 0.0f;
-			  material_top.SpecularColor.set(255, 0, 0, 0);
-			  material_top.DiffuseColor.set(255, 200,   0,   0);
+				material_top.SpecularColor.set(255, 0, 0, 0);
+				material_top.DiffuseColor.set(255, 200,   0,   0);
 
-			switch (j) {
-			case 0:
-			case 1:
-			case 2:
-			case 3:
-			case 9:
-			case 10:
-			case 11:
-			case 12: {
-				checkerBoardPattern(driver, node, material_side, material_top, colour1, colour2, i, j);
-				break;
-			}
-			case 4:
-			case 5:
-			case 6:
-			case 7:
-			case 8:
-			 {
-				linePattern(driver, node, material_side, material_top, colour1, colour2, 0, 5, i, j-4);
-				break;
-			}
-			case 13:
-			case 14:
-			case 15:
-			case 16:
-			case 17: {
-				linePattern(driver, node, material_side, material_top, colour1, colour2, 1, 5, i, j-13);
-				break;
-			}
-			case 18:
-			case 19:
-			case 20:
-			case 21: {
-				squarePattern(driver, node, material_side, material_top, colour1, colour2, 1, 12, i, j);
-				break;
-			}
-		 }
+				switch (j) {
+				case 0:
+				case 1:
+				case 2:
+				case 3:
+				case 9:
+				case 10:
+				case 11:
+				case 12: 
+					checkerBoardPattern(driver, node, material_top, colour1, colour2, i, j);
+					break;
+				case 4:
+				case 5:
+				case 6:
+				case 7:
+				case 8:	
+					linePattern(driver, node, material_top, colour1, colour2, 0, 5, i, j-4);
+					break;
+				case 13:
+				case 14:
+				case 15:
+				case 16:
+				case 17: 
+					linePattern(driver, node, material_top, colour1, colour2, 1, 5, i, j-13);
+					break;
+				case 18:
+				case 19:
+				case 20:
+				case 21:
+					squarePattern(driver, node, material_top, colour1, colour2, 1, 12, i, j);
+					break;
+				}
 		}
 	}
 
 	inline void SystemStageRenderer::checkerBoardPattern(irr::video::IVideoDriver*  driver,
-																							  irr::scene::IMeshSceneNode* node,
-											 												  irr::video::SMaterial& material_side,
-																							  irr::video::SMaterial& material_top,
-																								glm::ivec4 colour1,
-																								glm::ivec4 colour2,
-																								int i,
-																						    int j) {
+	                                                     irr::scene::IMeshSceneNode* node,
+	                                                     irr::video::SMaterial& material_top,
+	                                                     glm::ivec4 colour1,
+	                                                     glm::ivec4 colour2,
+	                                                     int i,
+	                                                     int j) {
 
 		if(((int)(std::get<0>(this->tile_nodes[i]).x  % 2) == (int)(std::get<0>(this->tile_nodes[i]).y % 2)) ^ (j % 2)) {
 			//node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
@@ -148,15 +151,14 @@ namespace client {
 
 
 	inline void SystemStageRenderer::linePattern(irr::video::IVideoDriver*  driver,
-																				irr::scene::IMeshSceneNode* node,
-																				irr::video::SMaterial& material_side,
-																				irr::video::SMaterial& material_top,
-																				glm::ivec4 colour1,
-																				glm::ivec4 colour2,
-																				int orientation,
-																				int size,
-																				int i,
-																				int j) {
+	                                             irr::scene::IMeshSceneNode* node,
+	                                             irr::video::SMaterial& material_top,
+	                                             glm::ivec4 colour1,
+	                                             glm::ivec4 colour2,
+	                                             int orientation,
+	                                             int size,
+	                                             int i,
+	                                             int j) {
 
 	if((int)!(std::get<0>(this->tile_nodes[i])[orientation] % size == j)){
 		//node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
@@ -168,15 +170,14 @@ namespace client {
 }
 
 	inline void SystemStageRenderer::squarePattern(irr::video::IVideoDriver*  driver,
-																					irr::scene::IMeshSceneNode* node,
-																					irr::video::SMaterial& material_side,
-																					irr::video::SMaterial& material_top,
-																					glm::ivec4 colour1,
-																					glm::ivec4 colour2,
-																					int orientation,
-																					int size,
-																					int i,
-																					int j) {
+	                                               irr::scene::IMeshSceneNode* node,
+	                                               irr::video::SMaterial& material_top,
+	                                               glm::ivec4 colour1,
+	                                               glm::ivec4 colour2,
+	                                               int orientation,
+	                                               int size,
+	                                               int i,
+	                                               int j) {
 
   glm::ivec2 centrePoint;
 	centrePoint.x = std::get<0>(this->tile_nodes[i]).x - std::get<0>(this->tile_nodes[i]).x % size + size / 2;
