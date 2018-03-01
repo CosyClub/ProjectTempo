@@ -15,6 +15,12 @@ set (CMAKE_CXX_STANDARD 11)
 # :TODO: have some way of configuring this
 set(CMAKE_BUILD_TYPE Debug)
 
+cmake_host_system_information(RESULT TEMPO_MACHINE_HOSTNAME QUERY HOSTNAME)
+if(${TEMPO_MACHINE_HOSTNAME} MATCHES "it[0-9]+.users.bris.ac.uk")
+	message("*** WE ARE BUILDING ON A LAB MACHINE ***")
+	set(TEMPO_BUILD_LAB ON)
+endif()
+
 set(TEMPO_LIB_DIR "${CMAKE_CURRENT_LIST_DIR}/lib")
 set(TEMPO_BIN_DIR "${CMAKE_CURRENT_LIST_DIR}/bin")
 set(TEMPO_EXTLIBS_DIR "${CMAKE_CURRENT_LIST_DIR}/extlibs")
