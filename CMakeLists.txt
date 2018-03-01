@@ -10,10 +10,29 @@ set(CMAKE_MODULE_PATH
 
 #Support YCM completion for Raef and Anthony
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set (CMAKE_CXX_STANDARD 11)
+
+# Force c++ 11 standard
+macro(use_cxx11)
+	if (CMAKE_VERSION VERSION_LESS "3.1")
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+      set (CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
+ 		else ()
+ 			message(FATAL_ERROR "Unable to enable c++11 support on this platform!")
+    endif ()
+  else ()
+    set (CMAKE_CXX_STANDARD 11)
+  endif ()
+endmacro(use_cxx11)
+use_cxx11()
 
 # :TODO: have some way of configuring this
 set(CMAKE_BUILD_TYPE Debug)
+
+cmake_host_system_information(RESULT TEMPO_MACHINE_HOSTNAME QUERY HOSTNAME)
+if(${TEMPO_MACHINE_HOSTNAME} MATCHES "it[0-9]+.users.bris.ac.uk")
+	message("*** WE ARE BUILDING ON A LAB MACHINE ***")
+	set(TEMPO_BUILD_LAB ON)
+endif()
 
 set(TEMPO_LIB_DIR "${CMAKE_CURRENT_LIST_DIR}/lib")
 set(TEMPO_BIN_DIR "${CMAKE_CURRENT_LIST_DIR}/bin")
