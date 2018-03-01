@@ -1,6 +1,29 @@
 ##########################################
 # SFML
 ##########################################
+# Setup SFML's audio dependencies correctly on lab machines
+if (TEMPO_BUILD_LAB)
+	message("*** LAB MACHINE: Overriding default audio dependencies")
+	execute_process(COMMAND cmake -E tar xf lab-audio-dependencies.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+
+	set(FIND_LIBRARY_USE_LIB64_PATHS ON)
+	find_package(OPENAL QUIET)
+	find_package(VORBIS QUIET)
+	find_package(FLAC QUIET)
+
+	set(OPENAL_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/lab-audio-dependencies/include/openal/AL")
+	set(OPENAL_LIBRARY "/usr/lib64/libopenal.so.1.16.0")
+
+	set(VORBIS_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/lab-audio-dependencies/include/vorbis")
+	set(OGG_INCLUDE_DIR    "${CMAKE_CURRENT_LIST_DIR}/lab-audio-dependencies/include/ogg"   )
+	set(VORBISFILE_LIBRARY "/usr/lib64/libvorbisfile.so.3.3.5")
+	set(VORBISENC_LIBRARY  "/usr/lib64/libvorbisenc.so.2.0.9" )
+	set(VORBIS_LIBRARY     "/usr/lib64/libvorbis.so.0.4.6"    )
+	set(OGG_LIBRARY        "/usr/lib64/libogg.so.0.8.0"       )
+
+	set(FLAC_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/lab-audio-dependencies/include/flac")
+	set(FLAC_LIBRARY     "${CMAKE_CURRENT_LIST_DIR}/lab-audio-dependencies/lib64/libFLAC.so")
+endif()
 # Extract archive
 execute_process(COMMAND cmake -E tar xf SFML-2.4.2.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 # Build libraries
