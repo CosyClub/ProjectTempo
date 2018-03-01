@@ -30,20 +30,21 @@ namespace client {
 				// irr::scene::IMesh *mesh = smgr->getMesh(path);
 				std::cout << m.path << std::endl;
 				std::cout << path.c_str() << std::endl;
-				// irr::scene::IMeshSceneNode *meshNode = smgr->addMeshSceneNode(mesh, 
+				// irr::scene::IMeshSceneNode *meshNode = smgr->addMeshSceneNode(mesh,
 				//                                                               sn.node);
 			}
 			else{
 			std::cout << "Adding billboard" << std::endl;
 			sn.node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
-			// irr::scene::IBillboardSceneNode* billboard = 
-			smgr->addBillboardSceneNode(
+			 irr::scene::IBillboardSceneNode* billboard =
+			 smgr->addBillboardSceneNode(
 				sn.node,
 				size,
 				pos, // fix alignment
 				-1,
 				color,
 				color);
+			 billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 			}
 		}
 
