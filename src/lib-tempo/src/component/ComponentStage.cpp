@@ -2,31 +2,40 @@
 
 #include <glm/vec2.hpp>
 
-#include <SDL.h>
-#undef main // SDL defines main, but why do we need to do this?
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.hpp>
+
+#include <cstdio>
+#include <stdint.h>
 
 namespace tempo {
 
 void ComponentStage::loadLevel(const char* stage_file)
 {
-	SDL_Surface* level = SDL_LoadBMP(stage_file);
+	int width, height, components;
 
-	// Load tiles, this can only handles stage_files in positive ZZ
-	for (int y = 0; y < level->h; y++) {
-		for (int x = 0; x < level->w; x++) {
-			int bpp = level->format->BytesPerPixel;
-			// Here p is the address to the pixel we want to retrieve
-			Uint8 *p = (Uint8 *)level->pixels + y
-			                  * level->pitch + x * bpp;
-			uint32_t pixel = 0;
-			pixel = *p;
+	uint8_t* pixel_data = (uint8_t*)stbi_load(stage_file, &width, &height, &components, 4);
+	if(pixel_data == NULL || width < 0 || height < 0 || components < 0){
+		printf("Failed to load level '%s', pixels: %p, width: %i, height: %i, components: %i\n",
+		       stage_file, pixel_data, width, height, components);
+		return;
+	}
 
-			if (pixel > 0) {
-				int height = (int)(pixel - 127) / 25.6;
+	// Load the new tiles
+	for (int y = 0; y < height; y++) {
+		int base = width * y * 4;
+		for (int x = 0; x < width; x++) {
+
+			uint8_t* pixel = &pixel_data[base + x*4];
+
+			if (pixel[0] > 0) {
+				int height = (int)(pixel[0] - 127) / 25.6;
 				tiles.push_back(std::make_tuple(glm::ivec2(y,x), height));
 			}
 		}
 	}
+
+	stbi_image_free(pixel_data);
 }
 
 ComponentStage::ComponentStage(const char* stage_file)

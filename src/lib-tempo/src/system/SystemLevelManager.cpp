@@ -5,11 +5,10 @@
 #include <glm/glm.hpp>
 #include <glm/vec2.hpp>
 
-#define STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image.hpp>
 
 #include <iostream>
+#include <stdint.h>
 
 namespace tempo{
 	// SystemLevelManager
@@ -81,9 +80,10 @@ namespace tempo{
 	void SystemLevelManager::loadLevel(const char* fileName) {
 		int width, height, components;
 
-		Uint8* pixel_data = (Uint8*)stbi_load(fileName, &width, &height, &components, 1);
-		if(pixel_data == NULL || width < 0 || height < 0 || components != 1){
-			std::cout << "Failed to load level: " << fileName << std::endl;
+		uint8_t* pixel_data = (uint8_t*)stbi_load(fileName, &width, &height, &components, 4);
+		if(pixel_data == NULL || width < 0 || height < 0 || components < 0){
+			printf("Failed to load level '%s', pixels: %p, width: %i, height: %i, components: %i\n",
+			       fileName, pixel_data, width, height, components);
 			return;
 		}
 
@@ -96,13 +96,13 @@ namespace tempo{
 
 		// Load the new tiles
 		for (int y = 0; y < height; y++) {
-			int base = width * y;
+			int base = width * y * 4;
 			for (int x = 0; x < width; x++) {
 
-				Uint8 p = pixel_data[base + x];
+				uint8_t* pixel = &pixel_data[base + x*4];
 
-				if(p > 0){
-					int height = (int) (p - 127) / 25.6f;
+				if(pixel[0] > 0){
+					int height = (int) (pixel[0] - 127) / 25.6f;
 					this->tile_heights[y][x] = height;
 				}
 			}
@@ -112,20 +112,20 @@ namespace tempo{
 	}
 
 	void SystemLevelManager::loadZones(const char* fileName) {
+		int width, height, components;
 
-		SDL_Surface* level = SDL_LoadBMP(fileName);
+		uint8_t* pixel_data = (uint8_t*)stbi_load(fileName, &width, &height, &components, 4);
+		if(pixel_data == NULL || width < 0 || height < 0 || components != 4){
+			printf("Failed to load level zones '%s', pixels: %p, width: %i, height: %i, components: %i\n",
+			       fileName, pixel_data, width, height, components);
+			return;
+		}
 
-		for (int y = 0; y < level->h; y++) {
-			for (int x = 0; x < level->w; x++) {
+		for (int y = 0; y < height; y++) {
+			int base = width * y * 4; // 4 since 4 color channels
+			for (int x = 0; x < width; x++) {
 
-				int bpp = level->format->BytesPerPixel;
-				/* Here p is the address to the pixel we want to retrieve */
-				Uint8 *p = (Uint8 *)level->pixels + y * level->pitch + x * bpp;
-				// uint32_t pixel = 0;
-
-				// pixel = p[0] | p[1] << 8 | p[2] << 16;
-
-				//std::cout << (int) p[0]<<" "<<(int) p[1]<<" "<< (int) p[2]<<std::endl;
+				uint8_t* p = &pixel_data[base + x*4];
 
 				if (p[1] > 250) {
 					this->player_spawn_zone[spawn_zones] = {x,y};
@@ -134,6 +134,7 @@ namespace tempo{
 			}
 		}
 
+		stbi_image_free(pixel_data);
 	}
 
 	glm::vec2 SystemLevelManager::spawn() {
