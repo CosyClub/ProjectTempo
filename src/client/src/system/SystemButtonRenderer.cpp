@@ -20,7 +20,7 @@ namespace client {
 		auto entities = getEntities();
 
 		if(entities.size() == 0){
-			printf("\nThats a problem\n");
+			printf("\nThere does not seem to be any buttons\n");
 		}
 
 		for (auto& entity : entities) {
@@ -77,21 +77,17 @@ namespace client {
 
 			if(!group.groupTriggered){
 
-				printf("\n\nGroup is not triggered\n");
-
 			bool tempTriggered = true;
 
 			for (int i=0; i < buttons.size(); i++){
 
 				if(buttons[i].triggered == true){
-					printf("\n\nThis button seems to be triggered\n\n");
 					buttonRend[i].button->setPosition(irr::core::vector3df(buttons[i].pos.x, -0.1, buttons[i].pos.y));
 					irr::video::SMaterial& material_button  = buttonRend[i].button->getMaterial(0);
 					material_button.Shininess = 0.0f;
 					material_button.EmissiveColor.set(255, 0, 255, 0);
 				}
 				else{
-					printf("\n\nThis button seems to be not triggered\n\n");
 					tempTriggered = false;
 					buttonRend[i].button->setPosition(irr::core::vector3df(buttons[i].pos.x, 0, buttons[i].pos.y));
 					irr::video::SMaterial& material_button  = buttonRend[i].button->getMaterial(0);
@@ -100,14 +96,12 @@ namespace client {
 				}
 			}
 			if(tempTriggered){
-				printf("It has decided to Group Trigger....\n\n\n");
 				group.groupTriggered = true;
 			}
 		}
 
 		else{
 			for (int i=0; i < buttons.size(); i++){
-				printf("\n\nRendButton 108\n\n");
 				buttons[i].triggered == true;
 				buttonRend[i].button->setPosition(irr::core::vector3df(buttons[i].pos.x, -0.1, buttons[i].pos.y));
 				irr::video::SMaterial& material_button  = buttonRend[i].button->getMaterial(0);

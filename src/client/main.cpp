@@ -282,6 +282,7 @@ int main(int argc, const char** argv){
 	frame_clock.restart();
 	update_floor_clock.restart();
 
+	//buttons
 	anax::Entity entity_button  = createButtonGroup(world, {{8,8},{9,9}});
 	world.refresh();
 	system_button_renderer.setup(smgr, driver);

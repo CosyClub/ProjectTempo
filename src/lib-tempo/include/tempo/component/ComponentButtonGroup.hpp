@@ -17,6 +17,7 @@ namespace tempo {
 
 struct ComponentButtonGroup : anax::Component {
 
+	//This is a deque so that it is possible to push_front
 	std::deque<button> buttons;
 
 	bool groupTriggered = false;
