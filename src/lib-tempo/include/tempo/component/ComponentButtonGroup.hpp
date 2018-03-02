@@ -11,7 +11,7 @@ namespace tempo {
 
 	struct button {
 		glm::ivec2 pos;
-		bool triggered;
+		bool triggered = false;
 		int combo_req;
 	};
 

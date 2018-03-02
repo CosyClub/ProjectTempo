@@ -283,8 +283,8 @@ int main(int argc, const char** argv){
 	update_floor_clock.restart();
 
 	anax::Entity entity_button  = createButtonGroup(world, {{8,8},{9,9}});
-	system_button_renderer.setup(smgr, driver);
 	world.refresh();
+	system_button_renderer.setup(smgr, driver);
 
 	printf("Entering main loop\n");
 	while(device->run()){
@@ -308,6 +308,8 @@ int main(int argc, const char** argv){
 			j = j % 22;
 			// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
 			system_stage_renderer.updateStage({255,175,0,0},{255,50,50,50}, driver, j);
+			system_trigger.updateButtons();
+			system_button_renderer.updateButtons(driver);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			          // << std::endl;
@@ -343,9 +345,6 @@ int main(int argc, const char** argv){
 			// Deprecated/To-be-worked-on
 			system_attack.Recieve(world);
 			system_health.CheckHealth();
-
-			system_button_renderer.updateButtons(driver);
-			system_trigger.updateButtons();
 
 			// Graphics updates
 			system_render_scene_node.update();

@@ -12,7 +12,7 @@
 
 namespace client {
 
-	// Initalises all rendering for the static stage
+	// Initalises all rendering for buttons
 	class SystemButtonRenderer : public anax::System<anax::Requires<tempo::ComponentButtonGroup,
 																																	client::ComponentRenderButtonGroup>> {
 	public:
