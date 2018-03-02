@@ -18,10 +18,6 @@
 
 #include <time.h>
 #include <limits>
-#include <iostream> //TODO do we really need to print things here
-#include <SDL.h>
-
-#undef main // SDL likes to define main
 
 namespace tempo{
 	class SystemLevelManager;
