@@ -5,6 +5,12 @@
 #include <glm/glm.hpp>
 #include <glm/vec2.hpp>
 
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image.hpp>
+
+#include <iostream>
+
 namespace tempo{
 	// SystemLevelManager
 	SystemLevelManager::SystemLevelManager(anax::World& world, int size)
@@ -51,7 +57,7 @@ namespace tempo{
 		if (existsTile(position)) {
 			tile_heights[position.x][position.y] = height;
 		} else {
-			std::cout <<" Can't set height to non-existent tile";
+			std::cout <<"Can't set height to non-existent tile" << std::endl;
 		}
 	}
 
@@ -68,13 +74,18 @@ namespace tempo{
 			return tile_heights[x][y];
 		} else {
 			return NO_TILE;
-			std::cout <<" Can't get height of non-existent tile";
+			std::cout <<"Can't get height of non-existent tile" << std::endl;
 		}
 	}
 
 	void SystemLevelManager::loadLevel(const char* fileName) {
+		int width, height, components;
 
-		SDL_Surface* level = SDL_LoadBMP(fileName);
+		Uint8* pixel_data = (Uint8*)stbi_load(fileName, &width, &height, &components, 1);
+		if(pixel_data == NULL || width < 0 || height < 0 || components != 1){
+			std::cout << "Failed to load level: " << fileName << std::endl;
+			return;
+		}
 
 		// Clear out any existing tiles
 		for(unsigned int x = 0; x < tile_heights.size(); ++x){
@@ -84,22 +95,20 @@ namespace tempo{
 		}
 
 		// Load the new tiles
-		for (int y = 0; y < level->h; y++) {
-			for (int x = 0; x < level->w; x++) {
+		for (int y = 0; y < height; y++) {
+			int base = width * y;
+			for (int x = 0; x < width; x++) {
 
-				int bpp = level->format->BytesPerPixel;
-				/* Here p is the address to the pixel we want to retrieve */
-				Uint8 *p = (Uint8 *)level->pixels + y * level->pitch + x * bpp;
-				uint32_t pixel = 0;
+				Uint8 p = pixel_data[base + x];
 
-				pixel = *p;
-
-				if (pixel > 0) {
-					int height = (int) (pixel - 127) / 25.6;
+				if(p > 0){
+					int height = (int) (p - 127) / 25.6f;
 					this->tile_heights[y][x] = height;
 				}
 			}
 		}
+
+		stbi_image_free(pixel_data);
 	}
 
 	void SystemLevelManager::loadZones(const char* fileName) {
@@ -148,10 +157,10 @@ namespace tempo{
 			auto& gm = entity.getComponent<ComponentStageTranslation>();
 
 			glm::vec2 target_tile = pos.getOccupied()[0] + gm.delta;
-			
+
 			bool can_make_move = true;
 
-			if (!existsTile(target_tile)) { 
+			if (!existsTile(target_tile)) {
 				std::cout << "Tile does not exist!\n";
 				can_make_move = false;
 			}
@@ -163,7 +172,7 @@ namespace tempo{
 				auto& pos_candidate = collision_candidate.getComponent<ComponentStagePosition>();
 
 				// (NAH) ETHEREAL CHECK
-				
+
 				// Terrible hack sorry lads
 				if ((pos.getOccupied()[0] + gm.delta).x == pos_candidate.getOccupied()[0].x &&
 				    (pos.getOccupied()[0] + gm.delta).y == pos_candidate.getOccupied()[0].y) {

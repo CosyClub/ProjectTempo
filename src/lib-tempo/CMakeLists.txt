@@ -88,6 +88,7 @@ add_library(lib_tempo STATIC
 
 target_include_directories(lib_tempo PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
 target_include_directories(lib_tempo PRIVATE ${TEMPO_SDL2_INCLUDE_DIR})
+target_include_directories(lib_tempo PRIVATE ${TEMPO_STB_INCLUDE_DIR})
 target_include_directories(lib_tempo PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
 target_include_directories(lib_tempo PRIVATE ${TEMPO_ANAX_INCLUDE_DIR})
 target_include_directories(lib_tempo PRIVATE ${TEMPO_GLM_INCLUDE_DIR})
