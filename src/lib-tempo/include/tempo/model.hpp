@@ -1,5 +1,5 @@
-#ifndef TEMPO_SONG_HPP
-#define TEMPO_SONG_HPP
+#ifndef TEMPO_MODEL_HPP
+#define TEMPO_MODEL_HPP
 
 #include <tempo/config.hpp>
 
@@ -8,8 +8,6 @@
 
 #define MP_ID_TYPE int16_t
 #define MP_MAX_PLAYERS std::numeric_limits<MP_ID_TYPE>::max()
-
-#undef main // SDL likes to define main
 
 namespace tempo
 {
