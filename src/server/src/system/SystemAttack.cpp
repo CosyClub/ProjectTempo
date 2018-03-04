@@ -32,17 +32,18 @@ void SystemAttack::recieveAttacks(anax::World &w)
 		q->pop();	
 		sf::Packet pb(p); // packet for broadcast
 
-		unsigned int code;
+		uint32_t code;
 		p >> code;
 
 		anax::Entity::Id id;
-		p >> id;
+		p >> id;  // ID of the entity this message concerns
 		anax::Entity e(w, id);
 
 		switch (static_cast<tempo::MessageAttack>(code)) {
 		case tempo::MessageAttack::UPDATE_INTENT: {
 			if (!e.hasComponent<tempo::ComponentAttack>()) {
 				std::cout << "Recieved Attack Intent Update from entity without ComponentAttack" << std::endl;
+				continue;
 			}
 			tempo::ComponentAttack &c = e.getComponent<tempo::ComponentAttack>();
 			p >> c.damage;
@@ -58,7 +59,6 @@ void SystemAttack::recieveAttacks(anax::World &w)
 		}
 
 	}
-	return;
 }
 
 void SystemAttack::processAttacks()
@@ -78,8 +78,15 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 	auto &      attack      = attacker.getComponent<tempo::ComponentAttack>();
 	auto &      weapon      = attacker.getComponent<tempo::ComponentWeapon>();
 
+	// If a delayed attack, process and update clients
 	if (attack.beats_until_attack > 0) {
 		attack.beats_until_attack--;
+		sf::Packet p;
+		p << static_cast<uint32_t>(tempo::MessageAttack::UPDATE_INTENT);
+		p << attacker.getId();
+		p << attack.damage;
+		p << attack.beats_until_attack;
+		tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);
 		return;
 	}
 
