@@ -11,14 +11,21 @@ namespace tempo
 {
 
 // Component captures a combo mechanic for the entity with this component.
-struct ComponentAttack
-    : anax::Component
-    , NetworkedComponent {
-	Mask damage;                      // Damage mask for the attack
-	unsigned int beats_until_attack;  // Time until the attack
+struct ComponentAttack : anax::Component, NetworkedComponent 
+{
+	// Damage mask for the attack
+	Mask damage;
+	// Time until the attack (-1
+	int beats_until_attack;
 
-	// Creates a new component combo with no combo
-	ComponentAttack(Mask &damage, unsigned int beats_until_attack);
+	// Creates a new component attack
+	ComponentAttack();
+
+	// Adds and attack to the ComponentAttack
+	void updateAttack(Mask &damage, unsigned int beats_until_attack);
+
+	// Returns whether or not there is an intent to attack
+	bool isAttacking();
 
 	/////
 	// Required for networking
