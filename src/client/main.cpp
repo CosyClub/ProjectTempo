@@ -290,7 +290,6 @@ int main(int argc, const char **argv)
 
 	// buttons
 	anax::Entity entity_button = createButtonGroup(world, {{8, 8}});
-	bool action_happened = false;
 	world.refresh();
 	system_button_renderer.setup(smgr, driver);
 
@@ -329,8 +328,9 @@ int main(int argc, const char **argv)
 		////////////////
 		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
-			if(entity_button.getComponent<tempo::ComponentButtonGroup>().groupTriggered == true) {
-				action_happened = true;
+			auto& button_group = entity_button.getComponent<tempo::ComponentButtonGroup>();
+			if(button_group.groupTriggered == true && !button_group.action_happened) {
+				button_group.action_happened = true;
 				for (auto &entity : world.getEntities()) {
 					if(entity.hasComponent<tempo::ComponentStage>()) {
 						auto& component_stage = entity.getComponent<tempo::ComponentStage>();
