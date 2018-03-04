@@ -23,7 +23,7 @@ void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver *driver,
 		{
 			entity.addComponent<ComponentRenderSceneNode>(nullptr);
       if(entity.hasComponent<tempo::ComponentHealth>()) {
-        entity.addComponent<ComponentHealthBar>();
+        entity.addComponent<ComponentHealthBar>(nullptr);
       }
 			entity.activate();
 		}

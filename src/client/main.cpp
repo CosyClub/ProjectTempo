@@ -314,7 +314,7 @@ int main(int argc, const char** argv){
 			new_entity_check(world);
 			system_gc.addEntities(driver, smgr);
 			system_render_scene_node.setup(smgr);
-			//system_render_health_bars.setup(smgr);
+			system_render_health_bars.setup(smgr);
 			world.refresh();
 
 			// Recieve player updates from the server

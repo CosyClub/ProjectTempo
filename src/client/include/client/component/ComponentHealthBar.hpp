@@ -8,8 +8,8 @@
 
 namespace client {
 	struct ComponentHealthBar : public anax::Component {
-		irr::scene::IBillboardSceneNode* healthBarnode;
-		ComponentHealthBar();
+		irr::scene::IBillboardSceneNode* node;
+		ComponentHealthBar(irr::scene::IBillboardSceneNode* node);
 	};
 
 } // namespace client

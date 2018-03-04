@@ -12,17 +12,19 @@ namespace client {
 
 			for(auto& entity : entities) {
 				auto& health      = entity.getComponent<tempo::ComponentHealth>();
-				auto& healthbar   = entity.getComponent<client::ComponentHealthBar>().healthBarnode;
+				auto& healthbar   = entity.getComponent<client::ComponentHealthBar>();
 				auto& sn = entity.getComponent<client::ComponentRenderSceneNode>();
 
-				healthbar = smgr->addBillboardSceneNode(
+				if (healthbar.node != nullptr) continue;
+
+				healthbar.node = smgr->addBillboardSceneNode(
 				   sn.node,
 				   size,
 				   pos, // fix alignment
 				   -1,
 				   color,
 				   color);
-				   healthbar->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+				   healthbar.node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 
 			}
 	}
@@ -37,7 +39,7 @@ namespace client {
 
 		for(auto& entity : entities) {
 			auto& health      = entity.getComponent<tempo::ComponentHealth>();
-			auto& healthbar   = entity.getComponent<client::ComponentHealthBar>().healthBarnode;
+			auto& healthbar   = entity.getComponent<client::ComponentHealthBar>().node;
 
 			irr::core::dimension2d<irr::f32> prev_size = healthbar->getSize();
 
