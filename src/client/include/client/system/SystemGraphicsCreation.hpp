@@ -6,9 +6,8 @@
 
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentModel.hpp>
-#include <client/component/ComponentRenderSceneNode.hpp>
 
-namespace client 
+namespace client
 {
 
 struct SystemGraphicsCreation : anax::System<anax::Requires<tempo::ComponentStagePosition,

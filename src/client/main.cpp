@@ -4,6 +4,7 @@
 #include <client/system/SystemGraphicsCreation.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
 #include <client/system/SystemStageRenderer.hpp>
+#include <client/system/SystemRenderHealthBars.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
 
@@ -129,6 +130,7 @@ int main(int argc, const char** argv){
 	tempo::SystemMovement          system_movement;
 	client::SystemGraphicsCreation system_gc;
 	client::SystemStageRenderer    system_stage_renderer;
+	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemParseKeyInput    system_parse_key_input;
@@ -144,6 +146,7 @@ int main(int argc, const char** argv){
 	world.addSystem(system_gc);
 	world.addSystem(system_stage_renderer);
 	world.addSystem(system_render_scene_node);
+	world.addSystem(system_render_health_bars);
 	world.addSystem(system_update_key_input);
 	world.addSystem(system_parse_key_input);
 	world.addSystem(system_movement);
@@ -155,6 +158,9 @@ int main(int argc, const char** argv){
 	system_update_key_input.setup(device);
 	system_stage_renderer.setup(smgr, driver);
 	system_render_scene_node.setup(smgr);
+
+	//must be after system_render_scene_node.setup(smgr);
+	system_render_health_bars.setup(smgr);
 
 	// Set up remote address, local ports and remote handshake port
 	// Note, IF statement is to change ports for local development, bit
@@ -193,7 +199,9 @@ int main(int argc, const char** argv){
 	world.refresh();
 	system_gc.addEntities(driver, smgr);
 	world.refresh();
-	system_render_scene_node.setup(smgr);
+	system_render_scene_node.setup(smgr);  // Why is this here?
+	//must be after system_render_scene_node.setup(smgr);
+	system_render_health_bars.setup(smgr);
 
 	// Start and Sync Song
 	// mainsong.start();
