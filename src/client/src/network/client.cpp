@@ -7,7 +7,6 @@
 
 namespace tempo
 {
-
 // Brutalised version of the NTP Time Sync Protocol (RFC5905)
 // http://www.ietf.org/rfc/rfc5905.txt (Page 27)
 sf::Int64 timeSyncClient(tempo::Clock *clock)
@@ -20,34 +19,34 @@ sf::Int64 timeSyncClient(tempo::Clock *clock)
 	}
 
 	// Initialise time sync protocol variables
-	sf::Int64 T1     = 0; // PACKET: Previous packet time of departure
-	sf::Int64 T2     = 0; // PACKET: Previous packet time of arrival
-	sf::Int64 T3     = 0; // PACKET: Current pakcet time of departure
-	sf::Int64 T4     = 0; // PACKET: Current packet time of arrival
-	sf::Int64 org    = 0; // STATE:  Time when message departed from peer
+	sf::Int64 T1  = 0;  // PACKET: Previous packet time of departure
+	sf::Int64 T2  = 0;  // PACKET: Previous packet time of arrival
+	sf::Int64 T3  = 0;  // PACKET: Current pakcet time of departure
+	sf::Int64 T4  = 0;  // PACKET: Current packet time of arrival
+	sf::Int64 org = 0;  // STATE:  Time when message departed from peer
 	// sf::Int64 rec    = 0; // STATE:  Time when we recieved from the peer
-	sf::Int64 xmt    = 0; // STATE:  Time when we transmitted to the peer
-	sf::Int64 offset = 0; // Final Result
+	sf::Int64 xmt    = 0;  // STATE:  Time when we transmitted to the peer
+	sf::Int64 offset = 0;  // Final Result
 
 	for (int i = 0; i < TIMESYNC_ITERS; i++) {
 		// Time Sync Exchange: t(n+0) -> t(n+1)
 		T1 = T3;
 		T2 = T4;
-		T3  = clock->get_time().asMicroseconds(); // t(n+0)
+		T3 = clock->get_time().asMicroseconds();  // t(n+0)
 		sf::Packet packet;
 		packet << T1 << T2 << T3;
 		if (socket.send(packet) != sf::Socket::Done) {
 			std::cout << "Error sending T/S packet" << std::endl;
 			return 0;
 		}
-		xmt = T3; // t(n+0)
-		
+		xmt = T3;  // t(n+0)
+
 		// Time Sync Exchange: t(n+2) -> t(n+3)
 		if (socket.receive(packet) != sf::Socket::Done) {
 			std::cout << "Error recieving T/S packet" << std::endl;
 			return 0;
 		}
-		T4 = clock->get_time().asMicroseconds(); // t(n+3)
+		T4 = clock->get_time().asMicroseconds();  // t(n+3)
 		packet >> T1 >> T2 >> T3;
 
 		// Sanity Checks
@@ -58,7 +57,7 @@ sf::Int64 timeSyncClient(tempo::Clock *clock)
 		org = T3;
 		// rec = T4;
 
-		// Calculate offset 
+		// Calculate offset
 		offset += ((T2 - T1) + (T3 - T4)) / 2;
 	}
 
@@ -66,7 +65,7 @@ sf::Int64 timeSyncClient(tempo::Clock *clock)
 	return offset / TIMESYNC_ITERS;
 }
 
-bool sendMessage(tempo::QueueID id, sf::Packet payload) 
+bool sendMessage(tempo::QueueID id, sf::Packet payload)
 {
 	sf::Packet message;
 
@@ -78,16 +77,17 @@ bool sendMessage(tempo::QueueID id, sf::Packet payload)
 	return sock_o.send(message, addr_r, port_si) == sf::Socket::Done;
 }
 
-sf::Packet receiveMessage(QueueID qid) {
+sf::Packet receiveMessage(QueueID qid)
+{
 	tempo::Queue<sf::Packet> *queue = get_system_queue(qid);
-	while (queue->empty()) 
+	while (queue->empty())
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	sf::Packet packet = queue->front();
 	queue->pop();
 	return packet;
 }
 
-void listenForServerUpdates(std::atomic<bool>& running)
+void listenForServerUpdates(std::atomic<bool> &running)
 {
 	// Bind to port
 	if (!bindSocket('i', port_ci)) {
@@ -99,15 +99,14 @@ void listenForServerUpdates(std::atomic<bool>& running)
 	std::cout << "Server Update Listener Started..." << std::endl;
 
 	sock_i.setBlocking(false);
-	sf::IpAddress ip;
+	sf::IpAddress  ip;
 	unsigned short port;
-	sf::Packet packet;
+	sf::Packet     packet;
 
 	while (running.load()) {
 		sf::Socket::Status status = sock_i.receive(packet, ip, port);
 		if (status == sf::Socket::Error || status == sf::Socket::Disconnected) {
-			std::cout << "Error recieving server update. Ignoring."
-			          << std::endl;
+			std::cout << "Error recieving server update. Ignoring." << std::endl;
 			continue;
 		}
 
@@ -123,14 +122,14 @@ void listenForServerUpdates(std::atomic<bool>& running)
 	return;
 }
 
-uint32_t handshakeHello(anax::World& world)
+uint32_t handshakeHello(anax::World &world)
 {
 	// Package up payload
 	sf::Packet packet;
 	packet << static_cast<uint32_t>(HandshakeID::HELLO);
 	packet << sf::IpAddress::getLocalAddress().toInteger();
 	packet << port_ci;
-	
+
 	// Send HELLO
 	sendMessage(QueueID::HANDSHAKE, packet);
 
@@ -138,8 +137,8 @@ uint32_t handshakeHello(anax::World& world)
 	packet = receiveMessage(QueueID::HANDSHAKE);
 
 	// Extract Data
-	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
-	uint32_t id = NO_CLIENT_ID;
+	uint32_t msg            = static_cast<uint32_t>(HandshakeID::DEFAULT);
+	uint32_t id             = NO_CLIENT_ID;
 	uint32_t componentCount = 0;
 	packet >> msg;
 	if (msg == static_cast<uint32_t>(HandshakeID::HELLO_ROG)) {
@@ -162,10 +161,7 @@ uint32_t handshakeHello(anax::World& world)
 	return id;
 }
 
-bool handshakeRoleReq(uint32_t id,
-                      ClientRole roleID,
-                      ClientRoleData &roleData,
-                      anax::World& world)
+bool handshakeRoleReq(uint32_t id, ClientRole roleID, ClientRoleData &roleData, anax::World &world)
 {
 	// Package up payload
 	sf::Packet packet;
@@ -176,18 +172,18 @@ bool handshakeRoleReq(uint32_t id,
 
 	// Send ROLEREQ
 	sendMessage(QueueID::HANDSHAKE, packet);
-	
+
 	// Wait until we recieve ROLEREQ_ROG
 	packet = receiveMessage(QueueID::HANDSHAKE);
 
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
-	int componentCount;
+	int      componentCount;
 	packet >> msg;
 	packet >> componentCount;
 	if (msg == static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG)) {
-		//TODO Extract entity/response from ROLEREQ_ROG
-		sf::Packet p2;
+		// TODO Extract entity/response from ROLEREQ_ROG
+		sf::Packet   p2;
 		anax::Entity en;
 		for (int i = 0; i < componentCount; i++) {
 			p2 = receiveMessage(QueueID::HANDSHAKE);
@@ -204,16 +200,13 @@ bool handshakeRoleReq(uint32_t id,
 	return true;
 }
 
-bool connectToAndSyncWithServer(ClientRole roleID,
-                                ClientRoleData &roleData,
-                                anax::World& world)
+bool connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData, anax::World &world)
 {
 	// Bind outgoing port if not bound
 	if (sock_o.getLocalPort() == 0) {
 		if (!bindSocket('o', port_co)) {
 			std::cout << "Could not bind socket on port " << port_co
-			          << " to connect to and sync with server."
-			          << std::endl;
+			          << " to connect to and sync with server." << std::endl;
 			return false;
 		}
 	}
@@ -231,8 +224,7 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 	uint32_t id = handshakeHello(world);
 	std::cout << "HELLO COMPLETE" << std::endl;
 	if (id == NO_CLIENT_ID) {
-		std::cout << "Couldn't connect to the server." 
-		          << std::endl;
+		std::cout << "Couldn't connect to the server." << std::endl;
 		return false;
 	}
 
@@ -245,8 +237,8 @@ bool connectToAndSyncWithServer(ClientRole roleID,
 
 bool broadcastMessage(QueueID id, sf::Packet p)
 {
-	assert(false); //I think this should nevevr happen
+	assert(false);  // I think this should nevevr happen
 	return false;
 }
 
-} // namespace tempo
+}  // namespace tempo

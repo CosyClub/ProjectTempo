@@ -1,14 +1,13 @@
 #ifndef TEMPO_NETWORK_QUEUE_HPP
 #define TEMPO_NETWORK_QUEUE_HPP
 
-#include <tempo/structures.hpp>
 #include <tempo/network/QueueID.hpp>
+#include <tempo/structures.hpp>
 
 #include <SFML/Network.hpp>
 
 namespace tempo
 {
-
 ////////////////////////////////////////////////////////////////////////
 /// Function declarations
 
@@ -23,9 +22,7 @@ namespace tempo
 //
 // Returns:
 // 	Pointer to a tempo::Queue<sf::Packet>
-tempo::Queue<sf::Packet>* get_system_queue(tempo::QueueID);
-
+tempo::Queue<sf::Packet> *get_system_queue(tempo::QueueID);
 }
 
 #endif
-

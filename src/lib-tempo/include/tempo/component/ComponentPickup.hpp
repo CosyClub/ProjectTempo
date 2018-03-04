@@ -7,17 +7,17 @@
 
 namespace tempo
 {
-
-struct ComponentPickup : anax::Component, NetworkedComponent
-{
+struct ComponentPickup
+    : anax::Component
+    , NetworkedComponent {
 	/////
 	// Required for networking
 	/////
 	ComponentPickup(sf::Packet p);
 	ComponentID getId();
-	sf::Packet dumpComponent();
+	sf::Packet  dumpComponent();
 };
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif

@@ -4,25 +4,23 @@
 #include <OgreRoot.h>
 #include <OgreSceneNode.h>
 
-#include <anax/System.hpp>
 #include <anax/Component.hpp>
+#include <anax/System.hpp>
 
 #include <tempo/component/ComponentTransform.hpp>
 
 namespace tempo
 {
-	
-struct ComponentRender : anax::Component 
-{
-	Ogre::SceneNode* node;
-	std::string path;
-	Ogre::SceneManager* scene;
+struct ComponentRender : anax::Component {
+	Ogre::SceneNode *   node;
+	std::string         path;
+	Ogre::SceneManager *scene;
 
-	//Required for Entity health bars
-	Ogre::SceneNode* healthBarnode;
-	Ogre::Billboard* healthBillboard;
+	// Required for Entity health bars
+	Ogre::SceneNode *healthBarnode;
+	Ogre::Billboard *healthBillboard;
 
-	ComponentRender(Ogre::SceneManager* scene, std::string path);
+	ComponentRender(Ogre::SceneManager *scene, std::string path);
 	~ComponentRender();
 
 	// AddHealthBar
@@ -35,6 +33,6 @@ struct ComponentRender : anax::Component
 	void AddHealthBar();
 };
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif

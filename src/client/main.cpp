@@ -1,23 +1,21 @@
 #include <client/component/ComponentKeyInput.hpp>
-#include <client/component/ComponentRenderSceneNode.hpp>
 #include <client/component/ComponentRenderButtonGroup.hpp>
+#include <client/component/ComponentRenderSceneNode.hpp>
 #include <client/network/client.hpp>
+#include <client/system/SystemButtonRenderer.hpp>
 #include <client/system/SystemGraphicsCreation.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
-#include <client/system/SystemButtonRenderer.hpp>
-#include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
-#include <client/system/SystemButtonRenderer.hpp>
+#include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
 
-#include <tempo/song.hpp>
-#include <tempo/time.hpp>
 #include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/entity/EntityCreation.hpp>
 #include <tempo/network/QueueID.hpp>
+#include <tempo/song.hpp>
 #include <tempo/system/SystemAttack.hpp>
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
@@ -27,9 +25,10 @@
 #include <tempo/system/SystemPlayer.hpp>
 #include <tempo/system/SystemTransform.hpp>
 #include <tempo/system/SystemTrigger.hpp>
+#include <tempo/time.hpp>
 
-#include <anax/World.hpp>
 #include <anax/Entity.hpp>
+#include <anax/World.hpp>
 
 #include <SFML/Audio.hpp>
 #include <SFML/System/Clock.hpp>
@@ -42,7 +41,7 @@
 
 #include <chrono>
 #include <cstdio>
-#include <functional> // maybe not needed (std::ref when calling listenForServerUpdates())
+#include <functional>  // maybe not needed (std::ref when calling listenForServerUpdates())
 #include <iostream>
 #include <thread>
 
@@ -50,7 +49,7 @@
 #define DELTA 125            // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
-void sync_time(tempo::Clock& clock, tempo::Song *song)
+void sync_time(tempo::Clock &clock, tempo::Song *song)
 {
 	sf::Int64 offset = tempo::timeSyncClient(&clock);
 	clock.set_time(clock.get_time() + sf::microseconds(offset), song);
@@ -67,7 +66,8 @@ void new_entity_check(anax::World &world)
 	world.refresh();
 }
 
-anax::Entity createEntityStage(anax::World& world){
+anax::Entity createEntityStage(anax::World &world)
+{
 	printf("Creating entity stage\n");
 	anax::Entity entity_stage = world.createEntity();
 	entity_stage.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
@@ -88,7 +88,8 @@ anax::Entity createEntityStage(anax::World& world){
 // 	return entity_player;
 // }
 
-anax::Entity createButtonGroup(anax::World& world, std::vector<glm::ivec2> positions) {
+anax::Entity createButtonGroup(anax::World &world, std::vector<glm::ivec2> positions)
+{
 	printf("Creating button\n");
 	anax::Entity entity_button = world.createEntity();
 	entity_button.addComponent<tempo::ComponentButtonGroup>(positions);
@@ -98,8 +99,8 @@ anax::Entity createButtonGroup(anax::World& world, std::vector<glm::ivec2> posit
 	return entity_button;
 }
 
-int main(int argc, const char** argv){
-
+int main(int argc, const char **argv)
+{
 	tempo::Song mainsong("resources/sound/focus.ogg");
 	mainsong.set_volume(0.f);
 
@@ -111,19 +112,17 @@ int main(int argc, const char** argv){
 	// Clock
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
 
-	KeyInput receiver;
-	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_OPENGL,
-	                                                irr::core::dimension2d<irr::u32>(1280, 720),
-	                                                16,
-	                                                false, false, false);
-	if(!device){
+	KeyInput             receiver;
+	irr::IrrlichtDevice *device = irr::createDevice(
+	  irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1280, 720), 16, false, false, false);
+	if (!device) {
 		printf("Failed to create Irrlicht Device\n");
 		return 1;
 	}
 	device->setWindowCaption(L"RaveCave");
-	irr::video::IVideoDriver*  driver  = device->getVideoDriver();
-	irr::scene::ISceneManager* smgr    = device->getSceneManager();
-	irr::gui::IGUIEnvironment* gui_env = device->getGUIEnvironment();
+	irr::video::IVideoDriver * driver  = device->getVideoDriver();
+	irr::scene::ISceneManager *smgr    = device->getSceneManager();
+	irr::gui::IGUIEnvironment *gui_env = device->getGUIEnvironment();
 	// Debug
 	smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
 
@@ -131,10 +130,8 @@ int main(int argc, const char** argv){
 	// Setup ECS
 	anax::World world;
 	// tempo::SystemRender           system_render(app);
-	tempo::SystemLevelManager     system_level(world,
-	                                           "../bin/resources/levels/levelTest.bmp",
-	                                           "../bin/resources/levels/zonesTest.bmp"
-	                                           );
+	tempo::SystemLevelManager      system_level(world, "../bin/resources/levels/levelTest.bmp",
+                                           "../bin/resources/levels/zonesTest.bmp");
 	tempo::SystemAttack            system_attack;
 	tempo::SystemUpdateTransforms  system_update_transforms;
 	tempo::SystemGridAi            system_grid_ai;
@@ -179,12 +176,13 @@ int main(int argc, const char** argv){
 	// Note, IF statement is to change ports for local development, bit
 	// hacky and should be removed in due course!
 	tempo::addr_r = "127.0.0.1";
-	if (argc == 2) tempo::addr_r = argv[1];
+	if (argc == 2)
+		tempo::addr_r = argv[1];
 	if (tempo::addr_r == "127.0.0.1") {
-		std::srand (time(NULL));
-		int d = std::rand() % 10;
-		tempo::port_ci = DEFAULT_PORT_IN+10+d;
-		tempo::port_co = DEFAULT_PORT_OUT+10+d;
+		std::srand(time(NULL));
+		int d          = std::rand() % 10;
+		tempo::port_ci = DEFAULT_PORT_IN + 10 + d;
+		tempo::port_co = DEFAULT_PORT_OUT + 10 + d;
 	} else {
 		tempo::port_ci = DEFAULT_PORT_IN;
 		tempo::port_co = DEFAULT_PORT_OUT;
@@ -198,18 +196,18 @@ int main(int argc, const char** argv){
 
 	// Start Listener Thread to catch server updates after connecting
 	std::atomic<bool> running(true);
-	std::thread listener(tempo::listenForServerUpdates, std::ref(running));
+	std::thread       listener(tempo::listenForServerUpdates, std::ref(running));
 	// Hack to allow printouts to line up a bit nicer :)
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
-	tempo::ClientRole role = tempo::ClientRole::PLAYER;
+	tempo::ClientRole     role     = tempo::ClientRole::PLAYER;
 	tempo::ClientRoleData roleData = {"Bilbo Baggins"};
 
 	// Connect to server and handshake information
 	tempo::connectToAndSyncWithServer(role, roleData, world);
 
 
-	//Sort out graphics after handshake
+	// Sort out graphics after handshake
 	world.refresh();
 	system_gc.addEntities(driver, smgr);
 	world.refresh();
@@ -224,7 +222,7 @@ int main(int argc, const char** argv){
 	// Player
 	// TODO: use better way to find out player, for now this is a search
 	anax::Entity entity_player;
-	for (auto& entity : world.getEntities()) {
+	for (auto &entity : world.getEntities()) {
 		if (entity.hasComponent<tempo::ComponentPlayerLocal>()) {
 			entity_player = entity;
 			break;
@@ -232,26 +230,27 @@ int main(int argc, const char** argv){
 	}
 	entity_player.addComponent<client::ComponentKeyInput>();
 	entity_player.activate();
-	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
+	client::ComponentRenderSceneNode &sn =
+	  entity_player.getComponent<client::ComponentRenderSceneNode>();
 
-	irr::scene::ICameraSceneNode* camera_node;
+	irr::scene::ICameraSceneNode *camera_node;
 	if (false) {
 		float rotateSpeed = 25.0f;
-		float moveSpeed = 0.1f;
-		camera_node = smgr->addCameraSceneNodeFPS(nullptr, rotateSpeed, moveSpeed);
+		float moveSpeed   = 0.1f;
+		camera_node       = smgr->addCameraSceneNodeFPS(nullptr, rotateSpeed, moveSpeed);
 		device->getCursorControl()->setVisible(false);
 	} else {
-		float rotate = 0.0f;
-		float translate = 0.0f; //-100
-		float zoom = 0.0f; //100
-		float distance = 0.0f;
-		// camera_node = smgr->addCameraSceneNodeMaya(sn.node, rotate, translate, zoom, -1, distance);
-		// camera_node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
+		float rotate    = 0.0f;
+		float translate = 0.0f;  //-100
+		float zoom      = 0.0f;  // 100
+		float distance  = 0.0f;
+		// camera_node = smgr->addCameraSceneNodeMaya(sn.node, rotate, translate, zoom, -1,
+		// distance); camera_node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
 		camera_node = smgr->addCameraSceneNode();
 		camera_node->setParent(sn.node);
-		camera_node->setPosition(irr::core::vector3df(14, 9,0));
+		camera_node->setPosition(irr::core::vector3df(14, 9, 0));
 		camera_node->setTarget(sn.node->getPosition());
-		//camera_node->setRotation(irr::core::vector3df(0,0,90));
+		// camera_node->setRotation(irr::core::vector3df(0,0,90));
 		device->getCursorControl()->setVisible(true);
 	}
 
@@ -261,34 +260,32 @@ int main(int argc, const char** argv){
 	//                                        irr::video::SColorf(0.8f, 0.8f, 0.8f),
 	//                                        10.0f);
 	// debug static light
-	irr::scene::ILightSceneNode* light_node;
-	light_node = smgr->addLightSceneNode(0,
-	                                     irr::core::vector3df(10.0f, 10.0f, 10.0f),
-	                                     irr::video::SColorf(0.8f, 0.8f, 0.8f),
-	                                     5.0f);
+	irr::scene::ILightSceneNode *light_node;
+	light_node = smgr->addLightSceneNode(0, irr::core::vector3df(10.0f, 10.0f, 10.0f),
+	                                     irr::video::SColorf(0.8f, 0.8f, 0.8f), 5.0f);
 	// irr::video::SLight& light_data = light_node->getLightData();
 
 	/////////////////////////////////////////////////
 	// Main loop
-	int frame_counter = 0;
+	int       frame_counter = 0;
 	sf::Clock fps_timer;
 	// sf::Clock dt_timer;
 
 	int j = 0;
 
-	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
-	sf::Clock frame_clock = sf::Clock();
+	sf::Int64 tick               = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	sf::Clock frame_clock        = sf::Clock();
 	sf::Clock update_floor_clock = sf::Clock();
 	frame_clock.restart();
 	update_floor_clock.restart();
 
-	//buttons
-	anax::Entity entity_button  = createButtonGroup(world, {{8,8},{9,9}});
+	// buttons
+	anax::Entity entity_button = createButtonGroup(world, {{8, 8}, {9, 9}});
 	world.refresh();
 	system_button_renderer.setup(smgr, driver);
 
 	printf("Entering main loop\n");
-	while(device->run()){
+	while (device->run()) {
 		// float dt = dt_timer.getElapsedTime().asSeconds();
 		// dt_timer.restart();
 
@@ -303,17 +300,18 @@ int main(int argc, const char** argv){
 		if (clock.passed_beat()) {
 			click.play();
 			if (tick++ % 20 == 0)
-				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
+				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()
+				          << "+++++++++++++++" << std::endl;
 
 			j++;
 			j = j % 22;
 			// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
-			system_stage_renderer.updateStage({255,175,0,0},{255,50,50,50}, driver, j);
+			system_stage_renderer.updateStage({255, 175, 0, 0}, {255, 50, 50, 50}, driver, j);
 			system_trigger.updateButtons();
 			system_button_renderer.updateButtons(driver);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
-			          // << std::endl;
+			// << std::endl;
 
 			system_grid_ai.update();
 		}
@@ -349,7 +347,7 @@ int main(int argc, const char** argv){
 
 			// Graphics updates
 			system_render_scene_node.update();
-			//TODO: Make a system for updating camera position
+			// TODO: Make a system for updating camera position
 			camera_node->setTarget(sn.node->getPosition());
 		}
 
@@ -368,13 +366,12 @@ int main(int argc, const char** argv){
 		++frame_counter;
 		if (fps_timer.getElapsedTime().asSeconds() > 1.0f) {
 			float seconds = fps_timer.getElapsedTime().asSeconds();
-			std::cout << "FPS: " << (int)(frame_counter / seconds)
-			          << std::endl;
+			std::cout << "FPS: " << (int) (frame_counter / seconds) << std::endl;
 			fps_timer.restart();
 			frame_counter = 0;
 		}
 
-	} // main loop
+	}  // main loop
 
 	running.store(false);
 	printf("Left main loop\n");

@@ -1,8 +1,8 @@
 #ifndef TEMPO_COMPONENT_STAGE_ROTATION_HPP
 #define TEMPO_COMPONENT_STAGE_ROTATION_HPP
 
-#include <tempo/network/QueueID.hpp>
 #include <tempo/component/NetworkedComponent.hpp>
+#include <tempo/network/QueueID.hpp>
 
 #include <anax/Component.hpp>
 
@@ -11,7 +11,6 @@
 
 namespace tempo
 {
-
 using Facing = glm::ivec2;
 
 extern glm::ivec2 NORTH;
@@ -19,21 +18,22 @@ extern glm::ivec2 EAST;
 extern glm::ivec2 SOUTH;
 extern glm::ivec2 WEST;
 
-	
-struct ComponentStageRotation : anax::Component, NetworkedComponent
-{
+
+struct ComponentStageRotation
+    : anax::Component
+    , NetworkedComponent {
 	Facing facing;
 
 	ComponentStageRotation(Facing f);
-	
+
 	/////
 	// Required for inital network sync
 	/////
 	ComponentStageRotation(sf::Packet p);
-	sf::Packet dumpComponent();
+	sf::Packet  dumpComponent();
 	ComponentID getId();
 };
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif

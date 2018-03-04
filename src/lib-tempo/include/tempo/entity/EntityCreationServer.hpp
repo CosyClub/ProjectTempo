@@ -12,25 +12,14 @@
 
 namespace tempo
 {
+anax::Entity newPlayer(anax::World &world);
 
-anax::Entity newPlayer(anax::World& world);
+anax::Entity newAI(anax::World &world, int x, int y);
 
-anax::Entity newAI(anax::World& world,
-                   int x,
-                   int y);
+anax::Entity newDestroyable(anax::World &world, int x, int y, std::string mesh_name);
 
-anax::Entity newDestroyable(anax::World& world, 
-                            int x,
-                            int y, 
-                            std::string mesh_name);
+anax::Entity newNonDestroyable(anax::World &world, int x, int y, std::string mesh_name);
 
-anax::Entity newNonDestroyable(anax::World& world, 
-                               int x, 
-                               int y, 
-                               std::string mesh_name);
-
-} // namespace tempo
+}  // namespace tempo
 
 #endif
-
-

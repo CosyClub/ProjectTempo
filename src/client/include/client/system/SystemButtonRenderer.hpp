@@ -4,24 +4,24 @@
 
 #include <anax/System.hpp>
 
-#include <tempo/component/ComponentButtonGroup.hpp>
 #include <client/component/ComponentRenderButtonGroup.hpp>
+#include <tempo/component/ComponentButtonGroup.hpp>
 
 #include <ISceneManager.h>
 #include <IVideoDriver.h>
 
-namespace client {
+namespace client
+{
+// Initalises all rendering for buttons
+class SystemButtonRenderer
+    : public anax::System<
+        anax::Requires<tempo::ComponentButtonGroup, client::ComponentRenderButtonGroup>>
+{
+   public:
+	void setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver);
 
-	// Initalises all rendering for buttons
-	class SystemButtonRenderer : public anax::System<anax::Requires<tempo::ComponentButtonGroup,
-																																	client::ComponentRenderButtonGroup>> {
-	public:
-
-		void setup(irr::scene::ISceneManager* smgr, irr::video::IVideoDriver* driver);
-
-		void updateButtons(irr::video::IVideoDriver*  driver);
-
-	};
-} // namespace client
+	void updateButtons(irr::video::IVideoDriver *driver);
+};
+}  // namespace client
 
 #endif

@@ -2,10 +2,9 @@
 
 namespace tempo
 {
-
-ComponentStageTranslation::ComponentStageTranslation() 
+ComponentStageTranslation::ComponentStageTranslation()
 {
-	delta = glm::ivec2(0,0);
+	delta = glm::ivec2(0, 0);
 }
 
 ComponentStageTranslation::ComponentStageTranslation(sf::Packet p)
@@ -27,4 +26,4 @@ ComponentID ComponentStageTranslation::getId()
 	return ComponentID::STAGE_TRANSLATION;
 }
 
-} // namespace tempo
+}  // namespace tempo
