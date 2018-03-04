@@ -43,7 +43,7 @@ int main(int argc, const char **argv)
 	anax::World world;
 
 	// Create Systems
-	server::SystemAttack system_attack;
+	server::SystemAttack system_attack(world);
 	server::SystemPlayer system_player(clock);
 	tempo::SystemCombo  system_combo;
 	tempo::SystemGridAi system_grid_ai;

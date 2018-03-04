@@ -132,7 +132,7 @@ int main(int argc, const char **argv)
 	// tempo::SystemRender           system_render(app);
 	tempo::SystemLevelManager      system_level(world, "../bin/resources/levels/levelTest.bmp",
                                            "../bin/resources/levels/zonesTest.bmp");
-	tempo::SystemAttack            system_attack(world);
+	tempo::SystemAttack            system_attack;
 	tempo::SystemUpdateTransforms  system_update_transforms;
 	tempo::SystemGridAi            system_grid_ai;
 	tempo::SystemPlayer            system_player(clock);

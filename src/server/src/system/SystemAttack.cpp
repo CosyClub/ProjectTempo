@@ -1,6 +1,7 @@
 #include <server/system/SystemAttack.hpp>
 
 #include <tempo/component/NetworkedComponent.hpp>
+#include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
 
@@ -12,7 +13,71 @@
 namespace server
 {
 
-void SystemAttack::Sync(anax::World &w)
+using tempo::operator<<;
+using tempo::operator>>;
+
+// void SystemAttack::Sync(anax::World &w)
+// {
+// 	tempo::Queue<sf::Packet> *q = tempo::get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
+
+// 	while (!q->empty()) {
+// 		sf::Packet p = q->front();
+// 		q->pop();
+
+// 		for (auto &client : tempo::clients) {
+// 			tempo::sendMessage(tempo::QueueID::SYSTEM_ATTACK, p, client.first);
+// 		}
+// 	}
+// }
+
+SystemAttack::SystemAttack(anax::World &world)
+{
+	subSystem = SubSystemAttack();
+	world.addSystem(subSystem);
+	world.refresh();
+}
+	
+void SystemAttack::processAttacks()
+{
+	for (auto &entity : getEntities()) {
+		if (entity.getComponent<tempo::ComponentAttack>().isAttacking()) {
+			subSystem.Attack(entity);
+		}
+	}
+}
+
+void SubSystemAttack::Attack(anax::Entity attacker)
+{
+	// Attacker
+	glm::ivec2  attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
+	glm::ivec2  rot         = attacker.getComponent<tempo::ComponentStageRotation>().facing;
+	auto &      weapon      = attacker.getComponent<tempo::ComponentWeapon>();
+	tempo::Mask m           = weapon.damage;
+
+	if (weapon.isDelayed) {
+	}
+
+	for (auto &entity : getEntities()) {
+		// TODO some team system
+
+		glm::ivec2 pos    = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
+		auto &     health = entity.getComponent<tempo::ComponentHealth>();
+
+		glm::vec2 forward = rot;
+		glm::vec2 left = glm::ivec2(-rot.y, -rot.x);  // Hacky cross product
+
+		glm::vec2  diff          = pos - attackerpos;
+		glm::ivec2 relative_diff = glm::ivec2(glm::dot(diff, left), glm::dot(diff, forward));
+
+		float damage = weapon.GetDamage(relative_diff);
+		if (damage != 0) {
+			std::cout << "hit entity " << entity.getId().index << " for " << damage << std::endl;
+		}
+		health.HealthUpdate(-1 * damage);
+	}
+}
+
+void SubSystemAttack::Broadcast(anax::World &w)
 {
 	tempo::Queue<sf::Packet> *q = tempo::get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
 
@@ -20,8 +85,43 @@ void SystemAttack::Sync(anax::World &w)
 		sf::Packet p = q->front();
 		q->pop();
 
-		for (auto &client : tempo::clients) {
-			tempo::sendMessage(tempo::QueueID::SYSTEM_ATTACK, p, client.first);
+		tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);
+	}
+}
+
+void SubSystemAttack::Recieve(anax::World &w)
+{
+	tempo::Queue<sf::Packet> *q = tempo::get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
+
+	while (!q->empty()) {
+		sf::Packet p = q->front();
+		q->pop();
+
+		int code;
+		p >> code;
+
+		anax::Entity::Id id;
+		p >> id;
+		id = tempo::servertolocal[id];
+		anax::Entity e(w, id);
+
+		switch (code) {
+		case Messages::ATTACK: {
+			if (!e.hasComponent<tempo::ComponentAOEIndicator>()) {
+				std::cout << "Entity does not contain ComponentAOEIndicator" << std::endl;
+				assert(false);
+			}
+			tempo::ComponentAOEIndicator aoe = e.getComponent<tempo::ComponentAOEIndicator>();
+			auto &weapon = e.getComponent<tempo::ComponentWeapon>();
+			aoe.duration = sf::seconds(0.1);
+			aoe.tiles    = weapon.damage.positions;
+			// Do some animating?
+
+		} break;
+		case Messages::DELAYED_ATTACK:
+			// TODO
+			break;
+		default: std::cout << "ATTACK: Unhandled message" << std::endl;
 		}
 	}
 }
