@@ -16,12 +16,15 @@ namespace tempo
 // This implementation may change without notice
 typedef std::vector<std::tuple<glm::ivec2, float>> stage_tiles;
 
+extern stage_tiles _global_stage
+extern bool        _global_stage_loaded
+
 // An entity that is bound by the world stage
 struct ComponentStage
     : anax::Component
     , NetworkedComponent {
    private:
-	stage_tiles tiles;
+	stage_tiles* tiles;
 	std::string stage_file;
 
 	void loadLevel(const char *stage_file);

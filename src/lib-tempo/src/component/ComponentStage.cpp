@@ -10,6 +10,10 @@
 
 namespace tempo
 {
+
+_global_stage = nullptr
+_global_stage_loaded = false;
+
 void ComponentStage::loadLevel(const char *stage_file)
 {
 	int width, height, components;
