@@ -4,8 +4,8 @@
 #include <irrlicht.h>
 #include <anax/System.hpp>
 
-#include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentModel.hpp>
+#include <tempo/component/ComponentStagePosition.hpp>
 
 namespace client
 {

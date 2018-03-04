@@ -4,10 +4,12 @@
 
 #include <iostream>
 
-namespace client {
-	void SystemRenderSceneNode::setup(irr::scene::ISceneManager* smgr) {
-		irr::core::dimension2d<irr::f32> size(0.7f, 1.4f);
-		irr::core::vector3df pos(0.0f, 0.0f + size.Height / 2, 0.0f);
+namespace client
+{
+void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr)
+{
+	irr::core::dimension2d<irr::f32> size(0.7f, 1.4f);
+	irr::core::vector3df             pos(0.0f, 0.0f + size.Height / 2, 0.0f);
 
 	auto entities = getEntities();
 
