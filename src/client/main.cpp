@@ -14,7 +14,7 @@
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/entity/EntityCreation.hpp>
-#include <tempo/network/QueueID.hpp>
+#include <tempo/network/ID.hpp>
 #include <tempo/song.hpp>
 #include <tempo/system/SystemAttack.hpp>
 #include <tempo/system/SystemCombo.hpp>

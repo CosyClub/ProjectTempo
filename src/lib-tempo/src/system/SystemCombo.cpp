@@ -1,6 +1,6 @@
 #include <tempo/system/SystemCombo.hpp>
 
-#include <tempo/network/QueueID.hpp>
+#include <tempo/network/ID.hpp>
 #include <tempo/network/base.hpp>
 #include <tempo/network/queue.hpp>
 

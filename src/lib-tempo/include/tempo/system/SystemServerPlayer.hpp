@@ -7,7 +7,7 @@
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
-#include <tempo/network/QueueID.hpp>
+#include <tempo/network/ID.hpp>
 #include <tempo/time.hpp>
 
 namespace tempo

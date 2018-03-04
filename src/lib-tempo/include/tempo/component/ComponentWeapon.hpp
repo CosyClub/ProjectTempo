@@ -4,11 +4,12 @@
 #include <tempo/config.hpp>
 #include <tempo/mask.hpp>
 
+#include <tempo/component/NetworkedComponent.hpp>
+
 #include <anax/Component.hpp>
 #include <anax/System.hpp>
 #include <glm/glm.hpp>
 
-#include <tempo/component/NetworkedComponent.hpp>
 
 #include <SFML/System/Time.hpp>
 
