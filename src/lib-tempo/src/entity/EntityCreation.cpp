@@ -1,6 +1,7 @@
 #include <tempo/entity/EntityCreation.hpp>
 
 #include <tempo/component/ComponentAOEIndicator.hpp>
+#include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/component/ComponentHealth.hpp>
