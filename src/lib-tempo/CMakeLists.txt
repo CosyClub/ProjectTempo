@@ -38,8 +38,6 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemLevelManager.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemPlayer.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemMovement.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemServerAttack.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemServerPlayer.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemTransform.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemTrigger.hpp"
 )
@@ -81,8 +79,6 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemLevelManager.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemMovement.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemPlayer.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemServerAttack.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemServerPlayer.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTransform.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTrigger.cpp"
 )

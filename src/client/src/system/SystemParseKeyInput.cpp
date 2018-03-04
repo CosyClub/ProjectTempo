@@ -12,6 +12,7 @@
 
 namespace client
 {
+
 void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing, bool withinDelta)
 {
 	if (entity.hasComponent<tempo::ComponentStageRotation>()) {

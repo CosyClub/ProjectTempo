@@ -13,7 +13,23 @@
 namespace tempo
 {
 
-void SystemAttack::Attack(anax::Entity attacker)
+SystemAttack::SystemAttack(anax::World &world)
+{
+	subSystem = SubSystemAttack();
+	world.addSystem(subSystem);
+	world.refresh();
+}
+	
+void SystemAttack::processAttacks()
+{
+	for (auto &entity : getEntities()) {
+		if (entity.getComponent<ComponentAttack>().isAttacking()) {
+			subSystem.Attack(entity);
+		}
+	}
+}
+
+void SubSystemAttack::Attack(anax::Entity attacker)
 {
 	// Attacker
 	glm::ivec2 attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
@@ -24,17 +40,14 @@ void SystemAttack::Attack(anax::Entity attacker)
 	if (weapon.isDelayed) {
 	}
 
-	// Victim
-	auto entities = getEntities();
-
-	for (auto &entity : entities) {
+	for (auto &entity : getEntities()) {
 		// TODO some team system
 
 		glm::ivec2 pos    = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
 		auto &     health = entity.getComponent<tempo::ComponentHealth>();
 
 		glm::vec2 forward = rot;
-		glm::vec2 left = glm::ivec2(rot.y * -1, rot.x * -1);  // Hacky cross product
+		glm::vec2 left = glm::ivec2(-rot.y, -rot.x);  // Hacky cross product
 
 		glm::vec2  diff          = pos - attackerpos;
 		glm::ivec2 relative_diff = glm::ivec2(glm::dot(diff, left), glm::dot(diff, forward));
@@ -45,14 +58,9 @@ void SystemAttack::Attack(anax::Entity attacker)
 		}
 		health.HealthUpdate(-1 * damage);
 	}
-
-	sf::Packet p;
-	p << Messages::ATTACK;
-	p << localtoserver[attacker.getId()];
-	sendMessage(QueueID::SYSTEM_ATTACK, p);
 }
 
-void SystemAttack::Broadcast(anax::World &w)
+void SubSystemAttack::Broadcast(anax::World &w)
 {
 	tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_ATTACK);
 
@@ -64,7 +72,7 @@ void SystemAttack::Broadcast(anax::World &w)
 	}
 }
 
-void SystemAttack::Recieve(anax::World &w)
+void SubSystemAttack::Recieve(anax::World &w)
 {
 	tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_ATTACK);
 

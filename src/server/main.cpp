@@ -1,14 +1,15 @@
 #define AM_SERVER
 
+#include <server/system/SystemAttack.hpp>
+#include <server/system/SystemPlayer.hpp>
+
 #include <tempo/time.hpp>
 
 #include <tempo/entity/EntityCreationServer.hpp>
-#include <tempo/system/SystemAttack.hpp>
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
-#include <tempo/system/SystemServerPlayer.hpp>
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>
@@ -23,7 +24,6 @@
 #include <iostream>
 #include <thread>
 #include <vector>
-
 
 #define BPM 120              // Beats per minutes
 #define PLAYER_DELTA 125     // Delta around a beat a player can hit (millisecs)
@@ -43,11 +43,11 @@ int main(int argc, const char **argv)
 	anax::World world;
 
 	// Create Systems
-	tempo::SystemAttack       system_attack;
-	tempo::SystemCombo        system_combo;
-	tempo::SystemGridAi       system_grid_ai;
-	tempo::SystemHealth       system_health;
-	tempo::SystemServerPlayer system_player(clock);
+	server::SystemAttack system_attack;
+	server::SystemPlayer system_player(clock);
+	tempo::SystemCombo  system_combo;
+	tempo::SystemGridAi system_grid_ai;
+	tempo::SystemHealth system_health;	
 
 	world.addSystem(system_attack);
 	world.addSystem(system_combo);
@@ -92,10 +92,14 @@ int main(int argc, const char **argv)
 		// float dt = next_dt_time - last_dt_time;
 		// last_dt_time = next_dt_time;
 
+		////////////////
+		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
 			// std::cout << "Start" << std::endl;
 		}
 
+		////////////////
+		// Events at "Beat Passed"
 		if (clock.passed_beat()) {
 			system_grid_ai.update();
 			system_combo.advanceBeat();
@@ -105,15 +109,20 @@ int main(int argc, const char **argv)
 				          << "+++++++++++++++" << std::endl;
 		}
 
+		////////////////
+		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 		}
 
-		system_attack.Broadcast(world);
-		system_combo.checkForUpdates();
-		system_health.CheckHealth();
-		system_player.update(world);
+		////////////////
+		// Events all the time
+		{
+			system_combo.checkForUpdates();
+			system_health.CheckHealth();
+			system_player.update(world);
+		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	}

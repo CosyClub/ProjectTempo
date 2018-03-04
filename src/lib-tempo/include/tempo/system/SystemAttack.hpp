@@ -5,12 +5,15 @@
 #include <anax/System.hpp>
 
 #include <cassert>
+#include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 
 namespace tempo
 {
-struct SystemAttack : anax::System<anax::Requires<ComponentHealth, ComponentStagePosition>> {
+
+struct SubSystemAttack : anax::System<anax::Requires<ComponentHealth, ComponentStagePosition>> 
+{
 	// Attack
 	// If attack is made, all attackable entities (have ComonentHealth)
 	// are checked to see if they are inside the attack range
@@ -29,6 +32,18 @@ struct SystemAttack : anax::System<anax::Requires<ComponentHealth, ComponentStag
 		DELAYED_ATTACK,
 	};
 };
-}
+
+struct SystemAttack : anax::System<anax::Requires<ComponentAttack>> 
+{
+	SubSystemAttack subSystem;
+	
+	// Sets up the SystemAttack along with it's necessary subsystem
+	SystemAttack(anax::World &world);
+	
+	// Processes all of the attack intents. To be run at Delta End.
+	void processAttacks();
+};
+
+} // namespace tempo
 
 #endif

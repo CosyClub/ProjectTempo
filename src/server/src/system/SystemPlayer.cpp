@@ -1,16 +1,21 @@
-#include <tempo/system/SystemServerPlayer.hpp>
+#include <server/system/SystemPlayer.hpp>
 
 #include <tempo/network/base.hpp>
+#include <tempo/network/ID.hpp>
 #include <tempo/network/queue.hpp>
 #include <tempo/network/server.hpp>
 
 #include <anax/Entity.hpp>
 
-namespace tempo
+namespace server
 {
-void SystemServerPlayer::update(anax::World &world)
+
+using tempo::operator<<;
+using tempo::operator>>;
+
+void SystemPlayer::update(anax::World &world)
 {
-	tempo::Queue<sf::Packet> *queue = get_system_queue(QueueID::PLAYER_UPDATES);
+	tempo::Queue<sf::Packet> *queue = tempo::get_system_queue(tempo::QueueID::PLAYER_UPDATES);
 
 	if (queue->empty())
 		return;
@@ -35,8 +40,8 @@ void SystemServerPlayer::update(anax::World &world)
 			motion.delta.y = dy;
 
 			// Send update to all clients
-			for (auto it = clients.begin(); it != clients.end(); ++it) {
-				sendMessage(QueueID::PLAYER_UPDATES, update_broadcast, it->first);
+			for (auto it = tempo::clients.begin(); it != tempo::clients.end(); ++it) {
+				tempo::sendMessage(tempo::QueueID::PLAYER_UPDATES, update_broadcast, it->first);
 			}
 		} catch (std::out_of_range &e) {
 			std::cerr << e.what() << std::endl;
@@ -44,4 +49,4 @@ void SystemServerPlayer::update(anax::World &world)
 	}
 }
 
-}  // namespace tempo
+}  // namespace server
