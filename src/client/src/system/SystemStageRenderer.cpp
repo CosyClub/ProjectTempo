@@ -36,7 +36,7 @@ namespace {
 		  node->setPosition(irr::core::vector3df(grid_x, height, grid_y));
 			node->setMaterialTexture(0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
 
-		  printf("Floor mat count: %i\n", node->getMaterialCount());
+		  // printf("Floor mat count: %i\n", node->getMaterialCount());
 
 		  irr::video::SMaterial& material_side = node->getMaterial(0);
 		  irr::video::SMaterial& material_top  = node->getMaterial(1);
@@ -104,21 +104,21 @@ namespace client {
 				case 9:
 				case 10:
 				case 11:
-				case 12: 
+				case 12:
 					checkerBoardPattern(driver, node, material_top, colour1, colour2, i, j);
 					break;
 				case 4:
 				case 5:
 				case 6:
 				case 7:
-				case 8:	
+				case 8:
 					linePattern(driver, node, material_top, colour1, colour2, 0, 5, i, j-4);
 					break;
 				case 13:
 				case 14:
 				case 15:
 				case 16:
-				case 17: 
+				case 17:
 					linePattern(driver, node, material_top, colour1, colour2, 1, 5, i, j-13);
 					break;
 				case 18:

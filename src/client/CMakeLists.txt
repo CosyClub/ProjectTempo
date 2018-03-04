@@ -3,7 +3,9 @@ link_directories("${TEMPO_LIB_DIR}")
 add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentKeyInput.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentRenderSceneNode.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentRenderButtonGroup.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/network/client.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemButtonRenderer.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemGraphicsCreation.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemParseKeyInput.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderSceneNode.hpp
@@ -12,7 +14,9 @@ add_executable(client
 
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentKeyInput.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRenderSceneNode.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRenderButtonGroup.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/network/client.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemButtonRenderer.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGraphicsCreation.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemParseKeyInput.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderSceneNode.cpp

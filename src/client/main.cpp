@@ -1,14 +1,18 @@
 #include <client/component/ComponentKeyInput.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
+#include <client/component/ComponentRenderButtonGroup.hpp>
 #include <client/network/client.hpp>
 #include <client/system/SystemGraphicsCreation.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
+#include <client/system/SystemButtonRenderer.hpp>
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
+#include <client/system/SystemButtonRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
 
 #include <tempo/song.hpp>
 #include <tempo/time.hpp>
+#include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
@@ -22,6 +26,7 @@
 #include <tempo/system/SystemMovement.hpp>
 #include <tempo/system/SystemPlayer.hpp>
 #include <tempo/system/SystemTransform.hpp>
+#include <tempo/system/SystemTrigger.hpp>
 
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
@@ -83,6 +88,16 @@ anax::Entity createEntityStage(anax::World& world){
 // 	return entity_player;
 // }
 
+anax::Entity createButtonGroup(anax::World& world, std::vector<glm::ivec2> positions) {
+	printf("Creating button\n");
+	anax::Entity entity_button = world.createEntity();
+	entity_button.addComponent<tempo::ComponentButtonGroup>(positions);
+	entity_button.addComponent<client::ComponentRenderButtonGroup>();
+	entity_button.activate();
+
+	return entity_button;
+}
+
 int main(int argc, const char** argv){
 
 	tempo::Song mainsong("resources/sound/focus.ogg");
@@ -127,6 +142,8 @@ int main(int argc, const char** argv){
 	tempo::SystemCombo             system_combo;
 	tempo::SystemHealth            system_health;
 	tempo::SystemMovement          system_movement;
+	tempo::SystemTrigger           system_trigger(world);
+	client::SystemButtonRenderer   system_button_renderer;
 	client::SystemGraphicsCreation system_gc;
 	client::SystemStageRenderer    system_stage_renderer;
 	client::SystemRenderSceneNode  system_render_scene_node;
@@ -142,6 +159,8 @@ int main(int argc, const char** argv){
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
 	world.addSystem(system_gc);
+	world.addSystem(system_trigger);
+	world.addSystem(system_button_renderer);
 	world.addSystem(system_stage_renderer);
 	world.addSystem(system_render_scene_node);
 	world.addSystem(system_update_key_input);
@@ -188,6 +207,7 @@ int main(int argc, const char** argv){
 
 	// Connect to server and handshake information
 	tempo::connectToAndSyncWithServer(role, roleData, world);
+
 
 	//Sort out graphics after handshake
 	world.refresh();
@@ -262,6 +282,11 @@ int main(int argc, const char** argv){
 	frame_clock.restart();
 	update_floor_clock.restart();
 
+	//buttons
+	anax::Entity entity_button  = createButtonGroup(world, {{8,8},{9,9}});
+	world.refresh();
+	system_button_renderer.setup(smgr, driver);
+
 	printf("Entering main loop\n");
 	while(device->run()){
 		// float dt = dt_timer.getElapsedTime().asSeconds();
@@ -284,6 +309,8 @@ int main(int argc, const char** argv){
 			j = j % 22;
 			// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
 			system_stage_renderer.updateStage({255,175,0,0},{255,50,50,50}, driver, j);
+			system_trigger.updateButtons();
+			system_button_renderer.updateButtons(driver);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			          // << std::endl;

@@ -7,6 +7,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/time.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/Types.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentAOEIndicator.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentButtonGroup.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentCombo.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentGridAi.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentHealth.hpp"
@@ -39,6 +40,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemServerAttack.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemServerPlayer.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemTransform.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemTrigger.hpp"
 )
 
 set(TEMPO_LIB_TEMPO_SOURCE
@@ -48,6 +50,7 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/structures.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/time.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentAOEIndicator.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentButtonGroup.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentCombo.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentGridAi.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentHealth.cpp"
@@ -79,6 +82,7 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemServerAttack.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemServerPlayer.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTransform.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTrigger.cpp"
 )
 
 add_library(lib_tempo STATIC
