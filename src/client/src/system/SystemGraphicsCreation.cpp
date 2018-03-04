@@ -1,7 +1,9 @@
 #include <client/system/SystemGraphicsCreation.hpp>
 
 #include <tempo/component/ComponentStage.hpp>
-
+#include <tempo/component/ComponentHealth.hpp>
+#include <client/component/ComponentRenderSceneNode.hpp>
+#include <client/component/ComponentHealthBar.hpp>
 #include <iostream>
 
 namespace client
@@ -15,6 +17,9 @@ void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver * driver,
 	for (auto &entity : entities) {
 		if (!entity.hasComponent<client::ComponentRenderSceneNode>()) {
 			entity.addComponent<ComponentRenderSceneNode>(nullptr);
+      if(entity.hasComponent<tempo::ComponentHealth>()) {
+        entity.addComponent<ComponentHealthBar>(nullptr);
+      }
 			entity.activate();
 		}
 	}

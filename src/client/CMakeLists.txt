@@ -1,6 +1,7 @@
 link_directories("${TEMPO_LIB_DIR}")
 
 add_executable(client
+	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentHealthBar.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentKeyInput.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentRenderSceneNode.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentRenderButtonGroup.hpp
@@ -9,9 +10,11 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemGraphicsCreation.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemParseKeyInput.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderSceneNode.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderHealthBars.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemStageRenderer.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemUpdateKeyInput.hpp
 
+	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentHealthBar.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentKeyInput.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRenderSceneNode.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRenderButtonGroup.cpp
@@ -20,6 +23,7 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGraphicsCreation.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemParseKeyInput.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderSceneNode.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderHealthBars.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemStageRenderer.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemUpdateKeyInput.cpp
 
