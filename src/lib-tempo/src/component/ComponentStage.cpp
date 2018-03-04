@@ -61,6 +61,17 @@ float ComponentStage::getHeight(glm::ivec2 position)
 	return -10.0f;
 }
 
+void ComponentStage::setHeight(glm::ivec2 position, int height)
+{
+	for (unsigned int i = 0; i < tiles.size(); i++) {
+		std::tuple<glm::ivec2, float> tile = tiles[i];
+		glm::ivec2                    pos  = std::get<0>(tile);
+		if (pos == position) {
+			std::get<1>(tiles[i]) = height;
+		}
+	}
+}
+
 bool ComponentStage::existstTile(glm::ivec2 position)
 {
 	for (unsigned int i = 0; i < tiles.size(); i++) {

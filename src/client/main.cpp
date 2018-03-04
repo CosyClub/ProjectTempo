@@ -168,7 +168,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_parse_key_input);
 	world.addSystem(system_movement);
 
-	createEntityStage(world);
+	anax::Entity entity_stage = createEntityStage(world);
 	world.refresh();
 
 	// Initialise Systems
@@ -289,7 +289,8 @@ int main(int argc, const char **argv)
 	update_floor_clock.restart();
 
 	// buttons
-	anax::Entity entity_button = createButtonGroup(world, {{8, 8}, {9, 9}});
+	anax::Entity entity_button = createButtonGroup(world, {{8, 8}});
+	bool action_happened = false;
 	world.refresh();
 	system_button_renderer.setup(smgr, driver);
 
@@ -328,6 +329,21 @@ int main(int argc, const char **argv)
 		////////////////
 		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
+			if(entity_button.getComponent<tempo::ComponentButtonGroup>().groupTriggered == true) {
+				action_happened = true;
+				for (auto &entity : world.getEntities()) {
+					if(entity.hasComponent<tempo::ComponentStage>()) {
+						auto& component_stage = entity.getComponent<tempo::ComponentStage>();
+						component_stage.setHeight({0, 1}, 0.f);
+						component_stage.setHeight({0, 2}, 0.f);
+						component_stage.setHeight({0, 3}, 0.f);
+						component_stage.setHeight({0, 4}, 0.f);
+						component_stage.setHeight({0, 5}, 0.f);
+						component_stage.setHeight({0, 6}, 0.f);
+					}
+				}
+			}
+
 			// std::cout << "End" << std::endl;
 			system_movement.processTranslation();
 			system_combo.advanceBeat();

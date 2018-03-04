@@ -35,6 +35,8 @@ struct ComponentStage
 	// Get height at
 	float getHeight(glm::ivec2 position);
 
+  void setHeight(glm::ivec2 position, int height);
+
 	// Returns true if there is a tile at position
 	bool existstTile(glm::ivec2 position);
 
