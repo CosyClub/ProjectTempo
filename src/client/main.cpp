@@ -90,11 +90,13 @@ anax::Entity createEntityStage(anax::World &world)
 // 	return entity_player;
 // }
 
-anax::Entity createButtonGroup(anax::World &world, std::vector<glm::ivec2> positions)
+anax::Entity createButtonGroup(anax::World &world,
+	                             std::vector<glm::ivec2> positions,
+	                             std::vector<glm::ivec2> tiles)
 {
 	printf("Creating button\n");
 	anax::Entity entity_button = world.createEntity();
-	entity_button.addComponent<tempo::ComponentButtonGroup>(positions);
+	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles);
 	entity_button.addComponent<client::ComponentRenderButtonGroup>();
 	entity_button.activate();
 
@@ -289,7 +291,8 @@ int main(int argc, const char **argv)
 	update_floor_clock.restart();
 
 	// buttons
-	anax::Entity entity_button = createButtonGroup(world, {{8, 8}});
+	std::vector<glm::ivec2> wall = {{0,0}, {0,1}, {0,2}, {0,3}, {0,4}, {0,5}, {0,6}, {0,7}};
+	anax::Entity entity_button = createButtonGroup(world, {{8, 8}}, wall);
 	world.refresh();
 	system_button_renderer.setup(smgr, driver);
 
@@ -334,12 +337,7 @@ int main(int argc, const char **argv)
 				for (auto &entity : world.getEntities()) {
 					if(entity.hasComponent<tempo::ComponentStage>()) {
 						auto& component_stage = entity.getComponent<tempo::ComponentStage>();
-						component_stage.setHeight({0, 1}, 0.f);
-						component_stage.setHeight({0, 2}, 0.f);
-						component_stage.setHeight({0, 3}, 0.f);
-						component_stage.setHeight({0, 4}, 0.f);
-						component_stage.setHeight({0, 5}, 0.f);
-						component_stage.setHeight({0, 6}, 0.f);
+						component_stage.setHeight(button_group.wall_positions, 0.f);
 					}
 				}
 			}

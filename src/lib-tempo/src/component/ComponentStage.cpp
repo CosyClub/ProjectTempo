@@ -77,6 +77,12 @@ void ComponentStage::setHeight(glm::ivec2 position, int height)
 		std::get<1>(tiles[index]) = height;
 }
 
+void ComponentStage::setHeight(std::vector<glm::ivec2> positions, int height)
+{
+	for(auto& position : positions)
+		setHeight(position, height);
+}
+
 bool ComponentStage::existstTile(glm::ivec2 position)
 {
 	int index = findIndex(position);
