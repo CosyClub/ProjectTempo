@@ -16,27 +16,51 @@ namespace server
 using tempo::operator<<;
 using tempo::operator>>;
 
-// void SystemAttack::Sync(anax::World &w)
-// {
-// 	tempo::Queue<sf::Packet> *q = tempo::get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
-
-// 	while (!q->empty()) {
-// 		sf::Packet p = q->front();
-// 		q->pop();
-
-// 		for (auto &client : tempo::clients) {
-// 			tempo::sendMessage(tempo::QueueID::SYSTEM_ATTACK, p, client.first);
-// 		}
-// 	}
-// }
-
 SystemAttack::SystemAttack(anax::World &world)
 {
 	subSystem = SubSystemAttack();
 	world.addSystem(subSystem);
 	world.refresh();
 }
-	
+
+void SystemAttack::recieveAttacks(anax::World &w)
+{
+	tempo::Queue<sf::Packet> *q = tempo::get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
+
+	while (!q->empty()) {
+		sf::Packet p = q->front();
+		q->pop();	
+		sf::Packet pb(p); // packet for broadcast
+
+		unsigned int code;
+		p >> code;
+
+		anax::Entity::Id id;
+		p >> id;
+		anax::Entity e(w, id);
+
+		switch (static_cast<tempo::MessageAttack>(code)) {
+		case tempo::MessageAttack::UPDATE_INTENT: {
+			if (!e.hasComponent<tempo::ComponentAttack>()) {
+				std::cout << "Recieved Attack Intent Update from entity without ComponentAttack" << std::endl;
+			}
+			tempo::ComponentAttack &c = e.getComponent<tempo::ComponentAttack>();
+			p >> c.damage;
+			p >> c.beats_until_attack;
+			tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, pb);
+			break;
+		}
+		case tempo::MessageAttack::ATTACK_CORRECTION:
+			// do nothing, server should not recieve corrections
+			break;
+		default: 
+			std::cout << "ATTACK: Unhandled/erroneous message" << std::endl;
+		}
+
+	}
+	return;
+}
+
 void SystemAttack::processAttacks()
 {
 	for (auto &entity : getEntities()) {
@@ -48,80 +72,53 @@ void SystemAttack::processAttacks()
 
 void SubSystemAttack::Attack(anax::Entity attacker)
 {
-	// Attacker
+	// Get Attacker Components
 	glm::ivec2  attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
 	glm::ivec2  rot         = attacker.getComponent<tempo::ComponentStageRotation>().facing;
+	auto &      attack      = attacker.getComponent<tempo::ComponentAttack>();
 	auto &      weapon      = attacker.getComponent<tempo::ComponentWeapon>();
-	tempo::Mask m           = weapon.damage;
 
-	if (weapon.isDelayed) {
+	if (attack.beats_until_attack > 0) {
+		attack.beats_until_attack--;
+		return;
 	}
 
 	for (auto &entity : getEntities()) {
-		// TODO some team system
+		// Get health and positions occupired by other entity
+		std::vector<glm::ivec2> ps = entity.getComponent<tempo::ComponentStagePosition>().getOccupied();
+		auto &health = entity.getComponent<tempo::ComponentHealth>();
 
-		glm::ivec2 pos    = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
-		auto &     health = entity.getComponent<tempo::ComponentHealth>();
+		// Add positions after stage translation (if any) to ps vector
+		// TODO: This doesn't take into account if the movement system
+		//       doesn't accept a stage translation. Work out if 
+		//       that matters?
+		if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
+			glm::ivec2 d = entity.getComponent<tempo::ComponentStageTranslation>().delta;
+			if (d != glm::ivec2(0,0)) {
+				for (glm::ivec2 p : entity.getComponent<tempo::ComponentStagePosition>().getOccupied()) {
+					if (std::find(ps.begin(), ps.end(), p+d) != ps.end()) {
+						ps.push_back(p+d);
+					}
 
+				}
+			}
+		}
+
+		// Calculate relative directions from the attacker
 		glm::vec2 forward = rot;
 		glm::vec2 left = glm::ivec2(-rot.y, -rot.x);  // Hacky cross product
 
-		glm::vec2  diff          = pos - attackerpos;
-		glm::ivec2 relative_diff = glm::ivec2(glm::dot(diff, left), glm::dot(diff, forward));
+		// Deal damage to the other entity
+		for (glm::ivec2 p : ps) {
+			glm::vec2  diff          = p - attackerpos;
+			glm::ivec2 relative_diff = glm::ivec2(glm::dot(diff, left), glm::dot(diff, forward));
 
-		float damage = weapon.GetDamage(relative_diff);
-		if (damage != 0) {
-			std::cout << "hit entity " << entity.getId().index << " for " << damage << std::endl;
-		}
-		health.HealthUpdate(-1 * damage);
-	}
-}
-
-void SubSystemAttack::Broadcast(anax::World &w)
-{
-	tempo::Queue<sf::Packet> *q = tempo::get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
-
-	while (!q->empty()) {
-		sf::Packet p = q->front();
-		q->pop();
-
-		tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);
-	}
-}
-
-void SubSystemAttack::Recieve(anax::World &w)
-{
-	tempo::Queue<sf::Packet> *q = tempo::get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
-
-	while (!q->empty()) {
-		sf::Packet p = q->front();
-		q->pop();
-
-		int code;
-		p >> code;
-
-		anax::Entity::Id id;
-		p >> id;
-		id = tempo::servertolocal[id];
-		anax::Entity e(w, id);
-
-		switch (code) {
-		case Messages::ATTACK: {
-			if (!e.hasComponent<tempo::ComponentAOEIndicator>()) {
-				std::cout << "Entity does not contain ComponentAOEIndicator" << std::endl;
-				assert(false);
+			float damage = weapon.GetDamage(relative_diff);
+			if (damage != 0) {
+				std::cout << "hit entity " << entity.getId().index << " for " << damage << std::endl;
+				health.HealthUpdate(-1 * damage);
+				break;
 			}
-			tempo::ComponentAOEIndicator aoe = e.getComponent<tempo::ComponentAOEIndicator>();
-			auto &weapon = e.getComponent<tempo::ComponentWeapon>();
-			aoe.duration = sf::seconds(0.1);
-			aoe.tiles    = weapon.damage.positions;
-			// Do some animating?
-
-		} break;
-		case Messages::DELAYED_ATTACK:
-			// TODO
-			break;
-		default: std::cout << "ATTACK: Unhandled message" << std::endl;
 		}
 	}
 }

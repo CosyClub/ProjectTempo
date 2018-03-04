@@ -21,14 +21,6 @@ struct SubSystemAttack : anax::System<anax::Requires<tempo::ComponentHealth, tem
 	// Returns:
 	//          void
 	void Attack(anax::Entity attacker);
-
-	void Broadcast(anax::World &w);
-	void Recieve(anax::World &w);
-
-	enum Messages {
-		ATTACK,
-		DELAYED_ATTACK,
-	};
 };
 
 struct SystemAttack : anax::System<anax::Requires<tempo::ComponentAttack>> 
@@ -37,6 +29,10 @@ struct SystemAttack : anax::System<anax::Requires<tempo::ComponentAttack>>
 	
 	// Sets up the SystemAttack along with it's necessary subsystem
 	SystemAttack(anax::World &world);
+	
+	// Recieves all the attack intents and bounces them to all the clients.
+	// To be run all the time
+	void recieveAttacks(anax::World &w);
 	
 	// Processes all of the attack intents. To be run at Delta End.
 	void processAttacks();

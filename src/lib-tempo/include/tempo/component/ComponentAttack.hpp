@@ -10,6 +10,11 @@
 namespace tempo
 {
 
+enum MessageAttack {
+	UPDATE_INTENT,
+	ATTACK_CORRECTION
+};
+
 // Component captures a combo mechanic for the entity with this component.
 struct ComponentAttack : anax::Component, NetworkedComponent 
 {

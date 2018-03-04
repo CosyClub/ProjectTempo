@@ -4,16 +4,13 @@
 #include <anax/Component.hpp>
 #include <anax/System.hpp>
 
-#include <cassert>
-#include <tempo/component/ComponentAttack.hpp>
-#include <tempo/component/ComponentHealth.hpp>
-#include <tempo/component/ComponentStagePosition.hpp>
-
 namespace tempo
 {
 
 struct SystemAttack : anax::System<anax::Requires<>> 
 {
+	// Processes the attack responses from the server
+	void processServerResponses();
 };
 
 } // namespace tempo
