@@ -5,11 +5,11 @@
 
 #include <tempo/component/NetworkedComponent.hpp>
 
-namespace tempo {
-
-struct ComponentHealth : anax::Component, NetworkedComponent
+namespace tempo
 {
-
+struct ComponentHealth
+    : anax::Component
+    , NetworkedComponent {
 	// Starting Health for entity
 	int32_t max_health;
 	int32_t current_health;
@@ -44,10 +44,10 @@ struct ComponentHealth : anax::Component, NetworkedComponent
 	// Required for networking
 	/////
 	ComponentHealth(sf::Packet p);
-	sf::Packet dumpComponent();
+	sf::Packet  dumpComponent();
 	ComponentID getId();
 };
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif

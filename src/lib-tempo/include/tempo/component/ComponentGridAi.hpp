@@ -7,9 +7,9 @@
 
 namespace tempo
 {
-
-struct ComponentGridAi : anax::Component, NetworkedComponent
-{
+struct ComponentGridAi
+    : anax::Component
+    , NetworkedComponent {
 	ComponentGridAi();
 
 	/////
@@ -17,9 +17,9 @@ struct ComponentGridAi : anax::Component, NetworkedComponent
 	/////
 	ComponentGridAi(sf::Packet p);
 	ComponentID getId();
-	sf::Packet dumpComponent();
+	sf::Packet  dumpComponent();
 };
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif

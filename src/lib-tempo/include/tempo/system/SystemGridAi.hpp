@@ -5,10 +5,11 @@
 
 #include <anax/System.hpp>
 
-namespace tempo{
-	struct SystemGridAi : anax::System<anax::Requires<ComponentStageTranslation, ComponentGridAi>> {
-		void update();
-	};
+namespace tempo
+{
+struct SystemGridAi : anax::System<anax::Requires<ComponentStageTranslation, ComponentGridAi>> {
+	void update();
+};
 }
 
 #endif

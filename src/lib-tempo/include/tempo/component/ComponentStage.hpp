@@ -12,39 +12,40 @@
 
 namespace tempo
 {
-
 // This implementation may change without notice
 typedef std::vector<std::tuple<glm::ivec2, float>> stage_tiles;
 
 // An entity that is bound by the world stage
-struct ComponentStage : anax::Component, NetworkedComponent
-{
-	private:
-		stage_tiles tiles;
-		std::string stage_file;
+struct ComponentStage
+    : anax::Component
+    , NetworkedComponent {
+   private:
+	stage_tiles tiles;
+	std::string stage_file;
 
-		void loadLevel(const char * stage_file);
-	public:
-		// Constructor requires stage file
-		ComponentStage(const char* stage_file);
+	void loadLevel(const char *stage_file);
 
-		// Gets a list of
-		stage_tiles getHeights();
+   public:
+	// Constructor requires stage file
+	ComponentStage(const char *stage_file);
 
-		// Get height at
-		float getHeight(glm::ivec2 position);
+	// Gets a list of
+	stage_tiles getHeights();
 
-		//Returns true if there is a tile at position
-		bool existstTile(glm::ivec2 position);
+	// Get height at
+	float getHeight(glm::ivec2 position);
 
-		/////
-		// Required for networking
-		/////
-		ComponentStage(sf::Packet p);
-		sf::Packet dumpComponent();
-		ComponentID getId();
+	// Returns true if there is a tile at position
+	bool existstTile(glm::ivec2 position);
+
+	/////
+	// Required for networking
+	/////
+	ComponentStage(sf::Packet p);
+	sf::Packet  dumpComponent();
+	ComponentID getId();
 };
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif

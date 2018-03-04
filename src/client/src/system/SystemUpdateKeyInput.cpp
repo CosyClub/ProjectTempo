@@ -1,88 +1,88 @@
-#include <client/system/SystemUpdateKeyInput.hpp>
 #include <client/component/ComponentKeyInput.hpp>
+#include <client/system/SystemUpdateKeyInput.hpp>
 
 #include <iostream>
 
 
-
-bool KeyInput::OnEvent(const irr::SEvent & event) {
-
-if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
+bool KeyInput::OnEvent(const irr::SEvent &event)
+{
+	if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
 		// if key is Pressed Down
 		if (event.KeyInput.PressedDown == true) {
 			// If key was not down before
 			if (keyState[event.KeyInput.Key] != DOWN && keyState[event.KeyInput.Key] != PRESSED) {
-				keyState[event.KeyInput.Key] = PRESSED; // Set to Pressed
+				keyState[event.KeyInput.Key] = PRESSED;  // Set to Pressed
 				std::lock_guard<std::mutex> lock(chars_mutex);
-				chars.push_back(client::KeyEvent(event.KeyInput.Key, true ));
-			}
-			else {
+				chars.push_back(client::KeyEvent(event.KeyInput.Key, true));
+			} else {
 				// if key was down before
-				keyState[event.KeyInput.Key] = DOWN; // Set to Down
+				keyState[event.KeyInput.Key] = DOWN;  // Set to Down
+			}
+		} else {
+			// if the key is down
+			if (keyState[event.KeyInput.Key] != UP) {
+				keyState[event.KeyInput.Key] = RELEASED;  // Set to Released
+				std::lock_guard<std::mutex> lock(chars_mutex);
+				chars.push_back(client::KeyEvent(event.KeyInput.Key, false));
 			}
 		}
-		else {
-				// if the key is down
-				if (keyState[event.KeyInput.Key] != UP) {
-					keyState[event.KeyInput.Key] = RELEASED; // Set to Released
-					std::lock_guard<std::mutex> lock(chars_mutex);
-					chars.push_back(client::KeyEvent(event.KeyInput.Key, false ));
-				}
-		}
-}
-return false;
+	}
+	return false;
 }
 
-void KeyInput::init() {
-	for (int i = 0; i <= irr::KEY_KEY_CODES_COUNT; i++)
-	{
+void KeyInput::init()
+{
+	for (int i = 0; i <= irr::KEY_KEY_CODES_COUNT; i++) {
 		keyState[i] = UP;
 	}
 }
 
 
-std::vector<client::KeyEvent> KeyInput::getChars() {
+std::vector<client::KeyEvent> KeyInput::getChars()
+{
 	std::lock_guard<std::mutex> lock(chars_mutex);
 	return chars;
 }
 
-void KeyInput::clearChars() {
+void KeyInput::clearChars()
+{
 	std::lock_guard<std::mutex> lock(chars_mutex);
 	chars.clear();
 }
 
 
-namespace client {
-	void SystemUpdateKeyInput::setup(irr::IrrlichtDevice* device) {
-		device->setEventReceiver(&receiver);
-		//receiver.init();
+namespace client
+{
+void SystemUpdateKeyInput::setup(irr::IrrlichtDevice *device)
+{
+	device->setEventReceiver(&receiver);
+	// receiver.init();
+}
+
+void SystemUpdateKeyInput::addKeys()
+{
+	auto entities = getEntities();
+
+	for (auto entity : entities) {
+		client::ComponentKeyInput &ki = entity.getComponent<client::ComponentKeyInput>();
+
+		// add all keys that were queued up
+		std::vector<client::KeyEvent> keys = receiver.getChars();
+		ki.keysPressed.insert(ki.keysPressed.end(), keys.begin(), keys.end());
 	}
 
-	void SystemUpdateKeyInput::addKeys() {
-		auto entities = getEntities();
+	// clear the keys in the reciever
+	receiver.clearChars();
+}
 
-		for (auto entity : entities)
-		{
-			client::ComponentKeyInput& ki = entity.getComponent<client::ComponentKeyInput>();
+void SystemUpdateKeyInput::clear()
+{
+	auto entities = getEntities();
 
-			// add all keys that were queued up
-			std::vector<client::KeyEvent> keys = receiver.getChars();
-			ki.keysPressed.insert(ki.keysPressed.end(),
-			                      keys.begin(), keys.end());
-		}
+	for (auto entity : entities) {
+		client::ComponentKeyInput &ki = entity.getComponent<client::ComponentKeyInput>();
 
-		// clear the keys in the reciever
-		receiver.clearChars();
+		ki.keysPressed.clear();
 	}
-
-	void SystemUpdateKeyInput::clear() {
-		auto entities = getEntities();
-
-		for (auto entity : entities)
-		{
-			client::ComponentKeyInput& ki = entity.getComponent<client::ComponentKeyInput>();
-
-			ki.keysPressed.clear();
-		}
-	}
-} // namespace client
+}
+}  // namespace client

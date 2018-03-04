@@ -1,8 +1,8 @@
 #ifndef TEMPO_SYSTEM_SERVER_PLAYER_HPP
 #define TEMPO_SYSTEM_SERVER_PLAYER_HPP
 
-#include <anax/System.hpp>
 #include <anax/Component.hpp>
+#include <anax/System.hpp>
 
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
@@ -12,20 +12,20 @@
 
 namespace tempo
 {
+//
+struct SystemServerPlayer
+    : anax::System<
+        anax::Requires<ComponentCombo, ComponentStageTranslation, ComponentPlayerRemote>> {
+	tempo::Clock &clock;
 
-// 
-struct SystemServerPlayer : anax::System<
-                            anax::Requires<ComponentCombo, 
-                                           ComponentStageTranslation, 
-                                           ComponentPlayerRemote>> 
-{
-	tempo::Clock& clock;
-
-	inline SystemServerPlayer(tempo::Clock& c) : clock(c) {}
+	inline SystemServerPlayer(tempo::Clock &c)
+	    : clock(c)
+	{
+	}
 
 	void update(anax::World &world);
 };
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif

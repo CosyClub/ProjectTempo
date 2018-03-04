@@ -2,11 +2,10 @@
 
 namespace tempo
 {
-
 ComponentCombo::ComponentCombo()
 {
 	actionedThisBeat = false;
-	comboCounter = 0;
+	comboCounter     = 0;
 }
 
 void ComponentCombo::advanceBeat()
@@ -17,7 +16,7 @@ void ComponentCombo::advanceBeat()
 	actionedThisBeat = false;
 }
 
-bool ComponentCombo::performAction() 
+bool ComponentCombo::performAction()
 {
 	if (!actionedThisBeat) {
 		actionedThisBeat = true;
@@ -29,20 +28,19 @@ bool ComponentCombo::performAction()
 	}
 }
 
-void ComponentCombo::breakCombo() 
+void ComponentCombo::breakCombo()
 {
 	actionedThisBeat = true;
 	comboCounter     = 0;
 }
-	
+
 
 /////
 // Required for networking
 /////
 ComponentCombo::ComponentCombo(sf::Packet p)
 {
-	p >> actionedThisBeat
-	  >> comboCounter;
+	p >> actionedThisBeat >> comboCounter;
 }
 
 ComponentID ComponentCombo::getId()
@@ -53,9 +51,8 @@ ComponentID ComponentCombo::getId()
 sf::Packet ComponentCombo::dumpComponent()
 {
 	sf::Packet p;
-	p << actionedThisBeat
-	  << comboCounter;
+	p << actionedThisBeat << comboCounter;
 	return p;
 }
 
-} // namespace tempo
+}  // namespace tempo

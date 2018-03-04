@@ -8,19 +8,14 @@
 
 namespace client
 {
+SystemGraphicsCreation::SystemGraphicsCreation() {}
 
-SystemGraphicsCreation::SystemGraphicsCreation()
-{
-}
-
-void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver *driver,
+void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver * driver,
                                          irr::scene::ISceneManager *manager)
 {
 	auto entities = getEntities();
-	for (auto& entity : entities)
-	{
-		if (!entity.hasComponent<client::ComponentRenderSceneNode>())
-		{
+	for (auto &entity : entities) {
+		if (!entity.hasComponent<client::ComponentRenderSceneNode>()) {
 			entity.addComponent<ComponentRenderSceneNode>(nullptr);
       if(entity.hasComponent<tempo::ComponentHealth>()) {
         entity.addComponent<ComponentHealthBar>(nullptr);
@@ -30,4 +25,4 @@ void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver *driver,
 	}
 }
 
-} // namespace tempo
+}  // namespace tempo

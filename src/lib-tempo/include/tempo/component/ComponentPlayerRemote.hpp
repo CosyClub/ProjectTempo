@@ -7,9 +7,9 @@
 
 namespace tempo
 {
-
-struct ComponentPlayerRemote : anax::Component, NetworkedComponent 
-{
+struct ComponentPlayerRemote
+    : anax::Component
+    , NetworkedComponent {
 	ComponentPlayerRemote();
 
 	/////
@@ -17,9 +17,9 @@ struct ComponentPlayerRemote : anax::Component, NetworkedComponent
 	/////
 	ComponentPlayerRemote(sf::Packet p);
 	ComponentID getId();
-	sf::Packet dumpComponent();
+	sf::Packet  dumpComponent();
 };
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif

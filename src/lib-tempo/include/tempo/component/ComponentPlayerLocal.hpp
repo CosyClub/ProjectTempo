@@ -7,10 +7,10 @@
 
 namespace tempo
 {
-
-struct ComponentPlayerLocal : anax::Component, NetworkedComponent 
-{	
-	//Anthony it's broken because you removed all the fucking constructors
+struct ComponentPlayerLocal
+    : anax::Component
+    , NetworkedComponent {
+	// Anthony it's broken because you removed all the fucking constructors
 	ComponentPlayerLocal();
 
 	/////
@@ -18,10 +18,9 @@ struct ComponentPlayerLocal : anax::Component, NetworkedComponent
 	/////
 	ComponentPlayerLocal(sf::Packet p);
 	ComponentID getId();
-	sf::Packet dumpComponent();
-
+	sf::Packet  dumpComponent();
 };
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif

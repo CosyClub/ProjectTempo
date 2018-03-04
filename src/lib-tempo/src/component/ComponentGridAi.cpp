@@ -2,10 +2,9 @@
 
 namespace tempo
 {
-
 ComponentGridAi::ComponentGridAi()
 {
-	return; // does nothing
+	return;  // does nothing
 }
 
 /////
@@ -13,7 +12,7 @@ ComponentGridAi::ComponentGridAi()
 /////
 ComponentGridAi::ComponentGridAi(sf::Packet p)
 {
-	return; // does nothing
+	return;  // does nothing
 }
 
 ComponentID ComponentGridAi::getId()
@@ -23,7 +22,7 @@ ComponentID ComponentGridAi::getId()
 
 sf::Packet ComponentGridAi::dumpComponent()
 {
-	return sf::Packet(); // does nothing
+	return sf::Packet();  // does nothing
 }
 
-} // namespace tempo
+}  // namespace tempo

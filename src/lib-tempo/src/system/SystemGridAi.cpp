@@ -2,15 +2,15 @@
 
 namespace tempo
 {
-
-void SystemGridAi::update(){
+void SystemGridAi::update()
+{
 	auto entities = getEntities();
 
-	for(auto& entity : entities){
-		auto& grid_motion = entity.getComponent<tempo::ComponentStageTranslation>();
+	for (auto &entity : entities) {
+		auto &grid_motion = entity.getComponent<tempo::ComponentStageTranslation>();
 
-		int dir = rand() % 2; // between 0 and 1
-		int amount = (rand() % 2) * 2 - 1; //-1 or 1
+		int dir    = rand() % 2;            // between 0 and 1
+		int amount = (rand() % 2) * 2 - 1;  //-1 or 1
 
 		if (dir) {
 			grid_motion.delta = glm::ivec2(amount, 0);
@@ -19,5 +19,4 @@ void SystemGridAi::update(){
 		}
 	}
 }
-
 }

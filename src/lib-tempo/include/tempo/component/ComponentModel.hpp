@@ -1,5 +1,5 @@
-#ifndef TEMPO_COMPONENT_COMPONENTMODEL_HPP 
-#define TEMPO_COMPONENT_COMPONENTMODEL_HPP 
+#ifndef TEMPO_COMPONENT_COMPONENTMODEL_HPP
+#define TEMPO_COMPONENT_COMPONENTMODEL_HPP
 
 #include <anax/Component.hpp>
 
@@ -7,13 +7,14 @@
 
 #include <glm/vec3.hpp>
 
-namespace tempo {
-
-struct ComponentModel : anax::Component, NetworkedComponent
+namespace tempo
 {
-	bool isMesh;
+struct ComponentModel
+    : anax::Component
+    , NetworkedComponent {
+	bool        isMesh;
 	std::string path;
-	glm::vec3 color;
+	glm::vec3   color;
 
 	ComponentModel(std::string p, glm::vec3 c, bool mesh);
 
@@ -21,10 +22,10 @@ struct ComponentModel : anax::Component, NetworkedComponent
 	// Required for networking
 	/////
 	ComponentModel(sf::Packet p);
-	sf::Packet dumpComponent();
+	sf::Packet  dumpComponent();
 	ComponentID getId();
 };
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif

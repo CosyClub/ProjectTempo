@@ -3,12 +3,12 @@
 #include <tempo/time.hpp>
 
 #include <tempo/entity/EntityCreationServer.hpp>
+#include <tempo/system/SystemAttack.hpp>
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 #include <tempo/system/SystemServerPlayer.hpp>
-#include <tempo/system/SystemAttack.hpp>
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>
@@ -16,11 +16,11 @@
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
 
-#include <anax/World.hpp>
 #include <anax/Entity.hpp>
+#include <anax/World.hpp>
 
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 #include <thread>
 #include <vector>
 
@@ -29,10 +29,9 @@
 #define PLAYER_DELTA 125     // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
-int main(int argc, const char** argv) {
-
-	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME),
-	                                  sf::milliseconds(PLAYER_DELTA));
+int main(int argc, const char **argv)
+{
+	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(PLAYER_DELTA));
 
 	// Set up remote address, local ports and remote handshake port
 	tempo::port_si = DEFAULT_PORT_IN;
@@ -42,7 +41,7 @@ int main(int argc, const char** argv) {
 	//////////////////////////////////
 	// Set up ECS
 	anax::World world;
-	
+
 	// Create Systems
 	tempo::SystemAttack       system_attack;
 	tempo::SystemCombo        system_combo;
@@ -61,20 +60,20 @@ int main(int argc, const char** argv) {
 	tempo::newAI(world, 5, 5);
 	tempo::newAI(world, 3, 3);
 	tempo::newAI(world, 8, 8);
-	
-	//Destroyables
+
+	// Destroyables
 	tempo::newDestroyable(world, 4, 4, "Cube");
 
-	//NonDestroyables
+	// NonDestroyables
 	tempo::newNonDestroyable(world, 6, 6, "Cube");
 
 	//////////////////////////////////
 	// Thread Startup
-	std::thread timeSyncThread (tempo::timeSyncServer, &clock);
+	std::thread timeSyncThread(tempo::timeSyncServer, &clock);
 	// Hack to allow printouts to line up a bit nicer :)
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
-	std::thread clientUpdatesThread (tempo::listenForClientUpdates);
-	
+	std::thread clientUpdatesThread(tempo::listenForClientUpdates);
+
 	tempo::bindSocket('o', tempo::port_so);
 
 	// sf::Clock dt_timer;
@@ -82,17 +81,17 @@ int main(int argc, const char** argv) {
 
 	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	tick++;
-  
+
 	// Main loop, with beat printouts
 	while (true) {
 		// Handshake call, DO NOT REMOVE
 		tempo::checkForNewClients(&world);
 		world.refresh();
-		
+
 		// float next_dt_time = dt_timer.getElapsedTime().asSeconds();
 		// float dt = next_dt_time - last_dt_time;
 		// last_dt_time = next_dt_time;
-		
+
 		if (clock.passed_delta_start()) {
 			// std::cout << "Start" << std::endl;
 		}
@@ -100,9 +99,10 @@ int main(int argc, const char** argv) {
 		if (clock.passed_beat()) {
 			system_grid_ai.update();
 			system_combo.advanceBeat();
-      
+
 			if (tick++ % 20 == 0)
-				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds() << "+++++++++++++++" << std::endl;
+				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()
+				          << "+++++++++++++++" << std::endl;
 		}
 
 		if (clock.passed_delta_end()) {

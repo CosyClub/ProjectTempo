@@ -2,19 +2,18 @@
 
 namespace tempo
 {
-
-ComponentWeapon::ComponentWeapon(Mask& m)
+ComponentWeapon::ComponentWeapon(Mask &m)
 {
-	damage = Mask(m);
+	damage          = Mask(m);
 	this->isDelayed = 0;
-	this->delay = sf::Time::Zero;
+	this->delay     = sf::Time::Zero;
 }
- 
-ComponentWeapon::ComponentWeapon(Mask& m, sf::Time delay)
+
+ComponentWeapon::ComponentWeapon(Mask &m, sf::Time delay)
 {
-	this->damage = Mask(m);
+	this->damage    = Mask(m);
 	this->isDelayed = true;
-	this->delay = delay;
+	this->delay     = delay;
 }
 
 float ComponentWeapon::GetDamage(glm::vec2 offset)
@@ -43,5 +42,4 @@ ComponentID ComponentWeapon::getId()
 {
 	return ComponentID::WEAPON;
 }
-
 }

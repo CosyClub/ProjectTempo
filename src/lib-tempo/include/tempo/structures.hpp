@@ -10,24 +10,21 @@
 
 namespace tempo
 {
+template <class T>
+class Queue
+{
+	std::queue<T> *q;
+	std::mutex *   m;
 
-template<class T>
-class Queue {
-
-	std::queue<T>* q;
-	std::mutex* m;
-	
-	public:
-	
+   public:
 	Queue();
 	~Queue();
-	
+
 	void push(T elem);
 	void pop();
-	T front();
+	T    front();
 	bool empty();
 };
-
 }
 
 #endif

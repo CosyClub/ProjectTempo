@@ -10,28 +10,24 @@
 
 namespace tempo
 {
-
 class Mask
 {
-	public:
-
-	glm::ivec2 ctr;
-	glm::ivec2 sz;
-	std::vector<float> mask;
+   public:
+	glm::ivec2              ctr;
+	glm::ivec2              sz;
+	std::vector<float>      mask;
 	std::vector<glm::ivec2> positions;
 
 	Mask();
-	Mask(glm::ivec2 centre, float* data, glm::ivec2 size);
+	Mask(glm::ivec2 centre, float *data, glm::ivec2 size);
 
 
 	float get_value(glm::ivec2 offset);
 	float get_value(int x, int y);
-
 };
 
-sf::Packet& operator <<(sf::Packet& packet, const tempo::Mask& m);
-sf::Packet& operator >>(sf::Packet& packet, tempo::Mask& m);
-
+sf::Packet &operator<<(sf::Packet &packet, const tempo::Mask &m);
+sf::Packet &operator>>(sf::Packet &packet, tempo::Mask &m);
 }
 
 #endif

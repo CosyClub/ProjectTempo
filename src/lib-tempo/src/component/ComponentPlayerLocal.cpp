@@ -4,12 +4,12 @@ namespace tempo
 {
 ComponentPlayerLocal::ComponentPlayerLocal()
 {
-	return; // Do nothing as this struct is currently empty
+	return;  // Do nothing as this struct is currently empty
 }
 
 ComponentPlayerLocal::ComponentPlayerLocal(sf::Packet p)
 {
-	return; // Do nothing as this struct is currently empty
+	return;  // Do nothing as this struct is currently empty
 }
 
 ComponentID ComponentPlayerLocal::getId()
@@ -22,4 +22,4 @@ sf::Packet ComponentPlayerLocal::dumpComponent()
 	return sf::Packet();
 }
 
-} // namespace tempo
+}  // namespace tempo

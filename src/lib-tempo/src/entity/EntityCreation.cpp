@@ -1,6 +1,5 @@
 #include <tempo/entity/EntityCreation.hpp>
 
-#include <tempo/component/NetworkedComponent.hpp>
 #include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentGridAi.hpp>
@@ -13,6 +12,7 @@
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
+#include <tempo/component/NetworkedComponent.hpp>
 
 #include <tempo/network/base.hpp>
 
@@ -23,43 +23,39 @@
 
 #include <cassert>
 
-#define CASE(NAME, CID)                                              \
-	case ComponentID::CID :                                      \
-		if (!e.hasComponent<NAME>()) {                       \
-			e.addComponent<NAME>(part);                  \
-		} else {                                             \
-			std::cout << "Warning: Reinstanciation of "  \
-				  << "" #NAME                        \
-				  << std::endl;                      \
-		}                                                    \
+#define CASE(NAME, CID)                                                                            \
+	case ComponentID::CID:                                                                         \
+		if (!e.hasComponent<NAME>()) {                                                             \
+			e.addComponent<NAME>(part);                                                            \
+		} else {                                                                                   \
+			std::cout << "Warning: Reinstanciation of "                                            \
+			          << "" #NAME << std::endl;                                                    \
+		}                                                                                          \
 		break;
 
 namespace tempo
 {
-
-anax::Entity addComponent(anax::World& w, sf::Packet p)
+anax::Entity addComponent(anax::World &w, sf::Packet p)
 {
-	anax::Entity::Id id;
-	anax::Entity::Id localid;
-	anax::Entity e;
+	anax::Entity::Id   id;
+	anax::Entity::Id   localid;
+	anax::Entity       e;
 	tempo::ComponentID component_id;
 
 	p >> id;
 	auto a = servertolocal.find(id);
 	if (a == servertolocal.end()) {
-		//Looks like it's a new one
-		std::cout << "Recieved New Entity with server ID " << id.index
-		          << std::endl;
-		e = w.createEntity();
+		// Looks like it's a new one
+		std::cout << "Recieved New Entity with server ID " << id.index << std::endl;
+		e       = w.createEntity();
 		localid = e.getId();
 		servertolocal.emplace(id, localid);
 		localtoserver.emplace(localid, id);
 		e.activate();
 	} else {
-		std::cout << "Using current Entity with server ID " << id.index 
-		          << std::endl;
+		std::cout << "Using current Entity with server ID " << id.index << std::endl;
 		localid = a->second;
-		e = anax::Entity(w, localid);
+		e       = anax::Entity(w, localid);
 		e.activate();
 	}
 
@@ -72,37 +68,35 @@ anax::Entity addComponent(anax::World& w, sf::Packet p)
 		part >> component_id;
 		std::cout << "Adding Component with ID " << component_id << std::endl;
 		switch (component_id) {
+			// Put new Components in here
+			CASE(ComponentAOEIndicator, AOEINDICATOR)
+			CASE(ComponentCombo, COMBO)
+			CASE(ComponentGridAi, GRID_AI)
+			CASE(ComponentHealth, HEALTH)
+			CASE(ComponentModel, MODEL)
+			CASE(ComponentPlayerLocal, PLAYER_LOCAL)
+			CASE(ComponentPlayerRemote, PLAYER_REMOTE)
+			CASE(ComponentStage, STAGE)
+			CASE(ComponentStagePosition, STAGE_POSITION)
+			CASE(ComponentStageRotation, STAGE_ROTATION)
+			CASE(ComponentStageTranslation, STAGE_TRANSLATION)
+			CASE(ComponentWeapon, WEAPON)
 
-		// Put new Components in here	
-		CASE(ComponentAOEIndicator, AOEINDICATOR)
-		CASE(ComponentCombo, COMBO)
-		CASE(ComponentGridAi, GRID_AI)
-		CASE(ComponentHealth, HEALTH)
-		CASE(ComponentModel, MODEL)
-		CASE(ComponentPlayerLocal, PLAYER_LOCAL)
-		CASE(ComponentPlayerRemote, PLAYER_REMOTE)
-		CASE(ComponentStage, STAGE)
-		CASE(ComponentStagePosition, STAGE_POSITION)
-		CASE(ComponentStageRotation, STAGE_ROTATION)
-		CASE(ComponentStageTranslation, STAGE_TRANSLATION)
-		CASE(ComponentWeapon, WEAPON)
-
-		//End of new Component Zone
-		default :
+		// End of new Component Zone
+		default:
 			std::cout << "WARNING: Unimplemented deserialisation of"
-				     " recieved component occured, ignoring." 
+			             " recieved component occured, ignoring."
 			          << std::endl;
 			assert(false);
 		}
 	}
 
-	e.activate();	
-	std::cout << "Finished processing Entity with server ID " << id.index 
-	          << " and " << e.getComponentTypeList().count()
-	          << " components and validity " 
-	          << e.isValid() << std::endl;
+	e.activate();
+	std::cout << "Finished processing Entity with server ID " << id.index << " and "
+	          << e.getComponentTypeList().count() << " components and validity " << e.isValid()
+	          << std::endl;
 
 	return e;
 }
 
-} // namespace tempo
+}  // namespace tempo
