@@ -114,11 +114,13 @@ int main(int argc, const char **argv)
 		if (clock.passed_delta_end()) {
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
+			system_attack.processAttacks();
 		}
 
 		////////////////
 		// Events all the time
 		{
+			system_attack.recieveAttacks(world);
 			system_combo.checkForUpdates();
 			system_health.CheckHealth();
 			system_player.update(world);

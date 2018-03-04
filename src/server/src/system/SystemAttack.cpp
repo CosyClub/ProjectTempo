@@ -117,6 +117,13 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 			if (damage != 0) {
 				std::cout << "hit entity " << entity.getId().index << " for " << damage << std::endl;
 				health.HealthUpdate(-1 * damage);
+
+				sf::Packet p;
+				p << entity.getId();
+				p << static_cast<uint32_t>(tempo::MessageAttack::ATTACK_CORRECTION);
+				p << health.current_health;
+				tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);
+
 				break;
 			}
 		}
