@@ -33,7 +33,7 @@ void SystemAttack::Attack(anax::Entity attacker)
 		auto &     health = entity.getComponent<tempo::ComponentHealth>();
 
 		glm::vec2 forward = rot;
-		glm::vec2 left = glm::ivec2(rot.y * -1, rot.x * -1);  // Hacky cross product
+		glm::vec2 left    = glm::ivec2(rot.y * -1, rot.x * -1);  // Hacky cross product
 
 		glm::vec2  diff          = pos - attackerpos;
 		glm::ivec2 relative_diff = glm::ivec2(glm::dot(diff, left), glm::dot(diff, forward));

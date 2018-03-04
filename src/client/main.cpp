@@ -176,7 +176,7 @@ int main(int argc, const char **argv)
 	system_stage_renderer.setup(smgr, driver);
 	system_render_scene_node.setup(smgr);
 
-	//must be after system_render_scene_node.setup(smgr);
+	// must be after system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);
 
 	// Set up remote address, local ports and remote handshake port
@@ -219,7 +219,7 @@ int main(int argc, const char **argv)
 	system_gc.addEntities(driver, smgr);
 	world.refresh();
 	system_render_scene_node.setup(smgr);  // Why is this here?
-	//must be after system_render_scene_node.setup(smgr);
+	// must be after system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);
 
 	// Start and Sync Song
@@ -358,7 +358,7 @@ int main(int argc, const char **argv)
 			// Graphics updates
 			system_render_scene_node.update();
 			system_render_health_bars.update();
-			//TODO: Make a system for updating camera position
+			// TODO: Make a system for updating camera position
 			camera_node->setTarget(sn.node->getPosition());
 		}
 

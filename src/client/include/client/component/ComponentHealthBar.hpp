@@ -3,15 +3,16 @@
 
 #include <anax/Component.hpp>
 
-#include <ISceneNode.h>
 #include <IBillboardSceneNode.h>
+#include <ISceneNode.h>
 
-namespace client {
-	struct ComponentHealthBar : public anax::Component {
-		irr::scene::IBillboardSceneNode* node;
-		ComponentHealthBar(irr::scene::IBillboardSceneNode* node);
-	};
+namespace client
+{
+struct ComponentHealthBar : public anax::Component {
+	irr::scene::IBillboardSceneNode *node;
+	ComponentHealthBar(irr::scene::IBillboardSceneNode *node);
+};
 
-} // namespace client
+}  // namespace client
 
 #endif
