@@ -1,18 +1,18 @@
 #ifndef CLIENT_SYSTEM_ATTACK_HPP
 #define CLIENT_SYSTEM_ATTACK_HPP
 
-#include <anax/Component.hpp>
 #include <anax/System.hpp>
+#include <anax/World.hpp>
 
-namespace tempo
+namespace client
 {
 
 struct SystemAttack : anax::System<anax::Requires<>> 
 {
 	// Processes the attack responses from the server
-	void processServerResponses();
+	void processServerResponses(anax::World &w);
 };
 
-} // namespace tempo
+} // namespace client
 
 #endif

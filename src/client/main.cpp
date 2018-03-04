@@ -2,6 +2,7 @@
 #include <client/component/ComponentRenderButtonGroup.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
 #include <client/network/client.hpp>
+#include <client/system/SystemAttack.hpp>
 #include <client/system/SystemButtonRenderer.hpp>
 #include <client/system/SystemGraphicsCreation.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
@@ -16,7 +17,6 @@
 #include <tempo/entity/EntityCreation.hpp>
 #include <tempo/network/ID.hpp>
 #include <tempo/song.hpp>
-#include <tempo/system/SystemAttack.hpp>
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
@@ -132,7 +132,6 @@ int main(int argc, const char **argv)
 	// tempo::SystemRender           system_render(app);
 	tempo::SystemLevelManager      system_level(world, "../bin/resources/levels/levelTest.bmp",
                                            "../bin/resources/levels/zonesTest.bmp");
-	tempo::SystemAttack            system_attack;
 	tempo::SystemUpdateTransforms  system_update_transforms;
 	tempo::SystemGridAi            system_grid_ai;
 	tempo::SystemPlayer            system_player(clock);
@@ -140,6 +139,7 @@ int main(int argc, const char **argv)
 	tempo::SystemHealth            system_health;
 	tempo::SystemMovement          system_movement;
 	tempo::SystemTrigger           system_trigger(world);
+	client::SystemAttack            system_attack;
 	client::SystemButtonRenderer   system_button_renderer;
 	client::SystemGraphicsCreation system_gc;
 	client::SystemStageRenderer    system_stage_renderer;
