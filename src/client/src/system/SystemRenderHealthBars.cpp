@@ -26,30 +26,36 @@ namespace client {
 
 			}
 	}
-	// void SystemRenderHealthBars::HealthBarUpdate() {
-	//
-	// 	auto entities = getEntities();
-	// 	double scale;
-	//
-	// 	for(auto& entity : entities){
-	// 		auto& h = entity.getComponent<ComponentHealth>();
-	// 		auto& rend  = entity.getComponent<ComponentRender>();
-	//
-	// 		// Fraction of health left
-	// 		scale = (double) h.current_health / h.max_health;
-	//
-	// 		// Set scale of healthbar based on current health value
-	// 		rend.healthBarnode->setScale(scale,1,1);
-	//
-	// 		// Set colour of healthbar (Green = full health, Red = No Health)
-	// 		if(scale <= 0.5){
-	// 			rend.healthBillboard->setColour(Ogre::ColourValue(1,(scale/0.5),0));
-	// 		}
-	//
-	// 		else{
-	// 			rend.healthBillboard->setColour(Ogre::ColourValue(((1-scale)/0.5),1,0));
-	// 		}
-	//
-	// 	}
-	// }
+
+	void SystemRenderHealthBars::update() {
+
+		irr::video::SColor colour_green(255, 0, 255, 0);
+		irr::video::SColor colour_red(255, 255, 0, 0);
+
+		auto entities = getEntities();
+		double scale;
+
+		for(auto& entity : entities) {
+			auto& health      = entity.getComponent<tempo::ComponentHealth>();
+			auto& healthbar   = entity.getComponent<client::ComponentHealthBar>().healthBarnode;
+
+			irr::core::dimension2d<irr::f32> prev_size = healthbar->getSize();
+
+			// Fraction of health left
+			scale = (double) health.current_health / health.max_health;
+
+			float new_width = prev_size.Width * scale;
+
+			healthbar->setSize(irr::core::dimension2d<irr::f32>(new_width, prev_size.Height));
+			// Set colour of healthbar (Green = full health, Red = No Health)
+			if(scale <= 0.5){
+				healthbar->setColor(colour_red);
+			}
+
+			else{
+				healthbar->setColor(colour_green);
+			}
+
+		}
+	}
 }

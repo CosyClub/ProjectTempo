@@ -314,6 +314,7 @@ int main(int argc, const char** argv){
 			new_entity_check(world);
 			system_gc.addEntities(driver, smgr);
 			system_render_scene_node.setup(smgr);
+			//system_render_health_bars.setup(smgr);
 			world.refresh();
 
 			// Recieve player updates from the server
@@ -330,6 +331,7 @@ int main(int argc, const char** argv){
 
 			// Graphics updates
 			system_render_scene_node.update();
+			system_render_health_bars.update();
 			//TODO: Make a system for updating camera position
 			camera_node->setTarget(sn.node->getPosition());
 		}

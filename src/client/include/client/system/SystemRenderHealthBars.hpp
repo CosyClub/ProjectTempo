@@ -24,7 +24,7 @@ namespace client {
 		//          none
 		// Returns:
 		//          void
-		void HealthBarUpdate();
+		void update();
 	};
 }
 
