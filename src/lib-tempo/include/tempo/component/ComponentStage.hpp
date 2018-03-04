@@ -25,6 +25,9 @@ struct ComponentStage
 
 	void loadLevel(const char *stage_file);
 
+  // Finds the index for position
+  inline int findIndex(glm::ivec2 position);
+
    public:
 	// Constructor requires stage file
 	ComponentStage(const char *stage_file);

@@ -43,6 +43,19 @@ ComponentStage::ComponentStage(const char *stage_file)
 	loadLevel(stage_file);
 }
 
+inline int ComponentStage::findIndex(glm::ivec2 position)
+{
+	for (unsigned int i = 0; i < tiles.size(); i++) {
+		std::tuple<glm::ivec2, float> tile = tiles[i];
+		glm::ivec2                    pos  = std::get<0>(tile);
+		if (pos == position) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 stage_tiles ComponentStage::getHeights()
 {
 	return tiles;
@@ -50,39 +63,27 @@ stage_tiles ComponentStage::getHeights()
 
 float ComponentStage::getHeight(glm::ivec2 position)
 {
-	for (unsigned int i = 0; i < tiles.size(); i++) {
-		std::tuple<glm::ivec2, float> tile = tiles[i];
-		glm::ivec2                    pos  = std::get<0>(tile);
-		if (pos == position) {
-			return std::get<1>(tile);
-		}
-	}
-
-	return -10.0f;
+	int index = findIndex(position);
+	if(index >= 0)
+		return std::get<1>(tiles[index]);
+	else
+		return -10.0f;
 }
 
 void ComponentStage::setHeight(glm::ivec2 position, int height)
 {
-	for (unsigned int i = 0; i < tiles.size(); i++) {
-		std::tuple<glm::ivec2, float> tile = tiles[i];
-		glm::ivec2                    pos  = std::get<0>(tile);
-		if (pos == position) {
-			std::get<1>(tiles[i]) = height;
-		}
-	}
+	int index = findIndex(position);
+	if(index >= 0)
+		std::get<1>(tiles[index]) = height;
 }
 
 bool ComponentStage::existstTile(glm::ivec2 position)
 {
-	for (unsigned int i = 0; i < tiles.size(); i++) {
-		std::tuple<glm::ivec2, float> tile = tiles[i];
-		glm::ivec2                    pos  = std::get<0>(tile);
-		if (pos == position) {
-			return true;
-		}
-	}
-
-	return false;
+	int index = findIndex(position);
+	if(index >= 0)
+		return true;
+	else
+		return false;
 }
 
 /////
