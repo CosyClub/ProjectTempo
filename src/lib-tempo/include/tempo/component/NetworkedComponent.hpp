@@ -7,14 +7,12 @@
 
 #include <SFML/Network.hpp>
 
-namespace tempo{
-
-struct NetworkedComponent
+namespace tempo
 {
-	virtual ComponentID getId() = 0;
-	virtual sf::Packet dumpComponent() = 0;
+struct NetworkedComponent {
+	virtual ComponentID getId()         = 0;
+	virtual sf::Packet  dumpComponent() = 0;
 };
-
 }
 
 #endif

@@ -5,16 +5,14 @@
 
 namespace tempo
 {
-
-ComponentStagePosition::ComponentStagePosition(glm::ivec2 bottom_left, 
-                                               glm::ivec2 top_right)
-                                             : occupied(0) 
+ComponentStagePosition::ComponentStagePosition(glm::ivec2 bottom_left, glm::ivec2 top_right)
+    : occupied(0)
 {
 	setPosition(bottom_left, top_right);
 }
 
 ComponentStagePosition::ComponentStagePosition(glm::ivec2 position)
-	: occupied(0) 
+    : occupied(0)
 {
 	setPosition(position);
 }
@@ -46,16 +44,17 @@ void ComponentStagePosition::setPosition(glm::ivec2 position)
 
 std::vector<glm::ivec2> ComponentStagePosition::getOccupied()
 {
-	return occupied; 
+	return occupied;
 }
 
-glm::ivec2 ComponentStagePosition::getOrigin() 
+glm::ivec2 ComponentStagePosition::getOrigin()
 {
 	return occupied[0];
 }
 
 // Required for inital network sync
-ComponentStagePosition::ComponentStagePosition(sf::Packet p) : occupied(0)
+ComponentStagePosition::ComponentStagePosition(sf::Packet p)
+    : occupied(0)
 {
 	uint32_t size;
 	p >> size;
@@ -71,13 +70,13 @@ ComponentStagePosition::ComponentStagePosition(sf::Packet p) : occupied(0)
 sf::Packet ComponentStagePosition::dumpComponent()
 {
 	sf::Packet p;
-	uint32_t size = occupied.size();
+	uint32_t   size = occupied.size();
 	p << size;
 
 	for (unsigned int i = 0; i < size; i++) {
 		p << occupied[i].x << occupied[i].y;
 	}
-	
+
 	return p;
 }
 
@@ -86,4 +85,4 @@ ComponentID ComponentStagePosition::getId()
 	return ComponentID::STAGE_POSITION;
 }
 
-} // namespace tempo
+}  // namespace tempo

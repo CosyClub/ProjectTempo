@@ -1,17 +1,17 @@
 #include <tempo/component/ComponentAOEIndicator.hpp>
 
-namespace tempo {
-
+namespace tempo
+{
 ComponentAOEIndicator::ComponentAOEIndicator()
 {
 	this->duration = sf::Time::Zero;
-	this->tiles = std::vector<glm::ivec2>();
+	this->tiles    = std::vector<glm::ivec2>();
 }
 
 ComponentAOEIndicator::ComponentAOEIndicator(sf::Time duration, std::vector<glm::ivec2> tiles)
 {
 	this->duration = duration;
-	this->tiles = tiles;
+	this->tiles    = tiles;
 }
 
 /////
@@ -23,8 +23,7 @@ ComponentAOEIndicator::ComponentAOEIndicator(sf::Packet p)
 	p >> duration;
 	p >> items;
 
-	for (int I = 0; I < items; I++)
-	{
+	for (int I = 0; I < items; I++) {
 		glm::ivec2 tmp;
 		p >> tmp;
 		tiles.push_back(tmp);
@@ -34,13 +33,12 @@ ComponentAOEIndicator::ComponentAOEIndicator(sf::Packet p)
 sf::Packet ComponentAOEIndicator::dumpComponent()
 {
 	sf::Packet p;
-	uint32_t items = tiles.size();
+	uint32_t   items = tiles.size();
 
 	p << duration;
 	p << items;
 
-	for (int I = 0; I < items; I++)
-	{
+	for (int I = 0; I < items; I++) {
 		p << tiles[I];
 	}
 
@@ -52,5 +50,4 @@ ComponentID ComponentAOEIndicator::getId()
 	return ComponentID::AOEINDICATOR;
 }
 
-} // namespace tempo
-
+}  // namespace tempo

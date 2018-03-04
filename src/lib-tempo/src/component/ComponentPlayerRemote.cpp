@@ -2,15 +2,14 @@
 
 namespace tempo
 {
-
 ComponentPlayerRemote::ComponentPlayerRemote()
 {
-	return; // Do nothing as this struct is currently empty
+	return;  // Do nothing as this struct is currently empty
 }
 
 ComponentPlayerRemote::ComponentPlayerRemote(sf::Packet p)
 {
-	return; // Do nothing as this struct is currently empty
+	return;  // Do nothing as this struct is currently empty
 }
 
 ComponentID ComponentPlayerRemote::getId()
@@ -23,4 +22,4 @@ sf::Packet ComponentPlayerRemote::dumpComponent()
 	return sf::Packet();
 }
 
-} // namespace tempo
+}  // namespace tempo

@@ -1,8 +1,8 @@
 #ifndef CLIENT_SYSTEM_PARSE_KEY_INPUT_HPP
 #define CLIENT_SYSTEM_PARSE_KEY_INPUT_HPP
 
-#include <anax/System.hpp>
 #include <anax/Component.hpp>
+#include <anax/System.hpp>
 
 #include <client/component/ComponentKeyInput.hpp>
 
@@ -10,12 +10,10 @@
 
 namespace client
 {
+struct SystemParseKeyInput : anax::System<anax::Requires<ComponentKeyInput>> {
+	void parseInput(tempo::Clock &clock);
+};
 
-	struct SystemParseKeyInput : anax::System<anax::Requires<ComponentKeyInput>> 
-	{
-		void parseInput(tempo::Clock &clock);
-	};
-
-} // namespace tempo
+}  // namespace tempo
 
 #endif

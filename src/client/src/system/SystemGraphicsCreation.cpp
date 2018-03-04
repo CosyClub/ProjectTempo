@@ -4,25 +4,20 @@
 
 #include <iostream>
 
-namespace client 
+namespace client
 {
+SystemGraphicsCreation::SystemGraphicsCreation() {}
 
-SystemGraphicsCreation::SystemGraphicsCreation()
-{
-}
-
-void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver *driver,
+void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver * driver,
                                          irr::scene::ISceneManager *manager)
 {
 	auto entities = getEntities();
-	for (auto& entity : entities)
-	{
-		if (!entity.hasComponent<client::ComponentRenderSceneNode>())
-		{
+	for (auto &entity : entities) {
+		if (!entity.hasComponent<client::ComponentRenderSceneNode>()) {
 			entity.addComponent<ComponentRenderSceneNode>(nullptr);
 			entity.activate();
 		}
 	}
 }
 
-} // namespace tempo
+}  // namespace tempo

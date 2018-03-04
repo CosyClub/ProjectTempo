@@ -4,8 +4,8 @@
 #include <tempo/config.hpp>
 #include <tempo/mask.hpp>
 
-#include <anax/System.hpp>
 #include <anax/Component.hpp>
+#include <anax/System.hpp>
 #include <glm/glm.hpp>
 
 #include <tempo/component/NetworkedComponent.hpp>
@@ -14,15 +14,15 @@
 
 namespace tempo
 {
-
-struct ComponentWeapon : anax::Component, NetworkedComponent
-{
-	Mask damage;
-	bool isDelayed;
+struct ComponentWeapon
+    : anax::Component
+    , NetworkedComponent {
+	Mask     damage;
+	bool     isDelayed;
 	sf::Time delay;
 
-	ComponentWeapon(Mask& m);
-	ComponentWeapon(Mask& m, sf::Time delay);
+	ComponentWeapon(Mask &m);
+	ComponentWeapon(Mask &m, sf::Time delay);
 
 	float GetDamage(glm::vec2 offset);
 
@@ -30,10 +30,9 @@ struct ComponentWeapon : anax::Component, NetworkedComponent
 	// Required for inital network sync
 	/////
 	ComponentWeapon(sf::Packet p);
-	sf::Packet dumpComponent();
+	sf::Packet  dumpComponent();
 	ComponentID getId();
 };
-
 }
 
 #endif
