@@ -210,13 +210,9 @@ int main(int argc, const char **argv)
 	// Connect to server and handshake information
 	tempo::connectToAndSyncWithServer(role, roleData, world);
 
-
 	// Sort out graphics after handshake
-	world.refresh();
-	system_gc.addEntities(driver, smgr);
-	world.refresh();
-	system_render_scene_node.setup(smgr);  // Why is this here?
-	// must be after system_render_scene_node.setup(smgr);
+	system_gc.addEntities(driver, smgr, world);
+	system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);
 
 	// Start and Sync Song
@@ -300,10 +296,9 @@ int main(int argc, const char **argv)
 		{
 			// Check for new entities from server
 			new_entity_check(world);
-			system_gc.addEntities(driver, smgr);
+			system_gc.addEntities(driver, smgr, world);
 			system_render_scene_node.setup(smgr);
 			system_render_health_bars.setup(smgr);
-			world.refresh();
 
 			// Recieve updates from the server
 			system_movement.processIntents(world);
@@ -318,9 +313,9 @@ int main(int argc, const char **argv)
 			system_health.CheckHealth();
 
 			// Graphics updates
-			std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl; 
+			// std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl; 
 			system_render_scene_node.update();
-			std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" << std::endl; 
+			// std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" << std::endl; 
 			system_render_health_bars.update();
 			// TODO: Make a system for updating camera position
 			camera_node->setTarget(sn.node->getPosition());
