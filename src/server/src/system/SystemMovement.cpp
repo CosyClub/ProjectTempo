@@ -13,13 +13,11 @@ using tempo::operator>>;
 
 void SystemMovement::processTranslation()
 {
-	std::cout << "CALLED WITH " << getEntities().size() << "\n";
 	for (auto &entity : getEntities()) {
 		tempo::ComponentStageTranslation &st = entity.getComponent<tempo::ComponentStageTranslation>();
 		tempo::ComponentStage &stage = entity.getComponent<tempo::ComponentStage>();
 		if (st.delta.x == 0 && st.delta.y == 0)
 			continue;
-		std::cout << "HELLO WORLD!!!!\n";
 
 		bool  can_move  = true;
 		auto &positions = entity.getComponent<tempo::ComponentStagePosition>().occupied;
@@ -40,8 +38,11 @@ void SystemMovement::processTranslation()
 		// Send update to everyone
 		sf::Packet p;
 		p << entity.getId();
-		p << st.delta.x;
-		p << st.delta.y;
+		p << static_cast<uint32_t>(positions.size());
+		for (auto &position : positions) {
+			p << position.x << position.y;
+		}
+		
 		// Add facing direction
 		if (entity.hasComponent<tempo::ComponentStageRotation>()) {
 			p << entity.getComponent<tempo::ComponentStageRotation>().facing.x;

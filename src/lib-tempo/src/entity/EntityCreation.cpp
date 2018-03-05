@@ -51,7 +51,6 @@ anax::Entity addComponent(anax::World &w, sf::Packet p)
 		e       = w.createEntity();
 		localid = e.getId();
 		servertolocal.emplace(id, localid);
-		std::cout << "SERVERTOLOCAL " << id << ":" << localid << std::endl;
 		localtoserver.emplace(localid, id);
 		e.activate();
 	} else {

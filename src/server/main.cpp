@@ -96,6 +96,18 @@ int main(int argc, const char **argv)
 		// last_dt_time = next_dt_time;
 
 		////////////////
+		// Events all the time
+		{
+			system_player.recieveTranslations(world);
+			system_attack.recieveAttacks(world);
+			system_combo.checkForUpdates();
+			system_health.CheckHealth();
+			
+			// TODO Once animated detlete and uncomment in delta end:
+			system_movement.processTranslation();
+		}
+		
+		////////////////
 		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
 			// std::cout << "Start" << std::endl;
@@ -118,16 +130,8 @@ int main(int argc, const char **argv)
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 			system_attack.processAttacks();
-			system_movement.processTranslation();
-		}
-
-		////////////////
-		// Events all the time
-		{
-			system_player.recieveTranslations(world);
-			system_attack.recieveAttacks(world);
-			system_combo.checkForUpdates();
-			system_health.CheckHealth();
+			// TODO Once animated uncomment
+			// system_movement.processTranslation();
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));

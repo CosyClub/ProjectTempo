@@ -25,15 +25,10 @@ void SystemMovement::processServerResponses(anax::World &w)
 		q->pop();	
 		sf::Packet pb(p); // packet for broadcast
 
-		uint32_t code;
-		p >> code;
-
 		anax::Entity::Id id;
 		p >> id; // ID of the entity this message concerns
 		anax::Entity e(w, tempo::servertolocal[id]);
 
-		std::cout << "ID: " << id.index << ", SID: " << tempo::servertolocal[id].index << std::endl; 
-		
 		// Update Occupied Position
 		if (e.hasComponent<tempo::ComponentStagePosition>()) {
 			tempo::ComponentStagePosition& s = e.getComponent<tempo::ComponentStagePosition>();
@@ -41,8 +36,9 @@ void SystemMovement::processServerResponses(anax::World &w)
 			glm::ivec2 o;
 			occ.clear();
 			int occs = 0;
+			p >> occs;
 			for (int i = 0; i < occs; i++) {
-				p >> o;
+				p >> o.x >> o.y;
 				occ.push_back(o);
 			}
 
