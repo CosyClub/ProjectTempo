@@ -308,7 +308,9 @@ int main(int argc, const char **argv)
 			system_health.CheckHealth();
 
 			// Graphics updates
+			std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl; 
 			system_render_scene_node.update();
+			std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" << std::endl; 
 			// TODO: Make a system for updating camera position
 			camera_node->setTarget(sn.node->getPosition());
 		}
