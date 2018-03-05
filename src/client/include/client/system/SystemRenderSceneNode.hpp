@@ -4,7 +4,6 @@
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStage.hpp>
 
-#include <client/misc/CAxialBillboardSceneNode.h>
 #include <client/component/ComponentRenderSceneNode.hpp>
 
 #include <anax/System.hpp>
