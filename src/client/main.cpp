@@ -7,6 +7,8 @@
 #include <client/system/SystemGraphicsCreation.hpp>
 #include <client/system/SystemMovement.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
+
+#include <client/system/SystemRenderHealthBars.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
@@ -142,6 +144,7 @@ int main(int argc, const char **argv)
 	client::SystemMovement         system_movement;
 	client::SystemStageRenderer    system_stage_renderer;
 	client::SystemParseKeyInput    system_parse_key_input;
+	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
 	client::SystemUpdateKeyInput   system_update_key_input;
 
@@ -157,6 +160,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_button_renderer);
 	world.addSystem(system_stage_renderer);
 	world.addSystem(system_render_scene_node);
+	world.addSystem(system_render_health_bars);
 	world.addSystem(system_update_key_input);
 	world.addSystem(system_parse_key_input);
 	world.addSystem(system_movement);
@@ -168,6 +172,9 @@ int main(int argc, const char **argv)
 	system_update_key_input.setup(device);
 	system_stage_renderer.setup(smgr, driver);
 	system_render_scene_node.setup(smgr);
+
+	// must be after system_render_scene_node.setup(smgr);
+	system_render_health_bars.setup(smgr);
 
 	// Set up remote address, local ports and remote handshake port
 	// Note, IF statement is to change ports for local development, bit
@@ -208,7 +215,9 @@ int main(int argc, const char **argv)
 	world.refresh();
 	system_gc.addEntities(driver, smgr);
 	world.refresh();
-	system_render_scene_node.setup(smgr);
+	system_render_scene_node.setup(smgr);  // Why is this here?
+	// must be after system_render_scene_node.setup(smgr);
+	system_render_health_bars.setup(smgr);
 
 	// Start and Sync Song
 	// mainsong.start();
@@ -293,6 +302,7 @@ int main(int argc, const char **argv)
 			new_entity_check(world);
 			system_gc.addEntities(driver, smgr);
 			system_render_scene_node.setup(smgr);
+			system_render_health_bars.setup(smgr);
 			world.refresh();
 
 			// Recieve updates from the server
@@ -311,6 +321,7 @@ int main(int argc, const char **argv)
 			std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl; 
 			system_render_scene_node.update();
 			std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" << std::endl; 
+			system_render_health_bars.update();
 			// TODO: Make a system for updating camera position
 			camera_node->setTarget(sn.node->getPosition());
 		}
@@ -349,7 +360,6 @@ int main(int argc, const char **argv)
 			system_combo.advanceBeat();
 		}
 
-		////////////////
 		// Rendering Code
 		if (!device->isWindowActive()) {
 			device->yield();

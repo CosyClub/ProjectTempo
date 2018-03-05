@@ -4,7 +4,6 @@
 #include <irrlicht.h>
 #include <anax/System.hpp>
 
-#include <client/component/ComponentRenderSceneNode.hpp>
 #include <tempo/component/ComponentModel.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 
