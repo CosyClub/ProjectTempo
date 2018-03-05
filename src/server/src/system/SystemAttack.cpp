@@ -139,6 +139,17 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 			}
 		}
 	}
+
+	// Clear attack intent and broadcast to clients
+	// TODO:
+	// attack.damage = null mask of some sort
+	attack.beats_until_attack = -1;
+	sf::Packet p;
+	p << static_cast<uint32_t>(tempo::MessageAttack::UPDATE_INTENT);
+	p << attacker.getId();
+	p << attack.damage;
+	p << attack.beats_until_attack;
+	tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);
 }
 
 } // namespace server
