@@ -3,16 +3,23 @@
 
 #include <anax/Component.hpp>
 
+#include <tempo/component/NetworkedComponent.hpp>
+
 namespace tempo
 {
+struct ComponentPlayerRemote
+    : anax::Component
+    , NetworkedComponent {
+	ComponentPlayerRemote();
 
-struct ComponentPlayerRemote : anax::Component 
-{
-
-	// Currently Empty
-
+	/////
+	// Required for networking
+	/////
+	ComponentPlayerRemote(sf::Packet p);
+	ComponentID getId();
+	sf::Packet  dumpComponent();
 };
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif

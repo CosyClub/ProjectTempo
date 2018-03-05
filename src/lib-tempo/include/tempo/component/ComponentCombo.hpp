@@ -3,19 +3,18 @@
 
 #include <anax/Component.hpp>
 
+#include <tempo/component/NetworkedComponent.hpp>
+
 namespace tempo
 {
-
 // Used to communicate the state of the combo when multiplayer
-enum MessageCombo {
-	BROKEN_COMBO,
-	INCREMENT_COMBO
-};
+enum MessageCombo { BROKEN_COMBO, INCREMENT_COMBO };
 
 // Component captures a combo mechanic for the entity with this component.
-struct ComponentCombo : anax::Component 
-{
-	bool actionedThisBeat;
+struct ComponentCombo
+    : anax::Component
+    , NetworkedComponent {
+	bool         actionedThisBeat;
 	unsigned int comboCounter;
 
 	// Creates a new component combo with no combo (and optionally given
@@ -23,8 +22,8 @@ struct ComponentCombo : anax::Component
 
 	// Contains logic that should be run when the beat advances
 	void advanceBeat();
-	
-	// Contains logic that should be run when the entity with a combo 
+
+	// Contains logic that should be run when the entity with a combo
 	// performs an action.
 	// Returns whether or not the combo was broken
 	bool performAction();
@@ -34,8 +33,14 @@ struct ComponentCombo : anax::Component
 	// called.
 	void breakCombo();
 
+	/////
+	// Required for networking
+	/////
+	ComponentCombo(sf::Packet p);
+	ComponentID getId();
+	sf::Packet  dumpComponent();
 };
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif

@@ -21,8 +21,8 @@
 
 cmake_minimum_required(VERSION 2.6)
 
-SET(CMAKE_MODULE_PATH 
-	${CMAKE_MODULE_PATH} 
+SET(CMAKE_MODULE_PATH
+	${CMAKE_MODULE_PATH}
 	${CMAKE_CURRENT_SOURCE_DIR}/CMake
 	${CMAKE_CURRENT_SOURCE_DIR}/../../CMake
 )
@@ -34,7 +34,7 @@ SET(EXAMPLE_SOURCE_FILES
 	newFontTool/main.cpp
 )
 
-SET(EXAMPLE_HEADER_FILES	
+SET(EXAMPLE_HEADER_FILES
 	newFontTool/CFontTool.h
 	newFontTool/CVectorFontTool.h
 )
@@ -47,4 +47,8 @@ SET(EXAMPLE_INSTALL_DIRS
 	oldFontTool
 )
 
-BUILD_TOOL("IrrFontTool_new" "${EXAMPLE_SOURCE_FILES}" "${EXAMPLE_HEADER_FILES}" "${EXAMPLE_INSTALL_FILES}" "${EXAMPLE_INSTALL_DIRS}")
+if(TEMPO_BUILD_LAB)
+	message("*** LAB MACHINE: Skipping building irr font tool since no freetype")
+else()
+	BUILD_TOOL("IrrFontTool_new" "${EXAMPLE_SOURCE_FILES}" "${EXAMPLE_HEADER_FILES}" "${EXAMPLE_INSTALL_FILES}" "${EXAMPLE_INSTALL_DIRS}")
+endif()

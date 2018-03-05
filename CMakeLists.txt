@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.12)
 project("ProjectTempo")
 set(GLOBAL PROPERTY USE_FOLDERS ON)
 
-set(EXTLIBS_DIR      "${CMAKE_CURRENT_LIST_DIR}/extlibs")
+set(EXTLIBS_DIR "${CMAKE_CURRENT_LIST_DIR}/extlibs")
 
 set(CMAKE_MODULE_PATH
 	${CMAKE_MODULE_PATH}
@@ -10,10 +10,29 @@ set(CMAKE_MODULE_PATH
 
 #Support YCM completion for Raef and Anthony
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set (CMAKE_CXX_STANDARD 11)
+
+# Force c++ 11 standard
+macro(use_cxx11)
+	if (CMAKE_VERSION VERSION_LESS "3.1")
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+      set (CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
+ 		else ()
+ 			message(FATAL_ERROR "Unable to enable c++11 support on this platform!")
+    endif ()
+  else ()
+    set (CMAKE_CXX_STANDARD 11)
+  endif ()
+endmacro(use_cxx11)
+use_cxx11()
 
 # :TODO: have some way of configuring this
 set(CMAKE_BUILD_TYPE Debug)
+
+cmake_host_system_information(RESULT TEMPO_MACHINE_HOSTNAME QUERY HOSTNAME)
+if(${TEMPO_MACHINE_HOSTNAME} MATCHES "it[0-9]+.users.bris.ac.uk")
+	message("*** WE ARE BUILDING ON A LAB MACHINE ***")
+	set(TEMPO_BUILD_LAB ON)
+endif()
 
 set(TEMPO_LIB_DIR "${CMAKE_CURRENT_LIST_DIR}/lib")
 set(TEMPO_BIN_DIR "${CMAKE_CURRENT_LIST_DIR}/bin")
@@ -38,11 +57,8 @@ set(TEMPO_SFML_INCLUDE_DIR
 	"${TEMPO_SFML_DIR}/include"
 )
 
-set(TEMPO_SDL2_DIR
-	"${TEMPO_EXTLIBS_DIR}/SDL2-2.0.7"
-)
-set(TEMPO_SDL2_INCLUDE_DIR
-	"${TEMPO_SDL2_DIR}/include"
+set(TEMPO_STB_INCLUDE_DIR
+	"${TEMPO_EXTLIBS_DIR}/stb/"
 )
 
 set(TEMPO_LIB_TEMPO_DIR
@@ -81,3 +97,10 @@ if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)" OR CMAKE_CL_64)
 else ()
 	file(COPY "${TEMPO_EXTLIBS_DIR}/SFML-2.4.2/extlibs/bin/x86/openal32.dll" DESTINATION "${TEMPO_BIN_DIR}")
 endif ()
+
+add_custom_target(copy_compile_commands ALL)
+add_custom_command(
+	TARGET copy_compile_commands POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy
+		${CMAKE_BINARY_DIR}/compile_commands.json
+		${CMAKE_CURRENT_LIST_DIR}/compile_commands.json)

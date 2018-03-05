@@ -1,17 +1,31 @@
 link_directories("${TEMPO_LIB_DIR}")
 
 add_executable(client
-	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemStageRenderer.hpp
-	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemStageRenderer.cpp
-	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderSceneNode.hpp
-	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderSceneNode.cpp
-	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemUpdateKeyInput.hpp
-	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemUpdateKeyInput.cpp
-
-	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentRenderSceneNode.hpp
-	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRenderSceneNode.cpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentHealthBar.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentKeyInput.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentRenderSceneNode.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentRenderButtonGroup.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/network/client.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemButtonRenderer.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemGraphicsCreation.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemParseKeyInput.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderSceneNode.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderHealthBars.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemStageRenderer.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemUpdateKeyInput.hpp
+
+	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentHealthBar.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentKeyInput.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRenderSceneNode.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRenderButtonGroup.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/network/client.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemButtonRenderer.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGraphicsCreation.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemParseKeyInput.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderSceneNode.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderHealthBars.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemStageRenderer.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemUpdateKeyInput.cpp
 
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/YAlignedBillboardSceneNode.hpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/YAlignedBillboardSceneNode.cpp
@@ -24,7 +38,6 @@ set_target_properties(client PROPERTIES OUTPUT_NAME "RaveCave")
 target_include_directories(client PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
 target_include_directories(client PRIVATE ${TEMPO_IRRLICHT_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_SFML_INCLUDE_DIR})
-target_include_directories(client PRIVATE ${TEMPO_SDL2_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_ANAX_INCLUDE_DIR})
 target_include_directories(client PRIVATE ${TEMPO_GLM_INCLUDE_DIR})
@@ -43,8 +56,6 @@ target_link_libraries(client sfml-system)
 target_link_libraries(client sfml-network)
 target_link_libraries(client sfml-audio)
 
-target_link_libraries(client SDL2)
-target_link_libraries(client SDL2main)
 target_link_libraries(client anax)
 
 find_package(OpenGL REQUIRED)

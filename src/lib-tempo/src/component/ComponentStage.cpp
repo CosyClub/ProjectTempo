@@ -2,30 +2,45 @@
 
 #include <glm/vec2.hpp>
 
-#include <SDL.h>
-#undef main // SDL defines main, but why do we need to do this?
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.hpp>
 
-namespace tempo {
+#include <stdint.h>
+#include <cstdio>
 
-ComponentStage::ComponentStage(const char* stage_file)
+namespace tempo
 {
-	SDL_Surface* level = SDL_LoadBMP(stage_file);
+void ComponentStage::loadLevel(const char *stage_file)
+{
+	int width, height, components;
 
-	// Load tiles, this can only handles stage_files in positive ZZ
-	for (int y = 0; y < level->h; y++) {
-		for (int x = 0; x < level->w; x++) {
-			int bpp = level->format->BytesPerPixel;
-			// Here p is the address to the pixel we want to retrieve
-			Uint8 *p = (Uint8 *)level->pixels + y * level->pitch + x * bpp;
-			uint32_t pixel = 0;
-			pixel = *p;
+	uint8_t *pixel_data = (uint8_t *) stbi_load(stage_file, &width, &height, &components, 4);
+	if (pixel_data == NULL || width < 0 || height < 0 || components < 0) {
+		printf("Failed to load level '%s', pixels: %p, width: %i, height: %i, components: %i\n",
+		       stage_file, pixel_data, width, height, components);
+		return;
+	}
 
-			if (pixel > 0) {
-				int height = (int)(pixel - 127) / 25.6;
-				tiles.push_back(std::make_tuple(glm::ivec2(y,x), height));
+	// Load the new tiles
+	for (int y = 0; y < height; y++) {
+		int base = width * y * 4;
+		for (int x = 0; x < width; x++) {
+			uint8_t *pixel = &pixel_data[base + x * 4];
+
+			if (pixel[0] > 0) {
+				int height = (int) (pixel[0] - 127) / 25.6;
+				tiles.push_back(std::make_tuple(glm::ivec2(y, x), height));
 			}
 		}
 	}
+
+	stbi_image_free(pixel_data);
+}
+
+ComponentStage::ComponentStage(const char *stage_file)
+{
+	this->stage_file = std::string(stage_file);
+	loadLevel(stage_file);
 }
 
 stage_tiles ComponentStage::getHeights()
@@ -33,4 +48,51 @@ stage_tiles ComponentStage::getHeights()
 	return tiles;
 }
 
-} // namespace tempo
+float ComponentStage::getHeight(glm::ivec2 position)
+{
+	for (unsigned int i = 0; i < tiles.size(); i++) {
+		std::tuple<glm::ivec2, float> tile = tiles[i];
+		glm::ivec2                    pos  = std::get<0>(tile);
+		if (pos == position) {
+			return std::get<1>(tile);
+		}
+	}
+
+	return -10.0f;
+}
+
+bool ComponentStage::existstTile(glm::ivec2 position)
+{
+	for (unsigned int i = 0; i < tiles.size(); i++) {
+		std::tuple<glm::ivec2, float> tile = tiles[i];
+		glm::ivec2                    pos  = std::get<0>(tile);
+		if (pos == position) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/////
+// Required for networking
+/////
+ComponentStage::ComponentStage(sf::Packet p)
+{
+	p >> stage_file;
+	loadLevel(stage_file.c_str());
+}
+
+ComponentID ComponentStage::getId()
+{
+	return ComponentID::STAGE;
+}
+
+sf::Packet ComponentStage::dumpComponent()
+{
+	sf::Packet p;
+	p << stage_file;
+	return p;
+}
+
+}  // namespace tempo

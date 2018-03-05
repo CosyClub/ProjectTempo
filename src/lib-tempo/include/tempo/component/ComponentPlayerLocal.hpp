@@ -3,16 +3,24 @@
 
 #include <anax/Component.hpp>
 
+#include <tempo/component/NetworkedComponent.hpp>
+
 namespace tempo
 {
+struct ComponentPlayerLocal
+    : anax::Component
+    , NetworkedComponent {
+	// Anthony it's broken because you removed all the fucking constructors
+	ComponentPlayerLocal();
 
-struct ComponentPlayerLocal : anax::Component 
-{
-	
-	// Currently Empty
-
+	/////
+	// Required for networking
+	/////
+	ComponentPlayerLocal(sf::Packet p);
+	ComponentID getId();
+	sf::Packet  dumpComponent();
 };
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif
