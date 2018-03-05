@@ -3,7 +3,7 @@
 #include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 
-#include <tempo/network/base.hpp>
+#include <client/network/client.hpp>
 #include <tempo/network/queue.hpp>
 #include <tempo/network/ID.hpp>
 
@@ -29,7 +29,7 @@ void SystemAttack::processServerResponses(anax::World &w)
 
 		anax::Entity::Id id;
 		p >> id; // ID of the entity this message concerns
-		anax::Entity e(w, id);
+		anax::Entity e(w, tempo::servertolocal[id]);
 
 		switch (static_cast<tempo::MessageAttack>(code)) {
 		case tempo::MessageAttack::UPDATE_INTENT: {
@@ -56,7 +56,6 @@ void SystemAttack::processServerResponses(anax::World &w)
 		}
 
 	}
-	return;
 }
 
 } // namespace client

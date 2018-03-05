@@ -18,12 +18,12 @@ namespace tempo
 struct ComponentWeapon
     : anax::Component
     , NetworkedComponent {
-	Mask     damage;
-	bool     isDelayed;
-	sf::Time delay;
+	Mask         damage;
+	bool         isDelayed;
+	unsigned int beats_until_attack;
 
 	ComponentWeapon(Mask &m);
-	ComponentWeapon(Mask &m, sf::Time delay);
+	ComponentWeapon(Mask &m, unsigned int beats_until_attack);
 
 	float GetDamage(glm::vec2 offset);
 

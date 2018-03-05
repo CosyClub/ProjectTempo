@@ -30,13 +30,15 @@ void SystemAttack::recieveAttacks(anax::World &w)
 	while (!q->empty()) {
 		sf::Packet p = q->front();
 		q->pop();	
-		sf::Packet pb(p); // packet for broadcast
+		sf::Packet pb; // packet for broadcast
 
 		uint32_t code;
 		p >> code;
+		pb << code;
 
 		anax::Entity::Id id;
 		p >> id;  // ID of the entity this message concerns
+		pb << id;
 		anax::Entity e(w, id);
 
 		switch (static_cast<tempo::MessageAttack>(code)) {
@@ -48,6 +50,8 @@ void SystemAttack::recieveAttacks(anax::World &w)
 			tempo::ComponentAttack &c = e.getComponent<tempo::ComponentAttack>();
 			p >> c.damage;
 			p >> c.beats_until_attack;
+			pb << c.damage;
+			pb << c.beats_until_attack;
 			tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, pb);
 			break;
 		}

@@ -1,8 +1,14 @@
 #include <client/system/SystemParseKeyInput.hpp>
 
+#include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentWeapon.hpp>
+
+#include <tempo/network/base.hpp>
+#include <tempo/network/ID.hpp>
+#include <client/network/client.hpp>
 
 #include <Keycodes.h>
 
@@ -13,19 +19,56 @@
 namespace client
 {
 
+using tempo::operator<<;
+using tempo::operator>>;
+
 void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing, bool withinDelta)
 {
+	// Send Movement Intent to Networking
+	sf::Packet p;
+	p << tempo::localtoserver[entity.getId()];
+	// Always include change of facing direction
+	p << facing.x << facing.y;
+
 	if (entity.hasComponent<tempo::ComponentStageRotation>()) {
 		entity.getComponent<tempo::ComponentStageRotation>().facing = facing;
 	}
 
 	if (!withinDelta) {
 		std::cout << "Actioned outside of delta" << std::endl;
+		// Only include delta in update if actioned within the delta
+		p << 0 << 0;
+		tempo::sendMessage(tempo::QueueID::PLAYER_UPDATES, p);
 		return;
 	}
 
+	// Include delta and tell server of intent
+	p << delta.x << delta.y;
+	tempo::sendMessage(tempo::QueueID::PLAYER_UPDATES, p);
+
 	if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
 		entity.getComponent<tempo::ComponentStageTranslation>().delta = delta;
+	}
+}
+
+void addAttack(anax::Entity &entity, tempo::Facing facing, bool withinDelta)
+{
+	if (!withinDelta) {
+		std::cout << "Actioned outside of delta" << std::endl;
+		return;
+	}
+
+	if (entity.hasComponent<tempo::ComponentAttack>() && entity.hasComponent<tempo::ComponentWeapon>()) {
+		tempo::ComponentAttack &a = entity.getComponent<tempo::ComponentAttack>();
+		tempo::ComponentWeapon &w = entity.getComponent<tempo::ComponentWeapon>();
+		a.damage = w.damage;
+		a.beats_until_attack = w.beats_until_attack;
+
+		sf::Packet p;
+		p << static_cast<uint32_t>(tempo::MessageAttack::UPDATE_INTENT);
+		p << a.damage;
+		p << a.beats_until_attack;
+		tempo::sendMessage(tempo::QueueID::SYSTEM_ATTACK, p);
 	}
 }
 

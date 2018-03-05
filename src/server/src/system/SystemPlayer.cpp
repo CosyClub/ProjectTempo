@@ -1,5 +1,8 @@
 #include <server/system/SystemPlayer.hpp>
 
+#include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
+
 #include <tempo/network/base.hpp>
 #include <tempo/network/ID.hpp>
 #include <tempo/network/queue.hpp>
@@ -13,7 +16,7 @@ namespace server
 using tempo::operator<<;
 using tempo::operator>>;
 
-void SystemPlayer::update(anax::World &world)
+void SystemPlayer::recieveTranslations(anax::World &w)
 {
 	tempo::Queue<sf::Packet> *queue = tempo::get_system_queue(tempo::QueueID::PLAYER_UPDATES);
 
@@ -22,22 +25,24 @@ void SystemPlayer::update(anax::World &world)
 
 	while (!queue->empty()) {
 		sf::Packet update = queue->front();
+		queue->pop();
 		sf::Packet update_broadcast;
 
-		queue->pop();
-
 		anax::Entity::Id instance_id;
-		int              dx = 0;
-		int              dy = 0;
-		update >> instance_id >> dx >> dy;
-		update_broadcast << instance_id << dx << dy;
+		glm::ivec2       delta = glm::ivec2(0,0);
+		tempo::Facing    f     = glm::ivec2(0,0);
+		update >> instance_id >> f.x >> f.y >> delta.x >> delta.y;
+		update_broadcast << instance_id << f.x << f.y << delta.x << delta.y;
 
 		try {
-			anax::Entity entity = anax::Entity(world, instance_id);
-			auto &       motion = entity.getComponent<tempo::ComponentStageTranslation>();
+			anax::Entity entity = anax::Entity(w, instance_id);
+			if (entity.hasComponent<tempo::ComponentStageRotation>() && f != glm::ivec2(0,0)) {
+				entity.getComponent<tempo::ComponentStageRotation>().facing = f;
+			}
 
-			motion.delta.x = dx;
-			motion.delta.y = dy;
+			if (entity.hasComponent<tempo::ComponentStagePosition>()) {
+				entity.getComponent<tempo::ComponentStageTranslation>().delta = delta;
+			}
 
 			// Send update to all clients
 			for (auto it = tempo::clients.begin(); it != tempo::clients.end(); ++it) {

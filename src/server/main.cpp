@@ -1,6 +1,7 @@
 #define AM_SERVER
 
 #include <server/system/SystemAttack.hpp>
+#include <server/system/SystemMovement.hpp>
 #include <server/system/SystemPlayer.hpp>
 
 #include <tempo/time.hpp>
@@ -43,23 +44,25 @@ int main(int argc, const char **argv)
 	anax::World world;
 
 	// Create Systems
-	server::SystemAttack system_attack(world);
-	server::SystemPlayer system_player(clock);
+	server::SystemAttack   system_attack(world);
+	server::SystemMovement system_movement;
+	server::SystemPlayer   system_player;
 	tempo::SystemCombo  system_combo;
 	tempo::SystemGridAi system_grid_ai;
 	tempo::SystemHealth system_health;	
 
 	world.addSystem(system_attack);
+	world.addSystem(system_movement);
+	world.addSystem(system_player);
 	world.addSystem(system_combo);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_health);
-	world.addSystem(system_player);
 	world.refresh();
 
 	// Create some Test Entities
-	tempo::newAI(world, 5, 5);
-	tempo::newAI(world, 3, 3);
-	tempo::newAI(world, 8, 8);
+	// tempo::newAI(world, 5, 5);
+	// tempo::newAI(world, 3, 3);
+	// tempo::newAI(world, 8, 8);
 
 	// Destroyables
 	tempo::newDestroyable(world, 4, 4, "Cube");
@@ -115,15 +118,16 @@ int main(int argc, const char **argv)
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 			system_attack.processAttacks();
+			system_movement.processTranslation();
 		}
 
 		////////////////
 		// Events all the time
 		{
+			system_player.recieveTranslations(world);
 			system_attack.recieveAttacks(world);
 			system_combo.checkForUpdates();
 			system_health.CheckHealth();
-			system_player.update(world);
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));

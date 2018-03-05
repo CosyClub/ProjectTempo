@@ -5,16 +5,16 @@ namespace tempo
 
 ComponentWeapon::ComponentWeapon(Mask &m)
 {
-	damage          = Mask(m);
-	this->isDelayed = 0;
-	this->delay     = sf::Time::Zero;
+	damage                   = Mask(m);
+	this->isDelayed          = 0;
+	this->beats_until_attack = 0;
 }
 
-ComponentWeapon::ComponentWeapon(Mask &m, sf::Time delay)
+ComponentWeapon::ComponentWeapon(Mask &m, unsigned int beats_until_attack)
 {
-	this->damage    = Mask(m);
-	this->isDelayed = true;
-	this->delay     = delay;
+	this->damage             = Mask(m);
+	this->isDelayed          = true;
+	this->beats_until_attack = beats_until_attack;
 }
 
 float ComponentWeapon::GetDamage(glm::vec2 offset)
@@ -26,7 +26,7 @@ ComponentWeapon::ComponentWeapon(sf::Packet p)
 {
 	p >> damage;
 	p >> isDelayed;
-	p >> delay;
+	p >> beats_until_attack;
 }
 
 sf::Packet ComponentWeapon::dumpComponent()
@@ -35,7 +35,7 @@ sf::Packet ComponentWeapon::dumpComponent()
 
 	p << damage;
 	p << isDelayed;
-	p << delay;
+	p << beats_until_attack;
 
 	return p;
 }

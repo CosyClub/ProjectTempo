@@ -5,7 +5,9 @@
 #include <client/system/SystemAttack.hpp>
 #include <client/system/SystemButtonRenderer.hpp>
 #include <client/system/SystemGraphicsCreation.hpp>
+#include <client/system/SystemMovement.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
+#include <client/system/SystemPlayer.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
@@ -21,8 +23,6 @@
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
-#include <tempo/system/SystemMovement.hpp>
-#include <tempo/system/SystemPlayer.hpp>
 #include <tempo/system/SystemTransform.hpp>
 #include <tempo/system/SystemTrigger.hpp>
 #include <tempo/time.hpp>
@@ -134,18 +134,18 @@ int main(int argc, const char **argv)
                                            "../bin/resources/levels/zonesTest.bmp");
 	tempo::SystemUpdateTransforms  system_update_transforms;
 	tempo::SystemGridAi            system_grid_ai;
-	tempo::SystemPlayer            system_player(clock);
 	tempo::SystemCombo             system_combo;
 	tempo::SystemHealth            system_health;
-	tempo::SystemMovement          system_movement;
 	tempo::SystemTrigger           system_trigger(world);
-	client::SystemAttack            system_attack;
+	client::SystemAttack           system_attack;
 	client::SystemButtonRenderer   system_button_renderer;
 	client::SystemGraphicsCreation system_gc;
+	client::SystemMovement         system_movement;
 	client::SystemStageRenderer    system_stage_renderer;
+	client::SystemParseKeyInput    system_parse_key_input;
+	client::SystemPlayer            system_player;
 	client::SystemRenderSceneNode  system_render_scene_node;
 	client::SystemUpdateKeyInput   system_update_key_input;
-	client::SystemParseKeyInput    system_parse_key_input;
 
 	// Add Systems
 	world.addSystem(system_level);
@@ -290,6 +290,33 @@ int main(int argc, const char **argv)
 		// dt_timer.restart();
 
 		////////////////
+		// Events all the time
+		{
+			// Check for new entities from server
+			new_entity_check(world);
+			system_gc.addEntities(driver, smgr);
+			system_render_scene_node.setup(smgr);
+			world.refresh();
+
+			// Recieve updates from the server
+			system_player.processServerResponses(world);
+			system_movement.processServerResponses(world);
+
+			// Deal with local input
+			system_update_key_input.clear();
+			system_update_key_input.addKeys();
+			system_parse_key_input.parseInput(clock);
+
+			// Deprecated/To-be-worked-on
+			system_health.CheckHealth();
+
+			// Graphics updates
+			system_render_scene_node.update();
+			// TODO: Make a system for updating camera position
+			camera_node->setTarget(sn.node->getPosition());
+		}
+
+		////////////////
 		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
 			// std::cout << "Start" << std::endl;
@@ -320,34 +347,7 @@ int main(int argc, const char **argv)
 		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
 			// std::cout << "End" << std::endl;
-			system_movement.processTranslation();
 			system_combo.advanceBeat();
-		}
-
-		////////////////
-		// Events all the time
-		{
-			// Check for new entities from server
-			new_entity_check(world);
-			system_gc.addEntities(driver, smgr);
-			system_render_scene_node.setup(smgr);
-			world.refresh();
-
-			// Recieve player updates from the server
-			system_player.update(entity_player.getId(), world);
-
-			// Deal with local input
-			system_update_key_input.clear();
-			system_update_key_input.addKeys();
-			system_parse_key_input.parseInput(clock);
-
-			// Deprecated/To-be-worked-on
-			system_health.CheckHealth();
-
-			// Graphics updates
-			system_render_scene_node.update();
-			// TODO: Make a system for updating camera position
-			camera_node->setTarget(sn.node->getPosition());
 		}
 
 		////////////////
