@@ -7,7 +7,6 @@
 #include <client/system/SystemGraphicsCreation.hpp>
 #include <client/system/SystemMovement.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
-#include <client/system/SystemPlayer.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
@@ -143,7 +142,6 @@ int main(int argc, const char **argv)
 	client::SystemMovement         system_movement;
 	client::SystemStageRenderer    system_stage_renderer;
 	client::SystemParseKeyInput    system_parse_key_input;
-	client::SystemPlayer            system_player;
 	client::SystemRenderSceneNode  system_render_scene_node;
 	client::SystemUpdateKeyInput   system_update_key_input;
 
@@ -152,7 +150,6 @@ int main(int argc, const char **argv)
 	world.addSystem(system_attack);
 	world.addSystem(system_update_transforms);
 	world.addSystem(system_grid_ai);
-	world.addSystem(system_player);
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
 	world.addSystem(system_gc);
@@ -299,8 +296,8 @@ int main(int argc, const char **argv)
 			world.refresh();
 
 			// Recieve updates from the server
-			system_player.processServerResponses(world);
-			system_movement.processServerResponses(world);
+			system_movement.processIntents(world);
+			system_movement.processCorrections(world);
 
 			// Deal with local input
 			system_update_key_input.clear();

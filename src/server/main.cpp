@@ -2,7 +2,6 @@
 
 #include <server/system/SystemAttack.hpp>
 #include <server/system/SystemMovement.hpp>
-#include <server/system/SystemPlayer.hpp>
 
 #include <tempo/time.hpp>
 
@@ -46,14 +45,12 @@ int main(int argc, const char **argv)
 	// Create Systems
 	server::SystemAttack   system_attack(world);
 	server::SystemMovement system_movement;
-	server::SystemPlayer   system_player;
 	tempo::SystemCombo  system_combo;
 	tempo::SystemGridAi system_grid_ai;
 	tempo::SystemHealth system_health;	
 
 	world.addSystem(system_attack);
 	world.addSystem(system_movement);
-	world.addSystem(system_player);
 	world.addSystem(system_combo);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_health);
@@ -98,7 +95,7 @@ int main(int argc, const char **argv)
 		////////////////
 		// Events all the time
 		{
-			system_player.recieveTranslations(world);
+			system_movement.recieveTranslations(world);
 			system_attack.recieveAttacks(world);
 			system_combo.checkForUpdates();
 			system_health.CheckHealth();

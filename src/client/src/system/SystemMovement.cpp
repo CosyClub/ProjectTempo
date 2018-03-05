@@ -16,7 +16,33 @@ namespace client
 using tempo::operator<<;
 using tempo::operator>>;
 
-void SystemMovement::processServerResponses(anax::World &w) 
+void SystemMovement::processIntents(anax::World &world)
+{
+	tempo::Queue<sf::Packet> *queue = get_system_queue(tempo::QueueID::MOVEMENT_INTENT_UPDATES);
+
+	if (queue->empty())
+		return;
+
+	while (!queue->empty()) {
+		sf::Packet update = queue->front();
+		queue->pop();
+
+		anax::Entity::Id instance_id;
+		glm::ivec2 delta(0,0);
+		glm::ivec2 facing(0,0);
+		update >> instance_id >> facing.x >> facing.y >> delta.x >> delta.y;
+		anax::Entity entity = anax::Entity(world, tempo::servertolocal[instance_id]);
+
+		if (entity.hasComponent<tempo::ComponentStageRotation>()) {
+			entity.getComponent<tempo::ComponentStageRotation>().facing = facing;
+		}
+		if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
+			entity.getComponent<tempo::ComponentStageTranslation>().delta = delta;
+		}
+	}
+}
+
+void SystemMovement::processCorrections(anax::World &world) 
 {
 	tempo::Queue<sf::Packet> *q = tempo::get_system_queue(tempo::QueueID::MOVEMENT_UPDATES);
 
@@ -27,7 +53,7 @@ void SystemMovement::processServerResponses(anax::World &w)
 
 		anax::Entity::Id id;
 		p >> id; // ID of the entity this message concerns
-		anax::Entity e(w, tempo::servertolocal[id]);
+		anax::Entity e(world, tempo::servertolocal[id]);
 
 		// Update Occupied Position
 		if (e.hasComponent<tempo::ComponentStagePosition>()) {
