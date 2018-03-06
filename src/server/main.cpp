@@ -104,6 +104,10 @@ int main(int argc, const char **argv)
 			// TODO Once animated detlete and uncomment in delta end:
 			system_movement.processTranslation();
 		}
+
+		if (clock.passed_antibeat())
+		{
+		}
 		
 		////////////////
 		// Events at "Delta Start"

@@ -18,14 +18,24 @@ void SystemAI::update(server::SystemAttack s_attack)
 			glm::ivec2 direction;
 			if (s_attack.bestAttack(entity, direction))
 			{
+				std::cout << "Attacking" << std::endl;
 				tempo::ComponentAttack &a = entity.getComponent<tempo::ComponentAttack>();
 				tempo::ComponentWeapon &w = entity.getComponent<tempo::ComponentWeapon>();
 				tempo::ComponentStageRotation &r = entity.getComponent<tempo::ComponentStageRotation>();
+
+				r.facing = direction;
+
 				a.damage = w.damage;
 				a.beats_until_attack = w.beats_until_attack;
 
-				w.beats_until_attack = 0;
-				r.facing = direction;
+				sf::Packet p;
+				p << static_cast<uint32_t>(tempo::MessageAttack::UPDATE_INTENT);
+				p << entity.getId();
+				p << a.damage;
+				p << a.beats_until_attack;
+				
+				tempo::Queue<sf::Packet> *q = get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
+				q->push(p);
 				return;
 			}
 		}
