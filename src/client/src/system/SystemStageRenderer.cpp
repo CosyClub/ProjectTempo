@@ -9,7 +9,7 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
-
+#include <vector>
 #include <iostream>
 
 namespace
@@ -17,7 +17,7 @@ namespace
 client::stage_nodes addFloorTilesToScene(irr::scene::ISceneManager *smgr,
                                          irr::video::IVideoDriver * driver,
                                          irr::scene::IMesh *        mesh,
-                                         tempo::stage_tiles &       tiles)
+                                         std::vector<tempo::stage_tile>&       tiles)
 {
 	client::stage_nodes temp_nodes;
 
@@ -29,9 +29,9 @@ client::stage_nodes addFloorTilesToScene(irr::scene::ISceneManager *smgr,
 	for (unsigned int i = 0; i < tiles.size(); ++i) {
 		irr::scene::IMeshSceneNode *node = smgr->addMeshSceneNode(mesh, 0);
 
-		float grid_x = std::get<0>(tiles[i]).x;
-		float grid_y = std::get<0>(tiles[i]).y;
-		float height = std::get<1>(tiles[i]);
+		float grid_x = tiles[i].position.x;
+		float grid_y = tiles[i].position.y;
+		float height = tiles[i].height;
 
 		temp_nodes.push_back(std::make_tuple(glm::ivec2(grid_y, grid_x), node));
 
@@ -67,7 +67,7 @@ void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVi
 	auto  entity   = std::begin(entities);
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 
-	tempo::stage_tiles tiles = stage.getHeights();
+	auto tiles = stage.getHeights();
 
 	irr::scene::IMesh *mesh_floor_tile = smgr->getMesh("resources/meshes/tile.obj");
 	if (!mesh_floor_tile) {
@@ -87,17 +87,17 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 	auto  entity   = std::begin(entities);
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 
-	std::vector<std::tuple<glm::ivec2, float>> heights = stage.getHeights();
+	auto heights = stage.getHeights();
 
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 		irr::scene::IMeshSceneNode *node = std::get<1>(this->tile_nodes[i]);
 
     auto old_pos = node->getPosition();
-    float height = std::get<1>(heights[i]);
+    float height = heights[i].height;
 
     node->setPosition(irr::core::vector3df(old_pos.X, height, old_pos.Z));
 
-		if (std::get<1>(heights[i]) >= 5) {
+		if (heights[i].height >= 5) {
 			continue;
 		}
 
