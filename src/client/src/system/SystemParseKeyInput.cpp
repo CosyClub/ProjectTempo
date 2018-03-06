@@ -112,6 +112,9 @@ void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinD
 		// system_attack.Attack(entity_player);
 		updateCombo(entity, withinDelta);
 		break;
+	case irr::KEY_SPACE:
+		updateCombo(entity, withinDelta);
+		break;
 	default: break;
 	}
 }
