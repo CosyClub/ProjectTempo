@@ -3,7 +3,7 @@
 
 #include <anax/World.hpp>
 
-#include <tempo/network/QueueID.hpp>
+#include <tempo/network/ID.hpp>
 #include <tempo/network/queue.hpp>
 #include <tempo/structures.hpp>
 
@@ -161,6 +161,7 @@ sf::Packet splitPacket(sf::Packet &packet, uint32_t size);
 
 extern bool sendMessage(tempo::QueueID id, sf::Packet p);
 extern bool broadcastMessage(tempo::QueueID id, sf::Packet p);
-}
+
+} // namespace tempo
 
 #endif

@@ -1,5 +1,6 @@
 #ifndef TEMPO_COMPONENT_STAGE_POSITION_HPP
 #define TEMPO_COMPONENT_STAGE_POSITION_HPP
+
 #include <anax/Component.hpp>
 
 #include <tempo/component/NetworkedComponent.hpp>

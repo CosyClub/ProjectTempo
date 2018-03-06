@@ -1,7 +1,7 @@
 #ifndef TEMPO_COMPONENT_NETWORKED_COMPONENT_HPP
 #define TEMPO_COMPONENT_NETWORKED_COMPONENT_HPP
 
-#include <tempo/network/QueueID.hpp>
+#include <tempo/network/ID.hpp>
 
 #include <anax/Component.hpp>
 
