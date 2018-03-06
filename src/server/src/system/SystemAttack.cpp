@@ -10,6 +10,8 @@
 
 #include <tempo/mask.hpp>
 
+#include <iostream>
+
 namespace server
 {
 
@@ -68,9 +70,9 @@ void SystemAttack::recieveAttacks(anax::World &w)
 void SystemAttack::processAttacks()
 {
 	for (auto &entity : getEntities()) {
-		if (entity.getComponent<tempo::ComponentAttack>().isAttacking()) {
+		// if (entity.getComponent<tempo::ComponentAttack>().isAttacking()) {
 			subSystem.Attack(entity);
-		}
+		// }
 	}
 }
 
@@ -151,11 +153,21 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 		tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);
 		return;
 	}
+	else if (attack.beats_until_attack < 0)
+	{
+		return;
+	} //Don't do anything
+	else
+	{
+		//decrement then do the attack
+		attack.beats_until_attack--;
+	}
 
 	for (auto &entity : getEntities()) {
 		// Get health and positions occupired by other entity
 		std::vector<glm::ivec2> ps = entity.getComponent<tempo::ComponentStagePosition>().getOccupied();
 		auto &health = entity.getComponent<tempo::ComponentHealth>();
+
 
 		// Add positions after stage translation (if any) to ps vector
 		// TODO: This doesn't take into account if the movement system

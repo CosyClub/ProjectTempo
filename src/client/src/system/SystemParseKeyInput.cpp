@@ -66,6 +66,7 @@ void addAttack(anax::Entity &entity, bool withinDelta)
 
 		sf::Packet p;
 		p << static_cast<uint32_t>(tempo::MessageAttack::UPDATE_INTENT);
+		p << tempo::localtoserver[entity.getId()];
 		p << a.damage;
 		p << a.beats_until_attack;
 		tempo::sendMessage(tempo::QueueID::SYSTEM_ATTACK, p);

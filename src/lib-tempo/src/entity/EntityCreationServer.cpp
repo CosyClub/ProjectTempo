@@ -22,6 +22,7 @@ anax::Entity newPlayer(anax::World &world)
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
 	entity_player.addComponent<tempo::ComponentModel>("", glm::vec3(255, 0, 0), false);
 	entity_player.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	entity_player.addComponent<tempo::ComponentAttack>();
 	entity_player.addComponent<tempo::ComponentWeapon>(m);
 	entity_player.addComponent<tempo::ComponentAOEIndicator>();
 	entity_player.addComponent<tempo::ComponentHealth>(1);
@@ -45,6 +46,9 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	float arr[2] = {0, 1};
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentWeapon>(m);
+
+	e.activate();
+	return e;
 }
 
 // anax::Entity newAI(anax::World &world, int x, int y)

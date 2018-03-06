@@ -8,6 +8,7 @@
 #include <tempo/system/SystemLevelManager.hpp>
 
 #include <tempo/component/ComponentAI.hpp>
+#include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentStage.hpp>
 #include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentCombo.hpp>
