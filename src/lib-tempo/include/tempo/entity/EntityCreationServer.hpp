@@ -31,6 +31,8 @@ anax::Entity newPlayer(anax::World &world);
 // anax::Entity newAI(anax::World &world, int x, int y);
 
 anax::Entity createMobStill(anax::World &world, glm::ivec2 pos);
+anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos);
+anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos);
 
 anax::Entity newDestroyable(anax::World &world, int x, int y, std::string mesh_name);
 

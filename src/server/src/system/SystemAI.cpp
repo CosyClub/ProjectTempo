@@ -15,12 +15,15 @@ void SystemAI::update(server::SystemAttack s_attack)
 
 		if (entity.hasComponent<tempo::ComponentAttack>() && entity.hasComponent<tempo::ComponentWeapon>())
 		{
+			tempo::ComponentAttack &a = entity.getComponent<tempo::ComponentAttack>();
+			tempo::ComponentWeapon &w = entity.getComponent<tempo::ComponentWeapon>();
+
+			if (a.beats_until_attack > -1) return;
+
 			glm::ivec2 direction;
 			if (s_attack.bestAttack(entity, direction))
 			{
 				std::cout << "Attacking" << std::endl;
-				tempo::ComponentAttack &a = entity.getComponent<tempo::ComponentAttack>();
-				tempo::ComponentWeapon &w = entity.getComponent<tempo::ComponentWeapon>();
 				tempo::ComponentStageRotation &r = entity.getComponent<tempo::ComponentStageRotation>();
 
 				r.facing = direction; //enemies don't believe in turning, they just stab

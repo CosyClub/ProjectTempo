@@ -41,6 +41,17 @@ void SystemHealth::broadcastHealth()
 	}
 }
 
+void SystemHealth::sendHealth(anax::Entity entity)
+{
+	auto &h = entity.getComponent<ComponentHealth>();
+	anax::Entity::Id id = entity.getId();
+
+	sf::Packet p;
+	p << id;
+	p << h.current_health;
+	sendMessage(tempo::QueueID::SYSTEM_HEALTH, p);
+}
+
 void SystemHealth::recieveHealth(anax::World &world)
 {
 	tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_HEALTH);

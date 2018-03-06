@@ -94,6 +94,7 @@ bool SubSystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
 	{
 		float currentDamage = 0;
 		for (auto &entity : getEntities()) {
+			if (entity.getId().index == attacker.getId().index) continue;
 			// Get health and positions occupired by other entity
 			std::vector<glm::ivec2> ps = entity.getComponent<tempo::ComponentStagePosition>().getOccupied();
 
