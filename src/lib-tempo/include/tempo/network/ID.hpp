@@ -28,6 +28,7 @@ enum QueueID {
 	MOVEMENT_UPDATES,
 	COMBO_UPDATES,
 	SYSTEM_ATTACK,
+	SYSTEM_HEALTH,
 
 	// End of non-reserved zone
 	QID_RESERVED_TOP

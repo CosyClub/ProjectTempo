@@ -308,6 +308,7 @@ int main(int argc, const char **argv)
 
 			// Deprecated/To-be-worked-on
 			system_health.CheckHealth();
+			system_health.recieveHealth(world);
 
 			// Graphics updates
 			// std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl; 

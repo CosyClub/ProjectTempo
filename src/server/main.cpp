@@ -100,6 +100,7 @@ int main(int argc, const char **argv)
 			system_attack.recieveAttacks(world);
 			system_combo.checkForUpdates();
 			system_health.CheckHealth();
+			system_health.broadcastHealth();
 			
 			// TODO Once animated detlete and uncomment in delta end:
 			system_movement.processTranslation();

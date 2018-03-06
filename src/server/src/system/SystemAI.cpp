@@ -23,7 +23,7 @@ void SystemAI::update(server::SystemAttack s_attack)
 				tempo::ComponentWeapon &w = entity.getComponent<tempo::ComponentWeapon>();
 				tempo::ComponentStageRotation &r = entity.getComponent<tempo::ComponentStageRotation>();
 
-				r.facing = direction;
+				r.facing = direction; //enemies don't believe in turning, they just stab
 
 				a.damage = w.damage;
 				a.beats_until_attack = w.beats_until_attack;
