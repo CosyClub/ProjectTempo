@@ -4,6 +4,7 @@ namespace client
 {
 void SystemRenderHealthBars::setup(irr::scene::ISceneManager *smgr)
 {
+	original_size = irr::core::dimension2d<irr::f32>(0.7f, 0.15f);
 	irr::core::dimension2d<irr::f32> size(0.7f, 0.15f);
 	irr::core::vector3df             pos(-0.5f, 1.6f + size.Height / 2, 0.0f);
 	irr::video::SColor               color(255, 0, 255, 0);
@@ -37,14 +38,12 @@ void SystemRenderHealthBars::update()
 		auto &health    = entity.getComponent<tempo::ComponentHealth>();
 		auto &healthbar = entity.getComponent<client::ComponentHealthBar>().node;
 
-		irr::core::dimension2d<irr::f32> prev_size = healthbar->getSize();
-
 		// Fraction of health left
 		scale = (double) health.current_health / health.max_health;
 
-		float new_width = prev_size.Width * scale;
+		float new_width = original_size.Width * scale;
 
-		healthbar->setSize(irr::core::dimension2d<irr::f32>(new_width, prev_size.Height));
+		healthbar->setSize(irr::core::dimension2d<irr::f32>(new_width, original_size.Height));
 		// Set colour of healthbar (Green = full health, Red = No Health)
 		if (scale <= 0.5) {
 			healthbar->setColor(colour_red);

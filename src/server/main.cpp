@@ -57,7 +57,9 @@ int main(int argc, const char **argv)
 	world.refresh();
 
 	// Create some Test Entities
-	tempo::createMobCreeper(world, glm::ivec2(5, 5));
+	tempo::createMobStill(world, glm::ivec2(6, 6));
+	tempo::createMobStill(world, glm::ivec2(7, 7));
+	tempo::createMobStill(world, glm::ivec2(8, 9));
 	// tempo::newAI(world, 5, 5);
 	// tempo::newAI(world, 3, 3);
 	// tempo::newAI(world, 8, 8);

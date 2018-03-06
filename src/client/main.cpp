@@ -339,6 +339,8 @@ int main(int argc, const char **argv)
 			system_stage_renderer.updateStage({255, 175, 0, 0}, {255, 50, 50, 50}, driver, j);
 			system_trigger.updateButtons();
 			system_button_renderer.updateButtons(driver);
+			tempo::ComponentHealth &h = entity_player.getComponent<tempo::ComponentHealth>();
+			std::cout << h.current_health << "/" << h.max_health << std::endl;
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;

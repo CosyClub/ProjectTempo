@@ -25,6 +25,8 @@ struct SystemRenderHealthBars
 	// Returns:
 	//          void
 	void update();
+
+	irr::core::dimension2d<irr::f32> original_size;
 };
 }
 
