@@ -21,7 +21,6 @@
 #include <tempo/network/ID.hpp>
 #include <tempo/song.hpp>
 #include <tempo/system/SystemCombo.hpp>
-#include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 #include <tempo/system/SystemTransform.hpp>
@@ -134,7 +133,6 @@ int main(int argc, const char **argv)
 	tempo::SystemLevelManager      system_level(world, "../bin/resources/levels/levelTest.bmp",
                                            "../bin/resources/levels/zonesTest.bmp");
 	tempo::SystemUpdateTransforms  system_update_transforms;
-	tempo::SystemGridAi            system_grid_ai;
 	tempo::SystemCombo             system_combo;
 	tempo::SystemHealth            system_health;
 	tempo::SystemTrigger           system_trigger(world);
@@ -152,7 +150,6 @@ int main(int argc, const char **argv)
 	world.addSystem(system_level);
 	world.addSystem(system_attack);
 	world.addSystem(system_update_transforms);
-	world.addSystem(system_grid_ai);
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
 	world.addSystem(system_gc);
@@ -345,7 +342,6 @@ int main(int argc, const char **argv)
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;
 
-			system_grid_ai.update();
 		}
 
 		////////////////

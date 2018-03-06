@@ -1,17 +1,5 @@
 #include <tempo/entity/EntityCreationServer.hpp>
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <tempo/component/ComponentAOEIndicator.hpp>
-#include <tempo/component/ComponentCombo.hpp>
-#include <tempo/component/ComponentGridAi.hpp>
-#include <tempo/component/ComponentHealth.hpp>
-#include <tempo/component/ComponentModel.hpp>
-#include <tempo/component/ComponentPlayerRemote.hpp>
-#include <tempo/component/ComponentStageRotation.hpp>
-#include <tempo/component/ComponentWeapon.hpp>
-#include <tempo/mask.hpp>
-
 namespace tempo
 {
 anax::Entity newPlayer(anax::World &world)
@@ -43,22 +31,37 @@ anax::Entity newPlayer(anax::World &world)
 	return entity_player;
 }
 
-
-anax::Entity newAI(anax::World &world, int x, int y)
+anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 {
-	anax::Entity entity_ai = world.createEntity();
+	anax::Entity e = world.createEntity();
 
-	entity_ai.addComponent<tempo::ComponentGridAi>();
-	entity_ai.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x, y));
-	entity_ai.addComponent<tempo::ComponentStageRotation>(NORTH);
-	entity_ai.addComponent<tempo::ComponentStageTranslation>();
-	entity_ai.addComponent<tempo::ComponentModel>("", glm::vec3(0, 255, 0), false);
-	entity_ai.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	entity_ai.addComponent<tempo::ComponentHealth>(1);
-	entity_ai.activate();
-
-	return entity_ai;
+	e.addComponent<tempo::ComponentAI>();
+	e.addComponent<tempo::ComponentStagePosition>(pos);
+	e.addComponent<tempo::ComponentStageRotation>(NORTH);
+	e.addComponent<tempo::ComponentStageTranslation>();
+	e.addComponent<tempo::ComponentModel>("", glm::vec3(0, 255, 0), false);
+	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	e.addComponent<tempo::ComponentHealth>(1);
+	float arr[2] = {0, 1};
+	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
+	e.addComponent<tempo::ComponentWeapon>(m);
 }
+
+// anax::Entity newAI(anax::World &world, int x, int y)
+// {
+// 	anax::Entity entity_ai = world.createEntity();
+
+// 	entity_ai.addComponent<tempo::ComponentAI>();
+// 	entity_ai.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x, y));
+// 	entity_ai.addComponent<tempo::ComponentStageRotation>(NORTH);
+// 	entity_ai.addComponent<tempo::ComponentStageTranslation>();
+// 	entity_ai.addComponent<tempo::ComponentModel>("", glm::vec3(0, 255, 0), false);
+// 	entity_ai.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+// 	entity_ai.addComponent<tempo::ComponentHealth>(1);
+// 	entity_ai.activate();
+
+// 	return entity_ai;
+// }
 
 anax::Entity newDestroyable(anax::World &world, int x, int y, std::string mesh_name)
 {

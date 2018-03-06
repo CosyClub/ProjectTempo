@@ -2,6 +2,7 @@
 
 namespace tempo
 {
+std::vector<glm::ivec2> DIRECTIONS;
 glm::ivec2 NORTH = glm::ivec2(-1, 0);
 glm::ivec2 EAST  = glm::ivec2(0, 1);
 glm::ivec2 SOUTH = glm::ivec2(1, 0);

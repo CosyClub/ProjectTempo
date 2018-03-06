@@ -7,15 +7,14 @@
 
 namespace tempo
 {
-struct ComponentGridAi
-    : anax::Component
-    , NetworkedComponent {
-	ComponentGridAi();
+struct ComponentAI : anax::Component, NetworkedComponent 
+{
+	ComponentAI();
 
 	/////
 	// Required for networking
 	/////
-	ComponentGridAi(sf::Packet p);
+	ComponentAI(sf::Packet p);
 	ComponentID getId();
 	sf::Packet  dumpComponent();
 };

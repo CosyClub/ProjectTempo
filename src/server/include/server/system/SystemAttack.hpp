@@ -21,6 +21,8 @@ struct SubSystemAttack : anax::System<anax::Requires<tempo::ComponentHealth, tem
 	// Returns:
 	//          void
 	void Attack(anax::Entity attacker);
+
+	bool bestAttack(anax::Entity attacker, glm::ivec2 &direction);
 };
 
 struct SystemAttack : anax::System<anax::Requires<tempo::ComponentAttack>> 
@@ -36,6 +38,8 @@ struct SystemAttack : anax::System<anax::Requires<tempo::ComponentAttack>>
 	
 	// Processes all of the attack intents. To be run at Delta End.
 	void processAttacks();
+
+	bool bestAttack(anax::Entity attacker, glm::ivec2 &direction);
 };
 
 } // namespace server

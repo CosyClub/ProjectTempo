@@ -3,7 +3,7 @@
 #include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentCombo.hpp>
-#include <tempo/component/ComponentGridAi.hpp>
+#include <tempo/component/ComponentAI.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentModel.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
@@ -73,7 +73,7 @@ anax::Entity addComponent(anax::World &w, sf::Packet p)
 			CASE(ComponentAOEIndicator, AOEINDICATOR)
 			CASE(ComponentAttack, ATTACK)
 			CASE(ComponentCombo, COMBO)
-			CASE(ComponentGridAi, GRID_AI)
+			CASE(ComponentAI, AI)
 			CASE(ComponentHealth, HEALTH)
 			CASE(ComponentModel, MODEL)
 			CASE(ComponentPlayerLocal, PLAYER_LOCAL)

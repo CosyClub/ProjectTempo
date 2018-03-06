@@ -3,7 +3,7 @@
 #include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentCombo.hpp>
-#include <tempo/component/ComponentGridAi.hpp>
+#include <tempo/component/ComponentAI.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentModel.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
@@ -170,7 +170,7 @@ sf::Packet packageComponents(anax::Entity entity)
 	ADD_COMPONENT(entity, c, packet, ComponentAOEIndicator)
 	ADD_COMPONENT(entity, c, packet, ComponentAttack)
 	ADD_COMPONENT(entity, c, packet, ComponentCombo)
-	ADD_COMPONENT(entity, c, packet, ComponentGridAi)
+	ADD_COMPONENT(entity, c, packet, ComponentAI)
 	ADD_COMPONENT(entity, c, packet, ComponentHealth)
 	ADD_COMPONENT(entity, c, packet, ComponentModel)
 	ADD_COMPONENT(entity, c, packet, ComponentPlayerLocal)

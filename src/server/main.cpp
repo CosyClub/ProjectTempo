@@ -1,5 +1,6 @@
 #define AM_SERVER
 
+#include <server/system/SystemAI.hpp>
 #include <server/system/SystemAttack.hpp>
 #include <server/system/SystemMovement.hpp>
 
@@ -7,7 +8,6 @@
 
 #include <tempo/entity/EntityCreationServer.hpp>
 #include <tempo/system/SystemCombo.hpp>
-#include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 
@@ -43,20 +43,21 @@ int main(int argc, const char **argv)
 	anax::World world;
 
 	// Create Systems
+	server::SystemAI system_ai;
 	server::SystemAttack   system_attack(world);
 	server::SystemMovement system_movement;
 	tempo::SystemCombo  system_combo;
-	tempo::SystemGridAi system_grid_ai;
 	tempo::SystemHealth system_health;	
 
+	world.addSystem(system_ai);
 	world.addSystem(system_attack);
 	world.addSystem(system_movement);
 	world.addSystem(system_combo);
-	world.addSystem(system_grid_ai);
 	world.addSystem(system_health);
 	world.refresh();
 
 	// Create some Test Entities
+	tempo::createMobStill(world, glm::ivec2(5, 5));
 	// tempo::newAI(world, 5, 5);
 	// tempo::newAI(world, 3, 3);
 	// tempo::newAI(world, 8, 8);
@@ -113,7 +114,7 @@ int main(int argc, const char **argv)
 		////////////////
 		// Events at "Beat Passed"
 		if (clock.passed_beat()) {
-			system_grid_ai.update();
+			system_ai.update(system_attack);
 			system_combo.advanceBeat();
 
 			if (tick++ % 20 == 0)

@@ -51,7 +51,7 @@ void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing, b
 	}
 }
 
-void addAttack(anax::Entity &entity, tempo::Facing facing, bool withinDelta)
+void addAttack(anax::Entity &entity, bool withinDelta)
 {
 	if (!withinDelta) {
 		std::cout << "Actioned outside of delta" << std::endl;
@@ -109,7 +109,7 @@ void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinD
 		updateCombo(entity, withinDelta);
 		break;
 	case irr::KEY_KEY_E:
-		// system_attack.Attack(entity_player);
+		addAttack(entity, withinDelta);
 		updateCombo(entity, withinDelta);
 		break;
 	default: break;

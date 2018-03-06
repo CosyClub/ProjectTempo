@@ -46,7 +46,7 @@ enum ComponentID {
 	AOEINDICATOR,       // 2
 	ATTACK,             // 3
 	COMBO,              // 4
-	GRID_AI,            // 5
+	AI,                 // 5
 	HEALTH,             // 6
 	MODEL,              // 7
 	PICKUP,             // 8

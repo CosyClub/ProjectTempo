@@ -74,6 +74,64 @@ void SystemAttack::processAttacks()
 	}
 }
 
+bool SystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
+{
+	return subSystem.bestAttack(attacker, direction);
+}
+
+bool SubSystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
+{
+	glm::ivec2  attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
+	// glm::ivec2  rot         = attacker.getComponent<tempo::ComponentStageRotation>().facing;
+	auto &      weapon      = attacker.getComponent<tempo::ComponentWeapon>();
+	
+	glm::ivec2 bestDirection;
+	float bestDamage = 0;
+
+	for (glm::ivec2 rot : tempo::DIRECTIONS)
+	{
+		float currentDamage = 0;
+		for (auto &entity : getEntities()) {
+			// Get health and positions occupired by other entity
+			std::vector<glm::ivec2> ps = entity.getComponent<tempo::ComponentStagePosition>().getOccupied();
+
+			// Add positions after stage translation (if any) to ps vector
+			// TODO: This doesn't take into account if the movement system
+			//       doesn't accept a stage translation. Work out if 
+			//       that matters?
+			if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
+				glm::ivec2 d = entity.getComponent<tempo::ComponentStageTranslation>().delta;
+				if (d != glm::ivec2(0,0)) {
+					for (glm::ivec2 p : entity.getComponent<tempo::ComponentStagePosition>().getOccupied()) {
+						if (std::find(ps.begin(), ps.end(), p+d) != ps.end()) {
+							ps.push_back(p+d);
+						}
+
+					}
+				}
+			}
+
+			// Calculate relative directions from the attacker
+			glm::vec2 forward = rot;
+			glm::vec2 left = glm::ivec2(-rot.y, -rot.x);  // Hacky cross product
+
+			// Deal damage to the other entity
+			for (glm::ivec2 p : ps) {
+				glm::vec2  diff          = p - attackerpos;
+				glm::ivec2 relative_diff = glm::ivec2(glm::dot(diff, left), glm::dot(diff, forward));
+
+				float damage = weapon.GetDamage(relative_diff);
+				currentDamage += damage;
+			}
+		}
+
+		if ( currentDamage > bestDamage ) bestDirection = rot;
+	}
+
+	direction = bestDirection;	
+	return bestDamage;
+}
+
 void SubSystemAttack::Attack(anax::Entity attacker)
 {
 	// Get Attacker Components
