@@ -64,12 +64,6 @@ int main(int argc, const char **argv)
 	// tempo::newAI(world, 3, 3);
 	// tempo::newAI(world, 8, 8);
 
-	// Destroyables
-	tempo::newDestroyable(world, 4, 4, "Cube");
-
-	// NonDestroyables
-	tempo::newNonDestroyable(world, 6, 6, "Cube");
-
 	//////////////////////////////////
 	// Thread Startup
 	std::thread timeSyncThread(tempo::timeSyncServer, &clock);

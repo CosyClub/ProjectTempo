@@ -16,6 +16,7 @@
 #include <tempo/component/ComponentModel.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
+#include <tempo/component/ComponentTeam.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
 
 #include <tempo/mask.hpp>
@@ -28,15 +29,9 @@ namespace tempo
 {
 anax::Entity newPlayer(anax::World &world);
 
-// anax::Entity newAI(anax::World &world, int x, int y);
-
 anax::Entity createMobStill(anax::World &world, glm::ivec2 pos);
 anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos);
 anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos);
-
-anax::Entity newDestroyable(anax::World &world, int x, int y, std::string mesh_name);
-
-anax::Entity newNonDestroyable(anax::World &world, int x, int y, std::string mesh_name);
 
 }  // namespace tempo
 

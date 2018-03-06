@@ -95,6 +95,12 @@ bool SubSystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
 		float currentDamage = 0;
 		for (auto &entity : getEntities()) {
 			if (entity.getId().index == attacker.getId().index) continue;
+			else if (entity.hasComponent<tempo::ComponentTeam>() && attacker.hasComponent<tempo::ComponentTeam>())
+			{
+				tempo::ComponentTeam &et = entity.getComponent<tempo::ComponentTeam>();
+				tempo::ComponentTeam &at = entity.getComponent<tempo::ComponentTeam>();
+				if (at.team == et.team) continue;
+			}
 			// Get health and positions occupired by other entity
 			std::vector<glm::ivec2> ps = entity.getComponent<tempo::ComponentStagePosition>().getOccupied();
 
@@ -169,6 +175,16 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 	}
 
 	for (auto &entity : getEntities()) {
+
+		//No friendly fire except yourself
+		if (entity.getId().index == attacker.getId().index);
+		else if (entity.hasComponent<tempo::ComponentTeam>() && attacker.hasComponent<tempo::ComponentTeam>())
+		{
+			tempo::ComponentTeam &et = entity.getComponent<tempo::ComponentTeam>();
+			tempo::ComponentTeam &at = entity.getComponent<tempo::ComponentTeam>();
+			if (at.team == et.team) continue;
+		}
+
 		// Get health and positions occupired by other entity
 		std::vector<glm::ivec2> ps = entity.getComponent<tempo::ComponentStagePosition>().getOccupied();
 		auto &health = entity.getComponent<tempo::ComponentHealth>();

@@ -12,6 +12,7 @@
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentTeam.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
 #include <tempo/component/NetworkedComponent.hpp>
 
@@ -81,6 +82,7 @@ anax::Entity addComponent(anax::World &w, sf::Packet p)
 			CASE(ComponentStage, STAGE)
 			CASE(ComponentStagePosition, STAGE_POSITION)
 			CASE(ComponentStageRotation, STAGE_ROTATION)
+			CASE(ComponentTeam, TEAM)
 			CASE(ComponentStageTranslation, STAGE_TRANSLATION)
 			CASE(ComponentWeapon, WEAPON)
 

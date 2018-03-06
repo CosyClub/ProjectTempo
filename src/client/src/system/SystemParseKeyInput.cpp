@@ -109,7 +109,7 @@ void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinD
 		addMovement(entity, tempo::EAST, tempo::EAST, withinDelta);
 		updateCombo(entity, withinDelta);
 		break;
-	case irr::KEY_KEY_E:
+	case irr::KEY_SPACE:
 		addAttack(entity, withinDelta);
 		updateCombo(entity, withinDelta);
 		break;

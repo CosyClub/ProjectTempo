@@ -57,11 +57,12 @@ enum ComponentID {
 	STAGE_POSITION,     // 12
 	STAGE_ROTATION,     // 13
 	STAGE_TRANSLATION,  // 14
-	TRANSFORM,          // 15
-	WEAPON,             // 16
+	TEAM,               // 15
+	TRANSFORM,          // 16
+	WEAPON,             // 17
 
 	// End of non-reserved zone
-	CID_RESERVED_TOP    // 17
+	CID_RESERVED_TOP    // 18
 };
 
 sf::Packet &operator<<(sf::Packet &packet, const ComponentID id);
