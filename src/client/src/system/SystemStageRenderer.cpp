@@ -12,32 +12,41 @@
 #include <vector>
 #include <iostream>
 
-namespace
+namespace client
 {
-client::stage_nodes addFloorTilesToScene(irr::scene::ISceneManager *smgr,
+
+inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager *smgr,
                                          irr::video::IVideoDriver * driver,
-                                         irr::scene::IMesh *        mesh,
                                          std::vector<tempo::stage_tile>&       tiles)
 {
-	client::stage_nodes temp_nodes;
+
+  if(tile_nodes.size() == tiles.size()) return;
+
+  irr::scene::IMesh *mesh = smgr->getMesh("resources/meshes/tile.obj");
+  if (!mesh) {
+    std::cout << "Failed to load floor tile mesh\n" << std::endl;
+    return;
+  }
 
 	irr::video::ITexture *wall_diffuse_map =
 	  driver->getTexture("resources/materials/walls/cobblestone.png");
 	irr::video::ITexture *wall_normal_map =
 	  driver->getTexture("resources/materials/walls/cobblestone_n.png");
+  irr::video::ITexture *tile_texture =
+	  driver->getTexture("resources/materials/TileLightMaskPixelOn.png");
 
-	for (unsigned int i = 0; i < tiles.size(); ++i) {
+
+	for (unsigned int i = tile_nodes.size(); i < tiles.size(); ++i) {
 		irr::scene::IMeshSceneNode *node = smgr->addMeshSceneNode(mesh, 0);
 
 		float grid_x = tiles[i].position.x;
 		float grid_y = tiles[i].position.y;
 		float height = tiles[i].height;
 
-		temp_nodes.push_back(std::make_tuple(glm::ivec2(grid_y, grid_x), node));
+		tile_nodes.push_back(std::make_tuple(glm::ivec2(grid_y, grid_x), node));
 
 		node->setPosition(irr::core::vector3df(grid_x, height, grid_y));
-		node->setMaterialTexture(
-		  0, driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
+		node->setMaterialTexture(0, tile_texture);
 
 		// printf("Floor mat count: %i\n", node->getMaterialCount());
 
@@ -46,19 +55,16 @@ client::stage_nodes addFloorTilesToScene(irr::scene::ISceneManager *smgr,
 
 		material_side.setTexture(0, wall_diffuse_map);
 		material_side.setTexture(1, wall_normal_map);
-		material_side.MaterialType = irr::video::EMT_NORMAL_MAP_SOLID;
 
 		material_top.Shininess = 0.0f;
 		material_top.SpecularColor.set(255, 0, 0, 0);
 		material_top.DiffuseColor.set(255, 10, 10, 10);
+
 	}
 
-	return temp_nodes;
-}
 }
 
-namespace client
-{
+
 void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
 {
 	printf("SystemStageRenderer initializing\n");
@@ -69,13 +75,8 @@ void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVi
 
 	auto tiles = stage.getHeights();
 
-	irr::scene::IMesh *mesh_floor_tile = smgr->getMesh("resources/meshes/tile.obj");
-	if (!mesh_floor_tile) {
-		std::cout << "Failed to load floor tile mesh\n" << std::endl;
-		return;
-	}
-
-	tile_nodes = addFloorTilesToScene(smgr, driver, mesh_floor_tile, tiles);
+	//tile_nodes =
+  addFloorTilesToScene(smgr, driver, tiles);
 }
 
 void SystemStageRenderer::updateStage(glm::ivec4                colour1,

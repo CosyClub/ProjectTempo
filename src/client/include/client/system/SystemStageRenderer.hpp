@@ -27,6 +27,12 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 	                 int                       j);
 
    private:
+
+  inline void addFloorTilesToScene(irr::scene::ISceneManager *smgr,
+                                          irr::video::IVideoDriver * driver,
+                                          std::vector<tempo::stage_tile>&       tiles);
+
+
 	inline void checkerBoardPattern(irr::video::IVideoDriver *  driver,
 	                                irr::scene::IMeshSceneNode *node,
 	                                irr::video::SMaterial &     material_top,
