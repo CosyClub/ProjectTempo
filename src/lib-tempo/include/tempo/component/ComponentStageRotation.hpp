@@ -12,7 +12,7 @@ namespace tempo
 {
 using Facing = glm::ivec2;
 
-extern std::vector<glm::ivec2> DIRECTIONS;
+extern std::array<glm::ivec2, 4> DIRECTIONS;
 extern glm::ivec2 NORTH;
 extern glm::ivec2 EAST;
 extern glm::ivec2 SOUTH;

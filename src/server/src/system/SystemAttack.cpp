@@ -127,7 +127,11 @@ bool SubSystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
 			}
 		}
 
-		if ( currentDamage > bestDamage ) bestDirection = rot;
+		if ( currentDamage > bestDamage ) 
+		{
+			bestDamage = currentDamage;
+			bestDirection = rot;
+		}
 	}
 
 	direction = bestDirection;	

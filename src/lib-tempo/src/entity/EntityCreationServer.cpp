@@ -25,7 +25,7 @@ anax::Entity newPlayer(anax::World &world)
 	entity_player.addComponent<tempo::ComponentAttack>();
 	entity_player.addComponent<tempo::ComponentWeapon>(m);
 	entity_player.addComponent<tempo::ComponentAOEIndicator>();
-	entity_player.addComponent<tempo::ComponentHealth>(1);
+	entity_player.addComponent<tempo::ComponentHealth>(10);
 
 	entity_player.activate();
 
@@ -45,6 +45,7 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentHealth>(1);
 	float arr[2] = {0, 1};
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
+	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m);
 
 	e.activate();
