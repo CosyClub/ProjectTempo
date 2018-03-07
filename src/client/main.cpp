@@ -381,6 +381,8 @@ int main(int argc, const char **argv)
 		smgr->drawAll();
 		gui_env->drawAll();
 
+		const irr::core::dimension2du& screenSize = driver->getScreenSize();
+
 		irr::gui::IGUIFont* font = gui_env->getFont("resources/fonts/liberation_sans.xml");
 		if (font) {
 			irr::core::stringw str = L"Combo: ";
@@ -388,9 +390,29 @@ int main(int argc, const char **argv)
 			font->setKerningWidth(6);
 			font->setKerningHeight(6);
 			font->draw(str.c_str(),
-					irr::core::rect<s32>(10,650,300,300),
+					irr::core::rect<s32>(10,0.9*screenSize.Height,0.1*screenSize.Width,300),
 					irr::video::SColor(255,255,255,255));
 				}
+
+			irr::video::SColor colour_white(255, 255, 255, 255);
+			irr::video::SColor colour_blue(255, 135, 206, 250);
+
+			float scale = clock.beat_progress_desc();
+
+			if (scale >= 0.3) {
+				driver->draw2DRectangle(colour_white,
+					irr::core::rect<s32>(screenSize.Width / 2 - 200*scale,
+						                   0.94*screenSize.Height,
+															 screenSize.Width / 2 + 200*scale,
+															 0.96*screenSize.Height));
+		  }
+		  else {
+			 driver->draw2DRectangle(colour_blue,
+				 irr::core::rect<s32>(screenSize.Width / 2 - 200*scale,
+															0.94*screenSize.Height,
+															screenSize.Width / 2 + 200*scale,
+															0.96*screenSize.Height));
+		  }
 
 		driver->endScene();
 

@@ -63,6 +63,11 @@ float Clock::beat_progress()
 	return since_beat() / (since_beat() + until_beat());
 }
 
+float Clock::beat_progress_desc()
+{
+	return until_beat() / (since_beat() + until_beat());
+}
+
 sf::Time Clock::until_beat()
 {
 	return next_beat - time;
