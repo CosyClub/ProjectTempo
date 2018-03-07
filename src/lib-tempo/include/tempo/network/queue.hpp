@@ -1,7 +1,7 @@
 #ifndef TEMPO_NETWORK_QUEUE_HPP
 #define TEMPO_NETWORK_QUEUE_HPP
 
-#include <tempo/network/QueueID.hpp>
+#include <tempo/network/ID.hpp>
 #include <tempo/structures.hpp>
 
 #include <SFML/Network.hpp>

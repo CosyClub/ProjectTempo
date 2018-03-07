@@ -2,8 +2,10 @@
 #include <client/component/ComponentRenderButtonGroup.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
 #include <client/network/client.hpp>
+#include <client/system/SystemAttack.hpp>
 #include <client/system/SystemButtonRenderer.hpp>
 #include <client/system/SystemGraphicsCreation.hpp>
+#include <client/system/SystemMovement.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
 
 #include <client/system/SystemRenderHealthBars.hpp>
@@ -16,15 +18,12 @@
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/entity/EntityCreation.hpp>
-#include <tempo/network/QueueID.hpp>
+#include <tempo/network/ID.hpp>
 #include <tempo/song.hpp>
-#include <tempo/system/SystemAttack.hpp>
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
-#include <tempo/system/SystemMovement.hpp>
-#include <tempo/system/SystemPlayer.hpp>
 #include <tempo/system/SystemTransform.hpp>
 #include <tempo/system/SystemTrigger.hpp>
 #include <tempo/time.hpp>
@@ -136,28 +135,26 @@ int main(int argc, const char **argv)
 	// tempo::SystemRender           system_render(app);
 	tempo::SystemLevelManager      system_level(world, "../bin/resources/levels/levelTest.bmp",
                                            "../bin/resources/levels/zonesTest.bmp");
-	tempo::SystemAttack            system_attack;
 	tempo::SystemUpdateTransforms  system_update_transforms;
 	tempo::SystemGridAi            system_grid_ai;
-	tempo::SystemPlayer            system_player(clock);
 	tempo::SystemCombo             system_combo;
 	tempo::SystemHealth            system_health;
-	tempo::SystemMovement          system_movement;
 	tempo::SystemTrigger           system_trigger(world);
+	client::SystemAttack           system_attack;
 	client::SystemButtonRenderer   system_button_renderer;
 	client::SystemGraphicsCreation system_gc;
+	client::SystemMovement         system_movement;
 	client::SystemStageRenderer    system_stage_renderer;
+	client::SystemParseKeyInput    system_parse_key_input;
 	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
 	client::SystemUpdateKeyInput   system_update_key_input;
-	client::SystemParseKeyInput    system_parse_key_input;
 
 	// Add Systems
 	world.addSystem(system_level);
 	world.addSystem(system_attack);
 	world.addSystem(system_update_transforms);
 	world.addSystem(system_grid_ai);
-	world.addSystem(system_player);
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
 	world.addSystem(system_gc);
@@ -215,13 +212,9 @@ int main(int argc, const char **argv)
 	// Connect to server and handshake information
 	tempo::connectToAndSyncWithServer(role, roleData, world);
 
-
 	// Sort out graphics after handshake
-	world.refresh();
-	system_gc.addEntities(driver, smgr);
-	world.refresh();
-	system_render_scene_node.setup(smgr);  // Why is this here?
-	// must be after system_render_scene_node.setup(smgr);
+	system_gc.addEntities(driver, smgr, world);
+	system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);
 
 	// Start and Sync Song
@@ -243,6 +236,8 @@ int main(int argc, const char **argv)
 	entity_player.activate();
 	client::ComponentRenderSceneNode &sn =
 	  entity_player.getComponent<client::ComponentRenderSceneNode>();
+
+	auto& combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
 
 	irr::scene::ICameraSceneNode *camera_node;
 	if (false) {
@@ -302,6 +297,36 @@ int main(int argc, const char **argv)
 		// dt_timer.restart();
 
 		////////////////
+		// Events all the time
+		{
+			// Check for new entities from server
+			new_entity_check(world);
+			system_gc.addEntities(driver, smgr, world);
+			system_render_scene_node.setup(smgr);
+			system_render_health_bars.setup(smgr);
+
+			// Recieve updates from the server
+			system_movement.processIntents(world);
+			system_movement.processCorrections(world);
+
+			// Deal with local input
+			system_update_key_input.clear();
+			system_update_key_input.addKeys();
+			system_parse_key_input.parseInput(clock);
+
+			// Deprecated/To-be-worked-on
+			system_health.CheckHealth();
+
+			// Graphics updates
+			// std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl;
+			system_render_scene_node.update();
+			// std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" << std::endl;
+			system_render_health_bars.update();
+			// TODO: Make a system for updating camera position
+			camera_node->setTarget(sn.node->getPosition());
+		}
+
+		////////////////
 		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
 			// std::cout << "Start" << std::endl;
@@ -343,40 +368,9 @@ int main(int argc, const char **argv)
 			}
 
 			// std::cout << "End" << std::endl;
-			system_movement.processTranslation();
 			system_combo.advanceBeat();
 		}
 
-		////////////////
-		// Events all the time
-		{
-			// Check for new entities from server
-			new_entity_check(world);
-			system_gc.addEntities(driver, smgr);
-			system_render_scene_node.setup(smgr);
-			system_render_health_bars.setup(smgr);
-			world.refresh();
-
-			// Recieve player updates from the server
-			system_player.update(entity_player.getId(), world);
-
-			// Deal with local input
-			system_update_key_input.clear();
-			system_update_key_input.addKeys();
-			system_parse_key_input.parseInput(clock);
-
-			// Deprecated/To-be-worked-on
-			system_attack.Recieve(world);
-			system_health.CheckHealth();
-
-			// Graphics updates
-			system_render_scene_node.update();
-			system_render_health_bars.update();
-			// TODO: Make a system for updating camera position
-			camera_node->setTarget(sn.node->getPosition());
-		}
-
-		////////////////
 		// Rendering Code
 		if (!device->isWindowActive()) {
 			device->yield();
@@ -386,6 +380,18 @@ int main(int argc, const char **argv)
 		driver->beginScene(true, true);
 		smgr->drawAll();
 		gui_env->drawAll();
+
+		irr::gui::IGUIFont* font = gui_env->getFont("resources/fonts/liberation_sans.xml");
+		if (font) {
+			irr::core::stringw str = L"Combo: ";
+			str += combo;
+			font->setKerningWidth(6);
+			font->setKerningHeight(6);
+			font->draw(str.c_str(),
+					irr::core::rect<s32>(10,650,300,300),
+					irr::video::SColor(255,255,255,255));
+				}
+
 		driver->endScene();
 
 		++frame_counter;

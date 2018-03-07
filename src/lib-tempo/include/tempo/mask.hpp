@@ -21,7 +21,6 @@ class Mask
 	Mask();
 	Mask(glm::ivec2 centre, float *data, glm::ivec2 size);
 
-
 	float get_value(glm::ivec2 offset);
 	float get_value(int x, int y);
 };

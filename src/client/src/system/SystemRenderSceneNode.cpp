@@ -1,8 +1,9 @@
 #include <client/system/SystemRenderSceneNode.hpp>
 
 #include <IBillboardSceneNode.h>
-
 #include <iostream>
+
+#include <client/misc/YAlignedBillboardSceneNode.hpp>
 
 namespace client
 {
@@ -18,6 +19,7 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr)
 		  entity.getComponent<client::ComponentRenderSceneNode>();
 		if (sn.node != nullptr)
 			continue;
+		std::cout << "THIS SHOULD HAVE BEEN CALLED\n";
 		tempo::ComponentModel &m = entity.getComponent<tempo::ComponentModel>();
 
 		// Get color from componentmodel
@@ -39,9 +41,9 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr)
 			std::cout << "Adding billboard" << std::endl;
 			sn.node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
 			irr::scene::IBillboardSceneNode *billboard =
-			  smgr->addBillboardSceneNode(sn.node, size,
-			                              pos,  // fix alignment
-			                              -1, color, color);
+				new irr::scene::YAlignedBillboardSceneNode(sn.node, smgr, -1,
+														   pos,  // fix alignment
+														   size, color, color);
 			billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 		}
 	}

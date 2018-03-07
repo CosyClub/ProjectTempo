@@ -17,7 +17,7 @@ struct ComponentCombo
 	bool         actionedThisBeat;
 	unsigned int comboCounter;
 
-	// Creates a new component combo with no combo (and optionally given
+	// Creates a new component combo with no combo
 	ComponentCombo();
 
 	// Contains logic that should be run when the beat advances

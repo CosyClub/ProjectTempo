@@ -1,14 +1,15 @@
 #define AM_SERVER
 
+#include <server/system/SystemAttack.hpp>
+#include <server/system/SystemMovement.hpp>
+
 #include <tempo/time.hpp>
 
 #include <tempo/entity/EntityCreationServer.hpp>
-#include <tempo/system/SystemAttack.hpp>
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
-#include <tempo/system/SystemServerPlayer.hpp>
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>
@@ -23,7 +24,6 @@
 #include <iostream>
 #include <thread>
 #include <vector>
-
 
 #define BPM 120              // Beats per minutes
 #define PLAYER_DELTA 125     // Delta around a beat a player can hit (millisecs)
@@ -43,23 +43,23 @@ int main(int argc, const char **argv)
 	anax::World world;
 
 	// Create Systems
-	tempo::SystemAttack       system_attack;
-	tempo::SystemCombo        system_combo;
-	tempo::SystemGridAi       system_grid_ai;
-	tempo::SystemHealth       system_health;
-	tempo::SystemServerPlayer system_player(clock);
+	server::SystemAttack   system_attack(world);
+	server::SystemMovement system_movement;
+	tempo::SystemCombo  system_combo;
+	tempo::SystemGridAi system_grid_ai;
+	tempo::SystemHealth system_health;	
 
 	world.addSystem(system_attack);
+	world.addSystem(system_movement);
 	world.addSystem(system_combo);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_health);
-	world.addSystem(system_player);
 	world.refresh();
 
 	// Create some Test Entities
-	tempo::newAI(world, 5, 5);
-	tempo::newAI(world, 3, 3);
-	tempo::newAI(world, 8, 8);
+	// tempo::newAI(world, 5, 5);
+	// tempo::newAI(world, 3, 3);
+	// tempo::newAI(world, 8, 8);
 
 	// Destroyables
 	tempo::newDestroyable(world, 4, 4, "Cube");
@@ -92,10 +92,26 @@ int main(int argc, const char **argv)
 		// float dt = next_dt_time - last_dt_time;
 		// last_dt_time = next_dt_time;
 
+		////////////////
+		// Events all the time
+		{
+			system_movement.recieveTranslations(world);
+			system_attack.recieveAttacks(world);
+			system_combo.checkForUpdates();
+			system_health.CheckHealth();
+			
+			// TODO Once animated detlete and uncomment in delta end:
+			system_movement.processTranslation();
+		}
+		
+		////////////////
+		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
 			// std::cout << "Start" << std::endl;
 		}
 
+		////////////////
+		// Events at "Beat Passed"
 		if (clock.passed_beat()) {
 			system_grid_ai.update();
 			system_combo.advanceBeat();
@@ -105,15 +121,15 @@ int main(int argc, const char **argv)
 				          << "+++++++++++++++" << std::endl;
 		}
 
+		////////////////
+		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
+			system_attack.processAttacks();
+			// TODO Once animated uncomment
+			// system_movement.processTranslation();
 		}
-
-		system_attack.Broadcast(world);
-		system_combo.checkForUpdates();
-		system_health.CheckHealth();
-		system_player.update(world);
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	}

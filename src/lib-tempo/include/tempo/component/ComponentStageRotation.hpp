@@ -2,7 +2,6 @@
 #define TEMPO_COMPONENT_STAGE_ROTATION_HPP
 
 #include <tempo/component/NetworkedComponent.hpp>
-#include <tempo/network/QueueID.hpp>
 
 #include <anax/Component.hpp>
 

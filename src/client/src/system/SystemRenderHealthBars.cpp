@@ -5,7 +5,7 @@ namespace client
 void SystemRenderHealthBars::setup(irr::scene::ISceneManager *smgr)
 {
 	irr::core::dimension2d<irr::f32> size(0.7f, 0.15f);
-	irr::core::vector3df             pos(-0.5f, 1.6f + size.Height / 2, 0.0f);
+	irr::core::vector3df             pos(-0.3f, 1.6f + size.Height / 2, 0.0f);
 	irr::video::SColor               color(255, 0, 255, 0);
 
 	auto entities = getEntities();
