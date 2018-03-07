@@ -343,7 +343,7 @@ int main(int argc, const char **argv)
 			j++;
 			j = j % 22;
 			// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
-			system_trigger.updateButtons();
+			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
@@ -356,16 +356,6 @@ int main(int argc, const char **argv)
 		////////////////
 		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
-			auto& button_group = entity_button.getComponent<tempo::ComponentButtonGroup>();
-			if(button_group.groupTriggered == true && !button_group.action_happened) {
-				button_group.action_happened = true;
-				for (auto &entity : world.getEntities()) {
-					if(entity.hasComponent<tempo::ComponentStage>()) {
-						auto& component_stage = entity.getComponent<tempo::ComponentStage>();
-						component_stage.setHeight(button_group.wall_positions, 0.f);
-					}
-				}
-			}
 
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
