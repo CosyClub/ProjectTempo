@@ -1,6 +1,7 @@
 #include <tempo/entity/EntityCreation.hpp>
 
 #include <tempo/component/ComponentAOEIndicator.hpp>
+#include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentGridAi.hpp>
 #include <tempo/component/ComponentHealth.hpp>
@@ -23,14 +24,14 @@
 
 #include <cassert>
 
-#define CASE(NAME, CID)                                                                            \
-	case ComponentID::CID:                                                                         \
-		if (!e.hasComponent<NAME>()) {                                                             \
-			e.addComponent<NAME>(part);                                                            \
-		} else {                                                                                   \
-			std::cout << "Warning: Reinstanciation of "                                            \
-			          << "" #NAME << std::endl;                                                    \
-		}                                                                                          \
+#define CASE(NAME, CID)                                              \
+	case ComponentID::CID:                                       \
+		if (!e.hasComponent<NAME>()) {                       \
+			e.addComponent<NAME>(part);                  \
+		} else {                                             \
+			std::cout << "Warning: Reinstanciation of "  \
+			          << "" #NAME << std::endl;          \
+		}                                                    \
 		break;
 
 namespace tempo
@@ -70,6 +71,7 @@ anax::Entity addComponent(anax::World &w, sf::Packet p)
 		switch (component_id) {
 			// Put new Components in here
 			CASE(ComponentAOEIndicator, AOEINDICATOR)
+			CASE(ComponentAttack, ATTACK)
 			CASE(ComponentCombo, COMBO)
 			CASE(ComponentGridAi, GRID_AI)
 			CASE(ComponentHealth, HEALTH)

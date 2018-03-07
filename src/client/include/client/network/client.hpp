@@ -2,7 +2,7 @@
 #define TEMPO_NETWORK_CLIENT_HPP
 
 #include <tempo/config.hpp>
-#include <tempo/network/QueueID.hpp>
+#include <tempo/network/ID.hpp>
 #include <tempo/network/base.hpp>
 #include <tempo/system/SystemLevelManager.hpp>
 #include <tempo/time.hpp>
