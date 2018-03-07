@@ -235,6 +235,8 @@ int main(int argc, const char **argv)
 	client::ComponentRenderSceneNode &sn =
 	  entity_player.getComponent<client::ComponentRenderSceneNode>();
 
+	auto& combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
+
 	irr::scene::ICameraSceneNode *camera_node;
 	if (false) {
 		float rotateSpeed = 25.0f;
@@ -313,9 +315,9 @@ int main(int argc, const char **argv)
 			system_health.CheckHealth();
 
 			// Graphics updates
-			// std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl; 
+			// std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl;
 			system_render_scene_node.update();
-			// std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" << std::endl; 
+			// std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" << std::endl;
 			system_render_health_bars.update();
 			// TODO: Make a system for updating camera position
 			camera_node->setTarget(sn.node->getPosition());
@@ -364,6 +366,18 @@ int main(int argc, const char **argv)
 		driver->beginScene(true, true);
 		smgr->drawAll();
 		gui_env->drawAll();
+
+		irr::gui::IGUIFont* font = gui_env->getFont("resources/fonts/liberation_sans.xml");
+		if (font) {
+			irr::core::stringw str = L"Combo: ";
+			str += combo;
+			font->setKerningWidth(6);
+			font->setKerningHeight(6);
+			font->draw(str.c_str(),
+					irr::core::rect<s32>(10,650,300,300),
+					irr::video::SColor(255,255,255,255));
+				}
+
 		driver->endScene();
 
 		++frame_counter;
