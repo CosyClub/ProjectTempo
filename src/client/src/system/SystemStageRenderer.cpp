@@ -97,12 +97,13 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
     float height = heights[i].height;
 
     if(old_height != height) {
-      if(animation_pos.Y < height * 0.50f || height * 1.50f < animation_pos.Y) {
+
+      if(animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
         animation_pos.Y += (height - old_height) * fractions[i];
         fractions[i] = fractions[i] * 1.2f;
         node->setPosition(irr::core::vector3df(animation_pos.X, animation_pos.Y, animation_pos.Z));
 
-        if(animation_pos.Y < height - 0.1f || height + 0.1f < animation_pos.Y) {
+        if(animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
           continue;
         }
       } else {
