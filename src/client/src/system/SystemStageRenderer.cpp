@@ -49,16 +49,12 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 		node->setPosition(irr::core::vector3df(grid_x, height, grid_y));
 		node->setMaterialTexture(0, tile_texture);
 
-		// printf("Floor mat count: %i\n", node->getMaterialCount());
-
 		irr::video::SMaterial &material_side = node->getMaterial(0);
 		irr::video::SMaterial &material_top  = node->getMaterial(1);
 
 		material_side.setTexture(0, wall_diffuse_map);
 		material_side.setTexture(1, wall_normal_map);
 
-		material_top.Shininess = 0.0f;
-		material_top.SpecularColor.set(255, 0, 0, 0);
 		material_top.DiffuseColor.set(255, 10, 10, 10);
 
 	}
@@ -117,10 +113,6 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		irr::video::SMaterial &material_side = node->getMaterial(0);
 		irr::video::SMaterial &material_top  = node->getMaterial(1);
 
-		material_top.Shininess = 0.0f;
-		material_top.SpecularColor.set(255, 0, 0, 0);
-		material_top.DiffuseColor.set(255, 200, 0, 0);
-
 		switch (j) {
 		case 0:
 		case 1:
@@ -159,12 +151,8 @@ inline void SystemStageRenderer::checkerBoardPattern(irr::video::IVideoDriver * 
 	if (((int) (std::get<0>(this->tile_nodes[i]).x % 2)
 	     == (int) (std::get<0>(this->tile_nodes[i]).y % 2))
 	    ^ (j % 2)) {
-		// node->setMaterialTexture(0,
-		// driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
 		material_top.EmissiveColor.set(colour1[0], colour1[1], colour1[2], colour1[3]);
 	} else {
-		// node->setMaterialTexture(0,
-		// driver->getTexture("resources/materials/TileLightMaskOff.png"));
 		material_top.EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
 	}
 }
@@ -181,12 +169,8 @@ inline void SystemStageRenderer::linePattern(irr::video::IVideoDriver *  driver,
                                              int                         j)
 {
 	if ((int) !(std::get<0>(this->tile_nodes[i])[orientation] % size == j)) {
-		// node->setMaterialTexture(0,
-		// driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
 		material_top.EmissiveColor.set(colour1[0], colour1[1], colour1[2], colour1[3]);
 	} else {
-		// node->setMaterialTexture(0,
-		// driver->getTexture("resources/materials/TileLightMaskOff.png"));
 		material_top.EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
 	}
 }
@@ -215,12 +199,8 @@ inline void SystemStageRenderer::squarePattern(irr::video::IVideoDriver *  drive
 	     (dx == dy && dx % 2 == 0 && dy % 2 == 0))                            // corners
 	    ^ (j % 2)) {                                                          // alternating
 
-		// node->setMaterialTexture(0,
-		// driver->getTexture("resources/materials/TileLightMaskPixelOn.png"));
 		material_top.EmissiveColor.set(colour1[0], colour1[1], colour1[2], colour1[3]);
 	} else {
-		// node->setMaterialTexture(0,
-		// driver->getTexture("resources/materials/TileLightMaskOff.png"));
 		material_top.EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
 	}
 }
