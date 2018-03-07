@@ -23,7 +23,7 @@ class SystemTrigger : public anax::System<anax::Requires<tempo::ComponentButtonG
    public:
 	std::vector<glm::ivec2> playerPos;
 	SystemTrigger(anax::World &world);
-	void updateButtons();
+	void updateButtons(anax::World &world);
 
    private:
 	SubSystemGetPlayers subSystem;

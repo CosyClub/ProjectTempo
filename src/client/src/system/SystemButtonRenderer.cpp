@@ -74,7 +74,7 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 		auto &buttonRend = rend.buttonsRender;
 
 		if (buttons.size() != buttonRend.size()) {
-			printf("\n\n\n\n FUCKFUCKFUCK buttons=%d,buttonRend = %d\n\n\n\n", buttons.size(),
+			printf("\n\n\n\n This is a significant problem buttons=%d,buttonRend = %d\n\n\n\n", buttons.size(),
 			       buttonRend.size());
 		}
 
@@ -86,14 +86,12 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 					buttonRend[i].button->setPosition(
 					  irr::core::vector3df(buttons[i].pos.x, -0.1, buttons[i].pos.y));
 					irr::video::SMaterial &material_button = buttonRend[i].button->getMaterial(0);
-					material_button.Shininess              = 0.0f;
 					material_button.EmissiveColor.set(255, 0, 255, 0);
 				} else {
 					tempTriggered = false;
 					buttonRend[i].button->setPosition(
 					  irr::core::vector3df(buttons[i].pos.x, 0, buttons[i].pos.y));
 					irr::video::SMaterial &material_button = buttonRend[i].button->getMaterial(0);
-					material_button.Shininess              = 0.0f;
 					material_button.EmissiveColor.set(255, 255, 0, 0);
 				}
 			}
@@ -108,7 +106,6 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 				buttonRend[i].button->setPosition(
 				  irr::core::vector3df(buttons[i].pos.x, -0.1, buttons[i].pos.y));
 				irr::video::SMaterial &material_button = buttonRend[i].button->getMaterial(0);
-				material_button.Shininess              = 0.0f;
 				material_button.EmissiveColor.set(255, 0, 255, 0);
 			}
 		}
