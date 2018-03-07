@@ -20,6 +20,7 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
    public:
 	stage_nodes tile_nodes;
   std::vector<tempo::stage_tile> old_positions;
+  std::vector<double> fractions;
 
 	// Creates a static irrlitch scene node based on the component stage heights
 	void setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver);

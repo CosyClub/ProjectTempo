@@ -45,6 +45,7 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 
 		tile_nodes.push_back(std::make_tuple(glm::ivec2(grid_y, grid_x), node));
     old_positions.push_back(tempo::stage_tile(glm::ivec2(grid_y, grid_x), height));
+    fractions.push_back(0.00001f);
 
 		node->setPosition(irr::core::vector3df(grid_x, height, grid_y));
 		node->setMaterialTexture(0, tile_texture);
@@ -96,12 +97,18 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
     float height = heights[i].height;
 
     if(old_height != height) {
-      if(animation_pos.Y < height - 0.001f || height + 0.001f < animation_pos.Y) {
-        animation_pos.Y += (height - old_height) / 60.f;
+      if(animation_pos.Y < height * 0.50f || height * 1.50f < animation_pos.Y) {
+        animation_pos.Y += (height - old_height) * fractions[i];
+        fractions[i] = fractions[i] * 1.2f;
         node->setPosition(irr::core::vector3df(animation_pos.X, animation_pos.Y, animation_pos.Z));
-        if(animation_pos.Y < height - 0.001f || height + 0.001f < animation_pos.Y) continue;
+
+        if(animation_pos.Y < height - 0.1f || height + 0.1f < animation_pos.Y) {
+          continue;
+        }
       } else {
+        node->setPosition(irr::core::vector3df(animation_pos.X, height, animation_pos.Z));
         old_height = height;
+        fractions[i] = 0.00001f;
       }
     }
 
