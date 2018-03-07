@@ -291,7 +291,7 @@ int main(int argc, const char **argv)
 	update_floor_clock.restart();
 
 	// buttons
-	std::vector<glm::ivec2> wall = {{0,0}, {0,1}, {0,2}, {0,3}, {0,4}, {0,5}, {0,6}, {0,7}};
+	std::vector<glm::ivec2> wall = {{0,1}, {0,2}, {0,3}, {0,4}, {0,5}, {0,6}, {0,7}, {0,8}, {0,9}};
 	anax::Entity entity_button = createButtonGroup(world, {{8, 8}}, wall);
 	world.refresh();
 	system_button_renderer.setup(smgr, driver);
@@ -318,7 +318,6 @@ int main(int argc, const char **argv)
 			j++;
 			j = j % 22;
 			// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
-			system_stage_renderer.updateStage({255, 175, 0, 0}, {255, 50, 50, 50}, driver, j);
 			system_trigger.updateButtons();
 			system_button_renderer.updateButtons(driver);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
@@ -327,6 +326,7 @@ int main(int argc, const char **argv)
 
 			system_grid_ai.update();
 		}
+		system_stage_renderer.updateStage({255, 175, 0, 0}, {255, 50, 50, 50}, driver, j);
 
 		////////////////
 		// Events at "Delta End"
@@ -353,7 +353,7 @@ int main(int argc, const char **argv)
 			// Check for new entities from server
 			new_entity_check(world);
 			system_gc.addEntities(driver, smgr);
-			//system_render_scene_node.setup(smgr);
+			system_render_scene_node.setup(smgr);
 			system_render_health_bars.setup(smgr);
 			world.refresh();
 
