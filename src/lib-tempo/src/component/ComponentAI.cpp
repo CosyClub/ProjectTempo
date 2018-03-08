@@ -15,7 +15,7 @@ ComponentAI::ComponentAI(MoveType m, bool teleport, bool slide)
 ComponentAI::ComponentAI(sf::Packet p)
 {
 	uint32_t tmp;
-	int path_size;
+	uint32_t path_size;
 	p >> tmp;
 	type = (MoveType) tmp;
 	p >> hitTeleport;
@@ -46,7 +46,7 @@ sf::Packet ComponentAI::dumpComponent()
 	{
 		p << vec;
 	}
-	return sf::Packet();  // does nothing
+	return p;  // does nothing
 }
 
 }  // namespace tempo
