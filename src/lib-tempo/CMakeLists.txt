@@ -34,8 +34,6 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemCombo.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemGridAi.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemHealth.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemLevelManager.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemTransform.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemTrigger.hpp"
 )
 
@@ -72,8 +70,6 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemCombo.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGridAi.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemHealth.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemLevelManager.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTransform.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTrigger.cpp"
 )
 

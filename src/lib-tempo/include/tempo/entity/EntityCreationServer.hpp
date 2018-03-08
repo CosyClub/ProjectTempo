@@ -3,10 +3,7 @@
 
 #include <anax/World.hpp>
 
-#include <tempo/component/ComponentGridAi.hpp>
-#include <tempo/component/ComponentStage.hpp>
 #include <tempo/entity/EntityCreation.hpp>
-#include <tempo/system/SystemLevelManager.hpp>
 
 #include <string.h>
 
