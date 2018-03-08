@@ -4,6 +4,7 @@
 #include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
+#include <tempo/component/ComponentStageTranslation.hpp>
 
 #include <tempo/network/ID.hpp>
 #include <tempo/network/server.hpp>
@@ -29,7 +30,7 @@ void SystemAttack::recieveAttacks(anax::World &w)
 
 	while (!q->empty()) {
 		sf::Packet p = q->front();
-		q->pop();	
+		q->pop();
 		sf::Packet pb; // packet for broadcast
 
 		uint32_t code;
@@ -58,7 +59,7 @@ void SystemAttack::recieveAttacks(anax::World &w)
 		case tempo::MessageAttack::ATTACK_CORRECTION:
 			// do nothing, server should not recieve corrections
 			break;
-		default: 
+		default:
 			std::cout << "ATTACK: Unhandled/erroneous message" << std::endl;
 		}
 
@@ -101,7 +102,7 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 
 		// Add positions after stage translation (if any) to ps vector
 		// TODO: This doesn't take into account if the movement system
-		//       doesn't accept a stage translation. Work out if 
+		//       doesn't accept a stage translation. Work out if
 		//       that matters?
 		if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
 			glm::ivec2 d = entity.getComponent<tempo::ComponentStageTranslation>().delta;

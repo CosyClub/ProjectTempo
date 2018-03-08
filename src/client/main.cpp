@@ -24,8 +24,6 @@
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
-#include <tempo/system/SystemLevelManager.hpp>
-#include <tempo/system/SystemTransform.hpp>
 #include <tempo/system/SystemTrigger.hpp>
 #include <tempo/time.hpp>
 
@@ -134,9 +132,6 @@ int main(int argc, const char **argv)
 	// Setup ECS
 	anax::World world;
 	// tempo::SystemRender           system_render(app);
-	tempo::SystemLevelManager      system_level(world, "../bin/resources/levels/levelTest.bmp",
-                                           "../bin/resources/levels/zonesTest.bmp");
-	tempo::SystemUpdateTransforms  system_update_transforms;
 	tempo::SystemGridAi            system_grid_ai;
 	tempo::SystemCombo             system_combo;
 	tempo::SystemHealth            system_health;
@@ -153,9 +148,7 @@ int main(int argc, const char **argv)
 	client::SystemUpdateKeyInput   system_update_key_input;
 
 	// Add Systems
-	world.addSystem(system_level);
 	world.addSystem(system_attack);
-	world.addSystem(system_update_transforms);
 	world.addSystem(system_grid_ai);
 	world.addSystem(system_combo);
 	world.addSystem(system_health);

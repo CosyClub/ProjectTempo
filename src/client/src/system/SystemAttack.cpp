@@ -2,6 +2,7 @@
 
 #include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentHealth.hpp>
+#include <tempo/component/ComponentStageTranslation.hpp>
 
 #include <client/network/client.hpp>
 #include <tempo/network/queue.hpp>
@@ -15,13 +16,13 @@ namespace client
 using tempo::operator<<;
 using tempo::operator>>;
 
-void SystemAttack::processServerResponses(anax::World &w) 
+void SystemAttack::processServerResponses(anax::World &w)
 {
 	tempo::Queue<sf::Packet> *q = tempo::get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
 
 	while (!q->empty()) {
 		sf::Packet p = q->front();
-		q->pop();	
+		q->pop();
 		sf::Packet pb(p); // packet for broadcast
 
 		uint32_t code;
@@ -51,7 +52,7 @@ void SystemAttack::processServerResponses(anax::World &w)
 			p >> h.current_health;
 			break;
 		}
-		default: 
+		default:
 			std::cout << "ATTACK: Unhandled/erroneous message" << std::endl;
 		}
 

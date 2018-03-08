@@ -9,7 +9,6 @@
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
-#include <tempo/system/SystemLevelManager.hpp>
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>
@@ -47,7 +46,7 @@ int main(int argc, const char **argv)
 	server::SystemMovement system_movement;
 	tempo::SystemCombo  system_combo;
 	tempo::SystemGridAi system_grid_ai;
-	tempo::SystemHealth system_health;	
+	tempo::SystemHealth system_health;
 
 	world.addSystem(system_attack);
 	world.addSystem(system_movement);
@@ -99,11 +98,11 @@ int main(int argc, const char **argv)
 			system_attack.recieveAttacks(world);
 			system_combo.checkForUpdates();
 			system_health.CheckHealth();
-			
+
 			// TODO Once animated detlete and uncomment in delta end:
 			system_movement.processTranslation();
 		}
-		
+
 		////////////////
 		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
