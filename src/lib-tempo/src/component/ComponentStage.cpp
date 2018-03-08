@@ -10,6 +10,10 @@
 
 namespace tempo
 {
+
+// _global_stage = nullptr
+// _global_stage_loaded = false;
+
 void ComponentStage::loadLevel(const char *stage_file)
 {
 	int width, height, components;
@@ -29,7 +33,7 @@ void ComponentStage::loadLevel(const char *stage_file)
 
 			if (pixel[0] > 0) {
 				int height = (int) (pixel[0] - 127) / 25.6;
-				tiles.push_back(std::make_tuple(glm::ivec2(y, x), height));
+				tiles.push_back(stage_tile(glm::ivec2(y, x), (float) height));
 			}
 		}
 	}
@@ -43,35 +47,52 @@ ComponentStage::ComponentStage(const char *stage_file)
 	loadLevel(stage_file);
 }
 
-stage_tiles ComponentStage::getHeights()
+inline int ComponentStage::findIndex(glm::ivec2 position)
+{
+	for (unsigned int i = 0; i < tiles.size(); i++) {
+		auto& pos  = tiles[i].position;
+		if (pos == position) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+std::vector<tempo::stage_tile> ComponentStage::getHeights()
 {
 	return tiles;
 }
 
 float ComponentStage::getHeight(glm::ivec2 position)
 {
-	for (unsigned int i = 0; i < tiles.size(); i++) {
-		std::tuple<glm::ivec2, float> tile = tiles[i];
-		glm::ivec2                    pos  = std::get<0>(tile);
-		if (pos == position) {
-			return std::get<1>(tile);
-		}
-	}
+	int index = findIndex(position);
+	if(index >= 0)
+		return tiles[index].height;
+	else
+		return -10.0f;
+}
 
-	return -10.0f;
+void ComponentStage::setHeight(glm::ivec2 position, int height)
+{
+	int index = findIndex(position);
+	if(index >= 0)
+		tiles[index].height = height;
+}
+
+void ComponentStage::setHeight(std::vector<glm::ivec2> positions, int height)
+{
+	for(auto& position : positions)
+		setHeight(position, height);
 }
 
 bool ComponentStage::existstTile(glm::ivec2 position)
 {
-	for (unsigned int i = 0; i < tiles.size(); i++) {
-		std::tuple<glm::ivec2, float> tile = tiles[i];
-		glm::ivec2                    pos  = std::get<0>(tile);
-		if (pos == position) {
-			return true;
-		}
-	}
-
-	return false;
+	int index = findIndex(position);
+	if(index >= 0)
+		return true;
+	else
+		return false;
 }
 
 /////

@@ -81,7 +81,6 @@ void updateCombo(anax::Entity &entity, bool withinDelta)
 		} else {
 			c.breakCombo();
 		}
-		std::cout << "Combo: " << c.comboCounter << std::endl;
 	}
 }
 

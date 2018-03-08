@@ -11,17 +11,20 @@ namespace tempo
 {
 struct button {
 	glm::ivec2 pos;
-	bool       triggered = false;
 	int        combo_req;
+	bool       triggered = false;
 };
 
 struct ComponentButtonGroup : anax::Component {
 	// This is a deque so that it is possible to push_front
 	std::deque<button> buttons;
+	std::vector<glm::ivec2> wall_positions;
 
-	bool groupTriggered = false;
+	bool groupTriggered  = false;
+	bool action_happened = false;
 
-	ComponentButtonGroup(std::vector<glm::ivec2> positions);
+	ComponentButtonGroup(std::vector<glm::ivec2> button_positions,
+		                   std::vector<glm::ivec2> wall_positions);
 };
 
 }  // namespace tempo

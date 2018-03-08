@@ -8,6 +8,7 @@
 #include <client/system/SystemMovement.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
 
+#include <client/system/SystemRenderGUI.hpp>
 #include <client/system/SystemRenderHealthBars.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
 #include <client/system/SystemStageRenderer.hpp>
@@ -89,11 +90,13 @@ anax::Entity createEntityStage(anax::World &world)
 // 	return entity_player;
 // }
 
-anax::Entity createButtonGroup(anax::World &world, std::vector<glm::ivec2> positions)
+anax::Entity createButtonGroup(anax::World &world,
+	                             std::vector<glm::ivec2> positions,
+	                             std::vector<glm::ivec2> tiles)
 {
 	printf("Creating button\n");
 	anax::Entity entity_button = world.createEntity();
-	entity_button.addComponent<tempo::ComponentButtonGroup>(positions);
+	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles);
 	entity_button.addComponent<client::ComponentRenderButtonGroup>();
 	entity_button.activate();
 
@@ -144,6 +147,7 @@ int main(int argc, const char **argv)
 	client::SystemMovement         system_movement;
 	client::SystemStageRenderer    system_stage_renderer;
 	client::SystemParseKeyInput    system_parse_key_input;
+	client::SystemRenderGUI        system_render_gui;
 	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
 	client::SystemUpdateKeyInput   system_update_key_input;
@@ -165,7 +169,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_parse_key_input);
 	world.addSystem(system_movement);
 
-	createEntityStage(world);
+	anax::Entity entity_stage = createEntityStage(world);
 	world.refresh();
 
 	// Initialise Systems
@@ -284,7 +288,8 @@ int main(int argc, const char **argv)
 	update_floor_clock.restart();
 
 	// buttons
-	anax::Entity entity_button = createButtonGroup(world, {{8, 8}, {9, 9}});
+	std::vector<glm::ivec2> wall = {{0,1}, {0,2}, {0,3}, {0,4}, {0,5}, {0,6}, {0,7}, {0,8}, {0,9}};
+	anax::Entity entity_button = createButtonGroup(world, {{8, 8}}, wall);
 	world.refresh();
 	system_button_renderer.setup(smgr, driver);
 
@@ -340,8 +345,7 @@ int main(int argc, const char **argv)
 			j++;
 			j = j % 22;
 			// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
-			system_stage_renderer.updateStage({255, 175, 0, 0}, {255, 50, 50, 50}, driver, j);
-			system_trigger.updateButtons();
+			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
@@ -349,10 +353,12 @@ int main(int argc, const char **argv)
 
 			system_grid_ai.update();
 		}
+		system_stage_renderer.updateStage({255, 175, 0, 0}, {255, 50, 50, 50}, driver, j);
 
 		////////////////
 		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
+
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 		}
@@ -367,17 +373,7 @@ int main(int argc, const char **argv)
 		smgr->drawAll();
 		gui_env->drawAll();
 
-		irr::gui::IGUIFont* font = gui_env->getFont("resources/fonts/liberation_sans.xml");
-		if (font) {
-			irr::core::stringw str = L"Combo: ";
-			str += combo;
-			font->setKerningWidth(6);
-			font->setKerningHeight(6);
-			font->draw(str.c_str(),
-					irr::core::rect<s32>(10,650,300,300),
-					irr::video::SColor(255,255,255,255));
-				}
-
+		system_render_gui.update(driver, gui_env, clock, combo);
 		driver->endScene();
 
 		++frame_counter;

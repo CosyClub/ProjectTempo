@@ -1,5 +1,6 @@
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
+#include <tempo/component/ComponentStage.hpp>
 #include <tempo/system/SystemTrigger.hpp>
 
 #include <glm/vec2.hpp>
@@ -13,7 +14,7 @@ SystemTrigger::SystemTrigger(anax::World &world)
 	world.refresh();
 }
 
-void SystemTrigger::updateButtons()
+void SystemTrigger::updateButtons(anax::World &world)
 {
 	// find all player locations in game
 	playerPos = subSystem.getPlayers();
@@ -43,7 +44,24 @@ void SystemTrigger::updateButtons()
 				buttons[i].triggered = false;
 			}
 		}
+
 	}
+
+	for (auto &entity : entities){
+		auto& button_group = entity.getComponent<tempo::ComponentButtonGroup>();
+		if(button_group.groupTriggered == true && !button_group.action_happened) {
+			button_group.action_happened = true;
+			for (auto &entity : world.getEntities()) {
+				if(entity.hasComponent<tempo::ComponentStage>()) {
+					auto& component_stage = entity.getComponent<tempo::ComponentStage>();
+					component_stage.setHeight(button_group.wall_positions, 0.f);
+				}
+			}
+		}
+	}
+
+
+
 }
 
 std::vector<glm::ivec2> SubSystemGetPlayers::getPlayers()
