@@ -1,15 +1,18 @@
 #include <client/system/SystemRenderSceneNode.hpp>
 
 #include <IBillboardSceneNode.h>
+#include <IVideoDriver.h>
 #include <iostream>
+
+#include <irrlicht.h>
 
 #include <client/misc/YAlignedBillboardSceneNode.hpp>
 
 namespace client
 {
-void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr)
+void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
 {
-	irr::core::dimension2d<irr::f32> size(0.7f, 1.4f);
+	irr::core::dimension2d<irr::f32> size(1.2f, 1.6f);
 	irr::core::vector3df             pos(0.0f, 0.0f + size.Height / 2, 0.0f);
 
 	auto entities = getEntities();
@@ -23,7 +26,7 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr)
 		tempo::ComponentModel &m = entity.getComponent<tempo::ComponentModel>();
 
 		// Get color from componentmodel
-		irr::video::SColor color(255, m.color.x, m.color.y, m.color.z);
+		irr::video::SColor color(255, 255, 255, 255);
 
 		// get path from componentmodel
 		irr::io::path path(m.path.c_str());
@@ -44,7 +47,12 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr)
 				new irr::scene::YAlignedBillboardSceneNode(sn.node, smgr, -1,
 														   pos,  // fix alignment
 														   size, color, color);
+
+			driver->setTextureCreationFlag(irr::video::ETCF_ALWAYS_32_BIT,true);
 			billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+			billboard->setMaterialType( irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL );
+			billboard->setMaterialTexture( 0, driver->getTexture("resources/materials/textures/zombiespritesheet.png"));
+			billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(.1,.5);
 		}
 	}
 

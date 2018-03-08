@@ -21,7 +21,7 @@ class SystemRenderSceneNode
 {
    public:
 	// Creates a static red square for all components with positions and render nodes
-	void setup(irr::scene::ISceneManager *smgr);
+	void setup(irr::scene::ISceneManager *smgr,irr::video::IVideoDriver * driver);
 	// Updates the positions of all render scene node according to the stage position
 	void update();
 };
