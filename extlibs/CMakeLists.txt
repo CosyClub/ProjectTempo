@@ -60,6 +60,14 @@ add_subdirectory(glm)
 ##########################################
 # Irrlicht
 ##########################################
+option (TEMPO_BUILD_IRRLICHT_EXTRAS "If set irrlicht examples and tools will be built" OFF)
+if(${TEMPO_BUILD_IRRLICHT_EXTRAS})
+	set(IRRLICHT_BUILD_EXAMPLES ON)
+	set(IRRLICHT_BUILD_TOOLS    ON)
+else()
+	set(IRRLICHT_BUILD_EXAMPLES OFF)
+	set(IRRLICHT_BUILD_TOOLS    OFF)
+endif()
 # Group output into subfolder
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${TEMPO_BIN_DIR}/irrlicht/examples/bin/")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${TEMPO_BIN_DIR}/irrlicht/examples/bin/")
