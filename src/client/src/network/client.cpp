@@ -235,6 +235,12 @@ bool connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData, ana
 	return ret;
 }
 
+void disconnectFromServer(anax::Entity::Id id)
+{
+	sf::Packet p;
+}
+
+
 bool broadcastMessage(QueueID id, sf::Packet p)
 {
 	assert(false);  // I think this should nevevr happen
