@@ -2,9 +2,11 @@
 
 namespace tempo
 {
-ComponentAI::ComponentAI()
+ComponentAI::ComponentAI(MoveType m, bool teleport, bool slide)
 {
-	return;  // does nothing
+	type = m;
+	hitTeleport = teleport;
+	hitSlide = slide;
 }
 
 /////
@@ -12,7 +14,19 @@ ComponentAI::ComponentAI()
 /////
 ComponentAI::ComponentAI(sf::Packet p)
 {
-	return;  // does nothing
+	uint32_t tmp;
+	int path_size;
+	p >> tmp;
+	type = (MoveType) tmp;
+	p >> hitTeleport;
+	p >> hitSlide;
+	p >> path_size;
+	for (int I = 0; I < path_size; I++)
+	{
+		glm::ivec2 tmp;
+		p >> tmp;
+		path.push_back(tmp);
+	}
 }
 
 ComponentID ComponentAI::getId()
@@ -22,6 +36,16 @@ ComponentID ComponentAI::getId()
 
 sf::Packet ComponentAI::dumpComponent()
 {
+	sf::Packet p;
+
+	p << (uint32_t) type;
+	p << hitTeleport;
+	p << hitSlide;
+	p << (uint32_t) path.size();
+	for (glm::ivec2 vec : path)
+	{
+		p << vec;
+	}
 	return sf::Packet();  // does nothing
 }
 

@@ -37,7 +37,7 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 {
 	anax::Entity e = world.createEntity();
 
-	e.addComponent<tempo::ComponentAI>();
+	e.addComponent<tempo::ComponentAI>(ComponentAI::MoveType::MOVE_NONE, false, false);
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
@@ -58,7 +58,7 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 {
 	anax::Entity e = world.createEntity();
 
-	e.addComponent<tempo::ComponentAI>();
+	e.addComponent<tempo::ComponentAI>(ComponentAI::MoveType::MOVE_NONE, false, false);
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
@@ -82,7 +82,7 @@ anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 {
 	anax::Entity e = world.createEntity();
 
-	e.addComponent<tempo::ComponentAI>();
+	e.addComponent<tempo::ComponentAI>(ComponentAI::MoveType::MOVE_WANDER, false, false);
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
