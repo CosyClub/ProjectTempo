@@ -31,6 +31,10 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 	                 int                       j);
 
    private:
+  inline bool updatePosition(irr::scene::IMeshSceneNode* node,
+                             std::vector<tempo::stage_tile>& heights,
+                             int i);
+
 
   inline void addFloorTilesToScene(irr::scene::ISceneManager *smgr,
                                           irr::video::IVideoDriver * driver,
@@ -38,31 +42,25 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 
 
 	inline void checkerBoardPattern(irr::video::IVideoDriver *  driver,
-	                                irr::scene::IMeshSceneNode *node,
-	                                irr::video::SMaterial &     material_top,
+                                  std::vector<tempo::stage_tile>& heights,
 	                                glm::ivec4                  colour1,
 	                                glm::ivec4                  colour2,
-	                                int                         i,
 	                                int                         j);
 
 	inline void linePattern(irr::video::IVideoDriver *  driver,
-	                        irr::scene::IMeshSceneNode *node,
-	                        irr::video::SMaterial &     material_top,
+                          std::vector<tempo::stage_tile>& heights,
 	                        glm::ivec4                  colour1,
 	                        glm::ivec4                  colour2,
 	                        int                         orientation,
 	                        int                         size,
-	                        int                         i,
 	                        int                         j);
 
 	inline void squarePattern(irr::video::IVideoDriver *  driver,
-	                          irr::scene::IMeshSceneNode *node,
-	                          irr::video::SMaterial &     material_top,
+                            std::vector<tempo::stage_tile>& heights,
 	                          glm::ivec4                  colour1,
 	                          glm::ivec4                  colour2,
 	                          int                         orientation,
 	                          int                         size,
-	                          int                         i,
 	                          int                         j);
 };
 }  // namespace client
