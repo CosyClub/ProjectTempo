@@ -84,13 +84,16 @@ bool SystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
 bool SubSystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
 {
 	glm::ivec2  attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
-	// glm::ivec2  rot         = attacker.getComponent<tempo::ComponentStageRotation>().facing;
+	glm::ivec2  rot         = attacker.getComponent<tempo::ComponentStageRotation>().facing;
 	auto &      weapon      = attacker.getComponent<tempo::ComponentWeapon>();
 	
 	glm::ivec2 bestDirection;
 	float bestDamage = 0;
 
-	for (glm::ivec2 rot : tempo::DIRECTIONS)
+	std::array<glm::ivec2, 5> directions;
+	for( int I = 0; I < 4; I++) directions[I] = tempo::DIRECTIONS[I];
+	directions[4] = rot;
+	for (glm::ivec2 rot : directions)
 	{
 		float currentDamage = 0;
 		for (auto &entity : getEntities()) {
@@ -134,7 +137,7 @@ bool SubSystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
 			}
 		}
 
-		if ( currentDamage > bestDamage ) 
+		if ( currentDamage >= bestDamage ) 
 		{
 			bestDamage = currentDamage;
 			bestDirection = rot;

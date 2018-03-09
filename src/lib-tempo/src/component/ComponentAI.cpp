@@ -8,6 +8,13 @@ ComponentAI::ComponentAI(MoveType m, bool teleport, bool slide)
 	hitTeleport = teleport;
 	hitSlide = slide;
 }
+ComponentAI::ComponentAI(MoveType m, bool teleport, bool slide, std::deque<glm::ivec2> p)
+{
+	type = m;
+	hitTeleport = teleport;
+	hitSlide = slide;
+	path = p;
+}
 
 /////
 // Required for networking
@@ -42,9 +49,13 @@ sf::Packet ComponentAI::dumpComponent()
 	p << hitTeleport;
 	p << hitSlide;
 	p << (uint32_t) path.size();
-	for (glm::ivec2 vec : path)
+	for (int I = 0; I < path.size(); I++)
 	{
+		glm::ivec2 vec = path.front();
+		path.pop_front();
 		p << vec;
+		path.push_back(vec);
+
 	}
 	return p;  // does nothing
 }

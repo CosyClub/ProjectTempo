@@ -32,6 +32,8 @@ anax::Entity newPlayer(anax::World &world);
 anax::Entity createMobStill(anax::World &world, glm::ivec2 pos);
 anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos);
 anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos);
+anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<glm::ivec2> path);
+anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos);
 
 }  // namespace tempo
 

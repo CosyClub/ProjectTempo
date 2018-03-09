@@ -37,7 +37,7 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 {
 	anax::Entity e = world.createEntity();
 
-	e.addComponent<tempo::ComponentAI>(ComponentAI::MoveType::MOVE_NONE, false, false);
+	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_NONE, false, false);
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
@@ -58,7 +58,7 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 {
 	anax::Entity e = world.createEntity();
 
-	e.addComponent<tempo::ComponentAI>(ComponentAI::MoveType::MOVE_NONE, false, false);
+	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_NONE, false, false);
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
@@ -82,7 +82,7 @@ anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 {
 	anax::Entity e = world.createEntity();
 
-	e.addComponent<tempo::ComponentAI>(ComponentAI::MoveType::MOVE_WANDER, false, false);
+	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_WANDER, false, false);
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
@@ -95,6 +95,48 @@ anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m, 5);
+	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
+
+	e.activate();
+	return e;
+}
+anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<glm::ivec2> path)
+{
+	anax::Entity e = world.createEntity();
+
+	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_PATROL, false, false, path);
+	e.addComponent<tempo::ComponentStagePosition>(pos);
+	e.addComponent<tempo::ComponentStageRotation>(NORTH);
+	e.addComponent<tempo::ComponentStageTranslation>();
+	e.addComponent<tempo::ComponentModel>("", glm::vec3(0, 255, 0), false);
+	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	e.addComponent<tempo::ComponentHealth>(5);
+	float arr[2] = {0, 1};
+	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
+	e.addComponent<tempo::ComponentAttack>();
+	e.addComponent<tempo::ComponentWeapon>(m, 0);
+	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
+
+	e.activate();
+	return e;
+}
+anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
+{
+	anax::Entity e = world.createEntity();
+
+	std::deque<glm::ivec2> path;
+	path.push_back(pos);
+	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_PATH, false, false, path);
+	e.addComponent<tempo::ComponentStagePosition>(pos);
+	e.addComponent<tempo::ComponentStageRotation>(NORTH);
+	e.addComponent<tempo::ComponentStageTranslation>();
+	e.addComponent<tempo::ComponentModel>("", glm::vec3(0, 255, 0), false);
+	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	e.addComponent<tempo::ComponentHealth>(5);
+	float arr[2] = {0, 1};
+	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
+	e.addComponent<tempo::ComponentAttack>();
+	e.addComponent<tempo::ComponentWeapon>(m, 0);
 	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
 
 	e.activate();

@@ -10,23 +10,27 @@
 
 namespace tempo
 {
+
+enum MoveType{
+	MOVE_NONE,
+	MOVE_PATH,
+	MOVE_PATROL,
+	MOVE_WANDER,
+};
+
 struct ComponentAI : anax::Component, NetworkedComponent 
 {
-	enum MoveType{
-		MOVE_NONE,
-		MOVE_PATH,
-		MOVE_PATROL,
-		MOVE_WANDER,
-	};
-
 	MoveType type;
+	glm::ivec2 prevPos;
 
 	bool hitTeleport;
 	bool hitSlide;
 
 	ComponentAI(MoveType m, bool teleport, bool slide);
+	ComponentAI(MoveType m, bool teleport, bool slide, std::deque<glm::ivec2> p);
 
-	std::vector<glm::ivec2> path;
+
+	std::deque<glm::ivec2> path;
 
 	/////
 	// Required for networking
