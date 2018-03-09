@@ -15,6 +15,11 @@
 
 #include <map>
 
+namespace tempo
+{
+class Clock;
+}
+
 namespace client
 {
 
@@ -25,11 +30,12 @@ class SystemTranslationAnimation
 	                      >
 {
 private:
-	irr::IrrlichtDevice* device;
 	anax::World*         world;
+	irr::IrrlichtDevice* device;
+	tempo::Clock&        clock;
 	std::map<anax::Entity::Id::int_type, irr::scene::ISceneNodeAnimator*> animators;
 public:
-	SystemTranslationAnimation(anax::World* world, irr::IrrlichtDevice* device);
+	SystemTranslationAnimation(anax::World* world, irr::IrrlichtDevice* device, tempo::Clock& clock);
 
 	void updateAnimations();
 	void endBeat();

@@ -147,7 +147,7 @@ int main(int argc, const char **argv)
 	client::SystemRenderHealthBars     system_render_health_bars;
 	client::SystemRenderSceneNode      system_render_scene_node;
 	client::SystemUpdateKeyInput       system_update_key_input;
-	client::SystemTranslationAnimation system_translation_animation(&world, device);
+	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
 
 	// Add Systems
 	world.addSystem(system_attack);
