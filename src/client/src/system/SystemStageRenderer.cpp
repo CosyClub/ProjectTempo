@@ -50,14 +50,16 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 		node->setPosition(irr::core::vector3df(grid_x, height, grid_y));
 		node->setMaterialTexture(0, tile_texture);
 
-		irr::video::SMaterial &material_side = node->getMaterial(0);
-		irr::video::SMaterial &material_top  = node->getMaterial(1);
 
-		material_side.setTexture(0, wall_diffuse_map);
-		material_side.setTexture(1, wall_normal_map);
+    if(height > 0.1f) {
+  		irr::video::SMaterial &material_side = node->getMaterial(0);
+  		irr::video::SMaterial &material_top  = node->getMaterial(1);
 
-		material_top.DiffuseColor.set(255, 10, 10, 10);
+  		material_side.setTexture(0, wall_diffuse_map);
+  		material_side.setTexture(1, wall_normal_map);
 
+  		material_top.DiffuseColor.set(255, 10, 10, 10);
+    }
 	}
 
 }
