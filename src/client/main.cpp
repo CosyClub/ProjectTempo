@@ -147,7 +147,7 @@ int main(int argc, const char **argv)
 	client::SystemRenderHealthBars     system_render_health_bars;
 	client::SystemRenderSceneNode      system_render_scene_node;
 	client::SystemUpdateKeyInput       system_update_key_input;
-	client::SystemTranslationAnimation system_translation_animation;
+	client::SystemTranslationAnimation system_translation_animation(&world, device);
 
 	// Add Systems
 	world.addSystem(system_attack);
@@ -346,6 +346,7 @@ int main(int argc, const char **argv)
 			// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
+			system_translation_animation.endBeat();
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;
