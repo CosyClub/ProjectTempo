@@ -6,6 +6,7 @@
 
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStage.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
 
 #include <IrrlichtDevice.h>
@@ -26,6 +27,7 @@ namespace client
 class SystemTranslationAnimation
 	: public anax::System<anax::Requires<tempo::ComponentStageTranslation,
 	                                     tempo::ComponentStagePosition,
+	                                     tempo::ComponentStage,
 	                                     client::ComponentRenderSceneNode>
 	                      >
 {

@@ -6,6 +6,7 @@
 #include <ISceneNodeAnimator.h>
 
 #include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 #include <glm/glm.hpp>
 
 namespace {
@@ -13,21 +14,21 @@ namespace {
 	private:
 		irr::u32   start_time;
 		irr::u32   animation_time;
-		glm::ivec2 start;
-		glm::ivec2 delta;
+		glm::fvec3 initial;
+		glm::fvec3 target;
 		float      hop_height;
 	public:
 		/// \param time The irrlicht device time (in ms) when this animator is created
 		/// \param animation_time The length of the animation in ms
-		/// \param start The initial location of the entity
-		/// \param delta The final location of the entity
+		/// \param initial The initial location of the entity
+		/// \param target  The final location of the entity
 		HopAnimator(irr::u32 time,
 		            irr::u32 animation_time,
-		            glm::ivec2 start,
-		            glm::ivec2 delta,
+		            glm::fvec3 initial,
+		            glm::fvec3 target,
 		            float hop_height = 0.0f)
 			: start_time(time), animation_time(animation_time),
-			  start(start), delta(delta),
+			  initial(initial), target(target),
 			  hop_height(hop_height)
 		{
 			// no-op
@@ -36,25 +37,8 @@ namespace {
 		void animateNode(irr::scene::ISceneNode* node, irr::u32 time){
 			// printf("Calling animate hop: %i\n", time);
 			float progress = (float)(time - start_time) / (float)animation_time;
-			printf("Hop progress: %f\n", progress);
 
-			irr::core::vector3df old_pos = node->getPosition();
-			printf("  old %f, %f, %f\n", old_pos.X, old_pos.Y, old_pos.Z);
-
-			glm::fvec3 pos_start;
-			pos_start.x = start.x;
-			pos_start.z = start.y;
-			pos_start.y = 0;
-			printf("  sta %f, %f, %f\n", pos_start.x, pos_start.y, pos_start.z);
-
-			glm::fvec3 pos_end;
-			pos_end.x = start.x + delta.x;
-			pos_end.z = start.y + delta.y;
-			pos_end.y = 0;
-			printf("  end %f, %f, %f\n", pos_end.x, pos_end.y, pos_end.z);
-
-			glm::fvec3 pos = glm::mix(pos_start, pos_end, progress);
-			printf("  new %f, %f, %f\n", pos.x, pos.y, pos.z);
+			glm::fvec3 pos = glm::mix(initial, target, progress);
 
 			// Add sinosodial hop motion
 			float a = progress - 0.5f;
@@ -67,7 +51,7 @@ namespace {
 		createClone(irr::scene::ISceneNode* node,
 		            irr::scene::ISceneManager* manager){
 			return new HopAnimator(this->start_time, this->animation_time,
-			                       this->start, this->delta, this->hop_height);
+			                       this->initial, this->target, this->hop_height);
 		}
 	};
 }
@@ -106,12 +90,20 @@ void SystemTranslationAnimation::updateAnimations()
 
 		tempo::ComponentStagePosition&    pos    =
 			entity.getComponent<tempo::ComponentStagePosition>();
+		tempo::ComponentStage&            stage  =
+			entity.getComponent<tempo::ComponentStage>();
 		client::ComponentRenderSceneNode& node   =
 			entity.getComponent<client::ComponentRenderSceneNode>();
 
-		irr::scene::ISceneNodeAnimator* animator =
-			new HopAnimator(now, clock.until_beat().asMilliseconds(),
-			                pos.getOrigin(), trans.delta, 1.0f);
+		glm::ivec2 origin = pos.getOrigin();
+		glm::ivec2 target = origin + trans.delta;
+
+		irr::scene::ISceneNodeAnimator* animator = new HopAnimator
+			(now, clock.until_beat().asMilliseconds(),
+			 glm::fvec3(origin.x, stage.getHeight(origin), origin.y),
+			 glm::fvec3(target.x, stage.getHeight(target), target.y),
+			 1.0f
+			);
 
 		printf("Add animator for entity %i, delta: (%i, %i), origin: (%i ,%i)\n",
 		       entity_id, trans.delta.x, trans.delta.y, pos.getOrigin().x, pos.getOrigin().y
