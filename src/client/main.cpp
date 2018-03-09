@@ -13,6 +13,7 @@
 #include <client/system/SystemRenderSceneNode.hpp>
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
+#include <client/system/SystemTranslationAnimation.hpp>
 
 #include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
@@ -132,20 +133,21 @@ int main(int argc, const char **argv)
 	// Setup ECS
 	anax::World world;
 	// tempo::SystemRender           system_render(app);
-	tempo::SystemGridAi            system_grid_ai;
-	tempo::SystemCombo             system_combo;
-	tempo::SystemHealth            system_health;
-	tempo::SystemTrigger           system_trigger(world);
-	client::SystemAttack           system_attack;
-	client::SystemButtonRenderer   system_button_renderer;
-	client::SystemGraphicsCreation system_gc;
-	client::SystemMovement         system_movement;
-	client::SystemStageRenderer    system_stage_renderer;
-	client::SystemParseKeyInput    system_parse_key_input;
-	client::SystemRenderGUI        system_render_gui;
-	client::SystemRenderHealthBars system_render_health_bars;
-	client::SystemRenderSceneNode  system_render_scene_node;
-	client::SystemUpdateKeyInput   system_update_key_input;
+	tempo::SystemGridAi                system_grid_ai;
+	tempo::SystemCombo                 system_combo;
+	tempo::SystemHealth                system_health;
+	tempo::SystemTrigger               system_trigger(world);
+	client::SystemAttack               system_attack;
+	client::SystemButtonRenderer       system_button_renderer;
+	client::SystemGraphicsCreation     system_gc;
+	client::SystemMovement             system_movement;
+	client::SystemStageRenderer        system_stage_renderer;
+	client::SystemParseKeyInput        system_parse_key_input;
+	client::SystemRenderGUI            system_render_gui;
+	client::SystemRenderHealthBars     system_render_health_bars;
+	client::SystemRenderSceneNode      system_render_scene_node;
+	client::SystemUpdateKeyInput       system_update_key_input;
+	client::SystemTranslationAnimation system_translation_animation;
 
 	// Add Systems
 	world.addSystem(system_attack);
@@ -161,6 +163,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_update_key_input);
 	world.addSystem(system_parse_key_input);
 	world.addSystem(system_movement);
+	world.addSystem(system_translation_animation);
 
 	anax::Entity entity_stage = createEntityStage(world);
 	world.refresh();
@@ -303,6 +306,9 @@ int main(int argc, const char **argv)
 			// Recieve updates from the server
 			system_movement.processIntents(world);
 			system_movement.processCorrections(world);
+
+			// Update animations from translations received from server
+			system_translation_animation.updateAnimations();
 
 			// Deal with local input
 			system_update_key_input.clear();
