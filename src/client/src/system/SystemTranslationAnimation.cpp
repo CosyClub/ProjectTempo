@@ -15,6 +15,7 @@ namespace {
 		irr::u32   animation_time;
 		glm::ivec2 start;
 		glm::ivec2 delta;
+		float      hop_height;
 	public:
 		/// \param time The irrlicht device time (in ms) when this animator is created
 		/// \param animation_time The length of the animation in ms
@@ -23,9 +24,12 @@ namespace {
 		HopAnimator(irr::u32 time,
 		            irr::u32 animation_time,
 		            glm::ivec2 start,
-		            glm::ivec2 delta)
+		            glm::ivec2 delta,
+		            float hop_height = 0.0f)
 			: start_time(time), animation_time(animation_time),
-			  start(start), delta(delta) {
+			  start(start), delta(delta),
+			  hop_height(hop_height)
+		{
 			// no-op
 		}
 
@@ -36,7 +40,6 @@ namespace {
 
 			irr::core::vector3df old_pos = node->getPosition();
 			printf("  old %f, %f, %f\n", old_pos.X, old_pos.Y, old_pos.Z);
-
 
 			glm::fvec3 pos_start;
 			pos_start.x = start.x;
@@ -53,6 +56,10 @@ namespace {
 			glm::fvec3 pos = glm::mix(pos_start, pos_end, progress);
 			printf("  new %f, %f, %f\n", pos.x, pos.y, pos.z);
 
+			// Add sinosodial hop motion
+			float a = progress - 0.5f;
+			pos.y += (-(a*a) + 0.25f) * hop_height * 2.0f;
+
 			node->setPosition(irr::core::vector3df(pos.x, pos.y, pos.z));
 		}
 
@@ -60,7 +67,7 @@ namespace {
 		createClone(irr::scene::ISceneNode* node,
 		            irr::scene::ISceneManager* manager){
 			return new HopAnimator(this->start_time, this->animation_time,
-			                       this->start, this->delta);
+			                       this->start, this->delta, this->hop_height);
 		}
 	};
 }
@@ -104,7 +111,7 @@ void SystemTranslationAnimation::updateAnimations()
 
 		irr::scene::ISceneNodeAnimator* animator =
 			new HopAnimator(now, clock.until_beat().asMilliseconds(),
-			                pos.getOrigin(), trans.delta);
+			                pos.getOrigin(), trans.delta, 1.0f);
 
 		printf("Add animator for entity %i, delta: (%i, %i), origin: (%i ,%i)\n",
 		       entity_id, trans.delta.x, trans.delta.y, pos.getOrigin().x, pos.getOrigin().y
