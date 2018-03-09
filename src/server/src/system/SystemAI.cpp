@@ -92,6 +92,7 @@ void SystemAI::update(server::SystemAttack s_attack)
 
 		auto &st = entity.getComponent<tempo::ComponentStageTranslation>();
 		auto &sp = entity.getComponent<tempo::ComponentStagePosition>();
+		auto &sr = entity.getComponent<tempo::ComponentStageRotation>();
 		auto &ai = entity.getComponent<tempo::ComponentAI>();
 
 		if (ai_attack(entity, s_attack)) continue;
@@ -100,6 +101,15 @@ void SystemAI::update(server::SystemAttack s_attack)
 		{
 			case tempo::MoveType::MOVE_NONE:
 			{
+				break;
+			}
+			case tempo::MoveType::MOVE_STRAIGHT:
+			{
+				if (ai.prevPos == sp.getOrigin())
+				{
+					sr.facing *= -1.f;
+				}
+				st.delta = sr.facing;
 				break;
 			}
 			case tempo::MoveType::MOVE_PATH:

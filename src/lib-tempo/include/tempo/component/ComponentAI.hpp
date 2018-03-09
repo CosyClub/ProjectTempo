@@ -13,6 +13,7 @@ namespace tempo
 
 enum MoveType{
 	MOVE_NONE,
+	MOVE_STRAIGHT,
 	MOVE_PATH,
 	MOVE_PATROL,
 	MOVE_WANDER,
