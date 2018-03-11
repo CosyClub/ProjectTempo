@@ -365,7 +365,8 @@ int main(int argc, const char **argv)
 	// Tell server we are gone
 	sf::Packet p;
 	tempo::operator<<(p, tempo::localtoserver[entity_player.getId()]);
-	p << tempo::port_co;
+	p << (uint32_t) tempo::addr_r.toInteger();
+	p << (uint32_t) tempo::port_ci;
 	tempo::sendMessage(tempo::QueueID::ENTITY_DELETION, p);
 
 	listener.join();

@@ -343,7 +343,7 @@ void checkForClientDeletion(anax::World& world) {
 		sf::Packet broadcast;
 		anax::Entity::Id id;
 		uint32_t ip_d;
-		unsigned short port;
+		uint32_t port;
 		packet >> id >> ip_d >> port;
 		broadcast << id;
 		sf::IpAddress ip(ip_d);
