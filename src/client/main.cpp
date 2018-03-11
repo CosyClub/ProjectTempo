@@ -104,7 +104,7 @@ anax::Entity createButtonGroup(anax::World &world,
 
 int main(int argc, const char **argv)
 {
-	tempo::Song mainsong("resources/sound/ravecave.wav");
+	tempo::Song mainsong("resources/sound/ravecave_crudeloop.wav");
 	mainsong.set_volume(0.f);
 
 	sf::SoundBuffer clickbuf;
