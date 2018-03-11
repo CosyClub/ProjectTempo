@@ -50,10 +50,10 @@
 #define DELTA 125            // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
-void sync_time(tempo::Clock &clock, tempo::Song *song)
+void sync_time(tempo::Clock &clock)
 {
 	sf::Int64 offset = tempo::timeSyncClient(&clock);
-	clock.set_time(clock.get_time() + sf::microseconds(offset), song);
+	clock.set_time(clock.get_time() + sf::microseconds(offset));
 }
 
 void new_entity_check(anax::World &world)
@@ -104,9 +104,6 @@ anax::Entity createButtonGroup(anax::World &world,
 
 int main(int argc, const char **argv)
 {
-	tempo::Song mainsong("resources/sound/ravecave_crudeloop.ogg");
-	mainsong.set_volume(0.f);
-
 	sf::SoundBuffer clickbuf;
 	clickbuf.loadFromFile("resources/sound/tick.ogg");
 	sf::Sound click;
@@ -214,10 +211,7 @@ int main(int argc, const char **argv)
 	system_render_health_bars.setup(smgr);
 
 	// Start and Sync Song
-	mainsong.start();
-	sync_time(clock, &mainsong);
-	mainsong.skip(sf::microseconds(PHASE));
-	mainsong.set_volume(20.f);
+	sync_time(clock);
 	// long offset = 0;
 
 	// Player

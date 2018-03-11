@@ -19,12 +19,10 @@ sf::Time Clock::get_time()
 	return time + timer.getElapsedTime();
 }
 
-void Clock::set_time(sf::Time t, tempo::Song *song)
+void Clock::set_time(sf::Time t)
 {
 	cache_time();
-	sf::Time time_to_skip = t - time;
 	time                  = t;
-	song->skip(time_to_skip);
 	update_beat();
 }
 

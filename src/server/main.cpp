@@ -24,13 +24,21 @@
 #include <thread>
 #include <vector>
 
-#define BPM 137.852              // Beats per minutes
+#define BPM 137.852f              // Beats per minutes
+#define PHASE 0             // Microseconds
+// #define PHASE 118008             // Microseconds
 #define PLAYER_DELTA 125     // Delta around a beat a player can hit (millisecs)
-#define TIME 60000000 / BPM  // Time between beats (microsecs)
+#define TIME 60000000.f / BPM  // Time between beats (microsecs)
 
 int main(int argc, const char **argv)
 {
+	tempo::Song mainsong("resources/sound/ravecave_loop.wav");
+	mainsong.set_volume(0.f);
+	mainsong.skip(sf::microseconds(PHASE));
+	mainsong.set_volume(20.f);
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(PLAYER_DELTA));
+	mainsong.start();
+
 
 	// Set up remote address, local ports and remote handshake port
 	tempo::port_si = DEFAULT_PORT_IN;
