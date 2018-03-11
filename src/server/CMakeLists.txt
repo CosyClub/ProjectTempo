@@ -1,9 +1,11 @@
 link_directories("${TEMPO_LIB_DIR}")
 
 add_executable(server
+	${CMAKE_CURRENT_LIST_DIR}/include/server/system/SystemAI.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/server/system/SystemAttack.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/server/system/SystemMovement.hpp
 
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemAI.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemAttack.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemMovement.cpp
 

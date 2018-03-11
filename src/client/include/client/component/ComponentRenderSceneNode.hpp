@@ -7,19 +7,19 @@
 #include <ITexture.h>
 #include <irrlicht.h>
 #include <string>
+#include <glm/vec2.hpp>
 
 namespace client
 {
 struct ComponentRenderSceneNode : public anax::Component {
 
-	std::string spritesheet;
-	int spriteRows = 0;
-	int spriteCols = 0;
-	float u, v;
+	bool isMesh;
+	glm::ivec2 spriteDim;
+	glm::vec2 spritePos;
 	bool updateNeeded = false;
 	irr::scene::IBillboardSceneNode * billboard;
 	irr::scene::ISceneNode *node;
-	ComponentRenderSceneNode(irr::scene::ISceneNode *node, std::string spritesheet, int spriteRows, int spriteCols);
+	ComponentRenderSceneNode(irr::scene::ISceneNode *node);
 };
 
 }  // namespace client

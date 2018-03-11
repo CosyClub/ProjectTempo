@@ -34,7 +34,7 @@ void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing, b
 
 	if (entity.hasComponent<tempo::ComponentStageRotation>()) {
 		entity.getComponent<tempo::ComponentStageRotation>().facing = facing;
-		entity.getComponent<client::ComponentRenderSceneNode>().updateNeeded = true;
+		// entity.getComponent<client::ComponentRenderSceneNode>().updateNeeded = true;
 	}
 
 	if (!withinDelta) {
@@ -54,7 +54,7 @@ void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing, b
 	}
 }
 
-void addAttack(anax::Entity &entity, tempo::Facing facing, bool withinDelta)
+void addAttack(anax::Entity &entity, bool withinDelta)
 {
 	if (!withinDelta) {
 		std::cout << "Actioned outside of delta" << std::endl;
@@ -69,6 +69,7 @@ void addAttack(anax::Entity &entity, tempo::Facing facing, bool withinDelta)
 
 		sf::Packet p;
 		p << static_cast<uint32_t>(tempo::MessageAttack::UPDATE_INTENT);
+		p << tempo::localtoserver[entity.getId()];
 		p << a.damage;
 		p << a.beats_until_attack;
 		tempo::sendMessage(tempo::QueueID::SYSTEM_ATTACK, p);
@@ -111,10 +112,11 @@ void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinD
 		updateCombo(entity, withinDelta);
 		break;
 	case irr::KEY_KEY_E:
-		// system_attack.Attack(entity_player);
+		//dance
 		updateCombo(entity, withinDelta);
 		break;
 	case irr::KEY_SPACE:
+		addAttack(entity, withinDelta);
 		updateCombo(entity, withinDelta);
 		break;
 	default: break;

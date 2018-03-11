@@ -1,5 +1,6 @@
 #include <client/system/SystemMovement.hpp>
 
+#include <client/component/ComponentRenderSceneNode.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
@@ -80,6 +81,10 @@ void SystemMovement::processCorrections(anax::World &world)
 		// Clear Stage Translation
 		if (e.hasComponent<tempo::ComponentStageTranslation>()) {
 			e.getComponent<tempo::ComponentStageTranslation>().delta = glm::ivec2(0,0);
+		}
+
+		if (e.hasComponent<client::ComponentRenderSceneNode>()) {
+			e.getComponent<client::ComponentRenderSceneNode>().updateNeeded = true;
 		}
 	}
 }

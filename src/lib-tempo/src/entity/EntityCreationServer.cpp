@@ -1,20 +1,5 @@
 #include <tempo/entity/EntityCreationServer.hpp>
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <tempo/component/ComponentAOEIndicator.hpp>
-#include <tempo/component/ComponentCombo.hpp>
-#include <tempo/component/ComponentGridAi.hpp>
-#include <tempo/component/ComponentHealth.hpp>
-#include <tempo/component/ComponentModel.hpp>
-#include <tempo/component/ComponentPlayerRemote.hpp>
-#include <tempo/component/ComponentWeapon.hpp>
-#include <tempo/component/ComponentStage.hpp>
-#include <tempo/component/ComponentStageTranslation.hpp>
-#include <tempo/component/ComponentStageRotation.hpp>
-#include <tempo/component/ComponentStagePosition.hpp>
-#include <tempo/mask.hpp>
-
 namespace tempo
 {
 anax::Entity newPlayer(anax::World &world)
@@ -26,7 +11,8 @@ anax::Entity newPlayer(anax::World &world)
 	// not refactored
 	// entity_player.addComponent<tempo::ComponentStagePosition>(system_grid_motion.spawn());
 	//
-	float arr[6] = {0, 0, 0, 1, 1, 1};
+	float arr[6] = {0, 0, 0,
+	                1, 1, 1};
 	Mask  m(glm::ivec2(1, 0), arr, glm::ivec2(3, 2));
 
 	// refactored
@@ -35,69 +21,126 @@ anax::Entity newPlayer(anax::World &world)
 	entity_player.addComponent<tempo::ComponentStageRotation>(NORTH);
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
-	entity_player.addComponent<tempo::ComponentModel>("", glm::vec3(255, 0, 0), false);
+	entity_player.addComponent<tempo::ComponentModel>("resources/materials/textures/sprite.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
 	entity_player.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	entity_player.addComponent<tempo::ComponentAttack>();
 	entity_player.addComponent<tempo::ComponentWeapon>(m);
 	entity_player.addComponent<tempo::ComponentAOEIndicator>();
-	entity_player.addComponent<tempo::ComponentHealth>(1);
+	entity_player.addComponent<tempo::ComponentHealth>(10);
 
 	entity_player.activate();
 
 	return entity_player;
 }
 
-
-anax::Entity newAI(anax::World &world, int x, int y)
+anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 {
-	anax::Entity entity_ai = world.createEntity();
+	anax::Entity e = world.createEntity();
 
-	entity_ai.addComponent<tempo::ComponentGridAi>();
-	entity_ai.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x, y));
-	entity_ai.addComponent<tempo::ComponentStageRotation>(NORTH);
-	entity_ai.addComponent<tempo::ComponentStageTranslation>();
-	entity_ai.addComponent<tempo::ComponentModel>("", glm::vec3(0, 255, 0), false);
-	entity_ai.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	entity_ai.addComponent<tempo::ComponentHealth>(1);
-	entity_ai.activate();
+	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_NONE, false, false);
+	e.addComponent<tempo::ComponentStagePosition>(pos);
+	e.addComponent<tempo::ComponentStageRotation>(NORTH);
+	e.addComponent<tempo::ComponentStageTranslation>();
+	e.addComponent<tempo::ComponentModel>("resources/materials/textures/sprite.png", glm::vec3(255, 0, 0), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	e.addComponent<tempo::ComponentHealth>(1);
+	float arr[2] = {0, 1};
+	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
+	e.addComponent<tempo::ComponentAttack>();
+	e.addComponent<tempo::ComponentWeapon>(m);
+	e.addComponent<tempo::ComponentTeam>(Team::BADGUYS);
 
-	return entity_ai;
+	e.activate();
+	return e;
 }
 
-anax::Entity newDestroyable(anax::World &world, int x, int y, std::string mesh_name)
+anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 {
-	// TODO:: Add HealthComponent
-	// TODO:: Add Entity to Specific Tile
-	anax::Entity entity_object = world.createEntity();
+	anax::Entity e = world.createEntity();
 
-	entity_object.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x, y));
-	entity_object.addComponent<tempo::ComponentStageRotation>(NORTH);
-	entity_object.addComponent<tempo::ComponentStageTranslation>();
-	entity_object.addComponent<tempo::ComponentModel>("resources/meshes/Cube.mesh",
-	                                                  glm::vec3(0, 0, 255), true);
-	entity_object.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_NONE, false, false);
+	e.addComponent<tempo::ComponentStagePosition>(pos);
+	e.addComponent<tempo::ComponentStageRotation>(NORTH);
+	e.addComponent<tempo::ComponentStageTranslation>();
+	e.addComponent<tempo::ComponentModel>("resources/materials/textures/sprite.png", glm::vec3(255, 0, 0), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	e.addComponent<tempo::ComponentHealth>(2);
+	float arr[9] = {1, 1, 1,
+	                1, 0, 1,
+	                1, 1, 1};
+	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
+	e.addComponent<tempo::ComponentAttack>();
+	e.addComponent<tempo::ComponentWeapon>(m);
+	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
+	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
 
-	entity_object.activate();
-
-	return entity_object;
+	e.activate();
+	return e;
 }
 
-
-anax::Entity newNonDestroyable(anax::World &world, int x, int y, std::string mesh_name)
+anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 {
-	// TODO:: Add Entity to Specific Tile
+	anax::Entity e = world.createEntity();
 
-	anax::Entity entity_object = world.createEntity();
+	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_WANDER, false, false);
+	e.addComponent<tempo::ComponentStagePosition>(pos);
+	e.addComponent<tempo::ComponentStageRotation>(NORTH);
+	e.addComponent<tempo::ComponentStageTranslation>();
+	e.addComponent<tempo::ComponentModel>("resources/materials/textures/sprite.png", glm::vec3(255, 0, 0), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	e.addComponent<tempo::ComponentHealth>(5);
+	float arr[9] = {5, 5, 5,
+	                5, 5, 5,
+	                5, 5, 5};
+	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
+	e.addComponent<tempo::ComponentAttack>();
+	e.addComponent<tempo::ComponentWeapon>(m, 5);
+	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
 
-	entity_object.addComponent<tempo::ComponentStagePosition>(glm::ivec2(x, y));
-	entity_object.addComponent<tempo::ComponentStageRotation>(NORTH);
-	entity_object.addComponent<tempo::ComponentStageTranslation>();
-	entity_object.addComponent<tempo::ComponentModel>("resources/meshes/Cube.mesh",
-	                                                  glm::vec3(0, 0, 255), true);
-	entity_object.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	e.activate();
+	return e;
+}
+anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<glm::ivec2> path)
+{
+	anax::Entity e = world.createEntity();
 
-	entity_object.activate();
+	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_PATROL, false, false, path);
+	e.addComponent<tempo::ComponentStagePosition>(pos);
+	e.addComponent<tempo::ComponentStageRotation>(NORTH);
+	e.addComponent<tempo::ComponentStageTranslation>();
+	e.addComponent<tempo::ComponentModel>("resources/materials/textures/sprite.png", glm::vec3(255, 0, 0), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	e.addComponent<tempo::ComponentHealth>(5);
+	float arr[2] = {0, 1};
+	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
+	e.addComponent<tempo::ComponentAttack>();
+	e.addComponent<tempo::ComponentWeapon>(m, 0);
+	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
 
-	return entity_object;
+	e.activate();
+	return e;
+}
+anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
+{
+	anax::Entity e = world.createEntity();
+
+	std::deque<glm::ivec2> path;
+	path.push_back(pos);
+	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_PATH, false, false, path);
+	e.addComponent<tempo::ComponentStagePosition>(pos);
+	e.addComponent<tempo::ComponentStageRotation>(NORTH);
+	e.addComponent<tempo::ComponentStageTranslation>();
+	e.addComponent<tempo::ComponentModel>("resources/materials/textures/sprite.png", glm::vec3(255, 0, 0), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	e.addComponent<tempo::ComponentHealth>(5);
+	float arr[2] = {0, 1};
+	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
+	e.addComponent<tempo::ComponentAttack>();
+	e.addComponent<tempo::ComponentWeapon>(m, 0);
+	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
+
+	e.activate();
+	return e;
 }
 
 }  // namespace tempo

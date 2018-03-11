@@ -26,7 +26,7 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 		tempo::ComponentModel &m = entity.getComponent<tempo::ComponentModel>();
 
 		// Get color from componentmodel
-		irr::video::SColor color(255, 255, 255, 255);
+		irr::video::SColor color(m.color.x, m.color.y, m.color.y, 255);
 
 		// get path from componentmodel
 		irr::io::path path(m.path.c_str());
@@ -48,18 +48,18 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 														   pos,  // fix alignment
 														   size, color, color);
 
-			const std::string& path = "resources/materials/textures/" + sn.spritesheet;
+			const std::string& path = m.path;
+			std::cout << path << std::endl;
 			irr::video::ITexture * spritesheet = driver->getTexture(path.c_str());
 
 			driver->setTextureCreationFlag(irr::video::ETCF_ALWAYS_32_BIT,true);
+			// sn.billboard->setColor(color);
 			sn.billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 			sn.billboard->setMaterialType( irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL );
 			sn.billboard->setMaterialTexture( 0, spritesheet);
-			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(.25,.25);
-			sn.spriteCols = 4;
-			sn.spriteRows = 4;
-			sn.u = 0;
-			sn.v = 0;
+			sn.spriteDim = m.spriteDim;
+			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(1.f / sn.spriteDim.x, 1.f / sn.spriteDim.y);
+			sn.updateNeeded = true;
 		}
 	}
 
@@ -79,83 +79,29 @@ void SystemRenderSceneNode::update()
 
 		glm::ivec2 pos = sp.getOrigin();
 
+		if (sn.isMesh) continue;
+
 		// Change Sprite based on Facing
 		if (sn.updateNeeded) {
-
-			switch (sr.facing.y)
+			int dirIndex = 0;
+			for (int I = 0; I < 4; I++)
 			{
-			//Right
-			case (1):
-				switch (sr.previousFacing.y)
-				{
-				//Already facing right
-				case (1):
-					sn.u = sn.u + (1.0 / sn.spriteCols);
-					break;
-				//Facing another direction
-				default:
-					sn.u = (1.0 / sn.spriteCols);
-					sn.v = (1.0 / sn.spriteRows) * 2.0;
-					break;
-				}
-				break;
-			//Left
-			case (-1):
-				switch (sr.previousFacing.y)
-				{
-				//Already facing right
-				case (-1):
-					sn.u = sn.u + (1.0 / sn.spriteCols);
-					break;
-				default:
-					sn.u = (1.0 / sn.spriteCols);
-					sn.v = (1.0 / sn.spriteRows);
-					break;
-				}
-				break;
-
-			case (0):
-				switch (sr.facing.x)
-				{
-				//Down
-				case (1):
-					switch (sr.previousFacing.x)
-					{
-					//Already facing down
-					case (1):
-						sn.u = sn.u + (1.0 / sn.spriteCols);
-						break;
-					default:
-						sn.u = (1.0 / sn.spriteCols);
-						sn.v = 0.0;
-						break;
-					}
-					break;
-				//Up
-				case (-1):
-					switch (sr.previousFacing.x)
-					{
-					//Already facing up
-					case (-1):
-						sn.u = sn.u + (1.0 / sn.spriteCols);
-						break;
-					default:
-						sn.u = (1.0 / sn.spriteCols);
-						sn.v = (1.0 / sn.spriteCols) * 3.0;
-						break;
-					}
-					break;
-				case (0):
-					printf("Jump?\n");
-					break;
-				}
-				break;
-			default:
-				printf("Shouldn't happen!!\n");
-				break;
+				if( tempo::DIRECTIONS[I] == sr.facing ) dirIndex = I;
 			}
-
-			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureTranslate(sn.u, sn.v);
+			std::cout << dirIndex<< std::endl;
+			sn.spritePos.y = (float) ((dirIndex + 3) % 4) / sn.spriteDim.y;
+			printf("%d,%d\n", sr.facing.x, sr.facing.y);
+			if (sr.previousFacing == sr.facing)
+			{
+				sn.spritePos.x = fmod(sn.spritePos.x + 1.f / sn.spriteDim.x, 1) + 1.f / sn.spriteDim.x;
+				std::cout << sn.spritePos.x << std::endl;
+			}
+			else
+			{
+				sn.spritePos.x = 1.f / sn.spriteDim.x;
+			}
+			printf("%f,%f\n", sn.spritePos.x, sn.spritePos.y);
+			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureTranslate(sn.spritePos.x, sn.spritePos.y);
 			sn.updateNeeded = false;
 		}
 

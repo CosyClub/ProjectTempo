@@ -36,6 +36,16 @@ bool Clock::passed_beat()
 	return false;
 }
 
+bool Clock::passed_antibeat()
+{
+	cache_time();
+	if (!passed_ab && time > next_beat - (next_beat - last_beat) / 2.f ) {
+		passed_ab = true;
+		return true;
+	}
+	return false;
+}
+
 bool Clock::passed_delta_start()
 {
 	cache_time();
@@ -104,5 +114,6 @@ void Clock::update_beat()
 	}
 	passed_ds = false;
 	passed_de = false;
+	passed_ab = false;
 }
 }

@@ -3,7 +3,7 @@
 #include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentCombo.hpp>
-#include <tempo/component/ComponentGridAi.hpp>
+#include <tempo/component/ComponentAI.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentModel.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
@@ -12,6 +12,7 @@
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentTeam.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
 #include <tempo/component/NetworkedComponent.hpp>
 
@@ -73,7 +74,7 @@ anax::Entity addComponent(anax::World &w, sf::Packet p)
 			CASE(ComponentAOEIndicator, AOEINDICATOR)
 			CASE(ComponentAttack, ATTACK)
 			CASE(ComponentCombo, COMBO)
-			CASE(ComponentGridAi, GRID_AI)
+			CASE(ComponentAI, AI)
 			CASE(ComponentHealth, HEALTH)
 			CASE(ComponentModel, MODEL)
 			CASE(ComponentPlayerLocal, PLAYER_LOCAL)
@@ -81,6 +82,7 @@ anax::Entity addComponent(anax::World &w, sf::Packet p)
 			CASE(ComponentStage, STAGE)
 			CASE(ComponentStagePosition, STAGE_POSITION)
 			CASE(ComponentStageRotation, STAGE_ROTATION)
+			CASE(ComponentTeam, TEAM)
 			CASE(ComponentStageTranslation, STAGE_TRANSLATION)
 			CASE(ComponentWeapon, WEAPON)
 

@@ -22,7 +22,6 @@
 #include <tempo/network/ID.hpp>
 #include <tempo/song.hpp>
 #include <tempo/system/SystemCombo.hpp>
-#include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemTrigger.hpp>
 #include <tempo/time.hpp>
@@ -129,7 +128,6 @@ int main(int argc, const char **argv)
 	// Setup ECS
 	anax::World world;
 	// tempo::SystemRender           system_render(app);
-	tempo::SystemGridAi            system_grid_ai;
 	tempo::SystemCombo             system_combo;
 	tempo::SystemHealth            system_health;
 	tempo::SystemTrigger           system_trigger(world);
@@ -146,7 +144,6 @@ int main(int argc, const char **argv)
 
 	// Add Systems
 	world.addSystem(system_attack);
-	world.addSystem(system_grid_ai);
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
 	world.addSystem(system_gc);
@@ -306,6 +303,7 @@ int main(int argc, const char **argv)
 
 			// Deprecated/To-be-worked-on
 			system_health.CheckHealth();
+			system_health.recieveHealth(world);
 
 			// Graphics updates
 			// std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl;
@@ -335,11 +333,12 @@ int main(int argc, const char **argv)
 			// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
+			tempo::ComponentHealth &h = entity_player.getComponent<tempo::ComponentHealth>();
+			std::cout << h.current_health << "/" << h.max_health << std::endl;
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;
 
-			system_grid_ai.update();
 		}
 		system_stage_renderer.updateStage({255, 175, 0, 0}, {255, 50, 50, 50}, driver, j);
 

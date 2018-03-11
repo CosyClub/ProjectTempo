@@ -1,5 +1,6 @@
 #define AM_SERVER
 
+#include <server/system/SystemAI.hpp>
 #include <server/system/SystemAttack.hpp>
 #include <server/system/SystemMovement.hpp>
 
@@ -7,7 +8,6 @@
 
 #include <tempo/entity/EntityCreationServer.hpp>
 #include <tempo/system/SystemCombo.hpp>
-#include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 
 #include <tempo/network/base.hpp>
@@ -49,29 +49,28 @@ int main(int argc, const char **argv)
 	anax::World world;
 
 	// Create Systems
+	server::SystemAI system_ai;
 	server::SystemAttack   system_attack(world);
 	server::SystemMovement system_movement;
 	tempo::SystemCombo  system_combo;
-	tempo::SystemGridAi system_grid_ai;
 	tempo::SystemHealth system_health;
 
+	world.addSystem(system_ai);
 	world.addSystem(system_attack);
 	world.addSystem(system_movement);
 	world.addSystem(system_combo);
-	world.addSystem(system_grid_ai);
 	world.addSystem(system_health);
 	world.refresh();
 
 	// Create some Test Entities
-	// tempo::newAI(world, 5, 5);
-	// tempo::newAI(world, 3, 3);
-	// tempo::newAI(world, 8, 8);
-
-	// Destroyables
-	tempo::newDestroyable(world, 4, 4, "Cube");
-
-	// NonDestroyables
-	tempo::newNonDestroyable(world, 6, 6, "Cube");
+	// tempo::createMobStill(world, glm::ivec2(6, 6));
+	// tempo::createMobStill(world, glm::ivec2(7, 7));
+	tempo::createMobAntiSnail(world, glm::ivec2(4, 4));
+	std::deque<glm::ivec2> path {glm::ivec2(3,3),
+	                             glm::ivec2(3,7),
+	                             glm::ivec2(7,7),
+	                             glm::ivec2(7,3)};
+	tempo::createMobPatroller(world, glm::ivec2(3,3), path);
 
 	//////////////////////////////////
 	// Thread Startup
@@ -105,11 +104,15 @@ int main(int argc, const char **argv)
 			system_attack.recieveAttacks(world);
 			system_combo.checkForUpdates();
 			system_health.CheckHealth();
-
+			system_health.broadcastHealth();
 			// TODO Once animated detlete and uncomment in delta end:
 			system_movement.processTranslation();
 		}
 
+		if (clock.passed_antibeat())
+		{
+		}
+		
 		////////////////
 		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
@@ -119,7 +122,7 @@ int main(int argc, const char **argv)
 		////////////////
 		// Events at "Beat Passed"
 		if (clock.passed_beat()) {
-			system_grid_ai.update();
+			system_ai.update(system_attack);
 			system_combo.advanceBeat();
 
 			if (tick++ % 20 == 0)
