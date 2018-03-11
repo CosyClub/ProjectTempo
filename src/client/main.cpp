@@ -332,7 +332,7 @@ int main(int argc, const char **argv)
 		////////////////
 		// Events at "Beat Passed"
 		if (clock.passed_beat()) {
-			click.play();
+			// click.play();
 			if (tick++ % 20 == 0)
 				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()
 				          << "+++++++++++++++" << std::endl;
