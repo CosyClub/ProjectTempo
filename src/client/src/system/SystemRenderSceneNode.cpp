@@ -13,8 +13,10 @@ namespace client
 {
 void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
 {
-	irr::core::dimension2d<irr::f32> size(1.2f, 1.6f);
-	irr::core::vector3df             pos(0.0f, 0.0f + size.Height / 2, 0.0f);
+	irr::core::dimension2d<irr::f32> sizePlayer(1.2f, 1.7f);
+	irr::core::dimension2d<irr::f32> sizeRogue(1.3f, 1.5f);
+	irr::core::vector3df             posPlayer(0.0f, 0.0f + sizePlayer.Height / 2, 0.0f);
+	irr::core::vector3df             posRogue(0.0f, 0.0f + sizeRogue.Height / 2, 0.0f);
 
 	auto entities = getEntities();
 
@@ -44,11 +46,18 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 		} else {
 			std::cout << "Adding billboard" << std::endl;
 			sn.node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
-			sn.billboard =
-				new irr::scene::YAlignedBillboardSceneNode(sn.node, smgr, -1,
-														   pos,  // fix alignment
-														   size, color, color);
-
+			if (sn.spritesheet == "rogue.png") {
+				sn.billboard =
+					new irr::scene::YAlignedBillboardSceneNode(sn.node, smgr, -1,
+						posRogue,  // fix alignment
+						sizeRogue, color, color);
+			}
+			else {
+				sn.billboard =
+					new irr::scene::YAlignedBillboardSceneNode(sn.node, smgr, -1,
+						posPlayer,  // fix alignment
+						sizePlayer, color, color);
+			}
 			const std::string& path = "resources/materials/textures/" + sn.spritesheet;
 			irr::video::ITexture * spritesheet = driver->getTexture(path.c_str());
 
@@ -56,9 +65,7 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 			sn.billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 			sn.billboard->setMaterialType( irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL );
 			sn.billboard->setMaterialTexture( 0, spritesheet);
-			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(.25,.25);
-			sn.spriteCols = 4;
-			sn.spriteRows = 4;
+			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale((1.0/sn.spriteCols),(1.0 / sn.spriteRows));
 			sn.u = 0;
 			sn.v = 0;
 		}
@@ -142,7 +149,7 @@ void SystemRenderSceneNode::update()
 						break;
 					default:
 						sn.u = (1.0 / sn.spriteCols);
-						sn.v = (1.0 / sn.spriteCols) * 3.0;
+						sn.v = (1.0 / sn.spriteRows) * 3.0;
 						break;
 					}
 					break;
