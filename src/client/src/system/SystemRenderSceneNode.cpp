@@ -25,7 +25,6 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 		  entity.getComponent<client::ComponentRenderSceneNode>();
 		if (sn.node != nullptr)
 			continue;
-		std::cout << "THIS SHOULD HAVE BEEN CALLED\n";
 		tempo::ComponentModel &m = entity.getComponent<tempo::ComponentModel>();
 
 		// Get color from componentmodel

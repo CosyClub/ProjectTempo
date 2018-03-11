@@ -28,7 +28,6 @@ void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver * driver,
 			else if (entity.hasComponent<tempo::ComponentGridAi>()) {
 				entity.addComponent<ComponentRenderSceneNode>(nullptr, "rogue.png", 4, 4);
 			}
-			std::cout << "Added Null Scene Node\n";
 			if (entity.hasComponent<tempo::ComponentHealth>()) {
 				entity.addComponent<ComponentHealthBar>(nullptr);
 			}

@@ -19,6 +19,7 @@ struct ComponentRenderSceneNode : public anax::Component {
 	irr::scene::IBillboardSceneNode * billboard;
 	irr::scene::ISceneNode *node;
 	ComponentRenderSceneNode(irr::scene::ISceneNode *node, std::string spritesheet, int spriteRows, int spriteCols);
+	~ComponentRenderSceneNode();
 };
 
 }  // namespace client

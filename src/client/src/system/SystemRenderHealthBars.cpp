@@ -22,6 +22,7 @@ void SystemRenderHealthBars::setup(irr::scene::ISceneManager *smgr)
 		                                             pos,  // fix alignment
 		                                             -1, color, color);
 		healthbar.node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+		healthbar.node->grab();
 	}
 }
 

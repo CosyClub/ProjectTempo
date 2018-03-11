@@ -2,11 +2,17 @@
 
 namespace client
 {
-ComponentRenderSceneNode::ComponentRenderSceneNode(irr::scene::ISceneNode *node, std::string spritesheet, int spriteRows, int spriteCols)
-    : node(node)
+	ComponentRenderSceneNode::ComponentRenderSceneNode(irr::scene::ISceneNode *node, std::string spritesheet, int spriteRows, int spriteCols)
+		: node(node)
+	{
+		this->spritesheet = spritesheet;
+		this->spriteRows = spriteRows;
+		this->spriteCols = spriteCols;
+	}
+
+ComponentRenderSceneNode::~ComponentRenderSceneNode()
 {
-	this->spritesheet = spritesheet;
-	this->spriteRows = spriteRows;
-	this->spriteCols = spriteCols;
+	node->remove();
 }
+
 }  // namespace client
