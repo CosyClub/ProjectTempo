@@ -45,7 +45,7 @@
 #include <iostream>
 #include <thread>
 
-#define BPM 137.852              // Beats per minutes
+#define BPM 138              // Beats per minutes
 #define PHASE 118008             // Microseconds
 #define DELTA 125            // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)

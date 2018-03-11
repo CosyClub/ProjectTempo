@@ -24,9 +24,8 @@
 #include <thread>
 #include <vector>
 
-#define BPM 137.852f              // Beats per minutes
+#define BPM 138              // Beats per minutes
 #define PHASE 0             // Microseconds
-// #define PHASE 118008             // Microseconds
 #define PLAYER_DELTA 125     // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000.f / BPM  // Time between beats (microsecs)
 
