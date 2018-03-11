@@ -24,7 +24,7 @@
 #include <thread>
 #include <vector>
 
-#define BPM 120              // Beats per minutes
+#define BPM 137.852              // Beats per minutes
 #define PLAYER_DELTA 125     // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
