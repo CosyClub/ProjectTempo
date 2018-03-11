@@ -44,7 +44,7 @@
 #include <thread>
 
 #define BPM 138              // Beats per minutes
-#define DELTA 125            // Delta around a beat a player can hit (millisecs)
+#define DELTA 100            // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
 void sync_time(tempo::Clock &clock)
@@ -338,10 +338,10 @@ int main(int argc, const char **argv)
 		}
 
 		// Rendering Code
-		if (!device->isWindowActive()) {
-			device->yield();
-			continue;
-		}
+		//if (!device->isWindowActive()) {
+		//	device->yield();
+		//	continue;
+		//}
 
 		driver->beginScene(true, true);
 		smgr->drawAll();
