@@ -10,7 +10,8 @@ ComponentHealthBar::ComponentHealthBar(irr::scene::IBillboardSceneNode *node)
 
 ComponentHealthBar::~ComponentHealthBar()
 {
-	node->remove();
+	// node->remove();
+	// If you ever need to delete a healthbar go and find Raef
 }
 
 }  // namespace client
