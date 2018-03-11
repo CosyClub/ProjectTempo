@@ -4,7 +4,6 @@
 #include <tempo/config.hpp>
 #include <tempo/network/ID.hpp>
 #include <tempo/network/base.hpp>
-#include <tempo/system/SystemLevelManager.hpp>
 #include <tempo/time.hpp>
 
 #include <anax/World.hpp>

@@ -20,7 +20,6 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentStagePosition.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentStageRotation.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentStageTranslation.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentTransform.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentWeapon.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/NetworkedComponent.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/entity/EntityCreation.hpp"
@@ -34,8 +33,6 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemCombo.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemGridAi.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemHealth.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemLevelManager.hpp"
-	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemTransform.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemTrigger.hpp"
 )
 
@@ -59,7 +56,6 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentStagePosition.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentStageRotation.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentStageTranslation.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentTransform.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentWeapon.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/EntityCreation.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/entity/EntityCreationServer.cpp"
@@ -72,8 +68,6 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemCombo.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGridAi.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemHealth.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemLevelManager.cpp"
-	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTransform.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTrigger.cpp"
 )
 

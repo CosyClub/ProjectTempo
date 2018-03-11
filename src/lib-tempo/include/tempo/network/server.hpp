@@ -4,7 +4,6 @@
 #include <tempo/entity/EntityCreationServer.hpp>
 #include <tempo/network/base.hpp>
 #include <tempo/network/queue.hpp>
-#include <tempo/system/SystemLevelManager.hpp>
 #include <tempo/time.hpp>
 
 #include <SFML/Network.hpp>
