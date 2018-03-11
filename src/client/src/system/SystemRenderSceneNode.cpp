@@ -1,4 +1,5 @@
 #include <client/system/SystemRenderSceneNode.hpp>
+#include <tempo\component\ComponentStageRotation.hpp>
 
 #include <IBillboardSceneNode.h>
 #include <IVideoDriver.h>
@@ -43,16 +44,23 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 		} else {
 			std::cout << "Adding billboard" << std::endl;
 			sn.node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
-			irr::scene::IBillboardSceneNode *billboard =
+			sn.billboard =
 				new irr::scene::YAlignedBillboardSceneNode(sn.node, smgr, -1,
 														   pos,  // fix alignment
 														   size, color, color);
 
+			const std::string& path = "resources/materials/textures/" + sn.spritesheet;
+			irr::video::ITexture * spritesheet = driver->getTexture(path.c_str());
+
 			driver->setTextureCreationFlag(irr::video::ETCF_ALWAYS_32_BIT,true);
-			billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-			billboard->setMaterialType( irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL );
-			billboard->setMaterialTexture( 0, driver->getTexture("resources/materials/textures/zombiespritesheet.png"));
-			billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(.1,.5);
+			sn.billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+			sn.billboard->setMaterialType( irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL );
+			sn.billboard->setMaterialTexture( 0, spritesheet);
+			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(.25,.25);
+			sn.spriteCols = 4;
+			sn.spriteRows = 4;
+			sn.u = 0;
+			sn.v = 0;
 		}
 	}
 
@@ -66,15 +74,94 @@ void SystemRenderSceneNode::update()
 	for (auto entity : entities) {
 		tempo::ComponentStage &           s  = entity.getComponent<tempo::ComponentStage>();
 		tempo::ComponentStagePosition &   sp = entity.getComponent<tempo::ComponentStagePosition>();
+		tempo::ComponentStageRotation &   sr = entity.getComponent<tempo::ComponentStageRotation>();
 		client::ComponentRenderSceneNode &sn =
 		  entity.getComponent<client::ComponentRenderSceneNode>();
 
 		glm::ivec2 pos = sp.getOrigin();
 
-		// std::cout << "Moved billboard to: " << pos.x << ", " << s.getHeight(pos) << ", " << pos.y
-		// << std::endl;
+		// Change Sprite based on Facing
+		if (sn.updateNeeded) {
+
+			switch (sr.facing.y)
+			{
+			//Right
+			case (1):
+				switch (sr.previousFacing.y)
+				{
+				//Already facing right
+				case (1):
+					sn.u = sn.u + (1.0 / sn.spriteCols);
+					break;
+				//Facing another direction
+				default:
+					sn.u = (1.0 / sn.spriteCols);
+					sn.v = (1.0 / sn.spriteRows) * 2.0;
+					break;
+				}
+				break;
+			//Left
+			case (-1):
+				switch (sr.previousFacing.y)
+				{
+				//Already facing right
+				case (-1):
+					sn.u = sn.u + (1.0 / sn.spriteCols);
+					break;
+				default:
+					sn.u = (1.0 / sn.spriteCols);
+					sn.v = (1.0 / sn.spriteRows);
+					break;
+				}
+				break;
+
+			case (0):
+				switch (sr.facing.x)
+				{
+				//Down
+				case (1):
+					switch (sr.previousFacing.x)
+					{
+					//Already facing down
+					case (1):
+						sn.u = sn.u + (1.0 / sn.spriteCols);
+						break;
+					default:
+						sn.u = (1.0 / sn.spriteCols);
+						sn.v = 0.0;
+						break;
+					}
+					break;
+				//Up
+				case (-1):
+					switch (sr.previousFacing.x)
+					{
+					//Already facing up
+					case (-1):
+						sn.u = sn.u + (1.0 / sn.spriteCols);
+						break;
+					default:
+						sn.u = (1.0 / sn.spriteCols);
+						sn.v = (1.0 / sn.spriteCols) * 3.0;
+						break;
+					}
+					break;
+				case (0):
+					printf("Jump?\n");
+					break;
+				}
+				break;
+			default:
+				printf("Shouldn't happen!!\n");
+				break;
+			}
+
+			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureTranslate(sn.u, sn.v);
+			sn.updateNeeded = false;
+		}
+
+		sr.previousFacing = sr.facing;
 		sn.node->setPosition(irr::core::vector3df(pos.x, s.getHeight(pos), pos.y));
-		// TODO
 	}
 }
 }  // namespace client

@@ -22,6 +22,7 @@ struct ComponentStageRotation
     : anax::Component
     , NetworkedComponent {
 	Facing facing;
+	Facing previousFacing = { 0,0 };
 
 	ComponentStageRotation(Facing f);
 
