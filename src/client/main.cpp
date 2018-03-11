@@ -368,8 +368,11 @@ int main(int argc, const char **argv)
 	p << tempo::port_co;
 	tempo::sendMessage(tempo::QueueID::ENTITY_DELETION, p);
 
-	device->drop();
 	listener.join();
+
+	world.clear();
+
+	device->drop();
 
 	return 0;
 }
