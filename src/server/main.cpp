@@ -31,7 +31,7 @@
 
 int main(int argc, const char **argv)
 {
-	tempo::Song mainsong("resources/sound/ravecave_loop.wav");
+	tempo::Song mainsong("resources/sound/ravecave_loop.ogg");
 	mainsong.set_volume(0.f);
 	mainsong.skip(sf::microseconds(PHASE));
 	mainsong.set_volume(20.f);
