@@ -45,7 +45,8 @@
 #include <iostream>
 #include <thread>
 
-#define BPM 120              // Beats per minutes
+#define BPM 137.852              // Beats per minutes
+#define PHASE 118008             // Microseconds
 #define DELTA 125            // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
@@ -103,7 +104,7 @@ anax::Entity createButtonGroup(anax::World &world,
 
 int main(int argc, const char **argv)
 {
-	tempo::Song mainsong("resources/sound/focus.ogg");
+	tempo::Song mainsong("resources/sound/ravecave.wav");
 	mainsong.set_volume(0.f);
 
 	sf::SoundBuffer clickbuf;
@@ -213,8 +214,9 @@ int main(int argc, const char **argv)
 	system_render_health_bars.setup(smgr);
 
 	// Start and Sync Song
-	// mainsong.start();
+	mainsong.start();
 	sync_time(clock, &mainsong);
+	mainsong.skip(sf::microseconds(PHASE));
 	mainsong.set_volume(20.f);
 	// long offset = 0;
 
