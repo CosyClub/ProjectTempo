@@ -9,7 +9,6 @@
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
-#include <tempo/system/SystemLevelManager.hpp>
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>
@@ -25,13 +24,20 @@
 #include <thread>
 #include <vector>
 
-#define BPM 120              // Beats per minutes
+#define BPM 138              // Beats per minutes
+#define PHASE 0             // Microseconds
 #define PLAYER_DELTA 125     // Delta around a beat a player can hit (millisecs)
-#define TIME 60000000 / BPM  // Time between beats (microsecs)
+#define TIME 60000000.f / BPM  // Time between beats (microsecs)
 
 int main(int argc, const char **argv)
 {
+	tempo::Song mainsong("resources/sound/ravecave_loop.ogg");
+	mainsong.set_volume(0.f);
+	mainsong.skip(sf::microseconds(PHASE));
+	mainsong.set_volume(20.f);
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(PLAYER_DELTA));
+	mainsong.start();
+
 
 	// Set up remote address, local ports and remote handshake port
 	tempo::port_si = DEFAULT_PORT_IN;
@@ -47,7 +53,7 @@ int main(int argc, const char **argv)
 	server::SystemMovement system_movement;
 	tempo::SystemCombo  system_combo;
 	tempo::SystemGridAi system_grid_ai;
-	tempo::SystemHealth system_health;	
+	tempo::SystemHealth system_health;
 
 	world.addSystem(system_attack);
 	world.addSystem(system_movement);
@@ -99,11 +105,11 @@ int main(int argc, const char **argv)
 			system_attack.recieveAttacks(world);
 			system_combo.checkForUpdates();
 			system_health.CheckHealth();
-			
+
 			// TODO Once animated detlete and uncomment in delta end:
 			system_movement.processTranslation();
 		}
-		
+
 		////////////////
 		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
