@@ -363,16 +363,11 @@ int main(int argc, const char **argv)
 	printf("Left main loop\n");
 
 	// Tell server we are gone
-	sf::Packet p;
-	tempo::operator<<(p, tempo::localtoserver[entity_player.getId()]);
-	p << (uint32_t) tempo::addr_r.toInteger();
-	p << (uint32_t) tempo::port_ci;
-	tempo::sendMessage(tempo::QueueID::ENTITY_DELETION, p);
+	tempo::disconnectFromServer(entity_player);
 
+	// Close server listener and destroy the game
 	listener.join();
-
 	world.clear();
-
 	device->drop();
 
 	return 0;
