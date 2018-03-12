@@ -2,6 +2,7 @@
 
 #include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentHealth.hpp>
+#include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
 
 #include <client/network/client.hpp>
@@ -38,9 +39,15 @@ void SystemAttack::processServerResponses(anax::World &w)
 				          << std::endl;
 				continue;
 			}
-			tempo::ComponentAttack &c = e.getComponent<tempo::ComponentAttack>();
+			tempo::ComponentAttack        &c  = e.getComponent<tempo::ComponentAttack>();
+			tempo::ComponentStagePosition &sp = e.getComponent<tempo::ComponentStagePosition>();
+			tempo::ComponentStageRotation &sr = e.getComponent<tempo::ComponentStageRotation>();
 			p >> c.damage;
 			p >> c.beats_until_attack;
+
+			// TODO For Grant
+			std::vector<glm::ivec2> ps = c.getAbsolutePositions(sp.getOrigin(), sr.facing);
+
 			break;
 		}
 		case tempo::MessageAttack::ATTACK_CORRECTION: {
