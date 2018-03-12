@@ -6,6 +6,7 @@
 #include <ISceneNode.h>
 #include <ITexture.h>
 #include <irrlicht.h>
+#include <string>
 
 namespace client
 {

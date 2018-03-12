@@ -1,5 +1,5 @@
 #include <client/system/SystemRenderSceneNode.hpp>
-#include <tempo\component\ComponentStageRotation.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
 
 #include <IBillboardSceneNode.h>
 #include <IVideoDriver.h>
