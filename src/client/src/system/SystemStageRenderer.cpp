@@ -17,8 +17,10 @@ namespace client
 
 inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager *smgr,
                                          irr::video::IVideoDriver * driver,
-                                         std::vector<tempo::stage_tile>&       tiles)
+                                         tempo::ComponentStage& stage)
 {
+
+  auto tiles = stage.getHeights();
 
   if(tile_nodes.size() == tiles.size()) return;
 
@@ -50,8 +52,12 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 		node->setPosition(irr::core::vector3df(grid_x, height, grid_y));
 		node->setMaterialTexture(0, tile_texture);
 
+    //TODO: Implement a getNeighbours function
+    if(stage.getHeight(tiles[i].position - glm::ivec2(0,1)) < height ||
+        stage.getHeight(tiles[i].position - glm::ivec2(0,-1)) < height ||
+        stage.getHeight(tiles[i].position - glm::ivec2(-1,0)) < height ||
+        stage.getHeight(tiles[i].position - glm::ivec2(1,0)) < height ) {
 
-    if(height > 0.1f) {
   		irr::video::SMaterial &material_side = node->getMaterial(0);
   		irr::video::SMaterial &material_top  = node->getMaterial(1);
 
@@ -73,10 +79,8 @@ void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVi
 	auto  entity   = std::begin(entities);
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 
-	auto tiles = stage.getHeights();
-
 	//tile_nodes =
-  addFloorTilesToScene(smgr, driver, tiles);
+  addFloorTilesToScene(smgr, driver, stage);
 }
 
 void SystemStageRenderer::updateStage(glm::ivec4                colour1,
