@@ -1,5 +1,7 @@
 #include <client/system/SystemParseKeyInput.hpp>
 
+#include <client/component/ComponentRenderSceneNode.hpp>
+
 #include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
@@ -32,6 +34,7 @@ void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing, b
 
 	if (entity.hasComponent<tempo::ComponentStageRotation>()) {
 		entity.getComponent<tempo::ComponentStageRotation>().facing = facing;
+		entity.getComponent<client::ComponentRenderSceneNode>().updateNeeded = true;
 	}
 
 	if (!withinDelta) {

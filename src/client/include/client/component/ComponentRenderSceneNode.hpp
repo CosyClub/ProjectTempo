@@ -4,12 +4,22 @@
 #include <anax/Component.hpp>
 
 #include <ISceneNode.h>
+#include <ITexture.h>
+#include <irrlicht.h>
+#include <string>
 
 namespace client
 {
 struct ComponentRenderSceneNode : public anax::Component {
+
+	std::string spritesheet;
+	int spriteRows = 0;
+	int spriteCols = 0;
+	float u, v;
+	bool updateNeeded = false;
+	irr::scene::IBillboardSceneNode * billboard;
 	irr::scene::ISceneNode *node;
-	ComponentRenderSceneNode(irr::scene::ISceneNode *node);
+	ComponentRenderSceneNode(irr::scene::ISceneNode *node, std::string spritesheet, int spriteRows, int spriteCols);
 	~ComponentRenderSceneNode();
 };
 
