@@ -41,7 +41,7 @@ class Clock
 
 	// Gets/Sets the current absolute time
 	sf::Time get_time();
-	void     set_time(sf::Time t, tempo::Song *song);
+	void     set_time(sf::Time t);
 
 	// Checks to see if we have passed the beat as marked by
 	// "Beat Passed", "Delta Start" and "Delta End" in Figure 1.
