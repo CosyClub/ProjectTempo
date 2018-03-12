@@ -6,8 +6,10 @@
 #include <ISceneNode.h>
 #include <ITexture.h>
 #include <irrlicht.h>
-#include <string>
+
 #include <glm/vec2.hpp>
+
+#include <string>
 
 namespace client
 {
@@ -19,7 +21,9 @@ struct ComponentRenderSceneNode : public anax::Component {
 	bool updateNeeded = false;
 	irr::scene::IBillboardSceneNode * billboard;
 	irr::scene::ISceneNode *node;
+	
 	ComponentRenderSceneNode(irr::scene::ISceneNode *node);
+	~ComponentRenderSceneNode();
 };
 
 }  // namespace client

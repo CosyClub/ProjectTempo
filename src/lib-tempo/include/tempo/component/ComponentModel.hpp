@@ -12,15 +12,15 @@
 
 namespace tempo
 {
-struct ComponentModel
-    : anax::Component
-    , NetworkedComponent {
+
+struct ComponentModel : anax::Component, NetworkedComponent 
+{
 	bool        isMesh;
 	std::string path;
 	glm::vec3   color;
 	glm::ivec2  spriteDim;
 
-ComponentModel(std::string p, glm::vec3 c, bool mesh, glm::ivec2 sdim);
+	ComponentModel(std::string p, glm::vec3 c, bool mesh, glm::ivec2 sdim);
 
 	/////
 	// Required for networking

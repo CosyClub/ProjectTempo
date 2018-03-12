@@ -139,7 +139,7 @@ void timeSyncServer(tempo::Clock *clock)
 // Will not check if client already exists, just add the information as a new
 // client, so it is recommended to use `if (!findClientID(ip, port)) first!
 static uint32_t idCounter = NO_CLIENT_ID + 1;
-uint32_t        addClient(sf::Uint32 ip, unsigned short port, ClientRole role = ClientRole::NO_ROLE)
+uint32_t addClient(sf::Uint32 ip, unsigned short port, ClientRole role = ClientRole::NO_ROLE)
 {
 	clientConnection newClient = {ip, port, role};
 	cmtx.lock();
@@ -148,15 +148,43 @@ uint32_t        addClient(sf::Uint32 ip, unsigned short port, ClientRole role = 
 	return idCounter++;
 }
 
-#define ADD_COMPONENT(ENT, CNT, PKT, CMP)                                                          \
-	if (ENT.hasComponent<CMP>()) {                                                                 \
-		sf::Packet part;                                                                           \
-		part << ENT.getComponent<CMP>().getId();                                                   \
-		sf::Packet part2 = ENT.getComponent<CMP>().dumpComponent();                                \
-		part << part2;                                                                             \
-		PKT << sf::Uint32(part.getDataSize());                                                     \
-		PKT << part;                                                                               \
-		CNT++;                                                                                     \
+uint32_t findClientID(sf::Uint32 ip, unsigned short port)
+{
+	// Loop through clients
+	cmtx.lock();
+	for (clientpair element : clients) {
+		if (element.second.ip == ip && element.second.port == port) {
+			cmtx.unlock();
+			return element.first;
+		}
+	}
+	cmtx.unlock();
+	return NO_CLIENT_ID;
+}
+
+void removeClientId(sf::Uint32 ip, unsigned short port)
+{
+	// Loop through clients
+	cmtx.lock();
+	for (clientpair element : clients) {
+		if (element.second.ip == ip && element.second.port == port) {
+			clients.erase(element.first);
+			cmtx.unlock();
+			return;
+		}
+	}
+	cmtx.unlock();
+}
+
+#define ADD_COMPONENT(ENT, CNT, PKT, CMP)                                    \
+	if (ENT.hasComponent<CMP>()) {                                       \
+		sf::Packet part;                                             \
+		part << ENT.getComponent<CMP>().getId();                     \
+		sf::Packet part2 = ENT.getComponent<CMP>().dumpComponent();  \
+		part << part2;                                               \
+		PKT << sf::Uint32(part.getDataSize());                       \
+		PKT << part;                                                 \
+		CNT++;                                                       \
 	}
 
 sf::Packet packageComponents(anax::Entity entity)
@@ -280,7 +308,7 @@ void handshakeRoleReq(sf::Packet &packet, anax::World *world)
 	}
 }
 
-void checkForNewClients(anax::World *world)
+void checkForClientCreation(anax::World *world)
 {
 	tempo::Queue<sf::Packet> *queue = get_system_queue(QueueID::HANDSHAKE);
 	if (queue->empty())
@@ -302,6 +330,33 @@ void checkForNewClients(anax::World *world)
 			break;
 		}
 	}
+	world->refresh();
+}
+
+void checkForClientDeletion(anax::World& world) {
+	tempo::Queue<sf::Packet> *queue = get_system_queue(QueueID::ENTITY_DELETION);
+	if (queue->empty())
+		return;
+
+	while (!queue->empty()) {
+		sf::Packet packet = queue->front();
+		queue->pop();
+
+		sf::Packet broadcast;
+		anax::Entity::Id id;
+		uint32_t ip_d;
+		uint32_t port;
+		packet >> id >> ip_d >> port;
+		broadcast << id;
+		sf::IpAddress ip(ip_d);
+
+		std::cout << "Client (" << ip.toString() << ":" << port << ") Disconnected." << std::endl;
+		anax::Entity e(world, id);
+		world.killEntity(e);
+		removeClientId(ip.toInteger(), port);
+		broadcastMessage(tempo::QueueID::ENTITY_DELETION, broadcast);
+	}
+	world.refresh();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -334,20 +389,6 @@ void listenForClientUpdates()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-uint32_t findClientID(sf::Uint32 ip, unsigned short port)
-{
-	// Loop through clients
-	cmtx.lock();
-	for (clientpair element : clients) {
-		if (element.second.ip == ip && element.second.port == port) {
-			cmtx.unlock();
-			return element.first;
-		}
-	}
-	cmtx.unlock();
-	return NO_CLIENT_ID;
-}
 
 bool sendMessage(tempo::QueueID id, sf::Packet p)
 {

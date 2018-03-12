@@ -2,5 +2,15 @@
 
 namespace client
 {
+
 ComponentRenderButtonGroup::ComponentRenderButtonGroup() {}
+
+ComponentRenderButtonGroup::~ComponentRenderButtonGroup()
+{
+	for (buttonRender b : buttonsRender) {
+		b.button_housing->remove();
+		b.button->remove();
+	}
+}
+
 }  // namespace client

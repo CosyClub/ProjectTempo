@@ -21,6 +21,7 @@ void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver * driver,
 			touched = true;
 			entity.addComponent<ComponentRenderSceneNode>(nullptr);
 			std::cout << "Added Null Scene Node\n";
+			
 			if (entity.hasComponent<tempo::ComponentHealth>()) {
 				entity.addComponent<ComponentHealthBar>(nullptr);
 			}

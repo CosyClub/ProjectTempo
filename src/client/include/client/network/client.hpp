@@ -74,6 +74,8 @@ void listenForServerUpdates(std::atomic<bool> &running);
 //         void - nothing is returned. Note side effects above.
 bool connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData, anax::World &world);
 
+void disconnectFromServer(anax::Entity::Id id);
+
 bool broadcastMessage(QueueID id, sf::Packet p);
 }
 
