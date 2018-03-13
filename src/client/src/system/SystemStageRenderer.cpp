@@ -56,7 +56,7 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 
 		batchMesh->addMesh(mesh, irr::core::vector3df(grid_x, height, grid_y));
 
-		tile_nodes.push_back(std::make_tuple(glm::ivec2(grid_y, grid_x), nullptr));
+		tile_nodes.push_back(glm::ivec2(grid_y, grid_x));
 		old_positions.push_back(tempo::stage_tile(glm::ivec2(grid_y, grid_x), height));
 		fractions.push_back(0.00001f);
 
@@ -85,7 +85,7 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 
 		batchMesh->addMesh(mesh, irr::core::vector3df(grid_x, height, grid_y));
 
-		tile_nodes.push_back(std::make_tuple(glm::ivec2(grid_y, grid_x), nullptr));
+		tile_nodes.push_back(glm::ivec2(grid_y, grid_x));
 		old_positions.push_back(tempo::stage_tile(glm::ivec2(grid_y, grid_x), height));
 		fractions.push_back(0.00001f);
 	}
@@ -140,7 +140,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 
-		glm::ivec2 pos = std::get<0>(tile_nodes[i]);
+		glm::ivec2 pos = tile_nodes[i];
 
 		float old_height = old_positions[i].height;
 
@@ -218,7 +218,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 
-		glm::ivec2 pos = std::get<0>(tile_nodes[i]);
+		glm::ivec2 pos = tile_nodes[i];
 
 		float old_height = old_positions[i].height;
 
@@ -274,7 +274,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 
-		glm::ivec2 pos = std::get<0>(tile_nodes[i]);
+		glm::ivec2 pos = tile_nodes[i];
 
 		float old_height = old_positions[i].height;
 
@@ -318,8 +318,8 @@ inline bool SystemStageRenderer::checkerBoardPattern(irr::video::IVideoDriver * 
                                                      int                         i,
                                                      int                         j)
 {
-	return (((int)(std::get<0>(this->tile_nodes[i]).x % 2)
-		== (int)(std::get<0>(this->tile_nodes[i]).y % 2))
+	return (((int)((this->tile_nodes[i]).x % 2)
+		== (int)((this->tile_nodes[i]).y % 2))
 		^ (j % 2));
 
 }
@@ -333,7 +333,7 @@ inline bool SystemStageRenderer::linePattern(irr::video::IVideoDriver *  driver,
                                              int                         i,
                                              int                         j)
 {
-	return ((int)!(std::get<0>(this->tile_nodes[i])[orientation] % size == j));
+	return ((int)!((this->tile_nodes[i])[orientation] % size == j));
 }
 
 inline bool SystemStageRenderer::squarePattern(irr::video::IVideoDriver *  driver,
@@ -346,12 +346,12 @@ inline bool SystemStageRenderer::squarePattern(irr::video::IVideoDriver *  drive
 {
 	glm::ivec2 centrePoint;
 	centrePoint.x =
-	  std::get<0>(this->tile_nodes[i]).x - std::get<0>(this->tile_nodes[i]).x % size + size / 2;
+	  (this->tile_nodes[i]).x - (this->tile_nodes[i]).x % size + size / 2;
 	centrePoint.y =
-	  std::get<0>(this->tile_nodes[i]).y - std::get<0>(this->tile_nodes[i]).y % size + size / 2;
+	  (this->tile_nodes[i]).y - (this->tile_nodes[i]).y % size + size / 2;
 
-	int dx = abs(std::get<0>(this->tile_nodes[i]).x - centrePoint.x);
-	int dy = abs(std::get<0>(this->tile_nodes[i]).y - centrePoint.y);
+	int dx = abs((this->tile_nodes[i]).x - centrePoint.x);
+	int dy = abs((this->tile_nodes[i]).y - centrePoint.y);
 
 	return ((((dx % 2 == 0 && dy == 0) || (dx > 0 && dx % 2 == 0 && dy < dx)) ||  // columns
 		((dy % 2 == 0 && dx == 0) || (dy > 0 && dy % 2 == 0 && dx < dy)) ||  // rows

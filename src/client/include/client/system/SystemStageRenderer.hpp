@@ -16,7 +16,7 @@
 
 namespace client
 {
-typedef std::vector<std::tuple<glm::ivec2, irr::scene::IMeshSceneNode *>> stage_nodes;
+typedef std::vector<glm::ivec2> stage_nodes;
 typedef std::vector<std::tuple<glm::ivec2, float >> heights;
 
 // Initalises all rendering for the static stage
