@@ -2,6 +2,8 @@
 
 #include <tempo/component/ComponentStage.hpp>
 
+#include <client/misc/CBatchingMesh.hpp>
+
 #include <IAnimatedMesh.h>
 #include <IAnimatedMeshSceneNode.h>
 #include <irrlicht.h>  // :TODO: sort out includes
@@ -34,40 +36,68 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 	  driver->getTexture("resources/materials/walls/cobblestone.png");
 	irr::video::ITexture *wall_normal_map =
 	  driver->getTexture("resources/materials/walls/cobblestone_n.png");
-  irr::video::ITexture *tile_texture =
+	irr::video::ITexture *tile_texture =
 	  driver->getTexture("resources/materials/TileLightMaskPixelOn.png");
 
+		irr::scene::CBatchingMesh *batchMesh = new irr::scene::CBatchingMesh();
+
+		mesh->getMeshBuffer(1)->getMaterial().setTexture(0, tile_texture);
+		mesh->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
+		mesh->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
+		mesh->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
 
 	for (unsigned int i = tile_nodes.size(); i < tiles.size(); ++i) {
-		irr::scene::IMeshSceneNode *node = smgr->addMeshSceneNode(mesh, 0);
 
 		float grid_x = tiles[i].position.x;
 		float grid_y = tiles[i].position.y;
 		float height = tiles[i].height;
 
-		tile_nodes.push_back(std::make_tuple(glm::ivec2(grid_y, grid_x), node));
-    old_positions.push_back(tempo::stage_tile(glm::ivec2(grid_y, grid_x), height));
-    fractions.push_back(0.00001f);
+		if (height >= 5) {
+			continue;
+		}
 
-		node->setPosition(irr::core::vector3df(grid_x, height, grid_y));
-		node->setMaterialTexture(0, tile_texture);
+		batchMesh->addMesh(mesh, irr::core::vector3df(grid_x, height, grid_y));
 
-    //TODO: Implement a getNeighbours function
-    if(stage.getHeight(tiles[i].position - glm::ivec2(0,1)) < height ||
-        stage.getHeight(tiles[i].position - glm::ivec2(0,-1)) < height ||
-        stage.getHeight(tiles[i].position - glm::ivec2(-1,0)) < height ||
-        stage.getHeight(tiles[i].position - glm::ivec2(1,0)) < height ) {
+		tile_nodes.push_back(std::make_tuple(glm::ivec2(grid_y, grid_x), nullptr));
+		old_positions.push_back(tempo::stage_tile(glm::ivec2(grid_y, grid_x), height));
+		fractions.push_back(0.00001f);
 
-  		irr::video::SMaterial &material_side = node->getMaterial(0);
-  		irr::video::SMaterial &material_top  = node->getMaterial(1);
-
-  		material_side.setTexture(0, wall_diffuse_map);
-  		material_side.setTexture(1, wall_normal_map);
-
-  		material_top.DiffuseColor.set(255, 10, 10, 10);
-    }
+  //  //TODO: Implement a getNeighbours function
+  //  if(stage.getHeight(tiles[i].position - glm::ivec2(0,1)) < height ||
+  //      stage.getHeight(tiles[i].position - glm::ivec2(0,-1)) < height ||
+  //      stage.getHeight(tiles[i].position - glm::ivec2(-1,0)) < height ||
+  //      stage.getHeight(tiles[i].position - glm::ivec2(1,0)) < height ) {
+		//}
 	}
 
+	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, nullptr);
+	mesh->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
+	mesh->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
+	mesh->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
+
+	for (unsigned int i = tile_nodes.size(); i < tiles.size(); ++i) {
+
+		float grid_x = tiles[i].position.x;
+		float grid_y = tiles[i].position.y;
+		float height = tiles[i].height;
+
+		if (height < 5) {
+			continue;
+		}
+
+
+
+		batchMesh->addMesh(mesh, irr::core::vector3df(grid_x, height, grid_y));
+
+		tile_nodes.push_back(std::make_tuple(glm::ivec2(grid_y, grid_x), nullptr));
+		old_positions.push_back(tempo::stage_tile(glm::ivec2(grid_y, grid_x), height));
+		fractions.push_back(0.00001f);
+	}
+
+
+	batchMesh->update();
+	this->node = smgr->addMeshSceneNode(batchMesh, 0);
+	batchMesh->drop();
 }
 
 
@@ -80,7 +110,7 @@ void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVi
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 
 	//tile_nodes =
-  addFloorTilesToScene(smgr, driver, stage);
+	addFloorTilesToScene(smgr, driver, stage);
 }
 
 void SystemStageRenderer::updateStage(glm::ivec4                colour1,
@@ -95,7 +125,6 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 	auto heights = stage.getHeights();
 
-//  std::cout<<"PLAYER POS"<< playerpos.x <<" "<< playerpos.y<<"\n";
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 
 		irr::scene::IMeshSceneNode *node = std::get<1>(this->tile_nodes[i]);
@@ -110,7 +139,6 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
     } else {
       node->setVisible(true);
     }
-
 
     auto animation_pos = node->getPosition();
     float old_height = old_positions[i].height;
