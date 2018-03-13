@@ -22,10 +22,12 @@ typedef std::vector<std::tuple<glm::ivec2, float >> heights;
 // Initalises all rendering for the static stage
 class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentStage>>
 {
-   public:
+public:
 	stage_nodes tile_nodes;
-  std::vector<tempo::stage_tile> old_positions;
-  std::vector<double> fractions;
+	std::vector<tempo::stage_tile> old_positions;
+	std::vector<double> fractions;
+
+	std::vector<float> currentHeight = { -1.f };
 
   irr::video::ITexture *wall_diffuse_map;
   irr::video::ITexture *wall_normal_map;

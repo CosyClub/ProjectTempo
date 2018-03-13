@@ -120,6 +120,13 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 	irr::scene::ISceneNode* par = this->node->getParent();
 	par->removeChild(this->node);
 
+	bool firstRun = false;
+
+	if (this->currentHeight.size() <= 1) {
+		this->currentHeight = std::vector<float>(this->tile_nodes.size());
+		firstRun = true;
+	}
+
 	auto  entities = getEntities();
 	auto  entity   = std::begin(entities);
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
@@ -137,9 +144,13 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 		float old_height = old_positions[i].height;
 
-		float height = old_height;
+		if (firstRun) {
+			this->currentHeight[i] = old_height;
+		}
 
-		if(height >= 5){
+		float height = heights[i].height;
+
+		if(currentHeight[i] >= 5){
 			continue;
 		}
 
@@ -151,25 +162,25 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		}
 
 
-    //auto animation_pos = node->getPosition();
+    auto animation_pos = currentHeight[i];
 
-	//if (old_height != height) {
+	if (old_height != height) {
 
-	//	if (animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
-	//		animation_pos.Y += (height - old_height) * fractions[i];
-	//		fractions[i] = fractions[i] * 1.2f;
-	//		node->setPosition(irr::core::vector3df(animation_pos.X, animation_pos.Y, animation_pos.Z));
+		if (animation_pos < height - 1.f || height + 1.f < animation_pos) {
+			animation_pos += (height - old_height) * fractions[i];
+			fractions[i] = fractions[i] * 1.2f;
+			this->currentHeight[i] = animation_pos;
 
-	//		if (animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
-	//			continue;
-	//}
-	//}
-	//else {
-	//		node->setPosition(irr::core::vector3df(animation_pos.X, height, animation_pos.Z));
-	//		old_height = height;
-	//		fractions[i] = 0.00001f;
-	//}
-	//}
+			if (animation_pos < height - 1.f || height + 1.f < animation_pos) {
+				currentHeight[i] = 0;
+			}
+	}
+	else {
+		this->currentHeight[i] = height;
+		old_height = height;
+		fractions[i] = 0.00001f;
+	}
+	}
 
 
 
@@ -201,9 +212,11 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		}
 
 		if (render) {
-			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, height, pos.x));
+			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
 		}
 	}
+
+	firstRun = false;
 
 	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
 	mesh->getMeshBuffer(1)->getMaterial().EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
@@ -214,9 +227,9 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 		float old_height = old_positions[i].height;
 
-		float height = old_height;
+		float height = heights[i].height;
 
-		if (height >= 5) {
+		if (currentHeight[i] >= 5) {
 			continue;
 		}
 
@@ -226,27 +239,6 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 			pos.x > playerpos.y + 30) {
 			continue;
 		}
-
-
-		//auto animation_pos = node->getPosition();
-
-		//if (old_height != height) {
-
-		//	if (animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
-		//		animation_pos.Y += (height - old_height) * fractions[i];
-		//		fractions[i] = fractions[i] * 1.2f;
-		//		//node->setPosition(irr::core::vector3df(animation_pos.X, animation_pos.Y, animation_pos.Z));
-
-		//		if (animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
-		//			continue;
-				//}
-			//}
-			//else {
-		//		//node->setPosition(irr::core::vector3df(animation_pos.X, height, animation_pos.Z));
-				//old_height = height;
-		//		fractions[i] = 0.00001f;
-			//}
-		//}
 
 		bool render;
 
@@ -276,12 +268,14 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		}
 
 		if (!render) {
-			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, height, pos.x));
+			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
 		}
 	}
 
 	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
 	mesh->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
+
+	//Walls
 
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 
@@ -289,13 +283,34 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 		float old_height = old_positions[i].height;
 
-		float height = old_height;
+		float height = heights[i].height;
 
-		if (height < 5) {
+		if (currentHeight[i] < 5) {
 			continue;
 		}
 
-		batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, height, pos.x));
+		auto animation_pos = currentHeight[i];
+
+		if (old_height != height) {
+
+			if (animation_pos < height - 1.f || height + 1.f < animation_pos) {
+				animation_pos += (height - old_height) * fractions[i];
+				fractions[i] = fractions[i] * 1.2f;
+				this->currentHeight[i] = animation_pos;
+
+				if (animation_pos < height - 1.f || height + 1.f < animation_pos) {
+					currentHeight[i] = 0;
+				}
+			}
+			else {
+				this->currentHeight[i] = height;
+				old_height = height;
+				fractions[i] = 0.00001f;
+			}
+		}
+
+
+		batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
 
 	}
 
