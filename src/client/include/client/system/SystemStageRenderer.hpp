@@ -53,34 +53,22 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 
 
 	inline bool checkerBoardPattern(irr::video::IVideoDriver *  driver,
-									glm::ivec2 pos,
-	                                irr::scene::CBatchingMesh *batchMesh,
-									irr::scene::IMesh *mesh,
 	                                glm::ivec4                  colour1,
 	                                glm::ivec4                  colour2,
-									float height,
 	                                int                         i,
 	                                int                         j);
 
 	inline bool linePattern(irr::video::IVideoDriver *  driver,
-							glm::ivec2 pos,
-	                        irr::scene::CBatchingMesh *batchMesh,
-							irr::scene::IMesh *mesh,
 	                        glm::ivec4                  colour1,
 	                        glm::ivec4                  colour2,
-							float height,
 	                        int                         orientation,
 	                        int                         size,
 	                        int                         i,
 	                        int                         j);
 
 	inline bool squarePattern(irr::video::IVideoDriver *  driver,
-							  glm::ivec2 pos,
-	                          irr::scene::CBatchingMesh *batchMesh,
-							  irr::scene::IMesh *mesh,
 	                          glm::ivec4                  colour1,
 	                          glm::ivec4                  colour2,
-							  float height,
 	                          int                         orientation,
 	                          int                         size,
 	                          int                         i,

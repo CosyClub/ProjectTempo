@@ -108,7 +108,7 @@ void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVi
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 
 	//tile_nodes =
-	addFloorTilesToScene(smgr, driver, stage);
+	addFloorTilesToScene(smgr, driver, stage); 
 }
 
 void SystemStageRenderer::updateStage(glm::ivec4                colour1,
@@ -126,7 +126,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 
 	auto heights = stage.getHeights();
-	//batchMesh->drop();
+
 	batchMesh = new irr::scene::CBatchingMesh();
 
 	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
@@ -135,39 +135,49 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 
 		glm::ivec2 pos = std::get<0>(tile_nodes[i]);
+
+		//if (pos.x == 5 && pos.y == 5) {
+		//	printf("Before C1!\n");
+		//}
+
 		if(pos.y < playerpos.x - 30 ||
 			pos.y > playerpos.x + 30 ||
 			pos.x < playerpos.y - 30 ||
 			pos.x > playerpos.y + 30) {
+			//printf("(%d,%d)\n", pos.y, pos.x);
 			continue;
 		}
 
-		if (heights[i].height >= 5) {
-			continue;
-		}
+		//if (pos.x == 5 && pos.y == 5) {
+		//	printf("After C1!\n");
+		//}
+
 
    // auto animation_pos = node->getPosition();
-   // float old_height = old_positions[i].height;
+    float old_height = old_positions[i].height;
 
     float height = heights[i].height;
 
-   // if(old_height != height) {
+	//if (old_height != height) {
 
-   //   if(animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
-   //     animation_pos.Y += (height - old_height) * fractions[i];
-   //     fractions[i] = fractions[i] * 1.2f;
-   //     //node->setPosition(irr::core::vector3df(animation_pos.X, animation_pos.Y, animation_pos.Z));
+	//	if (animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
+	//		animation_pos.Y += (height - old_height) * fractions[i];
+	//		fractions[i] = fractions[i] * 1.2f;
+	//		//node->setPosition(irr::core::vector3df(animation_pos.X, animation_pos.Y, animation_pos.Z));
 
-   //     if(animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
-   //       continue;
-   //     }
-   //   } 
-	  //else {
-   //     //node->setPosition(irr::core::vector3df(animation_pos.X, height, animation_pos.Z));
-   //     old_height = height;
-   //     fractions[i] = 0.00001f;
-   //   }
-   // }
+	//		if (animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
+	//			continue;
+	//}
+	//}
+	//else {
+	//		//node->setPosition(irr::core::vector3df(animation_pos.X, height, animation_pos.Z));
+	//old_height = height;
+	//		fractions[i] = 0.00001f;
+	//}
+	//}
+
+	//irr::video::SMaterial &material_side = node->getMaterial(0);
+	//irr::video::SMaterial &material_top  = node->getMaterial(1);
 
 		//irr::video::SMaterial &material_side = node->getMaterial(0);
 		//irr::video::SMaterial &material_top  = node->getMaterial(1);
@@ -182,25 +192,27 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		case 9:
 		case 10:
 		case 11:
-		case 12:render = checkerBoardPattern(driver, pos, batchMesh, mesh, colour1, colour2, height, i, j); break;
+		case 12:render = checkerBoardPattern(driver, colour1, colour2, i, j); break;
 		case 4:
 		case 5:
 		case 6:
 		case 7:
-		case 8:render = linePattern(driver, pos, batchMesh, mesh, colour1, colour2, height, 0, 5, i, j - 4); break;
+		case 8:render = linePattern(driver, colour1, colour2, 0, 5, i, j - 4); break;
 		case 13:
 		case 14:
 		case 15:
 		case 16:
-		case 17:render = linePattern(driver, pos, batchMesh, mesh, colour1, colour2, height, 1, 5, i, j - 13); break;
+		case 17:render = linePattern(driver, colour1, colour2, 1, 5, i, j - 13); break;
 		case 18:
 		case 19:
 		case 20:
-		case 21:render = squarePattern(driver, pos, batchMesh, mesh, colour1, colour2, height, 1, 12, i, j); break;
+		case 21:render = squarePattern(driver, colour1, colour2, 1, 12, i, j); break;
 		}
 
 		if (render) {
+			
 			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, height, pos.x));
+
 		}
 	}
 
@@ -210,19 +222,25 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 
 		glm::ivec2 pos = std::get<0>(tile_nodes[i]);
+
+		//if (pos.x == 5 && pos.y == 5) {
+		//	printf("Before C2!\n");
+		//}
+
 		if (pos.y < playerpos.x - 30 ||
 			pos.y > playerpos.x + 30 ||
 			pos.x < playerpos.y - 30 ||
 			pos.x > playerpos.y + 30) {
+			//printf("(%d,%d)\n", pos.y, pos.x);
 			continue;
 		}
 
-		if (heights[i].height >= 5) {
-			continue;
-		}
+		//if (pos.x == 5 && pos.y == 5) {
+		//	printf("After C2!\n");
+		//}
 
 		//auto animation_pos = node->getPosition();
-		//float old_height = old_positions[i].height;
+		float old_height = old_positions[i].height;
 
 		float height = heights[i].height;
 
@@ -235,13 +253,13 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 		//		if (animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
 		//			continue;
-		//		}
-		//	}
-		//	else {
+				//}
+			//}
+			//else {
 		//		//node->setPosition(irr::core::vector3df(animation_pos.X, height, animation_pos.Z));
-		//		old_height = height;
+				//old_height = height;
 		//		fractions[i] = 0.00001f;
-		//	}
+			//}
 		//}
 
 		//irr::video::SMaterial &material_side = node->getMaterial(0);
@@ -257,25 +275,27 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		case 9:
 		case 10:
 		case 11:
-		case 12:render = checkerBoardPattern(driver, pos, batchMesh, mesh, colour1, colour2,height, i, j); break;
+		case 12:render = checkerBoardPattern(driver, colour1, colour2, i, j); break;
 		case 4:
 		case 5:
 		case 6:
 		case 7:
-		case 8:render = linePattern(driver, pos, batchMesh, mesh, colour1, colour2, height, 0, 5, i, j - 4); break;
+		case 8:render = linePattern(driver, colour1, colour2, 0, 5, i, j - 4); break;
 		case 13:
 		case 14:
 		case 15:
 		case 16:
-		case 17:render = linePattern(driver, pos, batchMesh, mesh, colour1, colour2, height, 1, 5, i, j - 13); break;
+		case 17:render = linePattern(driver, colour1, colour2, 1, 5, i, j - 13); break;
 		case 18:
 		case 19:
 		case 20:
-		case 21:render = squarePattern(driver, pos, batchMesh, mesh, colour1, colour2, height, 1, 12, i, j); break;
+		case 21:render = squarePattern(driver, colour1, colour2, 1, 12, i, j); break;
 		}
 
 		if (!render) {
+			
 			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, height, pos.x));
+
 		}
 	}
 
@@ -286,12 +306,8 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 }
 
 inline bool SystemStageRenderer::checkerBoardPattern(irr::video::IVideoDriver *  driver,
-													 glm::ivec2 pos,
-													 irr::scene::CBatchingMesh *batchMesh,
-													 irr::scene::IMesh *mesh,
                                                      glm::ivec4                  colour1,
                                                      glm::ivec4                  colour2,
-													 float height,
                                                      int                         i,
                                                      int                         j)
 {
@@ -303,12 +319,8 @@ inline bool SystemStageRenderer::checkerBoardPattern(irr::video::IVideoDriver * 
 
 
 inline bool SystemStageRenderer::linePattern(irr::video::IVideoDriver *  driver,
-											 glm::ivec2 pos,
-                                             irr::scene::CBatchingMesh *batchMesh,
-											 irr::scene::IMesh *mesh,
                                              glm::ivec4                  colour1,
                                              glm::ivec4                  colour2,
-											 float height,
                                              int                         orientation,
                                              int                         size,
                                              int                         i,
@@ -318,12 +330,8 @@ inline bool SystemStageRenderer::linePattern(irr::video::IVideoDriver *  driver,
 }
 
 inline bool SystemStageRenderer::squarePattern(irr::video::IVideoDriver *  driver,
-											   glm::ivec2 pos,
-                                               irr::scene::CBatchingMesh *batchMesh,
-											   irr::scene::IMesh *mesh,
                                                glm::ivec4                  colour1,
                                                glm::ivec4                  colour2,
-											   float height,
                                                int                         orientation,
                                                int                         size,
                                                int                         i,
