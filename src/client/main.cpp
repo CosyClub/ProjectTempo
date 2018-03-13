@@ -283,6 +283,7 @@ int main(int argc, const char **argv)
 
 	printf("Entering main loop\n");
 	while (device->run()) {
+		// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
 		// float dt = dt_timer.getElapsedTime().asSeconds();
 		// dt_timer.restart();
 
@@ -338,12 +339,8 @@ int main(int argc, const char **argv)
 			system_grid_ai.update();
 		}
 		glm::ivec2 playerpos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-		//std::cout<<"PLAYER POS"<< playerpos.x <<" "<< playerpos.y<<"\n";
-	 	sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
+
 		system_stage_renderer.updateStage({255, 175, 0, 0}, {255, 50, 50, 50}, driver, j, playerpos);
-		sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
-		std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
-		<< std::endl;
 
 		////////////////
 		// Events at "Delta End"
@@ -358,6 +355,10 @@ int main(int argc, const char **argv)
 			device->yield();
 			continue;
 		}
+
+		// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
+		// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
+		// << std::endl;
 
 		driver->beginScene(true, true);
 		smgr->drawAll();
