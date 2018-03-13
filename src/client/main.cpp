@@ -4,10 +4,10 @@
 #include <client/network/client.hpp>
 #include <client/system/SystemAttack.hpp>
 #include <client/system/SystemButtonRenderer.hpp>
+#include <client/system/SystemEntity.hpp>
 #include <client/system/SystemGraphicsCreation.hpp>
 #include <client/system/SystemMovement.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
-
 #include <client/system/SystemRenderGUI.hpp>
 #include <client/system/SystemRenderHealthBars.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
@@ -19,11 +19,9 @@
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
-#include <tempo/entity/EntityCreation.hpp>
 #include <tempo/network/ID.hpp>
 #include <tempo/song.hpp>
 #include <tempo/system/SystemCombo.hpp>
-#include <tempo/system/SystemGridAi.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemTrigger.hpp>
 #include <tempo/time.hpp>
@@ -46,25 +44,14 @@
 #include <iostream>
 #include <thread>
 
-#define BPM 120              // Beats per minutes
-#define DELTA 125            // Delta around a beat a player can hit (millisecs)
+#define BPM 138              // Beats per minutes
+#define DELTA 100            // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
-void sync_time(tempo::Clock &clock, tempo::Song *song)
+void sync_time(tempo::Clock &clock)
 {
 	sf::Int64 offset = tempo::timeSyncClient(&clock);
-	clock.set_time(clock.get_time() + sf::microseconds(offset), song);
-}
-
-void new_entity_check(anax::World &world)
-{
-	tempo::Queue<sf::Packet> *q = get_system_queue(tempo::QueueID::ENTITY_CREATION);
-	while (!q->empty()) {
-		sf::Packet p = q->front();
-		tempo::addComponent(world, p);
-		q->pop();
-	}
-	world.refresh();
+	clock.set_time(clock.get_time() + sf::microseconds(offset));
 }
 
 anax::Entity createEntityStage(anax::World &world)
@@ -104,9 +91,6 @@ anax::Entity createButtonGroup(anax::World &world,
 
 int main(int argc, const char **argv)
 {
-	tempo::Song mainsong("resources/sound/focus.ogg");
-	mainsong.set_volume(0.f);
-
 	sf::SoundBuffer clickbuf;
 	clickbuf.loadFromFile("resources/sound/tick.ogg");
 	sf::Sound click;
@@ -133,25 +117,25 @@ int main(int argc, const char **argv)
 	// Setup ECS
 	anax::World world;
 	// tempo::SystemRender           system_render(app);
-	tempo::SystemGridAi                system_grid_ai;
-	tempo::SystemCombo                 system_combo;
-	tempo::SystemHealth                system_health;
-	tempo::SystemTrigger               system_trigger(world);
-	client::SystemAttack               system_attack;
-	client::SystemButtonRenderer       system_button_renderer;
-	client::SystemGraphicsCreation     system_gc;
-	client::SystemMovement             system_movement;
-	client::SystemStageRenderer        system_stage_renderer;
-	client::SystemParseKeyInput        system_parse_key_input;
-	client::SystemRenderGUI            system_render_gui;
-	client::SystemRenderHealthBars     system_render_health_bars;
-	client::SystemRenderSceneNode      system_render_scene_node;
-	client::SystemUpdateKeyInput       system_update_key_input;
+	tempo::SystemCombo             system_combo;
+	tempo::SystemHealth            system_health;
+	tempo::SystemTrigger           system_trigger(world);
+	client::SystemAttack           system_attack;
+	client::SystemButtonRenderer   system_button_renderer;
+	client::SystemEntity           system_entity;
+	client::SystemGraphicsCreation system_gc;
+	client::SystemMovement         system_movement;
+	client::SystemStageRenderer    system_stage_renderer;
+	client::SystemParseKeyInput    system_parse_key_input;
+	client::SystemRenderGUI        system_render_gui;
+	client::SystemRenderHealthBars system_render_health_bars;
+	client::SystemRenderSceneNode  system_render_scene_node;
+	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
 
 	// Add Systems
 	world.addSystem(system_attack);
-	world.addSystem(system_grid_ai);
+	world.addSystem(system_entity);
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
 	world.addSystem(system_gc);
@@ -216,9 +200,7 @@ int main(int argc, const char **argv)
 	system_render_health_bars.setup(smgr);
 
 	// Start and Sync Song
-	// mainsong.start();
-	sync_time(clock, &mainsong);
-	mainsong.set_volume(20.f);
+	sync_time(clock);
 	// long offset = 0;
 
 	// Player
@@ -297,7 +279,8 @@ int main(int argc, const char **argv)
 		// Events all the time
 		{
 			// Check for new entities from server
-			new_entity_check(world);
+			system_entity.creationCheck(world);
+			system_entity.deletionCheck(world);
 			system_gc.addEntities(driver, smgr, world);
 			system_render_scene_node.setup(smgr);
 			system_render_health_bars.setup(smgr);
@@ -339,7 +322,7 @@ int main(int argc, const char **argv)
 		////////////////
 		// Events at "Beat Passed"
 		if (clock.passed_beat()) {
-			click.play();
+			// click.play();
 			if (tick++ % 20 == 0)
 				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()
 				          << "+++++++++++++++" << std::endl;
@@ -353,8 +336,6 @@ int main(int argc, const char **argv)
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;
-
-			system_grid_ai.update();
 		}
 		system_stage_renderer.updateStage({255, 175, 0, 0}, {255, 50, 50, 50}, driver, j);
 
@@ -367,10 +348,10 @@ int main(int argc, const char **argv)
 		}
 
 		// Rendering Code
-		if (!device->isWindowActive()) {
-			device->yield();
-			continue;
-		}
+		//if (!device->isWindowActive()) {
+		//	device->yield();
+		//	continue;
+		//}
 
 		driver->beginScene(true, true);
 		smgr->drawAll();
@@ -388,12 +369,16 @@ int main(int argc, const char **argv)
 		}
 
 	}  // main loop
-
 	running.store(false);
 	printf("Left main loop\n");
 
-	device->drop();
+	// Tell server we are gone
+	tempo::disconnectFromServer(entity_player);
+
+	// Close server listener and destroy the game
 	listener.join();
+	world.clear();
+	device->drop();
 
 	return 0;
 }

@@ -8,6 +8,7 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/include/client/network/client.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemAttack.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemButtonRenderer.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemEntity.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemGraphicsCreation.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemMovement.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemParseKeyInput.hpp
@@ -25,6 +26,7 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/src/network/client.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemAttack.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemButtonRenderer.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemEntity.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGraphicsCreation.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemMovement.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemParseKeyInput.cpp
