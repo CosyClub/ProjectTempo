@@ -36,7 +36,7 @@ namespace {
 
 		void animateNode(irr::scene::ISceneNode* node, irr::u32 time){
 			// printf("Calling animate hop: %i\n", time);
-			float progress = (float)(time - start_time) / (float)animation_time;
+			float progress = glm::clamp((float)(time - start_time) / (float)animation_time, 0.0f, 1.0f);
 
 			glm::fvec3 pos = glm::mix(initial, target, progress);
 
@@ -84,7 +84,6 @@ void SystemTranslationAnimation::updateAnimations()
 
 		if(animators.count(entity_id) > 0){
 			// Then we've already added an animator to this entity
-			printf("Already have animator for entity: %i\n", entity_id);
 			continue;
 		}
 
@@ -99,15 +98,11 @@ void SystemTranslationAnimation::updateAnimations()
 		glm::ivec2 target = origin + trans.delta;
 
 		irr::scene::ISceneNodeAnimator* animator = new HopAnimator
-			(now, clock.until_beat().asMilliseconds(),
+			(now, clock.until_delta_start().asMilliseconds(),
 			 glm::fvec3(origin.x, stage.getHeight(origin), origin.y),
 			 glm::fvec3(target.x, stage.getHeight(target), target.y),
 			 1.0f
 			);
-
-		printf("Add animator for entity %i, delta: (%i, %i), origin: (%i ,%i)\n",
-		       entity_id, trans.delta.x, trans.delta.y, pos.getOrigin().x, pos.getOrigin().y
-		      );
 
 		animators[entity_id] = animator;
 		node.node->addAnimator(animator);
@@ -117,8 +112,6 @@ void SystemTranslationAnimation::updateAnimations()
 void SystemTranslationAnimation::endBeat(){
 	for(auto it = animators.begin(); it != animators.end(); ++it){
 		anax::Entity entity = world->getEntity(it->first);
-
-		printf("Removing hop animator for entity %i\n", entity.getId().index);
 
 		auto& node = entity.getComponent<client::ComponentRenderSceneNode>();
 		node.node->removeAnimator(it->second);
