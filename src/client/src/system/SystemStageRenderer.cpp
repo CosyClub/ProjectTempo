@@ -86,7 +86,8 @@ void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVi
 void SystemStageRenderer::updateStage(glm::ivec4                colour1,
                                       glm::ivec4                colour2,
                                       irr::video::IVideoDriver *driver,
-                                      int                       j)
+                                      int                       j,
+                                      glm::ivec2                playerpos)
 {
 	auto  entities = getEntities();
 	auto  entity   = std::begin(entities);
@@ -94,8 +95,22 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 	auto heights = stage.getHeights();
 
+//  std::cout<<"PLAYER POS"<< playerpos.x <<" "<< playerpos.y<<"\n";
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
+
 		irr::scene::IMeshSceneNode *node = std::get<1>(this->tile_nodes[i]);
+
+    glm::ivec2 pos = std::get<0>(tile_nodes[i]);
+    if(pos.y < playerpos.x - 30 ||
+       pos.y > playerpos.x + 30 ||
+       pos.x < playerpos.y - 30 ||
+       pos.x > playerpos.y + 30) {
+      node->setVisible(false);
+      continue;
+    } else {
+      node->setVisible(true);
+    }
+
 
     auto animation_pos = node->getPosition();
     float old_height = old_positions[i].height;

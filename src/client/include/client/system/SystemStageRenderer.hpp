@@ -28,7 +28,8 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 	void updateStage(glm::ivec4                colour1,
 	                 glm::ivec4                colour2,
 	                 irr::video::IVideoDriver *driver,
-	                 int                       j);
+	                 int                       j,
+                   glm::ivec2                playerpos);
 
    private:
 
