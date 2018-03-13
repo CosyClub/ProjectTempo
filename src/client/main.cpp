@@ -251,7 +251,6 @@ int main(int argc, const char **argv)
 		// camera_node = smgr->addCameraSceneNodeMaya(sn.node, rotate, translate, zoom, -1,
 		// distance); camera_node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
 		camera_node = smgr->addCameraSceneNode();
-		camera_node->setParent(sn.node);
 		camera_node->setPosition(irr::core::vector3df(14, 9, 0));
 		camera_node->setTarget(sn.node->getPosition());
 		// camera_node->setRotation(irr::core::vector3df(0,0,90));
@@ -323,8 +322,12 @@ int main(int argc, const char **argv)
 			system_render_scene_node.update();
 			// std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" << std::endl;
 			system_render_health_bars.update();
+
 			// TODO: Make a system for updating camera position
-			camera_node->setTarget(sn.node->getPosition());
+			irr::core::vector3df camera_target = sn.node->getAbsolutePosition();
+			camera_node->setPosition(camera_target + irr::core::vector3df(14, 9, 0));
+			camera_node->updateAbsolutePosition();
+			camera_node->setTarget(camera_target);
 		}
 
 		////////////////
