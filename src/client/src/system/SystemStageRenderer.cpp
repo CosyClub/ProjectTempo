@@ -168,21 +168,16 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 		if (animation_pos < height - 1.f || height + 1.f < animation_pos) {
 			animation_pos += (height - old_height) * fractions[i];
-			fractions[i] = fractions[i] * 1.2f;
+			fractions[i] = fractions[i] * 1.15f;
 			this->currentHeight[i] = animation_pos;
 
-			if (animation_pos < height - 1.f || height + 1.f < animation_pos) {
-				currentHeight[i] = 0;
-			}
 	}
 	else {
 		this->currentHeight[i] = height;
 		old_height = height;
 		fractions[i] = 0.00001f;
+		}
 	}
-	}
-
-
 
 	bool render;
 
@@ -295,12 +290,9 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 			if (animation_pos < height - 1.f || height + 1.f < animation_pos) {
 				animation_pos += (height - old_height) * fractions[i];
-				fractions[i] = fractions[i] * 1.2f;
+				fractions[i] = fractions[i] * 1.15f;
 				this->currentHeight[i] = animation_pos;
 
-				if (animation_pos < height - 1.f || height + 1.f < animation_pos) {
-					currentHeight[i] = 0;
-				}
 			}
 			else {
 				this->currentHeight[i] = height;
