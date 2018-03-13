@@ -50,22 +50,11 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 		float grid_y = tiles[i].position.y;
 		float height = tiles[i].height;
 
-		//if (height >= 5) {
-		//	continue;
-		//}
-
 		batchMesh->addMesh(mesh, irr::core::vector3df(grid_x, height, grid_y));
 
 		tile_nodes.push_back(glm::ivec2(grid_y, grid_x));
 		old_positions.push_back(tempo::stage_tile(glm::ivec2(grid_y, grid_x), height));
 		fractions.push_back(0.00001f);
-
-  //  //TODO: Implement a getNeighbours function
-  //  if(stage.getHeight(tiles[i].position - glm::ivec2(0,1)) < height ||
-  //      stage.getHeight(tiles[i].position - glm::ivec2(0,-1)) < height ||
-  //      stage.getHeight(tiles[i].position - glm::ivec2(-1,0)) < height ||
-  //      stage.getHeight(tiles[i].position - glm::ivec2(1,0)) < height ) {
-		//}
 	}
 
 	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, nullptr);
@@ -79,17 +68,12 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 		float grid_y = tiles[i].position.y;
 		float height = tiles[i].height;
 
-		//if (height < 5) {
-		//	continue;
-		//}
-
 		batchMesh->addMesh(mesh, irr::core::vector3df(grid_x, height, grid_y));
 
 		tile_nodes.push_back(glm::ivec2(grid_y, grid_x));
 		old_positions.push_back(tempo::stage_tile(glm::ivec2(grid_y, grid_x), height));
 		fractions.push_back(0.00001f);
 	}
-
 
 	batchMesh->update();
 	this->node = smgr->addMeshSceneNode(batchMesh, 0);
@@ -138,6 +122,8 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
 	mesh->getMeshBuffer(1)->getMaterial().EmissiveColor.set(colour1[0], colour1[1], colour1[2], colour1[3]);
 
+	//Colour1
+
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 
 		glm::ivec2 pos = tile_nodes[i];
@@ -149,10 +135,6 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		}
 
 		float height = heights[i].height;
-
-		if(currentHeight[i] >= 5){
-			continue;
-		}
 
 		if( pos.y < playerpos.x - 30 ||
 			pos.y > playerpos.x + 30 ||
@@ -215,6 +197,8 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
 	mesh->getMeshBuffer(1)->getMaterial().EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
+
+	//Colour2
 
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 
