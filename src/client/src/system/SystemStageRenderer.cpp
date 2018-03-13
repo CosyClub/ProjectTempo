@@ -2,13 +2,11 @@
 
 #include <tempo/component/ComponentStage.hpp>
 
-#include <client/misc/CBatchingMesh.hpp>
-
 #include <IAnimatedMesh.h>
 #include <IAnimatedMeshSceneNode.h>
 #include <irrlicht.h>  // :TODO: sort out includes
 
-#include <glm/vec2.hpp>
+
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <vector>
@@ -26,22 +24,22 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 
   if(tile_nodes.size() == tiles.size()) return;
 
-  irr::scene::IMesh *mesh = smgr->getMesh("resources/meshes/tile.obj");
+  mesh = smgr->getMesh("resources/meshes/tile.obj");
   if (!mesh) {
     std::cout << "Failed to load floor tile mesh\n" << std::endl;
     return;
   }
 
-	irr::video::ITexture *wall_diffuse_map =
+	this->wall_diffuse_map =
 	  driver->getTexture("resources/materials/walls/cobblestone.png");
-	irr::video::ITexture *wall_normal_map =
+	this->wall_normal_map =
 	  driver->getTexture("resources/materials/walls/cobblestone_n.png");
-	irr::video::ITexture *tile_texture =
+	this->tile_texture =
 	  driver->getTexture("resources/materials/TileLightMaskPixelOn.png");
 
-		irr::scene::CBatchingMesh *batchMesh = new irr::scene::CBatchingMesh();
+		batchMesh = new irr::scene::CBatchingMesh();
 
-		mesh->getMeshBuffer(1)->getMaterial().setTexture(0, tile_texture);
+		mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
 		mesh->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
 		mesh->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
 		mesh->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
@@ -72,8 +70,8 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 
 	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, nullptr);
 	mesh->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
-	mesh->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
-	mesh->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
+	mesh->getMeshBuffer(0)->getMaterial().setTexture(0, this->wall_diffuse_map);
+	mesh->getMeshBuffer(0)->getMaterial().setTexture(1, this->wall_normal_map);
 
 	for (unsigned int i = tile_nodes.size(); i < tiles.size(); ++i) {
 
@@ -115,60 +113,66 @@ void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVi
 
 void SystemStageRenderer::updateStage(glm::ivec4                colour1,
                                       glm::ivec4                colour2,
+									  irr::scene::ISceneManager *smgr,
                                       irr::video::IVideoDriver *driver,
                                       int                       j,
                                       glm::ivec2                playerpos)
 {
+	
+	irr::scene::ISceneNode* par = this->node->getParent();
+	par->removeChild(this->node);
 	auto  entities = getEntities();
 	auto  entity   = std::begin(entities);
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 
 	auto heights = stage.getHeights();
+	//batchMesh->drop();
+	batchMesh = new irr::scene::CBatchingMesh();
+
+	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
+	mesh->getMeshBuffer(1)->getMaterial().EmissiveColor.set(colour1[0], colour1[1], colour1[2], colour1[3]);
 
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 
-		irr::scene::IMeshSceneNode *node = std::get<1>(this->tile_nodes[i]);
-
-    glm::ivec2 pos = std::get<0>(tile_nodes[i]);
-    if(pos.y < playerpos.x - 30 ||
-       pos.y > playerpos.x + 30 ||
-       pos.x < playerpos.y - 30 ||
-       pos.x > playerpos.y + 30) {
-      node->setVisible(false);
-      continue;
-    } else {
-      node->setVisible(true);
-    }
-
-    auto animation_pos = node->getPosition();
-    float old_height = old_positions[i].height;
-
-    float height = heights[i].height;
-
-    if(old_height != height) {
-
-      if(animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
-        animation_pos.Y += (height - old_height) * fractions[i];
-        fractions[i] = fractions[i] * 1.2f;
-        node->setPosition(irr::core::vector3df(animation_pos.X, animation_pos.Y, animation_pos.Z));
-
-        if(animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
-          continue;
-        }
-      } else {
-        node->setPosition(irr::core::vector3df(animation_pos.X, height, animation_pos.Z));
-        old_height = height;
-        fractions[i] = 0.00001f;
-      }
-    }
-
+		glm::ivec2 pos = std::get<0>(tile_nodes[i]);
+		if(pos.y < playerpos.x - 30 ||
+			pos.y > playerpos.x + 30 ||
+			pos.x < playerpos.y - 30 ||
+			pos.x > playerpos.y + 30) {
+			continue;
+		}
 
 		if (heights[i].height >= 5) {
 			continue;
 		}
 
-		irr::video::SMaterial &material_side = node->getMaterial(0);
-		irr::video::SMaterial &material_top  = node->getMaterial(1);
+   // auto animation_pos = node->getPosition();
+   // float old_height = old_positions[i].height;
+
+    float height = heights[i].height;
+
+   // if(old_height != height) {
+
+   //   if(animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
+   //     animation_pos.Y += (height - old_height) * fractions[i];
+   //     fractions[i] = fractions[i] * 1.2f;
+   //     //node->setPosition(irr::core::vector3df(animation_pos.X, animation_pos.Y, animation_pos.Z));
+
+   //     if(animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
+   //       continue;
+   //     }
+   //   } 
+	  //else {
+   //     //node->setPosition(irr::core::vector3df(animation_pos.X, height, animation_pos.Z));
+   //     old_height = height;
+   //     fractions[i] = 0.00001f;
+   //   }
+   // }
+
+		//irr::video::SMaterial &material_side = node->getMaterial(0);
+		//irr::video::SMaterial &material_top  = node->getMaterial(1);
+
+	bool render;
 
 		switch (j) {
 		case 0:
@@ -178,65 +182,148 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		case 9:
 		case 10:
 		case 11:
-		case 12: checkerBoardPattern(driver, node, material_top, colour1, colour2, i, j); break;
+		case 12:render = checkerBoardPattern(driver, pos, batchMesh, mesh, colour1, colour2, height, i, j); break;
 		case 4:
 		case 5:
 		case 6:
 		case 7:
-		case 8: linePattern(driver, node, material_top, colour1, colour2, 0, 5, i, j - 4); break;
+		case 8:render = linePattern(driver, pos, batchMesh, mesh, colour1, colour2, height, 0, 5, i, j - 4); break;
 		case 13:
 		case 14:
 		case 15:
 		case 16:
-		case 17: linePattern(driver, node, material_top, colour1, colour2, 1, 5, i, j - 13); break;
+		case 17:render = linePattern(driver, pos, batchMesh, mesh, colour1, colour2, height, 1, 5, i, j - 13); break;
 		case 18:
 		case 19:
 		case 20:
-		case 21: squarePattern(driver, node, material_top, colour1, colour2, 1, 12, i, j); break;
+		case 21:render = squarePattern(driver, pos, batchMesh, mesh, colour1, colour2, height, 1, 12, i, j); break;
+		}
+
+		if (render) {
+			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, height, pos.x));
 		}
 	}
+
+	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
+	mesh->getMeshBuffer(1)->getMaterial().EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
+
+	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
+
+		glm::ivec2 pos = std::get<0>(tile_nodes[i]);
+		if (pos.y < playerpos.x - 30 ||
+			pos.y > playerpos.x + 30 ||
+			pos.x < playerpos.y - 30 ||
+			pos.x > playerpos.y + 30) {
+			continue;
+		}
+
+		if (heights[i].height >= 5) {
+			continue;
+		}
+
+		//auto animation_pos = node->getPosition();
+		//float old_height = old_positions[i].height;
+
+		float height = heights[i].height;
+
+		//if (old_height != height) {
+
+		//	if (animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
+		//		animation_pos.Y += (height - old_height) * fractions[i];
+		//		fractions[i] = fractions[i] * 1.2f;
+		//		//node->setPosition(irr::core::vector3df(animation_pos.X, animation_pos.Y, animation_pos.Z));
+
+		//		if (animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
+		//			continue;
+		//		}
+		//	}
+		//	else {
+		//		//node->setPosition(irr::core::vector3df(animation_pos.X, height, animation_pos.Z));
+		//		old_height = height;
+		//		fractions[i] = 0.00001f;
+		//	}
+		//}
+
+		//irr::video::SMaterial &material_side = node->getMaterial(0);
+		//irr::video::SMaterial &material_top  = node->getMaterial(1);
+
+		bool render;
+
+		switch (j) {
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+		case 9:
+		case 10:
+		case 11:
+		case 12:render = checkerBoardPattern(driver, pos, batchMesh, mesh, colour1, colour2,height, i, j); break;
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 8:render = linePattern(driver, pos, batchMesh, mesh, colour1, colour2, height, 0, 5, i, j - 4); break;
+		case 13:
+		case 14:
+		case 15:
+		case 16:
+		case 17:render = linePattern(driver, pos, batchMesh, mesh, colour1, colour2, height, 1, 5, i, j - 13); break;
+		case 18:
+		case 19:
+		case 20:
+		case 21:render = squarePattern(driver, pos, batchMesh, mesh, colour1, colour2, height, 1, 12, i, j); break;
+		}
+
+		if (!render) {
+			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, height, pos.x));
+		}
+	}
+
+	batchMesh->update();
+	this->node = smgr->addMeshSceneNode(batchMesh, 0);
+	batchMesh->drop();
+
 }
 
-inline void SystemStageRenderer::checkerBoardPattern(irr::video::IVideoDriver *  driver,
-                                                     irr::scene::IMeshSceneNode *node,
-                                                     irr::video::SMaterial &     material_top,
+inline bool SystemStageRenderer::checkerBoardPattern(irr::video::IVideoDriver *  driver,
+													 glm::ivec2 pos,
+													 irr::scene::CBatchingMesh *batchMesh,
+													 irr::scene::IMesh *mesh,
                                                      glm::ivec4                  colour1,
                                                      glm::ivec4                  colour2,
+													 float height,
                                                      int                         i,
                                                      int                         j)
 {
-	if (((int) (std::get<0>(this->tile_nodes[i]).x % 2)
-	     == (int) (std::get<0>(this->tile_nodes[i]).y % 2))
-	    ^ (j % 2)) {
-		material_top.EmissiveColor.set(colour1[0], colour1[1], colour1[2], colour1[3]);
-	} else {
-		material_top.EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
-	}
+	return (((int)(std::get<0>(this->tile_nodes[i]).x % 2)
+		== (int)(std::get<0>(this->tile_nodes[i]).y % 2))
+		^ (j % 2));
+
 }
 
 
-inline void SystemStageRenderer::linePattern(irr::video::IVideoDriver *  driver,
-                                             irr::scene::IMeshSceneNode *node,
-                                             irr::video::SMaterial &     material_top,
+inline bool SystemStageRenderer::linePattern(irr::video::IVideoDriver *  driver,
+											 glm::ivec2 pos,
+                                             irr::scene::CBatchingMesh *batchMesh,
+											 irr::scene::IMesh *mesh,
                                              glm::ivec4                  colour1,
                                              glm::ivec4                  colour2,
+											 float height,
                                              int                         orientation,
                                              int                         size,
                                              int                         i,
                                              int                         j)
 {
-	if ((int) !(std::get<0>(this->tile_nodes[i])[orientation] % size == j)) {
-		material_top.EmissiveColor.set(colour1[0], colour1[1], colour1[2], colour1[3]);
-	} else {
-		material_top.EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
-	}
+	return ((int)!(std::get<0>(this->tile_nodes[i])[orientation] % size == j));
 }
 
-inline void SystemStageRenderer::squarePattern(irr::video::IVideoDriver *  driver,
-                                               irr::scene::IMeshSceneNode *node,
-                                               irr::video::SMaterial &     material_top,
+inline bool SystemStageRenderer::squarePattern(irr::video::IVideoDriver *  driver,
+											   glm::ivec2 pos,
+                                               irr::scene::CBatchingMesh *batchMesh,
+											   irr::scene::IMesh *mesh,
                                                glm::ivec4                  colour1,
                                                glm::ivec4                  colour2,
+											   float height,
                                                int                         orientation,
                                                int                         size,
                                                int                         i,
@@ -251,15 +338,10 @@ inline void SystemStageRenderer::squarePattern(irr::video::IVideoDriver *  drive
 	int dx = abs(std::get<0>(this->tile_nodes[i]).x - centrePoint.x);
 	int dy = abs(std::get<0>(this->tile_nodes[i]).y - centrePoint.y);
 
-	if ((((dx % 2 == 0 && dy == 0) || (dx > 0 && dx % 2 == 0 && dy < dx)) ||  // columns
-	     ((dy % 2 == 0 && dx == 0) || (dy > 0 && dy % 2 == 0 && dx < dy)) ||  // rows
-	     (dx == dy && dx % 2 == 0 && dy % 2 == 0))                            // corners
-	    ^ (j % 2)) {                                                          // alternating
-
-		material_top.EmissiveColor.set(colour1[0], colour1[1], colour1[2], colour1[3]);
-	} else {
-		material_top.EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
-	}
+	return ((((dx % 2 == 0 && dy == 0) || (dx > 0 && dx % 2 == 0 && dy < dx)) ||  // columns
+		((dy % 2 == 0 && dx == 0) || (dy > 0 && dy % 2 == 0 && dx < dy)) ||  // rows
+		(dx == dy && dx % 2 == 0 && dy % 2 == 0))                            // corners
+		^ (j % 2));
 }
 
 }  // namespace client
