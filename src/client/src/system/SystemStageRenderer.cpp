@@ -108,7 +108,7 @@ void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVi
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 
 	//tile_nodes =
-	addFloorTilesToScene(smgr, driver, stage); 
+	addFloorTilesToScene(smgr, driver, stage);
 }
 
 void SystemStageRenderer::updateStage(glm::ivec4                colour1,
@@ -118,7 +118,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
                                       int                       j,
                                       glm::ivec2                playerpos)
 {
-	
+
 	irr::scene::ISceneNode* par = this->node->getParent();
 	par->removeChild(this->node);
 	auto  entities = getEntities();
@@ -156,7 +156,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
    // auto animation_pos = node->getPosition();
     float old_height = old_positions[i].height;
 
-    float height = heights[i].height;
+    float height = old_height;
 
 	//if (old_height != height) {
 
@@ -210,7 +210,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		}
 
 		if (render) {
-			
+
 			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, height, pos.x));
 
 		}
@@ -242,7 +242,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		//auto animation_pos = node->getPosition();
 		float old_height = old_positions[i].height;
 
-		float height = heights[i].height;
+		float height = old_height;
 
 		//if (old_height != height) {
 
@@ -293,7 +293,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		}
 
 		if (!render) {
-			
+
 			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, height, pos.x));
 
 		}
