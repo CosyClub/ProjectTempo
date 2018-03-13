@@ -50,9 +50,9 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 		float grid_y = tiles[i].position.y;
 		float height = tiles[i].height;
 
-		if (height >= 5) {
-			continue;
-		}
+		//if (height >= 5) {
+		//	continue;
+		//}
 
 		batchMesh->addMesh(mesh, irr::core::vector3df(grid_x, height, grid_y));
 
@@ -79,11 +79,9 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 		float grid_y = tiles[i].position.y;
 		float height = tiles[i].height;
 
-		if (height < 5) {
-			continue;
-		}
-
-
+		//if (height < 5) {
+		//	continue;
+		//}
 
 		batchMesh->addMesh(mesh, irr::core::vector3df(grid_x, height, grid_y));
 
@@ -121,6 +119,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 	irr::scene::ISceneNode* par = this->node->getParent();
 	par->removeChild(this->node);
+
 	auto  entities = getEntities();
 	auto  entity   = std::begin(entities);
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
@@ -136,51 +135,43 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 		glm::ivec2 pos = std::get<0>(tile_nodes[i]);
 
-		//if (pos.x == 5 && pos.y == 5) {
-		//	printf("Before C1!\n");
-		//}
+		float old_height = old_positions[i].height;
 
-		if(pos.y < playerpos.x - 30 ||
-			pos.y > playerpos.x + 30 ||
-			pos.x < playerpos.y - 30 ||
-			pos.x > playerpos.y + 30) {
-			//printf("(%d,%d)\n", pos.y, pos.x);
+		float height = old_height;
+
+		if(height >= 5){
 			continue;
 		}
 
-		//if (pos.x == 5 && pos.y == 5) {
-		//	printf("After C1!\n");
-		//}
+		if( pos.y < playerpos.x - 30 ||
+			pos.y > playerpos.x + 30 ||
+			pos.x < playerpos.y - 30 ||
+			pos.x > playerpos.y + 30) {
+			continue;
+		}
 
 
-   // auto animation_pos = node->getPosition();
-    float old_height = old_positions[i].height;
-
-    float height = old_height;
+    //auto animation_pos = node->getPosition();
 
 	//if (old_height != height) {
 
 	//	if (animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
 	//		animation_pos.Y += (height - old_height) * fractions[i];
 	//		fractions[i] = fractions[i] * 1.2f;
-	//		//node->setPosition(irr::core::vector3df(animation_pos.X, animation_pos.Y, animation_pos.Z));
+	//		node->setPosition(irr::core::vector3df(animation_pos.X, animation_pos.Y, animation_pos.Z));
 
 	//		if (animation_pos.Y < height - 1.f || height + 1.f < animation_pos.Y) {
 	//			continue;
 	//}
 	//}
 	//else {
-	//		//node->setPosition(irr::core::vector3df(animation_pos.X, height, animation_pos.Z));
-	//old_height = height;
+	//		node->setPosition(irr::core::vector3df(animation_pos.X, height, animation_pos.Z));
+	//		old_height = height;
 	//		fractions[i] = 0.00001f;
 	//}
 	//}
 
-	//irr::video::SMaterial &material_side = node->getMaterial(0);
-	//irr::video::SMaterial &material_top  = node->getMaterial(1);
 
-		//irr::video::SMaterial &material_side = node->getMaterial(0);
-		//irr::video::SMaterial &material_top  = node->getMaterial(1);
 
 	bool render;
 
@@ -210,9 +201,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		}
 
 		if (render) {
-
 			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, height, pos.x));
-
 		}
 	}
 
@@ -223,26 +212,23 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 
 		glm::ivec2 pos = std::get<0>(tile_nodes[i]);
 
-		//if (pos.x == 5 && pos.y == 5) {
-		//	printf("Before C2!\n");
-		//}
+		float old_height = old_positions[i].height;
+
+		float height = old_height;
+
+		if (height >= 5) {
+			continue;
+		}
 
 		if (pos.y < playerpos.x - 30 ||
 			pos.y > playerpos.x + 30 ||
 			pos.x < playerpos.y - 30 ||
 			pos.x > playerpos.y + 30) {
-			//printf("(%d,%d)\n", pos.y, pos.x);
 			continue;
 		}
 
-		//if (pos.x == 5 && pos.y == 5) {
-		//	printf("After C2!\n");
-		//}
 
 		//auto animation_pos = node->getPosition();
-		float old_height = old_positions[i].height;
-
-		float height = old_height;
 
 		//if (old_height != height) {
 
@@ -261,9 +247,6 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		//		fractions[i] = 0.00001f;
 			//}
 		//}
-
-		//irr::video::SMaterial &material_side = node->getMaterial(0);
-		//irr::video::SMaterial &material_top  = node->getMaterial(1);
 
 		bool render;
 
@@ -293,10 +276,27 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		}
 
 		if (!render) {
-
 			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, height, pos.x));
-
 		}
+	}
+
+	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
+	mesh->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
+
+	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
+
+		glm::ivec2 pos = std::get<0>(tile_nodes[i]);
+
+		float old_height = old_positions[i].height;
+
+		float height = old_height;
+
+		if (height < 5) {
+			continue;
+		}
+
+		batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, height, pos.x));
+
 	}
 
 	batchMesh->update();
