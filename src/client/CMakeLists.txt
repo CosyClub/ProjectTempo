@@ -33,7 +33,9 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemStageRenderer.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemUpdateKeyInput.cpp
 
+	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/CBatchingMesh.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/YAlignedBillboardSceneNode.hpp
+	${CMAKE_CURRENT_LIST_DIR}/src/misc/CBatchingMesh.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/YAlignedBillboardSceneNode.cpp
 
 	${CMAKE_CURRENT_LIST_DIR}/main.cpp
