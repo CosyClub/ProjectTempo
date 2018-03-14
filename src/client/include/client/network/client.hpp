@@ -6,8 +6,8 @@
 #include <tempo/network/base.hpp>
 #include <tempo/time.hpp>
 
-#include <anax/World.hpp>
 #include <anax/Entity.hpp>
+#include <anax/World.hpp>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>

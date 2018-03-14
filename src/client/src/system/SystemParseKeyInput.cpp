@@ -6,9 +6,9 @@
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
 
-#include <tempo/network/base.hpp>
-#include <tempo/network/ID.hpp>
 #include <client/network/client.hpp>
+#include <tempo/network/ID.hpp>
+#include <tempo/network/base.hpp>
 
 #include <Keycodes.h>
 
@@ -18,7 +18,6 @@
 
 namespace client
 {
-
 using tempo::operator<<;
 using tempo::operator>>;
 
@@ -58,11 +57,12 @@ void addAttack(anax::Entity &entity, tempo::Facing facing, bool withinDelta)
 		return;
 	}
 
-	if (entity.hasComponent<tempo::ComponentAttack>() && entity.hasComponent<tempo::ComponentWeapon>()) {
+	if (entity.hasComponent<tempo::ComponentAttack>()
+	    && entity.hasComponent<tempo::ComponentWeapon>()) {
 		tempo::ComponentAttack &a = entity.getComponent<tempo::ComponentAttack>();
 		tempo::ComponentWeapon &w = entity.getComponent<tempo::ComponentWeapon>();
-		a.damage = w.damage;
-		a.beats_until_attack = w.beats_until_attack;
+		a.damage                  = w.damage;
+		a.beats_until_attack      = w.beats_until_attack;
 
 		sf::Packet p;
 		p << static_cast<uint32_t>(tempo::MessageAttack::UPDATE_INTENT);
@@ -111,9 +111,7 @@ void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinD
 		// system_attack.Attack(entity_player);
 		updateCombo(entity, withinDelta);
 		break;
-	case irr::KEY_SPACE:
-		updateCombo(entity, withinDelta);
-		break;
+	case irr::KEY_SPACE: updateCombo(entity, withinDelta); break;
 	default: break;
 	}
 }
@@ -135,4 +133,4 @@ void SystemParseKeyInput::parseInput(tempo::Clock &clock)
 	}
 }
 
-} // namespace client
+}  // namespace client

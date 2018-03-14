@@ -6,12 +6,11 @@
 
 namespace client
 {
-struct SystemRenderGUI{
-
-	void update(irr::video::IVideoDriver*  driver,
-	            irr::gui::IGUIEnvironment* gui_env,
-						  tempo::Clock &clock,
-						  int combo);
+struct SystemRenderGUI {
+	void update(irr::video::IVideoDriver * driver,
+	            irr::gui::IGUIEnvironment *gui_env,
+	            tempo::Clock &             clock,
+	            int                        combo);
 };
 }
 

@@ -8,11 +8,11 @@
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentModel.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
-#include <tempo/component/ComponentWeapon.hpp>
 #include <tempo/component/ComponentStage.hpp>
-#include <tempo/component/ComponentStageTranslation.hpp>
-#include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
+#include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentWeapon.hpp>
 #include <tempo/mask.hpp>
 
 namespace tempo

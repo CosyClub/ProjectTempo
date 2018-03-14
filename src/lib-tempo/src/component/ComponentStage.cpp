@@ -10,7 +10,6 @@
 
 namespace tempo
 {
-
 // _global_stage = nullptr
 // _global_stage_loaded = false;
 
@@ -50,7 +49,7 @@ ComponentStage::ComponentStage(const char *stage_file)
 inline int ComponentStage::findIndex(glm::ivec2 position)
 {
 	for (unsigned int i = 0; i < tiles.size(); i++) {
-		auto& pos  = tiles[i].position;
+		auto &pos = tiles[i].position;
 		if (pos == position) {
 			return i;
 		}
@@ -67,7 +66,7 @@ std::vector<tempo::stage_tile> ComponentStage::getHeights()
 float ComponentStage::getHeight(glm::ivec2 position)
 {
 	int index = findIndex(position);
-	if(index >= 0)
+	if (index >= 0)
 		return tiles[index].height;
 	else
 		return -10.0f;
@@ -76,20 +75,20 @@ float ComponentStage::getHeight(glm::ivec2 position)
 void ComponentStage::setHeight(glm::ivec2 position, int height)
 {
 	int index = findIndex(position);
-	if(index >= 0)
+	if (index >= 0)
 		tiles[index].height = height;
 }
 
 void ComponentStage::setHeight(std::vector<glm::ivec2> positions, int height)
 {
-	for(auto& position : positions)
+	for (auto &position : positions)
 		setHeight(position, height);
 }
 
 bool ComponentStage::existstTile(glm::ivec2 position)
 {
 	int index = findIndex(position);
-	if(index >= 0)
+	if (index >= 0)
 		return true;
 	else
 		return false;
