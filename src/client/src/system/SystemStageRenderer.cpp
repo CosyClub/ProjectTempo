@@ -16,53 +16,46 @@ namespace client
 {
 inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager *smgr,
                                                       irr::video::IVideoDriver * driver,
-                                                      tempo::ComponentStage &    stage)
+                                                      tempo::ComponentStage &    stage,
+                                                      glm::ivec4 colour1, glm::ivec4 colour2)
 {
 	auto tiles = stage.getHeights();
 
 	if (tile_nodes.size() == tiles.size())
 		return;
 
-	mesh = smgr->getMesh("resources/meshes/tile.obj");
-	if (!mesh) {
-		std::cout << "Failed to load floor tile mesh\n" << std::endl;
-		return;
-	}
 
-	this->wall_diffuse_map = driver->getTexture("resources/materials/walls/cobblestone.png");
-	this->wall_normal_map  = driver->getTexture("resources/materials/walls/cobblestone_n.png");
-	this->tile_texture     = driver->getTexture("resources/materials/TileLightMaskPixelOn.png");
+  this->wall_diffuse_map = driver->getTexture("resources/materials/walls/cobblestone.png");
+  this->wall_normal_map  = driver->getTexture("resources/materials/walls/cobblestone_n.png");
+  this->tile_texture     = driver->getTexture("resources/materials/TileLightMaskPixelOn.png");
+
+	meshC1 = smgr->getMesh("resources/meshes/tile.obj");
+  meshC2 = smgr->getMesh("resources/meshes/tile.obj");
+  walls = smgr->getMesh("resources/meshes/tile.obj");
 
 	batchMesh = new irr::scene::CBatchingMesh();
 
-	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
-	mesh->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
-	mesh->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
-	mesh->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
+	this->meshC1->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
+	this->meshC1->getMeshBuffer(1)->getMaterial().EmissiveColor.set(colour1[0], colour1[1], colour1[2], colour1[3]);
+	this->meshC1->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
+	this->meshC1->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
+
+  this->meshC2->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
+	this->meshC2->getMeshBuffer(1)->getMaterial().EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
+	this->meshC2->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
+	this->meshC2->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
+
+  this->walls->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
+	this->walls->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
+	this->walls->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
+	this->walls->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
 
 	for (unsigned int i = tile_nodes.size(); i < tiles.size(); ++i) {
 		float grid_x = tiles[i].position.x;
 		float grid_y = tiles[i].position.y;
 		float height = tiles[i].height;
 
-		batchMesh->addMesh(mesh, irr::core::vector3df(grid_x, height, grid_y));
-
-		tile_nodes.push_back(glm::ivec2(grid_y, grid_x));
-		old_positions.push_back(tempo::stage_tile(glm::ivec2(grid_y, grid_x), height));
-		fractions.push_back(0.00001f);
-	}
-
-	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, nullptr);
-	mesh->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
-	mesh->getMeshBuffer(0)->getMaterial().setTexture(0, this->wall_diffuse_map);
-	mesh->getMeshBuffer(0)->getMaterial().setTexture(1, this->wall_normal_map);
-
-	for (unsigned int i = tile_nodes.size(); i < tiles.size(); ++i) {
-		float grid_x = tiles[i].position.x;
-		float grid_y = tiles[i].position.y;
-		float height = tiles[i].height;
-
-		batchMesh->addMesh(mesh, irr::core::vector3df(grid_x, height, grid_y));
+		batchMesh->addMesh(walls, irr::core::vector3df(grid_x, height, grid_y));
 
 		tile_nodes.push_back(glm::ivec2(grid_y, grid_x));
 		old_positions.push_back(tempo::stage_tile(glm::ivec2(grid_y, grid_x), height));
@@ -75,7 +68,7 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 }
 
 
-void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
+void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver, glm::ivec4 colour1, glm::ivec4 colour2)
 {
 	printf("SystemStageRenderer initializing\n");
 
@@ -84,12 +77,10 @@ void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVi
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 
 	// tile_nodes =
-	addFloorTilesToScene(smgr, driver, stage);
+	addFloorTilesToScene(smgr, driver, stage, colour1, colour2);
 }
 
-void SystemStageRenderer::updateStage(glm::ivec4                 colour1,
-                                      glm::ivec4                 colour2,
-                                      irr::scene::ISceneManager *smgr,
+void SystemStageRenderer::updateStage(irr::scene::ISceneManager *smgr,
                                       irr::video::IVideoDriver * driver,
                                       int                        j,
                                       glm::ivec2                 playerpos)
@@ -111,12 +102,6 @@ void SystemStageRenderer::updateStage(glm::ivec4                 colour1,
 	auto heights = stage.getHeights();
 
 	batchMesh = new irr::scene::CBatchingMesh();
-
-	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
-	mesh->getMeshBuffer(1)->getMaterial().EmissiveColor.set(colour1[0], colour1[1], colour1[2],
-	                                                        colour1[3]);
-
-	// Colour1
 
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 		glm::ivec2 pos = tile_nodes[i];
@@ -149,6 +134,11 @@ void SystemStageRenderer::updateStage(glm::ivec4                 colour1,
 			}
 		}
 
+    	if (currentHeight[i] >= 5) {
+        batchMesh->addMesh(walls, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
+    		continue;
+    	}
+
 		bool render;
 
 		switch (j) {
@@ -159,123 +149,41 @@ void SystemStageRenderer::updateStage(glm::ivec4                 colour1,
 		case 9:
 		case 10:
 		case 11:
-		case 12: render = checkerBoardPattern(driver, colour1, colour2, i, j); break;
+		case 12: render = checkerBoardPattern(driver, i, j); break;
 		case 4:
 		case 5:
 		case 6:
 		case 7:
-		case 8: render = linePattern(driver, colour1, colour2, 0, 5, i, j - 4); break;
+		case 8: render = linePattern(driver, 0, 5, i, j - 4); break;
 		case 13:
 		case 14:
 		case 15:
 		case 16:
-		case 17: render = linePattern(driver, colour1, colour2, 1, 5, i, j - 13); break;
+		case 17: render = linePattern(driver, 1, 5, i, j - 13); break;
 		case 18:
 		case 19:
 		case 20:
-		case 21: render = squarePattern(driver, colour1, colour2, 1, 12, i, j); break;
+		case 21: render = squarePattern(driver, 1, 12, i, j); break;
 		}
 
 		if (render) {
-			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
+      if(pos.x == 5 && pos.y == 5){
+        printf("Red \n");
+      }
+			batchMesh->addMesh(meshC1, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
+      continue;
 		}
+    else{
+      if(pos.x == 5 && pos.y == 5){
+        printf("Black \n");
+      }
+      batchMesh->addMesh(meshC2, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
+      continue;
+    }
 	}
 
 	firstRun = false;
 
-	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
-	mesh->getMeshBuffer(1)->getMaterial().EmissiveColor.set(colour2[0], colour2[1], colour2[2],
-	                                                        colour2[3]);
-
-	// Colour2
-
-	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
-		glm::ivec2 pos = tile_nodes[i];
-
-		float old_height = old_positions[i].height;
-
-		float height = heights[i].height;
-
-		if (currentHeight[i] >= 5) {
-			continue;
-		}
-
-		if (pos.y < playerpos.x - 30 || pos.y > playerpos.x + 10 || pos.x < playerpos.y - 30
-		    || pos.x > playerpos.y + 30) {
-			continue;
-		}
-
-		bool render;
-
-		switch (j) {
-		case 0:
-		case 1:
-		case 2:
-		case 3:
-		case 9:
-		case 10:
-		case 11:
-		case 12: render = checkerBoardPattern(driver, colour1, colour2, i, j); break;
-		case 4:
-		case 5:
-		case 6:
-		case 7:
-		case 8: render = linePattern(driver, colour1, colour2, 0, 5, i, j - 4); break;
-		case 13:
-		case 14:
-		case 15:
-		case 16:
-		case 17: render = linePattern(driver, colour1, colour2, 1, 5, i, j - 13); break;
-		case 18:
-		case 19:
-		case 20:
-		case 21: render = squarePattern(driver, colour1, colour2, 1, 12, i, j); break;
-		}
-
-		if (!render) {
-			batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
-		}
-	}
-
-	mesh->getMeshBuffer(1)->getMaterial().EmissiveColor.set(255, 0, 0, 0);
-	mesh->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
-
-	// Walls
-
-	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
-		glm::ivec2 pos = tile_nodes[i];
-
-		float old_height = old_positions[i].height;
-
-		float height = heights[i].height;
-
-		if (pos.y < playerpos.x - 30 || pos.y > playerpos.x + 10 || pos.x < playerpos.y - 30
-		    || pos.x > playerpos.y + 30) {
-			continue;
-		}
-
-		if (currentHeight[i] < 5) {
-			continue;
-		}
-
-		auto animation_pos = currentHeight[i];
-
-		if (old_height != height) {
-			if (animation_pos < height - 1.f || height + 1.f < animation_pos) {
-				animation_pos += (height - old_height) * fractions[i];
-				fractions[i]           = fractions[i] * 1.15f;
-				this->currentHeight[i] = animation_pos;
-
-			} else {
-				this->currentHeight[i] = height;
-				old_height             = height;
-				fractions[i]           = 0.00001f;
-			}
-		}
-
-
-		batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
-	}
 
 	batchMesh->update();
 	this->node = smgr->addMeshSceneNode(batchMesh, 0);
@@ -283,8 +191,6 @@ void SystemStageRenderer::updateStage(glm::ivec4                 colour1,
 }
 
 inline bool SystemStageRenderer::checkerBoardPattern(irr::video::IVideoDriver *driver,
-                                                     glm::ivec4                colour1,
-                                                     glm::ivec4                colour2,
                                                      int                       i,
                                                      int                       j)
 {
@@ -293,8 +199,6 @@ inline bool SystemStageRenderer::checkerBoardPattern(irr::video::IVideoDriver *d
 
 
 inline bool SystemStageRenderer::linePattern(irr::video::IVideoDriver *driver,
-                                             glm::ivec4                colour1,
-                                             glm::ivec4                colour2,
                                              int                       orientation,
                                              int                       size,
                                              int                       i,
@@ -304,8 +208,6 @@ inline bool SystemStageRenderer::linePattern(irr::video::IVideoDriver *driver,
 }
 
 inline bool SystemStageRenderer::squarePattern(irr::video::IVideoDriver *driver,
-                                               glm::ivec4                colour1,
-                                               glm::ivec4                colour2,
                                                int                       orientation,
                                                int                       size,
                                                int                       i,

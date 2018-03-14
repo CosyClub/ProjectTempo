@@ -13,6 +13,7 @@
 #include <vector>
 
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 
 namespace client
 {
@@ -34,15 +35,16 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 	irr::video::ITexture *tile_texture;
 
 	irr::scene::IMeshSceneNode *node;
-	irr::scene::IMesh *         mesh;
+	irr::scene::IMesh *         meshC1;
+	irr::scene::IMesh *         meshC2;
+	irr::scene::IMesh *         walls;
 	irr::scene::CBatchingMesh * batchMesh;
 
 	// Creates a static irrlitch scene node based on the component stage heights
-	void setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver);
+	void setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver,
+						 glm::ivec4 colour1, glm::ivec4 colour2);
 
-	void updateStage(glm::ivec4                 colour1,
-	                 glm::ivec4                 colour2,
-	                 irr::scene::ISceneManager *smgr,
+	void updateStage(irr::scene::ISceneManager *smgr,
 	                 irr::video::IVideoDriver * driver,
 	                 int                        j,
 	                 glm::ivec2                 playerpos);
@@ -50,26 +52,21 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
    private:
 	inline void addFloorTilesToScene(irr::scene::ISceneManager *smgr,
 	                                 irr::video::IVideoDriver * driver,
-	                                 tempo::ComponentStage &    stage);
+	                                 tempo::ComponentStage &    stage,
+																 glm::ivec4 colour1, glm::ivec4 colour2);
 
 
 	inline bool checkerBoardPattern(irr::video::IVideoDriver *driver,
-	                                glm::ivec4                colour1,
-	                                glm::ivec4                colour2,
 	                                int                       i,
 	                                int                       j);
 
 	inline bool linePattern(irr::video::IVideoDriver *driver,
-	                        glm::ivec4                colour1,
-	                        glm::ivec4                colour2,
 	                        int                       orientation,
 	                        int                       size,
 	                        int                       i,
 	                        int                       j);
 
 	inline bool squarePattern(irr::video::IVideoDriver *driver,
-	                          glm::ivec4                colour1,
-	                          glm::ivec4                colour2,
 	                          int                       orientation,
 	                          int                       size,
 	                          int                       i,

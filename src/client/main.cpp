@@ -151,7 +151,7 @@ int main(int argc, const char **argv)
 
 	// Initialise Systems
 	system_update_key_input.setup(device);
-	system_stage_renderer.setup(smgr, driver);
+	system_stage_renderer.setup(smgr, driver,{255, 175, 0, 0}, {255, 50, 50, 50});
 	system_render_scene_node.setup(smgr);
 
 	// must be after system_render_scene_node.setup(smgr);
@@ -332,8 +332,7 @@ int main(int argc, const char **argv)
 		glm::ivec2 playerpos =
 		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-		system_stage_renderer.updateStage({255, 175, 0, 0}, {255, 50, 50, 50}, smgr, driver, j,
-		                                  playerpos);
+		system_stage_renderer.updateStage(smgr, driver, j, playerpos);
 
 		////////////////
 		// Events at "Delta End"
