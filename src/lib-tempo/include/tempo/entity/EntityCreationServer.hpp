@@ -8,6 +8,7 @@
 #include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentStage.hpp>
 #include <tempo/component/ComponentAOEIndicator.hpp>
+#include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentModel.hpp>
@@ -24,6 +25,8 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
+
+
 namespace tempo
 {
 anax::Entity newPlayer(anax::World &world);
@@ -33,6 +36,9 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos);
 anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos);
 anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<glm::ivec2> path);
 anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos);
+anax::Entity createButtonGroup(anax::World &           world,
+                               std::vector<glm::ivec2> positions,
+                               std::vector<glm::ivec2> tiles);
 
 }  // namespace tempo
 

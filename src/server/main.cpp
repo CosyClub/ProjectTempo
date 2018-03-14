@@ -9,6 +9,7 @@
 #include <tempo/entity/EntityCreationServer.hpp>
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemHealth.hpp>
+#include <tempo/system/SystemTrigger.hpp>
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>
@@ -54,12 +55,14 @@ int main(int argc, const char **argv)
 	server::SystemMovement system_movement;
 	tempo::SystemCombo  system_combo;
 	tempo::SystemHealth system_health;
+	tempo::SystemTrigger system_trigger(world);
 
 	world.addSystem(system_ai);
 	world.addSystem(system_attack);
 	world.addSystem(system_movement);
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
+	world.addSystem(system_trigger);
 	world.refresh();
 
 	// Create some Test Entities
@@ -71,6 +74,10 @@ int main(int argc, const char **argv)
 	                             glm::ivec2(7,7),
 	                             glm::ivec2(7,3)};
 	tempo::createMobPatroller(world, glm::ivec2(3,3), path);
+
+	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
+	anax::Entity            entity_button = tempo::createButtonGroup(world, {{40, 15}}, wall);
+	world.refresh();
 
 	//////////////////////////////////
 	// Thread Startup
@@ -110,7 +117,7 @@ int main(int argc, const char **argv)
 		if (clock.passed_antibeat())
 		{
 		}
-		
+
 		////////////////
 		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
@@ -122,6 +129,7 @@ int main(int argc, const char **argv)
 		if (clock.passed_beat()) {
 			system_ai.update(system_attack);
 			system_combo.advanceBeat();
+			system_trigger.updateButtons(world);
 
 			if (tick++ % 20 == 0)
 				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()

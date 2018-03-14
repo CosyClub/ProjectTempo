@@ -47,23 +47,24 @@ enum ComponentID {
 
 	AOEINDICATOR,       // 2
 	ATTACK,             // 3
-	COMBO,              // 4
-	AI,                 // 5
-	HEALTH,             // 6
-	MODEL,              // 7
-	PICKUP,             // 8
-	PLAYER_LOCAL,       // 9
-	PLAYER_REMOTE,      // 10
-	STAGE,              // 11
-	STAGE_POSITION,     // 12
-	STAGE_ROTATION,     // 13
-	STAGE_TRANSLATION,  // 14
-	TEAM,               // 15
-	TRANSFORM,          // 16
-	WEAPON,             // 17
+	BUTTON_GROUP,       // 4
+	COMBO,              // 5
+	AI,                 // 6
+	HEALTH,             // 7
+	MODEL,              // 8
+	PICKUP,             // 9
+	PLAYER_LOCAL,       // 10
+	PLAYER_REMOTE,      // 11
+	STAGE,              // 12
+	STAGE_POSITION,     // 13
+	STAGE_ROTATION,     // 14
+	STAGE_TRANSLATION,  // 15
+	TEAM,               // 16
+	TRANSFORM,          // 17
+	WEAPON,             // 18
 
 	// End of non-reserved zone
-	CID_RESERVED_TOP    // 18
+	CID_RESERVED_TOP    // 19
 };
 
 sf::Packet &operator<<(sf::Packet &packet, const ComponentID id);

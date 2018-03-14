@@ -18,7 +18,7 @@ anax::Entity newPlayer(anax::World &world)
 
 	// refactored
 	entity_player.addComponent<tempo::ComponentCombo>();
-	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(5, 5));
+	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(37, 0));
 	entity_player.addComponent<tempo::ComponentStageRotation>(NORTH);
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
@@ -142,6 +142,19 @@ anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
 
 	e.activate();
 	return e;
+}
+
+anax::Entity createButtonGroup(anax::World &           world,
+                               std::vector<glm::ivec2> positions,
+                               std::vector<glm::ivec2> tiles)
+{
+	printf("Creating button\n");
+	anax::Entity entity_button = world.createEntity();
+	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles);
+	// entity_button.addComponent<client::ComponentRenderButtonGroup>();
+	entity_button.activate();
+
+	return entity_button;
 }
 
 }  // namespace tempo

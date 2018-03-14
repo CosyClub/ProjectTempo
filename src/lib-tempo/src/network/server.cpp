@@ -2,6 +2,7 @@
 
 #include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentAttack.hpp>
+#include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentAI.hpp>
 #include <tempo/component/ComponentHealth.hpp>
@@ -198,6 +199,7 @@ sf::Packet packageComponents(anax::Entity entity)
 	// Put new Components in here
 	ADD_COMPONENT(entity, c, packet, ComponentAOEIndicator)
 	ADD_COMPONENT(entity, c, packet, ComponentAttack)
+	ADD_COMPONENT(entity, c, packet, ComponentButtonGroup)
 	ADD_COMPONENT(entity, c, packet, ComponentCombo)
 	ADD_COMPONENT(entity, c, packet, ComponentAI)
 	ADD_COMPONENT(entity, c, packet, ComponentHealth)
