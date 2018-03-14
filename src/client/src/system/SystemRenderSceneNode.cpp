@@ -92,16 +92,12 @@ void SystemRenderSceneNode::update()
 			for (int I = 0; I < 4; I++) {
 				if( tempo::DIRECTIONS[I] == sr.facing ) dirIndex = I;
 			}
-			std::cout << dirIndex<< std::endl;
 			sn.spritePos.y = (float) ((dirIndex + 3) % 4) / sn.spriteDim.y;
-			printf("%d,%d\n", sr.facing.x, sr.facing.y);
 			if (sr.previousFacing == sr.facing) {
 				sn.spritePos.x = sn.spritePos.x + 1.f / sn.spriteDim.x;
-				std::cout << sn.spritePos.x << std::endl;
 			} else {
 				sn.spritePos.x = 1.f / sn.spriteDim.x;
 			}
-			printf("%f,%f\n", sn.spritePos.x, sn.spritePos.y);
 			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureTranslate(sn.spritePos.x, sn.spritePos.y);
 			sn.updateNeeded = false;
 		}

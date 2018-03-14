@@ -5,13 +5,10 @@
 #include <anax/System.hpp>
 #include <anax/World.hpp>
 
-#include <tempo/component/ComponentModel.hpp>
-#include <tempo/component/ComponentStagePosition.hpp>
-
 namespace client
 {
 struct SystemGraphicsCreation
-    : anax::System<anax::Requires<tempo::ComponentStagePosition, tempo::ComponentModel>> {
+    : anax::System<anax::Requires<>> {
 	SystemGraphicsCreation();
 	void addEntities(irr::video::IVideoDriver * driver,
 	                 irr::scene::ISceneManager *manager,

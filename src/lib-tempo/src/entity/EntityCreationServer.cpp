@@ -151,7 +151,6 @@ anax::Entity createButtonGroup(anax::World &           world,
 	printf("Creating button\n");
 	anax::Entity entity_button = world.createEntity();
 	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles);
-	// entity_button.addComponent<client::ComponentRenderButtonGroup>();
 	entity_button.activate();
 
 	return entity_button;

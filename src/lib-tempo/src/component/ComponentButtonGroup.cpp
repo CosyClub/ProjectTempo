@@ -22,6 +22,7 @@ ComponentButtonGroup::ComponentButtonGroup(std::vector<glm::ivec2> positions,
 /////
 ComponentButtonGroup::ComponentButtonGroup(sf::Packet p)
 {
+	printf("MAKING A FUCKING BUTTON!!!!!!\n\n\n\n\n\n");
 	sf::Uint32 size = 0;
 	p >> size;
 	for (int i = 0; i < size; i++) {
@@ -55,6 +56,7 @@ ComponentID ComponentButtonGroup::getId()
 
 sf::Packet ComponentButtonGroup::dumpComponent()
 {
+	printf("MAKING A FUCKING BUTTON PACKET!!!!!!\n\n\n\n\n\n");
 	sf::Packet p;
 
 	p << (sf::Uint32) buttons.size();

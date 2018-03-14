@@ -76,9 +76,6 @@ std::vector<glm::ivec2> SubSystemGetPlayers::getPlayers()
 		}
 	}
 
-	if (currentPlayerPos.size() == 0) {
-		printf("\n\nThere are no Players!!!!\n\n");
-	}
 	return currentPlayerPos;
 }
 }

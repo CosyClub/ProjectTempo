@@ -13,12 +13,16 @@ struct buttonRender {
 
 namespace client
 {
+
 struct ComponentRenderButtonGroup : anax::Component {
 	// This is a deque so that it is possible to push_front
 	std::deque<buttonRender> buttonsRender;
+	bool setup;
+
 	ComponentRenderButtonGroup();
 	~ComponentRenderButtonGroup();
 };
-}
+
+} // namespace client
 
 #endif

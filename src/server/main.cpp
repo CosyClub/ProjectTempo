@@ -76,7 +76,8 @@ int main(int argc, const char **argv)
 	tempo::createMobPatroller(world, glm::ivec2(3,3), path);
 
 	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
-	anax::Entity            entity_button = tempo::createButtonGroup(world, {{40, 15}}, wall);
+	tempo::createButtonGroup(world, {{40, 15}}, wall);
+	std::cout << "Supposedly created button\n";
 	world.refresh();
 
 	//////////////////////////////////
