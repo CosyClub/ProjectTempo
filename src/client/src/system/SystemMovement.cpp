@@ -40,6 +40,7 @@ void SystemMovement::processIntents(anax::World &world)
 		}
 		if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
 			entity.getComponent<tempo::ComponentStageTranslation>().delta = delta;
+			entity.getComponent<tempo::ComponentStageTranslation>().moved = moved;
 		}
 	}
 }
