@@ -297,7 +297,7 @@ int main(int argc, const char **argv)
 			// Deal with local input
 			system_update_key_input.clear();
 			system_update_key_input.addKeys();
-			system_parse_key_input.parseInput(clock);
+			system_parse_key_input.parseInput(clock, device);
 
 			// Deprecated/To-be-worked-on
 			system_health.CheckHealth();
