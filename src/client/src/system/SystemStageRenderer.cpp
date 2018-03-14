@@ -143,7 +143,6 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 			continue;
 		}
 
-
     auto animation_pos = currentHeight[i];
 
 	if (old_height != height) {
