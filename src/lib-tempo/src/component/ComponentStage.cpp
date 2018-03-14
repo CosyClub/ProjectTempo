@@ -22,7 +22,6 @@ void ComponentStage::loadLevel(const char *stage_file)
 		return;
 	}
 
-
 	if (_global_stage_loaded != "None") {
 		std::cout << "More than one stage file loaded, check ComponentStage.cpp" << std::endl;
 		std::cout << "Already loaded: " << _global_stage_loaded << std::endl;
@@ -66,7 +65,7 @@ ComponentStage::ComponentStage(const char *stage_file)
 inline int ComponentStage::findIndex(glm::ivec2 position)
 {
 	for (unsigned int i = 0; i < tiles->size(); i++) {
-		auto &pos = tiles->at(i).position;
+		auto &pos = tiles[i].position;
 		if (pos == position) {
 			return i;
 		}
@@ -84,7 +83,7 @@ float ComponentStage::getHeight(glm::ivec2 position)
 {
 	int index = findIndex(position);
 	if (index >= 0)
-		return tiles->at(index).height;
+		return tiles[index].height;
 	else
 		return -10.0f;
 }
@@ -93,7 +92,7 @@ void ComponentStage::setHeight(glm::ivec2 position, int height)
 {
 	int index = findIndex(position);
 	if (index >= 0)
-		tiles->at(index).height = height;
+		tiles[index].height = height;
 }
 
 void ComponentStage::setHeight(std::vector<glm::ivec2> positions, int height)
