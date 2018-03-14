@@ -251,7 +251,8 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		}
 	}
 
-	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
+	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, nullptr);
+	mesh->getMeshBuffer(1)->getMaterial().EmissiveColor.set(255, 0, 0, 0);
 	mesh->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
 
 	//Walls
@@ -263,6 +264,13 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		float old_height = old_positions[i].height;
 
 		float height = heights[i].height;
+
+		if (pos.y < playerpos.x - 30 ||
+			pos.y > playerpos.x + 30 ||
+			pos.x < playerpos.y - 30 ||
+			pos.x > playerpos.y + 30) {
+			continue;
+		}
 
 		if (currentHeight[i] < 5) {
 			continue;
