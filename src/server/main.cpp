@@ -63,8 +63,8 @@ int main(int argc, const char **argv)
 	world.refresh();
 
 	// Create some Test Entities
-	// tempo::createMobStill(world, glm::ivec2(6, 6));
-	// tempo::createMobStill(world, glm::ivec2(7, 7));
+	tempo::createMobCreeper(world, glm::ivec2(12, 12));
+	tempo::createMobCreeper(world, glm::ivec2(14, 14));
 	tempo::createMobAntiSnail(world, glm::ivec2(4, 4));
 	std::deque<glm::ivec2> path {glm::ivec2(3,3),
 	                             glm::ivec2(3,7),
