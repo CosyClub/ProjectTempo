@@ -13,6 +13,7 @@
 #include <client/system/SystemRenderSceneNode.hpp>
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
+#include <client/system/SystemTranslationAnimation.hpp>
 
 #include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
@@ -130,6 +131,7 @@ int main(int argc, const char **argv)
 	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
 	client::SystemUpdateKeyInput   system_update_key_input;
+	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
 
 	// Add Systems
 	world.addSystem(system_attack);
@@ -145,6 +147,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_update_key_input);
 	world.addSystem(system_parse_key_input);
 	world.addSystem(system_movement);
+	world.addSystem(system_translation_animation);
 
 	anax::Entity entity_stage = createEntityStage(world);
 	world.refresh();
@@ -230,7 +233,6 @@ int main(int argc, const char **argv)
 		// camera_node = smgr->addCameraSceneNodeMaya(sn.node, rotate, translate, zoom, -1,
 		// distance); camera_node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
 		camera_node = smgr->addCameraSceneNode();
-		camera_node->setParent(sn.node);
 		camera_node->setPosition(irr::core::vector3df(14, 9, 0));
 		camera_node->setTarget(sn.node->getPosition());
 		// camera_node->setRotation(irr::core::vector3df(0,0,90));
@@ -289,6 +291,9 @@ int main(int argc, const char **argv)
 			system_movement.processIntents(world);
 			system_movement.processCorrections(world);
 
+			// Update animations from translations received from server
+			system_translation_animation.updateAnimations();
+
 			// Deal with local input
 			system_update_key_input.clear();
 			system_update_key_input.addKeys();
@@ -303,8 +308,12 @@ int main(int argc, const char **argv)
 			// std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" <<
 			// std::endl;
 			system_render_health_bars.update();
+
 			// TODO: Make a system for updating camera position
-			camera_node->setTarget(sn.node->getPosition());
+			irr::core::vector3df camera_target = sn.node->getAbsolutePosition();
+			camera_node->setPosition(camera_target + irr::core::vector3df(14, 9, 0));
+			camera_node->updateAbsolutePosition();
+			camera_node->setTarget(camera_target);
 		}
 
 		////////////////
@@ -325,6 +334,7 @@ int main(int argc, const char **argv)
 			j = j % 22;
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
+			system_translation_animation.endBeat();
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;

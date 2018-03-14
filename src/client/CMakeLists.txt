@@ -16,6 +16,7 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderHealthBars.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderSceneNode.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemStageRenderer.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemTranslationAnimation.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemUpdateKeyInput.hpp
 
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentHealthBar.cpp
@@ -33,6 +34,7 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderHealthBars.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderSceneNode.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemStageRenderer.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTranslationAnimation.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemUpdateKeyInput.cpp
 
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/CBatchingMesh.hpp
