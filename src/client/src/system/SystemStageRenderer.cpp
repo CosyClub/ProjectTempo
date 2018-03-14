@@ -114,7 +114,7 @@ void SystemStageRenderer::updateStage(irr::scene::ISceneManager *smgr,
 
 		float height = heights[i].height;
 
-		if (pos.y < playerpos.x - 30 || pos.y > playerpos.x + 10 || pos.x < playerpos.y - 30
+		if (pos.y < playerpos.x - 30 || pos.y > playerpos.x + 13 || pos.x < playerpos.y - 30
 		    || pos.x > playerpos.y + 30) {
 			continue;
 		}
