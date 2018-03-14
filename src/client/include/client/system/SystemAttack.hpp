@@ -6,13 +6,11 @@
 
 namespace client
 {
-
-struct SystemAttack : anax::System<anax::Requires<>> 
-{
+struct SystemAttack : anax::System<anax::Requires<>> {
 	// Processes the attack responses from the server
 	void processServerResponses(anax::World &w);
 };
 
-} // namespace client
+}  // namespace client
 
 #endif

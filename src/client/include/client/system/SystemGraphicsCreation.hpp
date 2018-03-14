@@ -13,7 +13,9 @@ namespace client
 struct SystemGraphicsCreation
     : anax::System<anax::Requires<tempo::ComponentStagePosition, tempo::ComponentModel>> {
 	SystemGraphicsCreation();
-	void addEntities(irr::video::IVideoDriver *driver, irr::scene::ISceneManager *manager, anax::World &world);
+	void addEntities(irr::video::IVideoDriver * driver,
+	                 irr::scene::ISceneManager *manager,
+	                 anax::World &              world);
 };
 
 }  // namespace tempo

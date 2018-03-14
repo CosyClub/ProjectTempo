@@ -25,14 +25,14 @@
 
 #include <cassert>
 
-#define CASE(NAME, CID)                                              \
-	case ComponentID::CID:                                       \
-		if (!e.hasComponent<NAME>()) {                       \
-			e.addComponent<NAME>(part);                  \
-		} else {                                             \
-			std::cout << "Warning: Reinstanciation of "  \
-			          << "" #NAME << std::endl;          \
-		}                                                    \
+#define CASE(NAME, CID)                                                                            \
+	case ComponentID::CID:                                                                         \
+		if (!e.hasComponent<NAME>()) {                                                             \
+			e.addComponent<NAME>(part);                                                            \
+		} else {                                                                                   \
+			std::cout << "Warning: Reinstanciation of "                                            \
+			          << "" #NAME << std::endl;                                                    \
+		}                                                                                          \
 		break;
 
 namespace tempo

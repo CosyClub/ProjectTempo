@@ -9,9 +9,8 @@
 
 namespace server
 {
-
-struct SubSystemAttack : anax::System<anax::Requires<tempo::ComponentHealth, tempo::ComponentStagePosition>> 
-{
+struct SubSystemAttack
+    : anax::System<anax::Requires<tempo::ComponentHealth, tempo::ComponentStagePosition>> {
 	// Attack
 	// If attack is made, all attackable entities (have ComonentHealth)
 	// are checked to see if they are inside the attack range
@@ -25,23 +24,22 @@ struct SubSystemAttack : anax::System<anax::Requires<tempo::ComponentHealth, tem
 	bool bestAttack(anax::Entity attacker, glm::ivec2 &direction);
 };
 
-struct SystemAttack : anax::System<anax::Requires<tempo::ComponentAttack>> 
-{
+struct SystemAttack : anax::System<anax::Requires<tempo::ComponentAttack>> {
 	SubSystemAttack subSystem;
-	
+
 	// Sets up the SystemAttack along with it's necessary subsystem
 	SystemAttack(anax::World &world);
-	
+
 	// Recieves all the attack intents and bounces them to all the clients.
 	// To be run all the time.
 	void recieveAttacks(anax::World &w);
-	
+
 	// Processes all of the attack intents. To be run at Delta End.
 	void processAttacks();
 
 	bool bestAttack(anax::Entity attacker, glm::ivec2 &direction);
 };
 
-} // namespace server
+}  // namespace server
 
 #endif

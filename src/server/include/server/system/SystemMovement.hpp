@@ -9,11 +9,10 @@
 
 namespace server
 {
-
-struct SystemMovement : anax::System<anax::Requires<tempo::ComponentStage,
-                                                    tempo::ComponentStageTranslation,
-                                                    tempo::ComponentStagePosition>>
-{
+struct SystemMovement
+    : anax::System<anax::Requires<tempo::ComponentStage,
+                                  tempo::ComponentStageTranslation,
+                                  tempo::ComponentStagePosition>> {
 	// Recieve Movement Intents and Broadcasts them to everyone else
 	void recieveTranslations(anax::World &world);
 

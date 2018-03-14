@@ -2,18 +2,18 @@
 
 #include <tempo/component/ComponentStageRotation.hpp>
 
-#include <tempo/network/server.hpp>
 #include <tempo/network/ID.hpp>
+#include <tempo/network/server.hpp>
 
 namespace server
 {
-
 using tempo::operator<<;
 using tempo::operator>>;
 
 void SystemMovement::recieveTranslations(anax::World &w)
 {
-	tempo::Queue<sf::Packet> *queue = tempo::get_system_queue(tempo::QueueID::MOVEMENT_INTENT_UPDATES);
+	tempo::Queue<sf::Packet> *queue =
+	  tempo::get_system_queue(tempo::QueueID::MOVEMENT_INTENT_UPDATES);
 
 	if (queue->empty())
 		return;
@@ -32,7 +32,7 @@ void SystemMovement::recieveTranslations(anax::World &w)
 
 		try {
 			anax::Entity entity = anax::Entity(w, instance_id);
-			if (entity.hasComponent<tempo::ComponentStageRotation>() && f != glm::ivec2(0,0)) {
+			if (entity.hasComponent<tempo::ComponentStageRotation>() && f != glm::ivec2(0, 0)) {
 				entity.getComponent<tempo::ComponentStageRotation>().facing = f;
 			}
 
@@ -43,7 +43,8 @@ void SystemMovement::recieveTranslations(anax::World &w)
 
 			// Send update to all clients
 			for (auto it = tempo::clients.begin(); it != tempo::clients.end(); ++it) {
-				tempo::sendMessage(tempo::QueueID::MOVEMENT_INTENT_UPDATES, update_broadcast, it->first);
+				tempo::sendMessage(tempo::QueueID::MOVEMENT_INTENT_UPDATES, update_broadcast,
+				                   it->first);
 			}
 		} catch (std::out_of_range &e) {
 			std::cerr << e.what() << std::endl;
@@ -54,7 +55,8 @@ void SystemMovement::recieveTranslations(anax::World &w)
 void SystemMovement::processTranslation()
 {
 	for (auto &entity : getEntities()) {
-		tempo::ComponentStageTranslation &st = entity.getComponent<tempo::ComponentStageTranslation>();
+		tempo::ComponentStageTranslation &st =
+		  entity.getComponent<tempo::ComponentStageTranslation>();
 		tempo::ComponentStage &stage = entity.getComponent<tempo::ComponentStage>();
 		if (!st.moved) continue;
 
@@ -82,7 +84,7 @@ void SystemMovement::processTranslation()
 		for (auto &position : positions) {
 			p << position.x << position.y;
 		}
-		
+
 		// Add facing direction
 		if (entity.hasComponent<tempo::ComponentStageRotation>()) {
 			p << entity.getComponent<tempo::ComponentStageRotation>().facing.x;

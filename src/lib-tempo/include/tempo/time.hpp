@@ -57,8 +57,8 @@ class Clock
 	// Returns how far into a beat we are.
 	float beat_progress();
 
-  // Returns how far from a beat we are.
-  float beat_progress_desc();
+	// Returns how far from a beat we are.
+	float beat_progress_desc();
 
 	// Returns the amount of time until the next/since the previous
 	// "Beat Passed" event as in Figure 1.

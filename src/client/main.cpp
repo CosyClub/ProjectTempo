@@ -76,9 +76,9 @@ anax::Entity createEntityStage(anax::World &world)
 // 	return entity_player;
 // }
 
-anax::Entity createButtonGroup(anax::World &world,
-	                             std::vector<glm::ivec2> positions,
-	                             std::vector<glm::ivec2> tiles)
+anax::Entity createButtonGroup(anax::World &           world,
+                               std::vector<glm::ivec2> positions,
+                               std::vector<glm::ivec2> tiles)
 {
 	printf("Creating button\n");
 	anax::Entity entity_button = world.createEntity();
@@ -154,7 +154,7 @@ int main(int argc, const char **argv)
 
 	// Initialise Systems
 	system_update_key_input.setup(device);
-	system_stage_renderer.setup(smgr, driver);
+	system_stage_renderer.setup(smgr, driver,{255, 175, 0, 0}, {255, 50, 50, 50});
 	system_render_scene_node.setup(smgr, driver);
 
 	// must be after system_render_scene_node.setup(smgr);
@@ -217,7 +217,7 @@ int main(int argc, const char **argv)
 	client::ComponentRenderSceneNode &sn =
 	  entity_player.getComponent<client::ComponentRenderSceneNode>();
 
-	auto& combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
+	auto &combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
 
 	irr::scene::ICameraSceneNode *camera_node;
 	if (false) {
@@ -265,8 +265,9 @@ int main(int argc, const char **argv)
 	update_floor_clock.restart();
 
 	// buttons
-	std::vector<glm::ivec2> wall = {{0,1}, {0,2}, {0,3}, {0,4}, {0,5}, {0,6}, {0,7}, {0,8}, {0,9}};
-	anax::Entity entity_button = createButtonGroup(world, {{8, 8}}, wall);
+	std::vector<glm::ivec2> wall          = {{0, 1}, {0, 2}, {0, 3}, {0, 4}, {0, 5},
+                                    {0, 6}, {0, 7}, {0, 8}, {0, 9}};
+	anax::Entity            entity_button = createButtonGroup(world, {{8, 8}}, wall);
 	world.refresh();
 	system_button_renderer.setup(smgr, driver);
 
@@ -305,7 +306,8 @@ int main(int argc, const char **argv)
 			// Graphics updates
 			// std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl;
 			system_render_scene_node.update();
-			// std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" << std::endl;
+			// std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" <<
+			// std::endl;
 			system_render_health_bars.update();
 
 			// TODO: Make a system for updating camera position
@@ -338,20 +340,20 @@ int main(int argc, const char **argv)
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;
 		}
-		glm::ivec2 playerpos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
+		glm::ivec2 playerpos =
+		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-		system_stage_renderer.updateStage({255, 175, 0, 0}, {255, 50, 50, 50}, smgr, driver, j, playerpos);
+		system_stage_renderer.updateStage(smgr, driver, j, playerpos);
 
 		////////////////
 		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
-
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 		}
 
 		// Rendering Code
-		//if (!device->isWindowActive()) {
+		// if (!device->isWindowActive()) {
 		//	device->yield();
 		//	continue;
 		//}

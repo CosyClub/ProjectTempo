@@ -44,24 +44,20 @@ void SystemTrigger::updateButtons(anax::World &world)
 				buttons[i].triggered = false;
 			}
 		}
-
 	}
 
-	for (auto &entity : entities){
-		auto& button_group = entity.getComponent<tempo::ComponentButtonGroup>();
-		if(button_group.groupTriggered == true && !button_group.action_happened) {
+	for (auto &entity : entities) {
+		auto &button_group = entity.getComponent<tempo::ComponentButtonGroup>();
+		if (button_group.groupTriggered == true && !button_group.action_happened) {
 			button_group.action_happened = true;
 			for (auto &entity : world.getEntities()) {
-				if(entity.hasComponent<tempo::ComponentStage>()) {
-					auto& component_stage = entity.getComponent<tempo::ComponentStage>();
+				if (entity.hasComponent<tempo::ComponentStage>()) {
+					auto &component_stage = entity.getComponent<tempo::ComponentStage>();
 					component_stage.setHeight(button_group.wall_positions, 0.f);
 				}
 			}
 		}
 	}
-
-
-
 }
 
 std::vector<glm::ivec2> SubSystemGetPlayers::getPlayers()

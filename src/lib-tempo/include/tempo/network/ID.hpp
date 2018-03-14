@@ -8,7 +8,6 @@
 
 namespace tempo
 {
-
 // Maps that map a server id to a local id, and vice versa
 extern std::map<anax::Entity::Id, anax::Entity::Id> servertolocal;
 extern std::map<anax::Entity::Id, anax::Entity::Id> localtoserver;
@@ -16,7 +15,7 @@ extern std::map<anax::Entity::Id, anax::Entity::Id> localtoserver;
 //
 // QueueID
 // This enum class should contain all the ID's for queues that are used by the
-// game to recieve messages from the network stack with. 
+// game to recieve messages from the network stack with.
 //
 enum QueueID {
 	QID_RESERVED_BOTTOM,
@@ -69,7 +68,6 @@ enum ComponentID {
 
 sf::Packet &operator<<(sf::Packet &packet, const ComponentID id);
 sf::Packet &operator>>(sf::Packet &packet, ComponentID &id);
-
 }
 
 #endif

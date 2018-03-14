@@ -2,7 +2,6 @@
 
 namespace tempo
 {
-
 ComponentWeapon::ComponentWeapon(Mask &m)
 {
 	damage                   = Mask(m);

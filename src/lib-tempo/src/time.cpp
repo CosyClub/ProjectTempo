@@ -22,7 +22,7 @@ sf::Time Clock::get_time()
 void Clock::set_time(sf::Time t)
 {
 	cache_time();
-	time                  = t;
+	time = t;
 	update_beat();
 }
 
