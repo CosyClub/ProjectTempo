@@ -71,6 +71,11 @@ sf::Time Clock::until_beat()
 	return next_beat - time;
 }
 
+sf::Time Clock::until_delta_start()
+{
+	return until_beat() - delta;
+}
+
 sf::Time Clock::since_beat()
 {
 	return time - last_beat;
