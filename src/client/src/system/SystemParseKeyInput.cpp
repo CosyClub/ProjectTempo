@@ -30,27 +30,31 @@ void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing, b
 	sf::Packet p;
 	p << tempo::localtoserver[entity.getId()];
 	// Always include change of facing direction
-	p << facing.x << facing.y;
+	auto &sr = entity.getComponent<tempo::ComponentStageRotation>();
 
 	if (entity.hasComponent<tempo::ComponentStageRotation>()) {
-		entity.getComponent<tempo::ComponentStageRotation>().facing = facing;
-		// entity.getComponent<client::ComponentRenderSceneNode>().updateNeeded = true;
+		if (facing.x || facing.y) sr.facing = facing;
 	}
+
+	p << sr.facing.x << sr.facing.y;
 
 	if (!withinDelta) {
 		std::cout << "Actioned outside of delta" << std::endl;
 		// Only include delta in update if actioned within the delta
 		p << 0 << 0;
+		p << false;
 		tempo::sendMessage(tempo::QueueID::MOVEMENT_INTENT_UPDATES, p);
 		return;
 	}
 
 	// Include delta and tell server of intent
 	p << delta.x << delta.y;
+	p << true;
 	tempo::sendMessage(tempo::QueueID::MOVEMENT_INTENT_UPDATES, p);
 
 	if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
 		entity.getComponent<tempo::ComponentStageTranslation>().delta = delta;
+		entity.getComponent<tempo::ComponentStageTranslation>().moved = true;
 	}
 }
 
@@ -113,6 +117,7 @@ void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinD
 		break;
 	case irr::KEY_KEY_E:
 		//dance
+		addMovement(entity, glm::vec2(0,0), glm::vec2(0,0), withinDelta);
 		updateCombo(entity, withinDelta);
 		break;
 	case irr::KEY_SPACE:

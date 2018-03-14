@@ -80,7 +80,7 @@ void SystemTranslationAnimation::updateAnimations()
 
 		tempo::ComponentStageTranslation& trans =
 			entity.getComponent<tempo::ComponentStageTranslation>();
-		if(trans.delta.x == 0 && trans.delta.y == 0){ continue; }
+		if(!trans.moved){ continue; }
 
 		if(animators.count(entity_id) > 0){
 			// Then we've already added an animator to this entity

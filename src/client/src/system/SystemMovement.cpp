@@ -31,7 +31,8 @@ void SystemMovement::processIntents(anax::World &world)
 		anax::Entity::Id instance_id;
 		glm::ivec2 delta(0,0);
 		glm::ivec2 facing(0,0);
-		update >> instance_id >> facing.x >> facing.y >> delta.x >> delta.y;
+		bool moved;
+		update >> instance_id >> facing.x >> facing.y >> delta.x >> delta.y >> moved;
 		anax::Entity entity = anax::Entity(world, tempo::servertolocal[instance_id]);
 
 		if (entity.hasComponent<tempo::ComponentStageRotation>()) {
@@ -81,6 +82,7 @@ void SystemMovement::processCorrections(anax::World &world)
 		// Clear Stage Translation
 		if (e.hasComponent<tempo::ComponentStageTranslation>()) {
 			e.getComponent<tempo::ComponentStageTranslation>().delta = glm::ivec2(0,0);
+			e.getComponent<tempo::ComponentStageTranslation>().moved = false;
 		}
 
 		if (e.hasComponent<client::ComponentRenderSceneNode>()) {

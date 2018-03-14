@@ -151,6 +151,17 @@ void SystemAI::update(server::SystemAttack s_attack)
 				break;
 			}
 		}
+
+		if (st.delta.x || st.delta.y) sr.facing = st.delta;
+		st.moved = true;
+
+		sf::Packet update_broadcast;
+		update_broadcast << entity.getId() << sr.facing.x << sr.facing.y
+		                 << st.delta.x << st.delta.y << true;
+
+		tempo::broadcastMessage(tempo::QueueID::MOVEMENT_INTENT_UPDATES,
+		                         update_broadcast);
+
 		ai.prevPos = sp.getOrigin();
 
 	}
