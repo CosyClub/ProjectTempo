@@ -96,7 +96,7 @@ void SystemRenderSceneNode::update()
 			sn.spritePos.y = (float) ((dirIndex + 3) % 4) / sn.spriteDim.y;
 			printf("%d,%d\n", sr.facing.x, sr.facing.y);
 			if (sr.previousFacing == sr.facing) {
-				sn.spritePos.x = fmod(sn.spritePos.x + 1.f / sn.spriteDim.x, 1) + 1.f / sn.spriteDim.x;
+				sn.spritePos.x = sn.spritePos.x + 1.f / sn.spriteDim.x;
 				std::cout << sn.spritePos.x << std::endl;
 			} else {
 				sn.spritePos.x = 1.f / sn.spriteDim.x;
