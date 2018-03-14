@@ -54,7 +54,8 @@ void timeSyncServer(tempo::Clock *clock);
 //
 // Returns:
 //         void (is a thread)
-void checkForNewClients(anax::World *world);
+void checkForClientCreation(anax::World* world);
+void checkForClientDeletion(anax::World& world);
 
 // listenForClientUpdates
 // WARNING: Should be run on separate thread.

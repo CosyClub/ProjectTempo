@@ -7,6 +7,7 @@
 #include <tempo/time.hpp>
 
 #include <anax/World.hpp>
+#include <anax/Entity.hpp>
 
 #include <SFML/Network.hpp>
 #include <SFML/System/Time.hpp>
@@ -73,6 +74,8 @@ void listenForServerUpdates(std::atomic<bool> &running);
 // Returns:
 //         void - nothing is returned. Note side effects above.
 bool connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData, anax::World &world);
+
+void disconnectFromServer(anax::Entity &entity_player);
 
 bool broadcastMessage(QueueID id, sf::Packet p);
 }

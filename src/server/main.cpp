@@ -24,9 +24,9 @@
 #include <thread>
 #include <vector>
 
-#define BPM 138              // Beats per minutes
-#define PHASE 0             // Microseconds
-#define PLAYER_DELTA 125     // Delta around a beat a player can hit (millisecs)
+#define BPM 138                // Beats per minutes
+#define PHASE 0                // Microseconds
+#define PLAYER_DELTA 100       // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000.f / BPM  // Time between beats (microsecs)
 
 int main(int argc, const char **argv)
@@ -91,8 +91,8 @@ int main(int argc, const char **argv)
 	// Main loop, with beat printouts
 	while (true) {
 		// Handshake call, DO NOT REMOVE
-		tempo::checkForNewClients(&world);
-		world.refresh();
+		tempo::checkForClientCreation(&world);
+		tempo::checkForClientDeletion(world);
 
 		// float next_dt_time = dt_timer.getElapsedTime().asSeconds();
 		// float dt = next_dt_time - last_dt_time;
