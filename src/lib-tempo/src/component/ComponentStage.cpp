@@ -65,7 +65,7 @@ ComponentStage::ComponentStage(const char *stage_file)
 inline int ComponentStage::findIndex(glm::ivec2 position)
 {
 	for (unsigned int i = 0; i < tiles->size(); i++) {
-		auto &pos = tiles[i].position;
+		auto &pos = (*tiles)[i].position;
 		if (pos == position) {
 			return i;
 		}
@@ -83,7 +83,7 @@ float ComponentStage::getHeight(glm::ivec2 position)
 {
 	int index = findIndex(position);
 	if (index >= 0)
-		return tiles[index].height;
+		return (*tiles)[index].height;
 	else
 		return -10.0f;
 }
@@ -92,7 +92,7 @@ void ComponentStage::setHeight(glm::ivec2 position, int height)
 {
 	int index = findIndex(position);
 	if (index >= 0)
-		tiles[index].height = height;
+		(*tiles)[index].height = height;
 }
 
 void ComponentStage::setHeight(std::vector<glm::ivec2> positions, int height)
