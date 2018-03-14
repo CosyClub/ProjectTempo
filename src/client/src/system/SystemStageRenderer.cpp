@@ -137,7 +137,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		float height = heights[i].height;
 
 		if( pos.y < playerpos.x - 30 ||
-			pos.y > playerpos.x + 30 ||
+			pos.y > playerpos.x + 10 ||
 			pos.x < playerpos.y - 30 ||
 			pos.x > playerpos.y + 30) {
 			continue;
@@ -213,7 +213,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		}
 
 		if (pos.y < playerpos.x - 30 ||
-			pos.y > playerpos.x + 30 ||
+			pos.y > playerpos.x + 10 ||
 			pos.x < playerpos.y - 30 ||
 			pos.x > playerpos.y + 30) {
 			continue;
@@ -265,7 +265,7 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		float height = heights[i].height;
 
 		if (pos.y < playerpos.x - 30 ||
-			pos.y > playerpos.x + 30 ||
+			pos.y > playerpos.x + 10 ||
 			pos.x < playerpos.y - 30 ||
 			pos.x > playerpos.y + 30) {
 			continue;
