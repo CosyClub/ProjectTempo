@@ -39,8 +39,8 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr)
 		} else {
 			std::cout << "Adding billboard" << std::endl;
 			sn.node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
-			irr::scene::IBillboardSceneNode *billboard =
-				new irr::scene::YAlignedBillboardSceneNode(sn.node, smgr, -1, pos, size, color, color);
+			irr::scene::IBillboardSceneNode *billboard = new irr::scene::YAlignedBillboardSceneNode(
+			  sn.node, smgr, -1, pos, size, color, color);
 			billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 		}
 	}
@@ -55,11 +55,13 @@ void SystemRenderSceneNode::update()
 	for (auto entity : entities) {
 		tempo::ComponentStage &           s  = entity.getComponent<tempo::ComponentStage>();
 		tempo::ComponentStagePosition &   sp = entity.getComponent<tempo::ComponentStagePosition>();
-		client::ComponentRenderSceneNode &sn = entity.getComponent<client::ComponentRenderSceneNode>();
+		client::ComponentRenderSceneNode &sn =
+		  entity.getComponent<client::ComponentRenderSceneNode>();
 
 		glm::ivec2 pos = sp.getOrigin();
 
-		// std::cout << "Moved billboard to: " << pos.x << ", " << s.getHeight(pos) << ", " << pos.y << std::endl;
+		// std::cout << "Moved billboard to: " << pos.x << ", " << s.getHeight(pos) << ", " << pos.y
+		// << std::endl;
 		sn.node->setPosition(irr::core::vector3df(pos.x, s.getHeight(pos), pos.y));
 		// TODO
 	}

@@ -2,10 +2,10 @@
 
 namespace client
 {
-
 ComponentRenderSceneNode::ComponentRenderSceneNode(irr::scene::ISceneNode *node)
     : node(node)
-{}
+{
+}
 
 ComponentRenderSceneNode::~ComponentRenderSceneNode()
 {

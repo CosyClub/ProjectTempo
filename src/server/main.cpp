@@ -51,9 +51,9 @@ int main(int argc, const char **argv)
 	// Create Systems
 	server::SystemAttack   system_attack(world);
 	server::SystemMovement system_movement;
-	tempo::SystemCombo  system_combo;
-	tempo::SystemGridAi system_grid_ai;
-	tempo::SystemHealth system_health;
+	tempo::SystemCombo     system_combo;
+	tempo::SystemGridAi    system_grid_ai;
+	tempo::SystemHealth    system_health;
 
 	world.addSystem(system_attack);
 	world.addSystem(system_movement);

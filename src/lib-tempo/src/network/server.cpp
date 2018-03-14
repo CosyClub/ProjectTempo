@@ -138,7 +138,7 @@ void timeSyncServer(tempo::Clock *clock)
 // Will not check if client already exists, just add the information as a new
 // client, so it is recommended to use `if (!findClientID(ip, port)) first!
 static uint32_t idCounter = NO_CLIENT_ID + 1;
-uint32_t addClient(sf::Uint32 ip, unsigned short port, ClientRole role = ClientRole::NO_ROLE)
+uint32_t        addClient(sf::Uint32 ip, unsigned short port, ClientRole role = ClientRole::NO_ROLE)
 {
 	clientConnection newClient = {ip, port, role};
 	cmtx.lock();
@@ -175,15 +175,15 @@ void removeClientId(sf::Uint32 ip, unsigned short port)
 	cmtx.unlock();
 }
 
-#define ADD_COMPONENT(ENT, CNT, PKT, CMP)                                    \
-	if (ENT.hasComponent<CMP>()) {                                       \
-		sf::Packet part;                                             \
-		part << ENT.getComponent<CMP>().getId();                     \
-		sf::Packet part2 = ENT.getComponent<CMP>().dumpComponent();  \
-		part << part2;                                               \
-		PKT << sf::Uint32(part.getDataSize());                       \
-		PKT << part;                                                 \
-		CNT++;                                                       \
+#define ADD_COMPONENT(ENT, CNT, PKT, CMP)                                                          \
+	if (ENT.hasComponent<CMP>()) {                                                                 \
+		sf::Packet part;                                                                           \
+		part << ENT.getComponent<CMP>().getId();                                                   \
+		sf::Packet part2 = ENT.getComponent<CMP>().dumpComponent();                                \
+		part << part2;                                                                             \
+		PKT << sf::Uint32(part.getDataSize());                                                     \
+		PKT << part;                                                                               \
+		CNT++;                                                                                     \
 	}
 
 sf::Packet packageComponents(anax::Entity entity)
@@ -331,7 +331,8 @@ void checkForClientCreation(anax::World *world)
 	world->refresh();
 }
 
-void checkForClientDeletion(anax::World& world) {
+void checkForClientDeletion(anax::World &world)
+{
 	tempo::Queue<sf::Packet> *queue = get_system_queue(QueueID::ENTITY_DELETION);
 	if (queue->empty())
 		return;
@@ -340,10 +341,10 @@ void checkForClientDeletion(anax::World& world) {
 		sf::Packet packet = queue->front();
 		queue->pop();
 
-		sf::Packet broadcast;
+		sf::Packet       broadcast;
 		anax::Entity::Id id;
-		uint32_t ip_d;
-		uint32_t port;
+		uint32_t         ip_d;
+		uint32_t         port;
 		packet >> id >> ip_d >> port;
 		broadcast << id;
 		sf::IpAddress ip(ip_d);

@@ -2,7 +2,6 @@
 
 namespace client
 {
-
 ComponentRenderButtonGroup::ComponentRenderButtonGroup() {}
 
 ComponentRenderButtonGroup::~ComponentRenderButtonGroup()

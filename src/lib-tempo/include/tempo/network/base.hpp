@@ -162,6 +162,6 @@ sf::Packet splitPacket(sf::Packet &packet, uint32_t size);
 extern bool sendMessage(tempo::QueueID id, sf::Packet p);
 extern bool broadcastMessage(tempo::QueueID id, sf::Packet p);
 
-} // namespace tempo
+}  // namespace tempo
 
 #endif

@@ -74,8 +74,8 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 		auto &buttonRend = rend.buttonsRender;
 
 		if (buttons.size() != buttonRend.size()) {
-			printf("\n\n\n\n This is a significant problem buttons=%d,buttonRend = %d\n\n\n\n", buttons.size(),
-			       buttonRend.size());
+			printf("\n\n\n\n This is a significant problem buttons=%d,buttonRend = %d\n\n\n\n",
+			       buttons.size(), buttonRend.size());
 		}
 
 		if (!group.groupTriggered) {

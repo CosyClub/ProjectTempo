@@ -12,9 +12,9 @@ SystemGraphicsCreation::SystemGraphicsCreation() {}
 
 void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver * driver,
                                          irr::scene::ISceneManager *manager,
-                                         anax::World &world)
+                                         anax::World &              world)
 {
-	bool touched = false;
+	bool touched  = false;
 	auto entities = getEntities();
 	for (auto &entity : entities) {
 		if (!entity.hasComponent<client::ComponentRenderSceneNode>()) {
@@ -28,7 +28,8 @@ void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver * driver,
 		}
 	}
 
-	if (touched) world.refresh();
+	if (touched)
+		world.refresh();
 }
 
 }  // namespace tempo

@@ -5,13 +5,11 @@
 
 namespace client
 {
-
-struct SystemEntity : anax::System<anax::Requires<>> 
-{
+struct SystemEntity : anax::System<anax::Requires<>> {
 	void creationCheck(anax::World &w);
 	void deletionCheck(anax::World &w);
 };
 
-} // namespace client
+}  // namespace client
 
 #endif

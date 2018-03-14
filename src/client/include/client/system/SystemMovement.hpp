@@ -6,9 +6,7 @@
 
 namespace client
 {
-
-struct SystemMovement : anax::System<anax::Requires<>> 
-{
+struct SystemMovement : anax::System<anax::Requires<>> {
 	// Processes the movement intents recieved from the server
 	void processIntents(anax::World &world);
 
@@ -16,6 +14,6 @@ struct SystemMovement : anax::System<anax::Requires<>>
 	void processCorrections(anax::World &world);
 };
 
-} // namespace client
+}  // namespace client
 
 #endif

@@ -1,10 +1,10 @@
 #include <server/system/SystemAttack.hpp>
 
-#include <tempo/component/NetworkedComponent.hpp>
 #include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
-#include <tempo/component/ComponentWeapon.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentWeapon.hpp>
+#include <tempo/component/NetworkedComponent.hpp>
 
 #include <tempo/network/ID.hpp>
 #include <tempo/network/server.hpp>
@@ -13,7 +13,6 @@
 
 namespace server
 {
-
 using tempo::operator<<;
 using tempo::operator>>;
 
@@ -31,7 +30,7 @@ void SystemAttack::recieveAttacks(anax::World &w)
 	while (!q->empty()) {
 		sf::Packet p = q->front();
 		q->pop();
-		sf::Packet pb; // packet for broadcast
+		sf::Packet pb;  // packet for broadcast
 
 		uint32_t code;
 		p >> code;
@@ -45,7 +44,8 @@ void SystemAttack::recieveAttacks(anax::World &w)
 		switch (static_cast<tempo::MessageAttack>(code)) {
 		case tempo::MessageAttack::UPDATE_INTENT: {
 			if (!e.hasComponent<tempo::ComponentAttack>()) {
-				std::cout << "Recieved Attack Intent Update from entity without ComponentAttack" << std::endl;
+				std::cout << "Recieved Attack Intent Update from entity without ComponentAttack"
+				          << std::endl;
 				continue;
 			}
 			tempo::ComponentAttack &c = e.getComponent<tempo::ComponentAttack>();
@@ -59,10 +59,8 @@ void SystemAttack::recieveAttacks(anax::World &w)
 		case tempo::MessageAttack::ATTACK_CORRECTION:
 			// do nothing, server should not recieve corrections
 			break;
-		default:
-			std::cout << "ATTACK: Unhandled/erroneous message" << std::endl;
+		default: std::cout << "ATTACK: Unhandled/erroneous message" << std::endl;
 		}
-
 	}
 }
 
@@ -78,10 +76,10 @@ void SystemAttack::processAttacks()
 void SubSystemAttack::Attack(anax::Entity attacker)
 {
 	// Get Attacker Components
-	glm::ivec2  attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
-	glm::ivec2  rot         = attacker.getComponent<tempo::ComponentStageRotation>().facing;
-	auto &      attack      = attacker.getComponent<tempo::ComponentAttack>();
-	auto &      weapon      = attacker.getComponent<tempo::ComponentWeapon>();
+	glm::ivec2 attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
+	glm::ivec2 rot         = attacker.getComponent<tempo::ComponentStageRotation>().facing;
+	auto &     attack      = attacker.getComponent<tempo::ComponentAttack>();
+	auto &     weapon      = attacker.getComponent<tempo::ComponentWeapon>();
 
 	// If a delayed attack, process and update clients
 	if (attack.beats_until_attack > 0) {
@@ -97,7 +95,8 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 
 	for (auto &entity : getEntities()) {
 		// Get health and positions occupired by other entity
-		std::vector<glm::ivec2> ps = entity.getComponent<tempo::ComponentStagePosition>().getOccupied();
+		std::vector<glm::ivec2> ps =
+		  entity.getComponent<tempo::ComponentStagePosition>().getOccupied();
 		auto &health = entity.getComponent<tempo::ComponentHealth>();
 
 		// Add positions after stage translation (if any) to ps vector
@@ -106,19 +105,19 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 		//       that matters?
 		if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
 			glm::ivec2 d = entity.getComponent<tempo::ComponentStageTranslation>().delta;
-			if (d != glm::ivec2(0,0)) {
-				for (glm::ivec2 p : entity.getComponent<tempo::ComponentStagePosition>().getOccupied()) {
-					if (std::find(ps.begin(), ps.end(), p+d) != ps.end()) {
-						ps.push_back(p+d);
+			if (d != glm::ivec2(0, 0)) {
+				for (glm::ivec2 p :
+				     entity.getComponent<tempo::ComponentStagePosition>().getOccupied()) {
+					if (std::find(ps.begin(), ps.end(), p + d) != ps.end()) {
+						ps.push_back(p + d);
 					}
-
 				}
 			}
 		}
 
 		// Calculate relative directions from the attacker
 		glm::vec2 forward = rot;
-		glm::vec2 left = glm::ivec2(-rot.y, -rot.x);  // Hacky cross product
+		glm::vec2 left    = glm::ivec2(-rot.y, -rot.x);  // Hacky cross product
 
 		// Deal damage to the other entity
 		for (glm::ivec2 p : ps) {
@@ -127,7 +126,8 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 
 			float damage = weapon.GetDamage(relative_diff);
 			if (damage != 0) {
-				std::cout << "hit entity " << entity.getId().index << " for " << damage << std::endl;
+				std::cout << "hit entity " << entity.getId().index << " for " << damage
+				          << std::endl;
 				health.HealthUpdate(-1 * damage);
 
 				sf::Packet p;
@@ -143,7 +143,7 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 
 	// Clear attack intent and broadcast to clients
 	// TODO:
-	attack.damage = tempo::Mask(glm::ivec2(0,0), NULL, glm::ivec2(0,0));
+	attack.damage             = tempo::Mask(glm::ivec2(0, 0), NULL, glm::ivec2(0, 0));
 	attack.beats_until_attack = -1;
 	sf::Packet p;
 	p << static_cast<uint32_t>(tempo::MessageAttack::UPDATE_INTENT);
@@ -153,4 +153,4 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 	tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);
 }
 
-} // namespace server
+}  // namespace server

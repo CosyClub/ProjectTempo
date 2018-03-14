@@ -2,16 +2,15 @@
 
 namespace tempo
 {
-
-ComponentAttack::ComponentAttack() 
+ComponentAttack::ComponentAttack()
 {
-	damage = Mask();
+	damage             = Mask();
 	beats_until_attack = -1;
 }
 
 void ComponentAttack::updateAttack(Mask &damage, unsigned int beats_until_attack)
 {
-	this->damage = damage;
+	this->damage             = damage;
 	this->beats_until_attack = beats_until_attack;
 }
 
@@ -23,18 +22,18 @@ bool ComponentAttack::isAttacking()
 /////
 // Required for networking
 /////
-ComponentAttack::ComponentAttack(sf::Packet p) 
+ComponentAttack::ComponentAttack(sf::Packet p)
 {
 	p >> damage;
 	p >> beats_until_attack;
 }
 
-ComponentID ComponentAttack::getId() 
+ComponentID ComponentAttack::getId()
 {
 	return tempo::ComponentID::ATTACK;
 }
 
-sf::Packet ComponentAttack::dumpComponent() 
+sf::Packet ComponentAttack::dumpComponent()
 {
 	sf::Packet p;
 	p << damage;
@@ -42,4 +41,4 @@ sf::Packet ComponentAttack::dumpComponent()
 	return p;
 }
 
-} // namespace tempo
+}  // namespace tempo
