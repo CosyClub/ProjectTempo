@@ -65,6 +65,9 @@ class Clock
 	sf::Time until_beat();
 	sf::Time since_beat();
 
+	// Returns time until the next delta start event as in Figure 1
+	sf::Time until_delta_start();
+
 	// Sets when the next beat should be. The time given is an
 	// absolute time. From this point on the beats will continue to
 	// progress with a time between beats of (next_beat - last_beat)

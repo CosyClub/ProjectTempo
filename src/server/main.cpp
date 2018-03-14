@@ -136,8 +136,7 @@ int main(int argc, const char **argv)
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 			system_attack.processAttacks();
-			// TODO Once animated uncomment
-			// system_movement.processTranslation();
+			system_movement.processTranslation();
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));

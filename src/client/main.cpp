@@ -13,6 +13,7 @@
 #include <client/system/SystemRenderSceneNode.hpp>
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
+#include <client/system/SystemTranslationAnimation.hpp>
 
 #include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
@@ -130,6 +131,7 @@ int main(int argc, const char **argv)
 	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
 	client::SystemUpdateKeyInput   system_update_key_input;
+	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
 
 	// Add Systems
 	world.addSystem(system_attack);
@@ -145,6 +147,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_update_key_input);
 	world.addSystem(system_parse_key_input);
 	world.addSystem(system_movement);
+	world.addSystem(system_translation_animation);
 
 	anax::Entity entity_stage = createEntityStage(world);
 	world.refresh();
@@ -230,7 +233,6 @@ int main(int argc, const char **argv)
 		// camera_node = smgr->addCameraSceneNodeMaya(sn.node, rotate, translate, zoom, -1,
 		// distance); camera_node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
 		camera_node = smgr->addCameraSceneNode();
-		camera_node->setParent(sn.node);
 		camera_node->setPosition(irr::core::vector3df(14, 9, 0));
 		camera_node->setTarget(sn.node->getPosition());
 		// camera_node->setRotation(irr::core::vector3df(0,0,90));
@@ -270,6 +272,7 @@ int main(int argc, const char **argv)
 
 	printf("Entering main loop\n");
 	while (device->run()) {
+		// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
 		// float dt = dt_timer.getElapsedTime().asSeconds();
 		// dt_timer.restart();
 
@@ -287,6 +290,9 @@ int main(int argc, const char **argv)
 			system_movement.processIntents(world);
 			system_movement.processCorrections(world);
 
+			// Update animations from translations received from server
+			system_translation_animation.updateAnimations();
+
 			// Deal with local input
 			system_update_key_input.clear();
 			system_update_key_input.addKeys();
@@ -301,8 +307,12 @@ int main(int argc, const char **argv)
 			system_render_scene_node.update();
 			// std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" << std::endl;
 			system_render_health_bars.update();
+
 			// TODO: Make a system for updating camera position
-			camera_node->setTarget(sn.node->getPosition());
+			irr::core::vector3df camera_target = sn.node->getAbsolutePosition();
+			camera_node->setPosition(camera_target + irr::core::vector3df(14, 9, 0));
+			camera_node->updateAbsolutePosition();
+			camera_node->setTarget(camera_target);
 		}
 
 		////////////////
@@ -321,16 +331,16 @@ int main(int argc, const char **argv)
 
 			j++;
 			j = j % 22;
-			// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
-			tempo::ComponentHealth &h = entity_player.getComponent<tempo::ComponentHealth>();
-			std::cout << h.current_health << "/" << h.max_health << std::endl;
+			system_translation_animation.endBeat();
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;
 		}
-		system_stage_renderer.updateStage({255, 175, 0, 0}, {255, 50, 50, 50}, driver, j);
+		glm::ivec2 playerpos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
+
+		system_stage_renderer.updateStage({255, 175, 0, 0}, {255, 50, 50, 50}, smgr, driver, j, playerpos);
 
 		////////////////
 		// Events at "Delta End"
@@ -345,6 +355,10 @@ int main(int argc, const char **argv)
 		//	device->yield();
 		//	continue;
 		//}
+
+		// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
+		// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
+		// << std::endl;
 
 		driver->beginScene(true, true);
 		smgr->drawAll();
@@ -366,16 +380,11 @@ int main(int argc, const char **argv)
 	printf("Left main loop\n");
 
 	// Tell server we are gone
-	sf::Packet p;
-	tempo::operator<<(p, tempo::localtoserver[entity_player.getId()]);
-	p << (uint32_t) tempo::addr_r.toInteger();
-	p << (uint32_t) tempo::port_ci;
-	tempo::sendMessage(tempo::QueueID::ENTITY_DELETION, p);
+	tempo::disconnectFromServer(entity_player);
 
+	// Close server listener and destroy the game
 	listener.join();
-
 	world.clear();
-
 	device->drop();
 
 	return 0;
