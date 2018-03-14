@@ -72,6 +72,8 @@ sf::Packet ComponentButtonGroup::dumpComponent()
 
 	p << groupTriggered;
 	p << action_happened;
+
+	return p;
 }
 
 sf::Packet &operator<<(sf::Packet &p, const button &c)
