@@ -251,7 +251,6 @@ void SystemStageRenderer::updateStage(glm::ivec4                colour1,
 		}
 	}
 
-	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, nullptr);
 	mesh->getMeshBuffer(1)->getMaterial().EmissiveColor.set(255, 0, 0, 0);
 	mesh->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
 
