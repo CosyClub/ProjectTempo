@@ -105,8 +105,6 @@ int main(int argc, const char **argv)
 			system_combo.checkForUpdates();
 			system_health.CheckHealth();
 			system_health.broadcastHealth();
-			// TODO Once animated detlete and uncomment in delta end:
-			system_movement.processTranslation();
 		}
 
 		if (clock.passed_antibeat())
