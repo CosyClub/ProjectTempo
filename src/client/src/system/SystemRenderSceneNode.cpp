@@ -37,6 +37,9 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 
 		// a billboard has its origin in the centre, this node is used for alignement
 		sn.node = smgr->addEmptySceneNode();
+
+		sn.isMesh = m.isMesh;
+
 		if (m.isMesh) {
 			std::cout << "Adding mesh" << std::endl;
 			// irr::scene::IMesh *mesh = smgr->getMesh(path);
