@@ -42,7 +42,7 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
-	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 0, 0), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(1);
 	float arr[2] = {0, 1};
@@ -63,7 +63,7 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
-	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 0, 0), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(2);
 	float arr[9] = {1, 1, 1,
@@ -87,7 +87,7 @@ anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
-	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 0, 0), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 200, 200), false, glm::vec2(4,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(5);
 	float arr[9] = {5, 5, 5,
@@ -109,7 +109,7 @@ anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<g
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
-	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 0, 0), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(5);
 	float arr[2] = {0, 1};
@@ -131,7 +131,7 @@ anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
-	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 0, 0), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(5);
 	float arr[2] = {0, 1};
