@@ -12,6 +12,7 @@ namespace tempo
 {
 using Facing = glm::ivec2;
 
+extern std::array<glm::ivec2, 4> DIRECTIONS;
 extern glm::ivec2 NORTH;
 extern glm::ivec2 EAST;
 extern glm::ivec2 SOUTH;
@@ -22,6 +23,7 @@ struct ComponentStageRotation
     : anax::Component
     , NetworkedComponent {
 	Facing facing;
+	Facing previousFacing = { 0,0 };
 
 	ComponentStageRotation(Facing f);
 

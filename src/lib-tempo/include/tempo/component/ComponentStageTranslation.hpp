@@ -16,6 +16,7 @@ struct ComponentStageTranslation
     , NetworkedComponent {
 	// The position translation
 	glm::ivec2 delta;
+	bool moved;
 	// Creates the stage translation with no delta
 	ComponentStageTranslation();
 

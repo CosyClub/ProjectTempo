@@ -25,6 +25,7 @@ namespace tempo
 //                        ^                   ^
 //                     Midpoint            Midpoint
 //                    of 2 beats          of 2 beats
+//                    (antibeat)          (antibeat)
 //
 // Where:
 //   "Delta End" - "Beat Passed" == "Beat Passed" - "Delta Start"
@@ -49,6 +50,7 @@ class Clock
 	// (i.e. a beat passing), until the next beat passes.
 	// Thus this should only be called from the main loop.
 	bool passed_beat();
+	bool passed_antibeat();
 	bool passed_delta_start();
 	bool passed_delta_end();
 
@@ -91,6 +93,7 @@ class Clock
 
 	// Used to stop the passed_delta_XXX() functions from repeat
 	// firing.
+	bool passed_ab;
 	bool passed_ds;
 	bool passed_de;
 

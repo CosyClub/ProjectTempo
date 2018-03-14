@@ -29,6 +29,7 @@ enum QueueID {
 	MOVEMENT_UPDATES,
 	COMBO_UPDATES,
 	SYSTEM_ATTACK,
+	SYSTEM_HEALTH,
 
 	// End of non-reserved zone
 	QID_RESERVED_TOP
@@ -47,7 +48,7 @@ enum ComponentID {
 	AOEINDICATOR,       // 2
 	ATTACK,             // 3
 	COMBO,              // 4
-	GRID_AI,            // 5
+	AI,                 // 5
 	HEALTH,             // 6
 	MODEL,              // 7
 	PICKUP,             // 8
@@ -57,11 +58,12 @@ enum ComponentID {
 	STAGE_POSITION,     // 12
 	STAGE_ROTATION,     // 13
 	STAGE_TRANSLATION,  // 14
-	TRANSFORM,          // 15
-	WEAPON,             // 16
+	TEAM,               // 15
+	TRANSFORM,          // 16
+	WEAPON,             // 17
 
 	// End of non-reserved zone
-	CID_RESERVED_TOP  // 17
+	CID_RESERVED_TOP    // 18
 };
 
 sf::Packet &operator<<(sf::Packet &packet, const ComponentID id);

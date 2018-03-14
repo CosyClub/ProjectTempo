@@ -4,6 +4,7 @@
 #include <tempo/component/ComponentModel.hpp>
 #include <tempo/component/ComponentStage.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
 
 #include <client/component/ComponentRenderSceneNode.hpp>
 
@@ -21,7 +22,7 @@ class SystemRenderSceneNode
 {
    public:
 	// Creates a static red square for all components with positions and render nodes
-	void setup(irr::scene::ISceneManager *smgr);
+	void setup(irr::scene::ISceneManager *smgr,irr::video::IVideoDriver * driver);
 	// Updates the positions of all render scene node according to the stage position
 	void update();
 };

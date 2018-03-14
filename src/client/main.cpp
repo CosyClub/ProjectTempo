@@ -155,7 +155,7 @@ int main(int argc, const char **argv)
 	// Initialise Systems
 	system_update_key_input.setup(device);
 	system_stage_renderer.setup(smgr, driver,{255, 175, 0, 0}, {255, 50, 50, 50});
-	system_render_scene_node.setup(smgr);
+	system_render_scene_node.setup(smgr, driver);
 
 	// must be after system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);
@@ -196,7 +196,7 @@ int main(int argc, const char **argv)
 
 	// Sort out graphics after handshake
 	system_gc.addEntities(driver, smgr, world);
-	system_render_scene_node.setup(smgr);
+	system_render_scene_node.setup(smgr, driver);
 	system_render_health_bars.setup(smgr);
 
 	// Start and Sync Song
@@ -284,7 +284,7 @@ int main(int argc, const char **argv)
 			system_entity.creationCheck(world);
 			system_entity.deletionCheck(world);
 			system_gc.addEntities(driver, smgr, world);
-			system_render_scene_node.setup(smgr);
+			system_render_scene_node.setup(smgr,driver);
 			system_render_health_bars.setup(smgr);
 
 			// Recieve updates from the server
@@ -301,6 +301,7 @@ int main(int argc, const char **argv)
 
 			// Deprecated/To-be-worked-on
 			system_health.CheckHealth();
+			system_health.recieveHealth(world);
 
 			// Graphics updates
 			// std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl;

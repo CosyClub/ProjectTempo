@@ -5,18 +5,22 @@
 
 #include <tempo/component/NetworkedComponent.hpp>
 
+#include <tempo/network/base.hpp>
+
 #include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 
 namespace tempo
 {
-struct ComponentModel
-    : anax::Component
-    , NetworkedComponent {
+
+struct ComponentModel : anax::Component, NetworkedComponent 
+{
 	bool        isMesh;
 	std::string path;
 	glm::vec3   color;
+	glm::ivec2  spriteDim;
 
-	ComponentModel(std::string p, glm::vec3 c, bool mesh);
+	ComponentModel(std::string p, glm::vec3 c, bool mesh, glm::ivec2 sdim);
 
 	/////
 	// Required for networking

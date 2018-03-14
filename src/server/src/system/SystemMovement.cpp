@@ -24,10 +24,11 @@ void SystemMovement::recieveTranslations(anax::World &w)
 		sf::Packet update_broadcast;
 
 		anax::Entity::Id instance_id;
-		glm::ivec2       delta = glm::ivec2(0, 0);
-		tempo::Facing    f     = glm::ivec2(0, 0);
-		update >> instance_id >> f.x >> f.y >> delta.x >> delta.y;
-		update_broadcast << instance_id << f.x << f.y << delta.x << delta.y;
+		glm::ivec2       delta = glm::ivec2(0,0);
+		tempo::Facing    f     = glm::ivec2(0,0);
+		bool moved;
+		update >> instance_id >> f.x >> f.y >> delta.x >> delta.y >> moved;
+		update_broadcast << instance_id << f.x << f.y << delta.x << delta.y << moved;
 
 		try {
 			anax::Entity entity = anax::Entity(w, instance_id);
@@ -35,8 +36,9 @@ void SystemMovement::recieveTranslations(anax::World &w)
 				entity.getComponent<tempo::ComponentStageRotation>().facing = f;
 			}
 
-			if (entity.hasComponent<tempo::ComponentStagePosition>()) {
+			if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
 				entity.getComponent<tempo::ComponentStageTranslation>().delta = delta;
+				entity.getComponent<tempo::ComponentStageTranslation>().moved = moved; 
 			}
 
 			// Send update to all clients
@@ -56,15 +58,14 @@ void SystemMovement::processTranslation()
 		tempo::ComponentStageTranslation &st =
 		  entity.getComponent<tempo::ComponentStageTranslation>();
 		tempo::ComponentStage &stage = entity.getComponent<tempo::ComponentStage>();
-		if (st.delta.x == 0 && st.delta.y == 0)
-			continue;
+		if (!st.moved) continue;
 
 		bool  can_move  = true;
 		auto &positions = entity.getComponent<tempo::ComponentStagePosition>().occupied;
 
 		for (auto &position : positions) {
-			if (!stage.existstTile(position + st.delta))
-				can_move = false;
+			can_move &= stage.existstTile(position + st.delta);
+			can_move &= stage.getHeight(position + st.delta) < 5;
 		}
 
 		if (can_move) {
@@ -74,6 +75,7 @@ void SystemMovement::processTranslation()
 		}
 
 		st.delta = {0, 0};
+		st.moved = false;
 
 		// Send update to everyone
 		sf::Packet p;

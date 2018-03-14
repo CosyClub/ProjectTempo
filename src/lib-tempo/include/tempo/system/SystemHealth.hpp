@@ -4,6 +4,9 @@
 #include <anax/System.hpp>
 
 #include <tempo/component/ComponentHealth.hpp>
+#include <tempo/network/base.hpp>
+#include <tempo/network/ID.hpp>
+#include <tempo/network/queue.hpp>
 
 namespace tempo
 {
@@ -16,6 +19,10 @@ struct SystemHealth : anax::System<anax::Requires<ComponentHealth>> {
 	// Returns:
 	//          void
 	void CheckHealth();
+
+	void broadcastHealth();
+	void sendHealth(anax::Entity entity);
+	void recieveHealth(anax::World &world);
 };
 }
 
