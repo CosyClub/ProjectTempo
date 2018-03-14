@@ -29,9 +29,9 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
   this->wall_normal_map  = driver->getTexture("resources/materials/walls/cobblestone_n.png");
   this->tile_texture     = driver->getTexture("resources/materials/TileLightMaskPixelOn.png");
 
-	meshC1 = smgr->getMesh("resources/meshes/tile.obj");
-  meshC2 = smgr->getMesh("resources/meshes/tile.obj");
-  walls = smgr->getMesh("resources/meshes/tile.obj");
+	meshC1 = smgr->getMeshManipulator()->createMeshCopy(smgr->getMesh("resources/meshes/tile.obj"));
+  meshC2 = smgr->getMeshManipulator()->createMeshCopy(smgr->getMesh("resources/meshes/tile.obj"));
+  walls = smgr->getMeshManipulator()->createMeshCopy(smgr->getMesh("resources/meshes/tile.obj"));
 
 	batchMesh = new irr::scene::CBatchingMesh();
 
@@ -167,16 +167,10 @@ void SystemStageRenderer::updateStage(irr::scene::ISceneManager *smgr,
 		}
 
 		if (render) {
-      if(pos.x == 5 && pos.y == 5){
-        printf("Red \n");
-      }
 			batchMesh->addMesh(meshC1, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
       continue;
 		}
     else{
-      if(pos.x == 5 && pos.y == 5){
-        printf("Black \n");
-      }
       batchMesh->addMesh(meshC2, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
       continue;
     }
