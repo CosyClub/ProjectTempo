@@ -66,14 +66,28 @@ int main(int argc, const char **argv)
 	world.refresh();
 
 	// Create some Test Entities
-	tempo::createMobCreeper(world, glm::ivec2(12, 12));
-	tempo::createMobCreeper(world, glm::ivec2(14, 14));
-	tempo::createMobAntiSnail(world, glm::ivec2(4, 4));
-	std::deque<glm::ivec2> path {glm::ivec2(3,3),
-	                             glm::ivec2(3,7),
-	                             glm::ivec2(7,7),
-	                             glm::ivec2(7,3)};
-	tempo::createMobPatroller(world, glm::ivec2(3,3), path);
+	  
+	tempo::createMobStill(world, glm::ivec2(36, 42));
+	tempo::createMobStill(world, glm::ivec2(40, 42));
+	tempo::createMobStill(world, glm::ivec2(44, 42));
+	
+	tempo::createMobCreeper(world, glm::ivec2(40, 64));
+
+	std::deque<glm::ivec2> path {glm::ivec2(64, 68),
+	                             glm::ivec2(64, 72),
+	                             glm::ivec2(68, 72),
+	                             glm::ivec2(68, 68)};
+	tempo::createMobPatroller(world, path[0], path);
+
+	std::deque<glm::ivec2> path2 {glm::ivec2(11, 67),
+	                              glm::ivec2(11, 73),
+	                              glm::ivec2(15, 73),
+	                              glm::ivec2(15, 67)};
+	tempo::createMobPatroller(world, path2[0], path);
+	  
+	// tempo::createMobCreeper(world, glm::ivec2(12, 12));
+	// tempo::createMobCreeper(world, glm::ivec2(14, 14));
+	// tempo::createMobAntiSnail(world, glm::ivec2(4, 4));
 
 	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
 	tempo::createButtonGroup(world, {{40, 12}}, wall);
