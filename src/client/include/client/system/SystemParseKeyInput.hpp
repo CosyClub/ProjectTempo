@@ -7,11 +7,12 @@
 #include <client/component/ComponentKeyInput.hpp>
 
 #include <tempo/time.hpp>
+#include <IrrlichtDevice.h> 
 
 namespace client
 {
 struct SystemParseKeyInput : anax::System<anax::Requires<ComponentKeyInput>> {
-	void parseInput(tempo::Clock &clock);
+	void parseInput(tempo::Clock &clock, irr::IrrlichtDevice* device);
 };
 
 }  // namespace tempo

@@ -44,8 +44,8 @@ class Clock
 	sf::Time get_time();
 	void     set_time(sf::Time t);
 
-	// Checks to see if we have passed the beat as marked by
-	// "Beat Passed", "Delta Start" and "Delta End" in Figure 1.
+	// Checks to see if we have passed the beat as marked by "Beat Passed", 
+	// "Midpoint of 2 beats", "Delta Start" and "Delta End" in Figure 1.
 	// Returns true if so. Will return false after returning true
 	// (i.e. a beat passing), until the next beat passes.
 	// Thus this should only be called from the main loop.
