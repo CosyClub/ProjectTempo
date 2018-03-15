@@ -102,6 +102,17 @@ void SystemRenderSceneNode::update()
 			sn.updateNeeded = false;
 		}
 
+		if (entity.hasComponent<tempo::ComponentCombo>())
+		{
+			tempo::ComponentCombo& c = entity.getComponent<tempo::ComponentCombo>();
+			float scale = c.comboCounter / 20.f;
+			scale = fmin(scale, 1);
+			irr::core::dimension2d<irr::f32> size(1.2f + 1.2f * scale, 1.6f +  1.6f * scale);
+			irr::core::vector3df             pos(0.0f + 0.2 * scale, 0.0f + size.Height / 2, 0.0f);
+			sn.billboard->setSize(size);
+			sn.billboard->setPosition(pos);
+		}
+
 		sr.previousFacing = sr.facing;
 		sn.node->setPosition(irr::core::vector3df(pos.x, s.getHeight(pos), pos.y));
 	}
