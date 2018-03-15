@@ -5,8 +5,11 @@
 
 #include <glm/vec2.hpp>
 
+#include <iostream>
+
 namespace tempo
 {
+
 SystemTrigger::SystemTrigger(anax::World &world)
 {
 	subSystem = SubSystemGetPlayers();
@@ -54,6 +57,7 @@ void SystemTrigger::updateButtons(anax::World &world)
 				if (entity.hasComponent<tempo::ComponentStage>()) {
 					auto &component_stage = entity.getComponent<tempo::ComponentStage>();
 					component_stage.setHeight(button_group.wall_positions, 0.f);
+					std::cout << "SET HEIGHT TO 0";
 				}
 			}
 		}

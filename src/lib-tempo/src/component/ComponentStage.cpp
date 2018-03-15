@@ -51,6 +51,7 @@ void ComponentStage::loadLevel(const char *stage_file)
 			}
 		}
 	}
+	tiles = &_global_stage;
 	_global_stage_loaded = std::string(stage_file);
 
 	stbi_image_free(pixel_data);
