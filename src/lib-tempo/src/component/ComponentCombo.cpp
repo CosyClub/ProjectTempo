@@ -10,8 +10,8 @@ ComponentCombo::ComponentCombo()
 
 void ComponentCombo::ComboBreakAction()
 {
-	comboCounter -= 3;
-	comboCounter = std::max(comboCounter, 0);
+	comboCounter -= std::max(comboCounter / 4, 1);
+	comboCounter =  std::max(comboCounter, 0);
 }
 
 void ComponentCombo::advanceBeat()
