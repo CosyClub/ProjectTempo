@@ -384,6 +384,8 @@ void listenForClientUpdates()
 			continue;
 		}
 
+		if (ip == "0.0.0.0") continue;
+
 		// Sort packet into respective system.
 		sortPacket(packet);
 	}
