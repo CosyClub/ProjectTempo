@@ -19,7 +19,7 @@ anax::Entity newPlayer(anax::World &world)
 
 	// refactored
 	entity_player.addComponent<tempo::ComponentCombo>();
-	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(37, 0));
+	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(40, 7));
 	entity_player.addComponent<tempo::ComponentStageRotation>(NORTH);
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
