@@ -48,6 +48,7 @@
 #define DELTA 100            // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
+#include <tempo/component/ComponentStage.hpp>
 namespace client
 {
 
@@ -61,6 +62,9 @@ namespace client
 	{
 	public:
 		void lessJank() {
+			// uncomment this for more jank:
+			//return;
+
 			auto& entities = getEntities();
 
 			for (auto& entity : entities) {
@@ -68,12 +72,20 @@ namespace client
 				tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
 				glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
+
+
 				glm::ivec2 dest = origin + trans.delta;
 
 				if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5) {
 					// consume the moment before the server rejects you
 					// currently combos aren't server protected, so maybe this should move into lib-tempo?
-					trans.moved = false;
+					// this produces a lovely jumping against the wall animation!
+					trans.delta = glm::ivec2(0, 0);
+					if (entity.hasComponent<tempo::ComponentCombo>()) {
+						// what the heck this is a jank class anyway
+						tempo::ComponentCombo& combo = entity.getComponent<tempo::ComponentCombo>();
+						combo.breakCombo();
+					}
 				}
 			}
 		}
