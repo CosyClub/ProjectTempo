@@ -354,9 +354,13 @@ void checkForClientDeletion(anax::World &world)
 		sf::IpAddress ip(ip_d);
 
 		std::cout << "Client (" << ip.toString() << ":" << port << ") Disconnected." << std::endl;
-		anax::Entity e(world, id);
-		world.killEntity(e);
-		removeClientId(ip.toInteger(), port);
+		try {
+			anax::Entity e(world, id);
+			world.killEntity(e);
+			removeClientId(ip.toInteger(), port);
+		} catch (...) {
+			std::cout << "Something went very wrong!!!" << std::endl;
+		}
 		broadcastMessage(tempo::QueueID::ENTITY_DELETION, broadcast);
 	}
 	world.refresh();
@@ -383,6 +387,8 @@ void listenForClientUpdates()
 			std::cout << "Error recieving client update. Ignoring." << std::endl;
 			continue;
 		}
+
+		if (ip == "0.0.0.0") continue;
 
 		// Sort packet into respective system.
 		sortPacket(packet);

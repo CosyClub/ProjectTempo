@@ -4,6 +4,7 @@
 #include <client/network/client.hpp>
 #include <client/system/SystemAttack.hpp>
 #include <client/system/SystemButtonRenderer.hpp>
+#include <client/system/SystemCombo.hpp>
 #include <client/system/SystemEntity.hpp>
 #include <client/system/SystemGraphicsCreation.hpp>
 #include <client/system/SystemMovement.hpp>
@@ -21,7 +22,6 @@
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/network/ID.hpp>
 #include <tempo/song.hpp>
-#include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemTrigger.hpp>
 #include <tempo/time.hpp>
@@ -158,11 +158,11 @@ int main(int argc, const char **argv)
 	// Setup ECS
 	anax::World world;
 	// tempo::SystemRender           system_render(app);
-	tempo::SystemCombo             system_combo;
 	tempo::SystemHealth            system_health;
 	tempo::SystemTrigger           system_trigger(world);
 	client::SystemAttack           system_attack;
 	client::SystemButtonRenderer   system_button_renderer;
+	client::SystemCombo             system_combo;
 	client::SystemEntity           system_entity;
 	client::SystemGraphicsCreation system_gc;
 	client::SystemMovement         system_movement;
@@ -330,6 +330,7 @@ int main(int argc, const char **argv)
 			// Recieve updates from the server
 			system_movement.processIntents(world);
 			system_movement.processCorrections(world);
+			system_combo.checkForUpdates(world);
 
 			system_less_jank.lessJank();
 			// Update animations from translations received from server
