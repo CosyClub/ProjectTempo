@@ -29,6 +29,7 @@ anax::Entity newPlayer(anax::World &world)
 	entity_player.addComponent<tempo::ComponentWeapon>(m);
 	entity_player.addComponent<tempo::ComponentAOEIndicator>();
 	entity_player.addComponent<tempo::ComponentHealth>(10);
+	// entity_player.addComponent<tempo::ComponentTeam>(Team::BADGUYS);
 
 	entity_player.activate();
 
@@ -50,7 +51,7 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m);
-	e.addComponent<tempo::ComponentTeam>(Team::BADGUYS);
+	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
 
 	e.activate();
 	return e;
@@ -73,7 +74,6 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m);
-	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
 	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
 
 	e.activate();
