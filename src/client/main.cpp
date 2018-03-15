@@ -48,6 +48,39 @@
 #define DELTA 100            // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
+namespace client
+{
+
+	class SystemLessJank
+		: public anax::System<
+		anax::Requires<
+		tempo::ComponentStageTranslation,
+		tempo::ComponentStagePosition,
+		tempo::ComponentStage>
+		>
+	{
+	public:
+		void lessJank() {
+			auto& entities = getEntities();
+
+			for (auto& entity : entities) {
+				tempo::ComponentStageTranslation& trans = entity.getComponent<tempo::ComponentStageTranslation>();
+				tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
+				glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
+
+				glm::ivec2 dest = origin + trans.delta;
+
+				if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5) {
+					// consume the moment before the server rejects you
+					// currently combos aren't server protected, so maybe this should move into lib-tempo?
+					trans.moved = false;
+				}
+			}
+		}
+	};
+
+}  // namespace client
+
 void sync_time(tempo::Clock &clock)
 {
 	sf::Int64 offset = tempo::timeSyncClient(&clock);
@@ -132,6 +165,7 @@ int main(int argc, const char **argv)
 	client::SystemRenderSceneNode  system_render_scene_node;
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
+	client::SystemLessJank system_less_jank;
 
 	// Add Systems
 	world.addSystem(system_attack);
@@ -148,6 +182,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_parse_key_input);
 	world.addSystem(system_movement);
 	world.addSystem(system_translation_animation);
+	world.addSystem(system_less_jank);
 
 	anax::Entity entity_stage = createEntityStage(world);
 	world.refresh();
@@ -291,6 +326,7 @@ int main(int argc, const char **argv)
 			system_movement.processIntents(world);
 			system_movement.processCorrections(world);
 
+			system_less_jank.lessJank();
 			// Update animations from translations received from server
 			system_translation_animation.updateAnimations();
 
