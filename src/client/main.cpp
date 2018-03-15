@@ -51,7 +51,7 @@
 #include <tempo/component/ComponentStage.hpp>
 namespace client
 {
-
+	// TLDR: enforce the game logic on client side and server side
 	class SystemLessJank
 		: public anax::System<
 		anax::Requires<
@@ -84,7 +84,7 @@ namespace client
 					if (entity.hasComponent<tempo::ComponentCombo>()) {
 						// what the heck this is a jank class anyway
 						tempo::ComponentCombo& combo = entity.getComponent<tempo::ComponentCombo>();
-						combo.breakCombo();
+						combo.advanceBeat();
 					}
 				}
 			}
