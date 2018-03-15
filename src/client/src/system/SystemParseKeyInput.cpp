@@ -92,7 +92,7 @@ void updateCombo(anax::Entity &entity, bool withinDelta)
 	}
 }
 
-void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinDelta)
+void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinDelta, irr::IrrlichtDevice* device )
 {
 	switch (key) {
 	case irr::KEY_KEY_W:
@@ -124,11 +124,14 @@ void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinD
 		addAttack(entity, withinDelta);
 		updateCombo(entity, withinDelta);
 		break;
+	case irr::KEY_ESCAPE:
+		device->closeDevice();
+		break;
 	default: break;
 	}
 }
 
-void SystemParseKeyInput::parseInput(tempo::Clock &clock)
+void SystemParseKeyInput::parseInput(tempo::Clock &clock, irr::IrrlichtDevice* device)
 {
 	for (auto entity : getEntities()) {
 		ComponentKeyInput ke = entity.getComponent<ComponentKeyInput>();
@@ -139,7 +142,7 @@ void SystemParseKeyInput::parseInput(tempo::Clock &clock)
 
 		for (unsigned int i = 0; i < ke.keysPressed.size(); i++) {
 			if (ke.keysPressed[i].press) {
-				processKeyPressEvent(ke.keysPressed[i].key, entity, withinDelta);
+				processKeyPressEvent(ke.keysPressed[i].key, entity, withinDelta, device);
 			}
 		}
 	}

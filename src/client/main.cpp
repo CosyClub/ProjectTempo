@@ -87,6 +87,15 @@ int main(int argc, const char **argv)
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
 
 	KeyInput             receiver;
+
+	// This makes it full-screen
+	// irr::IrrlichtDevice *nulldevice = irr::createDevice(irr::video::EDT_NULL);
+	// irr::core::dimension2d<irr::u32> deskres = nulldevice->getVideoModeList()->getDesktopResolution();
+	// nulldevice -> drop();
+	// irr::IrrlichtDevice *device = irr::createDevice(
+	//   irr::video::EDT_OPENGL, deskres, 16, true, false, false);
+
+
 	irr::IrrlichtDevice *device = irr::createDevice(
 	  irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1280, 720), 16, false, false, false);
 	if (!device) {
@@ -281,7 +290,7 @@ int main(int argc, const char **argv)
 			// Deal with local input
 			system_update_key_input.clear();
 			system_update_key_input.addKeys();
-			system_parse_key_input.parseInput(clock);
+			system_parse_key_input.parseInput(clock, device);
 
 			// Deprecated/To-be-worked-on
 			system_health.CheckHealth();
