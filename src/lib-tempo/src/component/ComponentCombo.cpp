@@ -8,10 +8,16 @@ ComponentCombo::ComponentCombo()
 	comboCounter     = 0;
 }
 
+void ComponentCombo::ComboBreakAction()
+{
+	comboCounter -= 3;
+	comboCounter = std::max(comboCounter, 0);
+}
+
 void ComponentCombo::advanceBeat()
 {
 	if (actionedThisBeat == false) {
-		comboCounter = 0;
+		ComboBreakAction();
 	}
 	actionedThisBeat = false;
 }
@@ -23,7 +29,7 @@ bool ComponentCombo::performAction()
 		comboCounter++;
 		return true;
 	} else {
-		comboCounter = 0;
+		ComboBreakAction();
 		return false;
 	}
 }
@@ -31,7 +37,7 @@ bool ComponentCombo::performAction()
 void ComponentCombo::breakCombo()
 {
 	actionedThisBeat = true;
-	comboCounter     = 0;
+	ComboBreakAction();
 }
 
 

@@ -15,7 +15,7 @@ struct ComponentCombo
     : anax::Component
     , NetworkedComponent {
 	bool         actionedThisBeat;
-	unsigned int comboCounter;
+	int comboCounter;
 
 	// Creates a new component combo with no combo
 	ComponentCombo();
@@ -39,6 +39,10 @@ struct ComponentCombo
 	ComponentCombo(sf::Packet p);
 	ComponentID getId();
 	sf::Packet  dumpComponent();
+
+	private:
+
+	void ComboBreakAction();
 };
 
 }  // namespace tempo
