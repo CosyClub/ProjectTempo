@@ -80,8 +80,6 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 		}
 
 		if (!group.groupTriggered) {
-			bool tempTriggered = true;
-
 			for (int i = 0; i < buttons.size(); i++) {
 				if (buttons[i].triggered == true) {
 					buttonRend[i].button->setPosition(
@@ -89,19 +87,13 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 					irr::video::SMaterial &material_button = buttonRend[i].button->getMaterial(0);
 					material_button.EmissiveColor.set(255, 0, 255, 0);
 				} else {
-					tempTriggered = false;
 					buttonRend[i].button->setPosition(
 					  irr::core::vector3df(buttons[i].pos.x, 0, buttons[i].pos.y));
 					irr::video::SMaterial &material_button = buttonRend[i].button->getMaterial(0);
 					material_button.EmissiveColor.set(255, 255, 0, 0);
 				}
 			}
-			if (tempTriggered) {
-				group.groupTriggered = true;
-			}
-		}
-
-		else {
+		} else {
 			for (int i = 0; i < buttons.size(); i++) {
 				buttons[i].triggered == true;
 				buttonRend[i].button->setPosition(

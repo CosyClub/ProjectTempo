@@ -23,7 +23,8 @@ struct ComponentButtonGroup : anax::Component , NetworkedComponent {
 	std::vector<glm::ivec2> wall_positions;
 
 	bool groupTriggered  = false;
-	bool action_happened = false;
+	bool action_happened = false; // TODO maybe move this to rendering component
+
 
 	ComponentButtonGroup(std::vector<glm::ivec2> button_positions,
 	                     std::vector<glm::ivec2> wall_positions);

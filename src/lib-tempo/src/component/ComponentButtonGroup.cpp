@@ -1,4 +1,5 @@
 #include <tempo/component/ComponentButtonGroup.hpp>
+#include <tempo/component/ComponentStage.hpp>
 
 #include <tempo/network/base.hpp>
 
@@ -22,7 +23,6 @@ ComponentButtonGroup::ComponentButtonGroup(std::vector<glm::ivec2> positions,
 /////
 ComponentButtonGroup::ComponentButtonGroup(sf::Packet p)
 {
-	printf("MAKING A FUCKING BUTTON!!!!!!\n\n\n\n\n\n");
 	sf::Uint32 size = 0;
 	p >> size;
 	for (int i = 0; i < size; i++) {
@@ -31,15 +31,23 @@ ComponentButtonGroup::ComponentButtonGroup(sf::Packet p)
 		buttons.push_front(b);
 	}
 
+
+	p >> groupTriggered;
+	p >> action_happened;
+	
 	p >> size;
 	for (int i = 0; i < size; i++) {
 		glm::ivec2 v;
 		p >> v;
 		wall_positions.push_back(v);
-	}
 
-	p >> groupTriggered;
-	p >> action_happened;
+		// TODO Make stage sync properly - this is a hack
+		for (int i = 0; i < _global_stage.size(); i++) {
+			if (groupTriggered && _global_stage[i].position == v) {
+				_global_stage[i].height = 0.f;
+			}
+		}
+	}
 }
 
 ComponentID ComponentButtonGroup::getId()
@@ -56,7 +64,6 @@ ComponentID ComponentButtonGroup::getId()
 
 sf::Packet ComponentButtonGroup::dumpComponent()
 {
-	printf("MAKING A FUCKING BUTTON PACKET!!!!!!\n\n\n\n\n\n");
 	sf::Packet p;
 
 	p << (sf::Uint32) buttons.size();
@@ -67,13 +74,13 @@ sf::Packet ComponentButtonGroup::dumpComponent()
 		buttons.push_front(b);
 	}
 
+	p << groupTriggered;
+	p << action_happened; // TODO maybe move this to rendering component
+
 	p << (sf::Uint32) wall_positions.size();
 	for (int i = 0; i < wall_positions.size(); i++) {
 		p << wall_positions[i];
 	}
-
-	p << groupTriggered;
-	p << action_happened;
 
 	return p;
 }

@@ -133,6 +133,7 @@ anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(5);
 	float arr[2] = {0, 1};
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
@@ -151,6 +152,7 @@ anax::Entity createButtonGroup(anax::World &           world,
 	printf("Creating button\n");
 	anax::Entity entity_button = world.createEntity();
 	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles);
+	entity_button.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	entity_button.activate();
 
 	return entity_button;

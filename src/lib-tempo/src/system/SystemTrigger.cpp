@@ -27,9 +27,11 @@ void SystemTrigger::updateButtons(anax::World &world)
 
 	for (auto &entity : entities) {
 		// get deque of all buttons in the group
-		std::deque<button> &buttons = entity.getComponent<tempo::ComponentButtonGroup>().buttons;
+		auto &button_group = entity.getComponent<tempo::ComponentButtonGroup>();
+		std::deque<button> &buttons = button_group.buttons;
 
 		// search through each button in a group to see if a player location matches
+		bool isGroupTriggered = true;
 		for (int i = 0; i < buttons.size(); i++) {
 			glm::ivec2 tempButtonPos = buttons[i].pos;
 
@@ -38,6 +40,7 @@ void SystemTrigger::updateButtons(anax::World &world)
 			for (int j = 0; j < playerPos.size(); j++) {
 				if ((tempButtonPos.x == playerPos[j].x) && (tempButtonPos.y == playerPos[j].y)) {
 					is_in = true;
+					break;
 				}
 			}
 
@@ -45,19 +48,17 @@ void SystemTrigger::updateButtons(anax::World &world)
 				buttons[i].triggered = true;
 			} else {
 				buttons[i].triggered = false;
+				isGroupTriggered = false;
 			}
 		}
-	}
-
-	for (auto &entity : entities) {
-		auto &button_group = entity.getComponent<tempo::ComponentButtonGroup>();
+		button_group.groupTriggered |= isGroupTriggered;
+		
 		if (button_group.groupTriggered == true && !button_group.action_happened) {
 			button_group.action_happened = true;
 			for (auto &entity : world.getEntities()) {
 				if (entity.hasComponent<tempo::ComponentStage>()) {
 					auto &component_stage = entity.getComponent<tempo::ComponentStage>();
 					component_stage.setHeight(button_group.wall_positions, 0.f);
-					std::cout << "SET HEIGHT TO 0";
 				}
 			}
 		}
