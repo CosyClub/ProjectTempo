@@ -1,4 +1,5 @@
 #include <tempo/component/ComponentStageRotation.hpp>
+#include <array>
 
 namespace tempo
 {
