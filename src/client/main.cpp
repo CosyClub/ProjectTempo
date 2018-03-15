@@ -76,19 +76,6 @@ anax::Entity createEntityStage(anax::World &world)
 // 	return entity_player;
 // }
 
-anax::Entity createButtonGroup(anax::World &           world,
-                               std::vector<glm::ivec2> positions,
-                               std::vector<glm::ivec2> tiles)
-{
-	printf("Creating button\n");
-	anax::Entity entity_button = world.createEntity();
-	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles);
-	entity_button.addComponent<client::ComponentRenderButtonGroup>();
-	entity_button.activate();
-
-	return entity_button;
-}
-
 int main(int argc, const char **argv)
 {
 	sf::SoundBuffer clickbuf;
@@ -207,6 +194,7 @@ int main(int argc, const char **argv)
 	system_gc.addEntities(driver, smgr, world);
 	system_render_scene_node.setup(smgr, driver);
 	system_render_health_bars.setup(smgr);
+	system_button_renderer.setup(smgr, driver);
 
 	// Start and Sync Song
 	sync_time(clock);
@@ -273,13 +261,6 @@ int main(int argc, const char **argv)
 	frame_clock.restart();
 	update_floor_clock.restart();
 
-	// buttons
-	std::vector<glm::ivec2> wall          = {{0, 1}, {0, 2}, {0, 3}, {0, 4}, {0, 5},
-                                    {0, 6}, {0, 7}, {0, 8}, {0, 9}};
-	anax::Entity            entity_button = createButtonGroup(world, {{8, 8}}, wall);
-	world.refresh();
-	system_button_renderer.setup(smgr, driver);
-
 	printf("Entering main loop\n");
 	while (device->run()) {
 		// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
@@ -292,9 +273,12 @@ int main(int argc, const char **argv)
 			// Check for new entities from server
 			system_entity.creationCheck(world);
 			system_entity.deletionCheck(world);
+
+			// Initialise Graphics for new entities
 			system_gc.addEntities(driver, smgr, world);
 			system_render_scene_node.setup(smgr,driver);
 			system_render_health_bars.setup(smgr);
+			system_button_renderer.setup(smgr, driver);
 
 			// Recieve updates from the server
 			system_movement.processIntents(world);
