@@ -7,6 +7,7 @@
 #include <client/component/ComponentHealthBar.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
 #include <tempo/component/ComponentHealth.hpp>
+#include <tempo/component/ComponentCombo.hpp>
 
 #include <ISceneManager.h>
 
