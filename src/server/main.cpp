@@ -83,7 +83,7 @@ int main(int argc, const char **argv)
 	                              glm::ivec2(11, 73),
 	                              glm::ivec2(15, 73),
 	                              glm::ivec2(15, 67)};
-	tempo::createMobPatroller(world, path2[0], path);
+	tempo::createMobPatroller(world, path2[0], path2);
 	  
 	// tempo::createMobCreeper(world, glm::ivec2(12, 12));
 	// tempo::createMobCreeper(world, glm::ivec2(14, 14));
