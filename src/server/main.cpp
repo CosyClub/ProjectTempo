@@ -2,12 +2,12 @@
 
 #include <server/system/SystemAI.hpp>
 #include <server/system/SystemAttack.hpp>
+#include <server/system/SystemCombo.hpp>
 #include <server/system/SystemMovement.hpp>
 
 #include <tempo/time.hpp>
 
 #include <tempo/entity/EntityCreationServer.hpp>
-#include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemHealth.hpp>
 #include <tempo/system/SystemTrigger.hpp>
 
@@ -52,15 +52,15 @@ int main(int argc, const char **argv)
 	// Create Systems
 	server::SystemAI system_ai;
 	server::SystemAttack   system_attack(world);
+	server::SystemCombo  system_combo;
 	server::SystemMovement system_movement;
-	tempo::SystemCombo  system_combo;
 	tempo::SystemHealth system_health;
 	tempo::SystemTrigger system_trigger(world);
 
 	world.addSystem(system_ai);
 	world.addSystem(system_attack);
-	world.addSystem(system_movement);
 	world.addSystem(system_combo);
+	world.addSystem(system_movement);
 	world.addSystem(system_health);
 	world.addSystem(system_trigger);
 	world.refresh();
@@ -137,7 +137,7 @@ int main(int argc, const char **argv)
 		{
 			system_movement.recieveTranslations(world);
 			system_attack.recieveAttacks(world);
-			system_combo.checkForUpdates();
+			system_combo.checkForUpdates(world);
 			system_health.CheckHealth();
 			system_health.broadcastHealth();
 		}
