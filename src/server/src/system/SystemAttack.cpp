@@ -100,7 +100,7 @@ bool SubSystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
 			else if (entity.hasComponent<tempo::ComponentTeam>() && attacker.hasComponent<tempo::ComponentTeam>())
 			{
 				tempo::ComponentTeam &et = entity.getComponent<tempo::ComponentTeam>();
-				tempo::ComponentTeam &at = entity.getComponent<tempo::ComponentTeam>();
+				tempo::ComponentTeam &at = attacker.getComponent<tempo::ComponentTeam>();
 				if (at.team == et.team) continue;
 			}
 			// Get health and positions occupired by other entity
@@ -183,7 +183,7 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 		else if (entity.hasComponent<tempo::ComponentTeam>() && attacker.hasComponent<tempo::ComponentTeam>())
 		{
 			tempo::ComponentTeam &et = entity.getComponent<tempo::ComponentTeam>();
-			tempo::ComponentTeam &at = entity.getComponent<tempo::ComponentTeam>();
+			tempo::ComponentTeam &at = attacker.getComponent<tempo::ComponentTeam>();
 			if (at.team == et.team) continue;
 		}
 

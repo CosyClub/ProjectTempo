@@ -130,6 +130,8 @@ uint32_t handshakeHello(anax::World &world)
 	packet << sf::IpAddress::getLocalAddress().toInteger();
 	packet << port_ci;
 
+	std::cout << sf::IpAddress::getLocalAddress().toString() << std::endl;
+
 	// Send HELLO
 	sendMessage(QueueID::HANDSHAKE, packet);
 

@@ -29,7 +29,7 @@ anax::Entity newPlayer(anax::World &world)
 	entity_player.addComponent<tempo::ComponentWeapon>(m);
 	entity_player.addComponent<tempo::ComponentAOEIndicator>();
 	entity_player.addComponent<tempo::ComponentHealth>(10);
-	// entity_player.addComponent<tempo::ComponentTeam>(Team::BADGUYS);
+	entity_player.addComponent<tempo::ComponentTeam>(Team::BADGUYS);
 
 	entity_player.activate();
 
