@@ -9,6 +9,7 @@
 #include <tempo/entity/EntityCreationServer.hpp>
 #include <tempo/system/SystemCombo.hpp>
 #include <tempo/system/SystemHealth.hpp>
+#include <tempo/system/SystemTrigger.hpp>
 
 #include <tempo/network/base.hpp>
 #include <tempo/network/server.hpp>
@@ -54,12 +55,14 @@ int main(int argc, const char **argv)
 	server::SystemMovement system_movement;
 	tempo::SystemCombo  system_combo;
 	tempo::SystemHealth system_health;
+	tempo::SystemTrigger system_trigger(world);
 
 	world.addSystem(system_ai);
 	world.addSystem(system_attack);
 	world.addSystem(system_movement);
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
+	world.addSystem(system_trigger);
 	world.refresh();
 
 	// Create some Test Entities
@@ -71,6 +74,24 @@ int main(int argc, const char **argv)
 	                             glm::ivec2(7,7),
 	                             glm::ivec2(7,3)};
 	tempo::createMobPatroller(world, glm::ivec2(3,3), path);
+
+	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
+	tempo::createButtonGroup(world, {{40, 12}}, wall);
+
+	std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};
+	tempo::createButtonGroup(world, {{40, 43},{44,43},{36,43}}, wall1);
+
+	std::vector<glm::ivec2> wall2          = {{36,62},{36,63},{36,64},{36,65},{36,66},{36,67},{36,68},
+																						{50,62},{50,63},{50,64},{50,65},{50,66},{50,67},{50,68}};
+	tempo::createButtonGroup(world, {{40, 65}}, wall2);
+
+	std::vector<glm::ivec2> wall3          = {{37,69},{38,69},{39,69},{40,69},{41,69},{42,69},{43,69}};
+	tempo::createButtonGroup(world, {{66,70},{13,69}}, wall3);
+
+	std::vector<glm::ivec2> wall4          = {{40,132},{41,132},{42,132}};
+	tempo::createButtonGroup(world, {{41,110},{26,128},{57,128}}, wall4);
+
+	world.refresh();
 
 	//////////////////////////////////
 	// Thread Startup
@@ -110,7 +131,7 @@ int main(int argc, const char **argv)
 		if (clock.passed_antibeat())
 		{
 		}
-		
+
 		////////////////
 		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
@@ -122,6 +143,7 @@ int main(int argc, const char **argv)
 		if (clock.passed_beat()) {
 			system_ai.update(system_attack);
 			system_combo.advanceBeat();
+			system_trigger.updateButtons(world);
 
 			if (tick++ % 20 == 0)
 				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()

@@ -2,6 +2,7 @@
 
 #include <tempo/component/ComponentAOEIndicator.hpp>
 #include <tempo/component/ComponentAttack.hpp>
+#include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentAI.hpp>
 #include <tempo/component/ComponentHealth.hpp>
@@ -73,6 +74,7 @@ anax::Entity addComponent(anax::World &w, sf::Packet p)
 			// Put new Components in here
 			CASE(ComponentAOEIndicator, AOEINDICATOR)
 			CASE(ComponentAttack, ATTACK)
+			CASE(ComponentButtonGroup, BUTTON_GROUP)
 			CASE(ComponentCombo, COMBO)
 			CASE(ComponentAI, AI)
 			CASE(ComponentHealth, HEALTH)

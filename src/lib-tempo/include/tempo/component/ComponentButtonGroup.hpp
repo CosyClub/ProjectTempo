@@ -7,6 +7,8 @@
 
 #include <glm/vec2.hpp>
 
+#include <tempo/component/NetworkedComponent.hpp>
+
 namespace tempo
 {
 struct button {
@@ -15,17 +17,28 @@ struct button {
 	bool       triggered = false;
 };
 
-struct ComponentButtonGroup : anax::Component {
+struct ComponentButtonGroup : anax::Component , NetworkedComponent {
 	// This is a deque so that it is possible to push_front
 	std::deque<button>      buttons;
 	std::vector<glm::ivec2> wall_positions;
 
 	bool groupTriggered  = false;
-	bool action_happened = false;
+	bool action_happened = false; // TODO maybe move this to rendering component
+
 
 	ComponentButtonGroup(std::vector<glm::ivec2> button_positions,
 	                     std::vector<glm::ivec2> wall_positions);
+
+	/////
+	// Required for networking
+	/////
+	ComponentButtonGroup(sf::Packet p);
+	ComponentID getId();
+	sf::Packet  dumpComponent();
 };
+
+sf::Packet &operator<<(sf::Packet &p, const button &c);
+sf::Packet &operator>>(sf::Packet &p, button &c);
 
 }  // namespace tempo
 

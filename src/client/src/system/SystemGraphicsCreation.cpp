@@ -2,9 +2,14 @@
 
 #include <client/component/ComponentHealthBar.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
-#include <iostream>
+#include <client/component/ComponentRenderButtonGroup.hpp>
+
+#include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentHealth.hpp>
+#include <tempo/component/ComponentModel.hpp>
 #include <tempo/component/ComponentStage.hpp>
+
+#include <iostream>
 
 namespace client
 {
@@ -17,7 +22,8 @@ void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver * driver,
 	bool touched  = false;
 	auto entities = getEntities();
 	for (auto &entity : entities) {
-		if (!entity.hasComponent<client::ComponentRenderSceneNode>()) {
+		if (entity.hasComponent<tempo::ComponentModel>() &&
+		   !entity.hasComponent<client::ComponentRenderSceneNode>()) {
 			touched = true;
 			entity.addComponent<ComponentRenderSceneNode>(nullptr);
 			std::cout << "Added Null Scene Node\n";
@@ -25,8 +31,17 @@ void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver * driver,
 			if (entity.hasComponent<tempo::ComponentHealth>()) {
 				entity.addComponent<ComponentHealthBar>(nullptr);
 			}
-			entity.activate();
+
 		}
+		
+		if (entity.hasComponent<tempo::ComponentButtonGroup>() &&
+		    !entity.hasComponent<ComponentRenderButtonGroup>()) {
+			touched = true;
+			std::cout << "Added Rendering to a Button" << std::endl;
+			entity.addComponent<ComponentRenderButtonGroup>();
+		}
+			
+		if (touched) entity.activate();
 	}
 
 	if (touched)

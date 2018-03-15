@@ -27,10 +27,10 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 		auto &group = entity.getComponent<tempo::ComponentButtonGroup>();
 		auto &rend  = entity.getComponent<client::ComponentRenderButtonGroup>();
 
+		if (rend.setup) continue;
+
 		// button data
 		auto &buttons = group.buttons;
-		// button render data
-		auto &buttonRend = rend.buttonsRender;
 
 		for (int i = 0; i < buttons.size(); i++) {
 			irr::scene::IMesh *mesh_button = smgr->getMesh("resources/meshes/button.obj");
@@ -58,6 +58,7 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 
 			rend.buttonsRender.push_front(buttonRend);
 		}
+		rend.setup = true;
 	}
 }
 
@@ -79,8 +80,6 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 		}
 
 		if (!group.groupTriggered) {
-			bool tempTriggered = true;
-
 			for (int i = 0; i < buttons.size(); i++) {
 				if (buttons[i].triggered == true) {
 					buttonRend[i].button->setPosition(
@@ -88,19 +87,13 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 					irr::video::SMaterial &material_button = buttonRend[i].button->getMaterial(0);
 					material_button.EmissiveColor.set(255, 0, 255, 0);
 				} else {
-					tempTriggered = false;
 					buttonRend[i].button->setPosition(
 					  irr::core::vector3df(buttons[i].pos.x, 0, buttons[i].pos.y));
 					irr::video::SMaterial &material_button = buttonRend[i].button->getMaterial(0);
 					material_button.EmissiveColor.set(255, 255, 0, 0);
 				}
 			}
-			if (tempTriggered) {
-				group.groupTriggered = true;
-			}
-		}
-
-		else {
+		} else {
 			for (int i = 0; i < buttons.size(); i++) {
 				buttons[i].triggered == true;
 				buttonRend[i].button->setPosition(
