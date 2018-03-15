@@ -51,7 +51,6 @@ void SystemCombo::checkForUpdates(anax::World &world)
 		}
 
 		tempo::broadcastMessage(tempo::QueueID::COMBO_UPDATES, broadcast);
-		std::cout << "BROADCAST COMBO" << std::endl;
 	}
 }
 

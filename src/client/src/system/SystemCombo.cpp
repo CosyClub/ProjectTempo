@@ -36,8 +36,6 @@ void SystemCombo::checkForUpdates(anax::World &world)
 
 		anax::Entity e(world, tempo::servertolocal[id]);
 
-		std::cout << "RECIEVED\n";
-
 		switch (static_cast<tempo::MessageCombo>(message)) {
 		case tempo::MessageCombo::BROKEN_COMBO:
 			e.getComponent<tempo::ComponentCombo>().breakCombo();
