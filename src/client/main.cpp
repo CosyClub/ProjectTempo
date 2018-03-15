@@ -332,10 +332,6 @@ int main(int argc, const char **argv)
 			system_movement.processCorrections(world);
 			system_combo.checkForUpdates(world);
 
-			system_less_jank.lessJank();
-			// Update animations from translations received from server
-			system_translation_animation.updateAnimations();
-
 			// Deal with local input
 			system_update_key_input.clear();
 			system_update_key_input.addKeys();
@@ -344,6 +340,10 @@ int main(int argc, const char **argv)
 			// Deprecated/To-be-worked-on
 			system_health.CheckHealth();
 			system_health.recieveHealth(world);
+
+			system_less_jank.lessJank();
+			// Update animations from translations received from server
+			system_translation_animation.updateAnimations();
 
 			// Graphics updates
 			// std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl;
