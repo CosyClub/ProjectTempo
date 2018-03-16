@@ -85,7 +85,7 @@ int main(int argc, const char **argv)
 	// tempo::createMobCreeper(world, glm::ivec2(14, 14));
 	// tempo::createMobAntiSnail(world, glm::ivec2(4, 4));
 
-	tempo::loadButtons(world, "levelTest_buttons.bmp");
+	tempo::loadButtons(world, "resources/levels/levelTest_buttons.bmp");
 
 	world.refresh();
 

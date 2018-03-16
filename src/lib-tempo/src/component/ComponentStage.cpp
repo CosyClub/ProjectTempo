@@ -215,12 +215,13 @@ void loadButtons(anax::World &world, const char *tile_map)
 	}
 	stbi_image_free(pixel_data);
 
-	for (int i = 0; i < 265; i++) {
+	for (int i = 0; i < 256; i++) {
 		if (buttons[i].empty() || walls[i].empty()) {
 			continue;
 		}
 
 		fake_createButtonGroup(world, buttons[i], walls[i]);
+		createButtonGroup(world, buttons[i], walls[i]);
 	}
 }
 
