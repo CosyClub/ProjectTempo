@@ -157,26 +157,6 @@ void fake_createButtonGroup(anax::World &           world,
 
 void loadButtons(anax::World &world, const char *tile_map)
 {
-	std::vector<glm::ivec2> wall0 = {{37, 17}, {38, 17}, {39, 17}, {40, 17}, {41, 17},
-	                                 {42, 17}, {43, 17}, {44, 17}, {45, 17}};
-	createButtonGroup(world, {{40, 12}}, wall0);
-
-	std::vector<glm::ivec2> wall1 = {
-	  {37, 48}, {38, 48}, {39, 48}, {40, 48}, {41, 48}, {42, 48}, {43, 48}, {44, 48},
-	};
-	createButtonGroup(world, {{40, 43}, {44, 43}, {36, 43}}, wall1);
-
-	std::vector<glm::ivec2> wall2 = {{36, 62}, {36, 63}, {36, 64}, {36, 65}, {36, 66},
-	                                 {36, 67}, {36, 68}, {50, 62}, {50, 63}, {50, 64},
-	                                 {50, 65}, {50, 66}, {50, 67}, {50, 68}};
-	createButtonGroup(world, {{40, 65}}, wall2);
-
-	std::vector<glm::ivec2> wall3 = {{37, 69}, {38, 69}, {39, 69}, {40, 69},
-	                                 {41, 69}, {42, 69}, {43, 69}};
-	createButtonGroup(world, {{66, 70}, {13, 69}}, wall3);
-
-	std::vector<glm::ivec2> wall4 = {{40, 132}, {41, 132}, {42, 132}};
-	createButtonGroup(world, {{41, 110}, {26, 128}, {57, 128}}, wall4);
 
 	int width, height, components;
 
@@ -203,7 +183,7 @@ void loadButtons(anax::World &world, const char *tile_map)
 			if (b == 0 && r != 0) {
 				// this is a button
 				// r = index
-				// g = height
+				// g = level
 				buttons[r].push_back(glm::ivec2(y, x));
 			} else if (r == 0 && g != 0) {
 				// this is a wall
