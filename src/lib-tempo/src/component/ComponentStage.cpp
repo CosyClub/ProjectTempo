@@ -187,8 +187,8 @@ void loadButtons(anax::World &world, const char *tile_map)
 		return;
 	}
 
-	std::vector<std::vector<glm::ivec2>> tiles(256);
-	std::vector<std::vector<glm::ivec2>> wall(256);
+	std::vector<std::vector<glm::ivec2>> buttons(256);
+	std::vector<std::vector<glm::ivec2>> walls(256);
 
 	// Load the new tiles
 	for (int y = 0; y < height; y++) {
@@ -200,27 +200,27 @@ void loadButtons(anax::World &world, const char *tile_map)
 			uint8_t g = pixel[1];
 			uint8_t b = pixel[2];
 
-			if (b == 0) {
-				// this is a tile
+			if (b == 0 && r != 0) {
+				// this is a button
 				// r = index
 				// g = height
-				tiles[r].push_back(glm::ivec2(y, x));
-			} else if (b == 0) {
+				buttons[r].push_back(glm::ivec2(y, x));
+			} else if (r == 0 && g != 0) {
 				// this is a wall
 				// g = index
 				// b = height
-				wall[g].push_back(glm::ivec2(y, x));
+				walls[g].push_back(glm::ivec2(y, x));
 			}
 		}
 	}
 	stbi_image_free(pixel_data);
 
 	for (int i = 0; i < 265; i++) {
-		if (tiles[i].empty() || wall[i].empty()) {
+		if (buttons[i].empty() || walls[i].empty()) {
 			continue;
 		}
 
-		fake_createButtonGroup(world, tiles[i], wall[i]);
+		fake_createButtonGroup(world, buttons[i], walls[i]);
 	}
 }
 
