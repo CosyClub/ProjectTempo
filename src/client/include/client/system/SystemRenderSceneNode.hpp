@@ -5,6 +5,7 @@
 #include <tempo/component/ComponentStage.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
+#include <tempo/component/ComponentCombo.hpp>
 
 #include <client/component/ComponentRenderSceneNode.hpp>
 
