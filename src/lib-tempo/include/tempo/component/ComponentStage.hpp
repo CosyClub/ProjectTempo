@@ -32,8 +32,7 @@ extern std::string             _global_stage_loaded;
 
 // An entity that is bound by the world stage
 struct ComponentStage
-    : anax::Component
-    , NetworkedComponent {
+    : NetworkedComponent {
    private:
 	std::vector<stage_tile> *tiles;
 	std::string              stage_file;

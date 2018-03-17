@@ -13,7 +13,7 @@
 namespace tempo
 {
 
-struct ComponentModel : anax::Component, NetworkedComponent 
+struct ComponentModel : NetworkedComponent 
 {
 	bool        isMesh;
 	std::string path;

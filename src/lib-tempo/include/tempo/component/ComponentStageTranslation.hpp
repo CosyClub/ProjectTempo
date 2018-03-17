@@ -12,8 +12,7 @@ namespace tempo
 {
 // Represents a translation on the stage
 struct ComponentStageTranslation
-    : anax::Component
-    , NetworkedComponent {
+    : NetworkedComponent {
 	// The position translation
 	glm::ivec2 delta;
 	bool moved;

@@ -12,8 +12,7 @@
 namespace tempo
 {
 struct ComponentAOEIndicator
-    : anax::Component
-    , NetworkedComponent {
+    : NetworkedComponent {
 	sf::Time                duration;
 	std::vector<glm::ivec2> tiles;
 

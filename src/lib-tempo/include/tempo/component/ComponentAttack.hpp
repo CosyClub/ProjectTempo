@@ -13,8 +13,7 @@ enum MessageAttack { UPDATE_INTENT, ATTACK_CORRECTION };
 
 // Component captures a combo mechanic for the entity with this component.
 struct ComponentAttack
-    : anax::Component
-    , NetworkedComponent {
+    : NetworkedComponent {
 	// Damage mask for the attack
 	Mask damage;
 	// Time until the attack (-1

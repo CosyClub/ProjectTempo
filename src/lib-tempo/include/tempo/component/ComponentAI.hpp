@@ -19,7 +19,7 @@ enum MoveType{
 	MOVE_WANDER,
 };
 
-struct ComponentAI : anax::Component, NetworkedComponent 
+struct ComponentAI : NetworkedComponent 
 {
 	MoveType type;
 	glm::ivec2 prevPos;

@@ -9,7 +9,7 @@
 
 namespace tempo
 {
-struct NetworkedComponent {
+struct NetworkedComponent : anax::Component{
 	virtual ComponentID getId()         = 0;
 	virtual sf::Packet  dumpComponent() = 0;
 };

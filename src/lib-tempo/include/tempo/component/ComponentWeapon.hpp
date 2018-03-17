@@ -16,8 +16,7 @@
 namespace tempo
 {
 struct ComponentWeapon
-    : anax::Component
-    , NetworkedComponent {
+    : NetworkedComponent {
 	Mask         damage;
 	bool         isDelayed;
 	unsigned int beats_until_attack;

@@ -20,8 +20,7 @@ extern glm::ivec2 WEST;
 
 
 struct ComponentStageRotation
-    : anax::Component
-    , NetworkedComponent {
+    : NetworkedComponent {
 	Facing facing;
 	Facing previousFacing = { 0,0 };
 

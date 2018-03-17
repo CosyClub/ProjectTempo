@@ -8,8 +8,7 @@
 namespace tempo
 {
 struct ComponentPlayerRemote
-    : anax::Component
-    , NetworkedComponent {
+    : NetworkedComponent {
 	ComponentPlayerRemote();
 
 	/////

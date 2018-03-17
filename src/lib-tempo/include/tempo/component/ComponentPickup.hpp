@@ -8,8 +8,7 @@
 namespace tempo
 {
 struct ComponentPickup
-    : anax::Component
-    , NetworkedComponent {
+    : NetworkedComponent {
 	/////
 	// Required for networking
 	/////

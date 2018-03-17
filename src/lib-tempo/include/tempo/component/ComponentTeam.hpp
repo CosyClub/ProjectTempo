@@ -17,7 +17,7 @@ enum Team{
 	BADGUYS,
 };
 
-struct ComponentTeam : anax::Component, NetworkedComponent {
+struct ComponentTeam : NetworkedComponent {
 	Team team;
 
 	ComponentTeam(Team t);

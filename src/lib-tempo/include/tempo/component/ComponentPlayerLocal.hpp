@@ -8,8 +8,7 @@
 namespace tempo
 {
 struct ComponentPlayerLocal
-    : anax::Component
-    , NetworkedComponent {
+    : NetworkedComponent {
 	// Anthony it's broken because you removed all the fucking constructors
 	ComponentPlayerLocal();
 

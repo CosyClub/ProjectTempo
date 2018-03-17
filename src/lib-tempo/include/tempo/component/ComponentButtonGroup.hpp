@@ -17,7 +17,7 @@ struct button {
 	bool       triggered = false;
 };
 
-struct ComponentButtonGroup : anax::Component , NetworkedComponent {
+struct ComponentButtonGroup : NetworkedComponent {
 	// This is a deque so that it is possible to push_front
 	std::deque<button>      buttons;
 	std::vector<glm::ivec2> wall_positions;

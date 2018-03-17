@@ -12,8 +12,7 @@ enum MessageCombo { BROKEN_COMBO, INCREMENT_COMBO };
 
 // Component captures a combo mechanic for the entity with this component.
 struct ComponentCombo
-    : anax::Component
-    , NetworkedComponent {
+    : NetworkedComponent {
 	bool         actionedThisBeat;
 	int comboCounter;
 
