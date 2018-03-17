@@ -196,30 +196,17 @@ sf::Packet packageComponents(anax::Entity entity)
 	// Temporary measure for some form of bad error checking
 	uint32_t c = 0;
 
-	// Put new Components in here
-	ADD_COMPONENT(entity, c, packet, ComponentAOEIndicator)
-	ADD_COMPONENT(entity, c, packet, ComponentAttack)
-	ADD_COMPONENT(entity, c, packet, ComponentButtonGroup)
-	ADD_COMPONENT(entity, c, packet, ComponentCombo)
-	ADD_COMPONENT(entity, c, packet, ComponentAI)
-	ADD_COMPONENT(entity, c, packet, ComponentHealth)
-	ADD_COMPONENT(entity, c, packet, ComponentModel)
-	ADD_COMPONENT(entity, c, packet, ComponentPlayerLocal)
-	ADD_COMPONENT(entity, c, packet, ComponentPlayerRemote)
-	ADD_COMPONENT(entity, c, packet, ComponentStage)
-	ADD_COMPONENT(entity, c, packet, ComponentStagePosition)
-	ADD_COMPONENT(entity, c, packet, ComponentStageRotation)
-	ADD_COMPONENT(entity, c, packet, ComponentStageTranslation)
-	ADD_COMPONENT(entity, c, packet, ComponentTeam)
-	ADD_COMPONENT(entity, c, packet, ComponentWeapon)
-
-	if (c < entity.getComponentTypeList().count()) {
-		std::cout << "WARNING: /Some/ components where not serialised "
-		          << "when sending Entity ID: " << entity.getId() << std::endl
-		          << "Did you forget add a component to "
-		          << "the server without adding NetworkedComponent "
-		          << "methods?" << std::endl;
-		assert(false);
+	for (anax::Component* c : entity.getComponents())
+	{
+		auto nc = dynamic_cast<NetworkedComponent*>(c);
+		if (nc == nullptr) continue;
+		sf::Packet part;
+		part << nc->getId();
+		sf::Packet part2 = nc->dumpComponent();
+		part << part2;
+		packet << sf::Uint32(part.getDataSize());
+		packet << part;
+		c++;
 	}
 
 	return packet;
