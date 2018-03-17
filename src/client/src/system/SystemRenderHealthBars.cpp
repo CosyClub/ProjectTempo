@@ -43,8 +43,9 @@ void SystemRenderHealthBars::update()
 		scale = (double) health.current_health / health.max_health;
 
 		float new_width = original_size.Width * scale;
+		irr::core::dimension2d<irr::f32> newSize(new_width, original_size.Height);
 
-		healthbar->setSize(irr::core::dimension2d<irr::f32>(new_width, original_size.Height));
+		healthbar->setSize(newSize);
 		// Set colour of healthbar (Green = full health, Red = No Health)
 		if (scale <= 0.5) {
 			healthbar->setColor(colour_red);
@@ -52,6 +53,19 @@ void SystemRenderHealthBars::update()
 
 		else {
 			healthbar->setColor(colour_green);
+		}
+
+		if (entity.hasComponent<tempo::ComponentCombo>())
+		{
+			tempo::ComponentCombo& c = entity.getComponent<tempo::ComponentCombo>();
+			float scale = c.comboCounter / 20.f;
+			scale = fmin(scale, 0.5);
+			newSize += newSize * scale;
+			irr::core::vector3df          pos(-0.3f, 1.6f + newSize.Height / 2, 0.0f);
+			pos += pos * scale;
+			healthbar->setSize(newSize);
+			healthbar->setPosition(pos);
+
 		}
 	}
 }
