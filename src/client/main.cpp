@@ -48,6 +48,51 @@
 #define DELTA 100            // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
+#include <tempo/component/ComponentStage.hpp>
+namespace client
+{
+	// TLDR: enforce the game logic on client side and server side
+	class SystemLessJank
+		: public anax::System<
+		anax::Requires<
+		tempo::ComponentStageTranslation,
+		tempo::ComponentStagePosition,
+		tempo::ComponentStage>
+		>
+	{
+	public:
+		void lessJank() {
+			// uncomment this for more jank:
+			//return;
+
+			auto& entities = getEntities();
+
+			for (auto& entity : entities) {
+				tempo::ComponentStageTranslation& trans = entity.getComponent<tempo::ComponentStageTranslation>();
+				tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
+				glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
+
+
+
+				glm::ivec2 dest = origin + trans.delta;
+
+				if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5) {
+					// consume the moment before the server rejects you
+					// currently combos aren't server protected, so maybe this should move into lib-tempo?
+					// this produces a lovely jumping against the wall animation!
+					trans.delta = glm::ivec2(0, 0);
+					if (entity.hasComponent<tempo::ComponentCombo>()) {
+						// what the heck this is a jank class anyway
+						tempo::ComponentCombo& combo = entity.getComponent<tempo::ComponentCombo>();
+						combo.advanceBeat();
+					}
+				}
+			}
+		}
+	};
+
+}  // namespace client
+
 void sync_time(tempo::Clock &clock)
 {
 	sf::Int64 offset = tempo::timeSyncClient(&clock);
@@ -128,6 +173,7 @@ int main(int argc, const char **argv)
 	client::SystemRenderSceneNode  system_render_scene_node;
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
+	client::SystemLessJank system_less_jank;
 
 	// Add Systems
 	world.addSystem(system_attack);
@@ -144,6 +190,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_parse_key_input);
 	world.addSystem(system_movement);
 	world.addSystem(system_translation_animation);
+	world.addSystem(system_less_jank);
 
 	anax::Entity entity_stage = createEntityStage(world);
 	world.refresh();
@@ -285,9 +332,6 @@ int main(int argc, const char **argv)
 			system_movement.processCorrections(world);
 			system_combo.checkForUpdates(world);
 
-			// Update animations from translations received from server
-			system_translation_animation.updateAnimations();
-
 			// Deal with local input
 			system_update_key_input.clear();
 			system_update_key_input.addKeys();
@@ -296,6 +340,10 @@ int main(int argc, const char **argv)
 			// Deprecated/To-be-worked-on
 			system_health.CheckHealth();
 			system_health.recieveHealth(world);
+
+			system_less_jank.lessJank();
+			// Update animations from translations received from server
+			system_translation_animation.updateAnimations();
 
 			// Graphics updates
 			// std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl;

@@ -96,7 +96,7 @@ anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 	                5, 5, 5};
 	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
 	e.addComponent<tempo::ComponentAttack>();
-	e.addComponent<tempo::ComponentWeapon>(m, 5);
+	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)5);
 	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
 
 	e.activate();
@@ -116,7 +116,7 @@ anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<g
 	float arr[2] = {0, 1};
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
-	e.addComponent<tempo::ComponentWeapon>(m, 0);
+	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
 	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
 
 	e.activate();
@@ -139,7 +139,7 @@ anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
 	float arr[2] = {0, 1};
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
-	e.addComponent<tempo::ComponentWeapon>(m, 0);
+	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
 	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
 
 	e.activate();
