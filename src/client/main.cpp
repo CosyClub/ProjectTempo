@@ -12,6 +12,7 @@
 #include <client/system/SystemRenderGUI.hpp>
 #include <client/system/SystemRenderHealthBars.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
+#include <client/system/SystemRenderAttack.hpp>
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
 #include <client/system/SystemTranslationAnimation.hpp>
@@ -20,6 +21,7 @@
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
+#include <tempo/component/ComponentAttack.hpp>
 #include <tempo/network/ID.hpp>
 #include <tempo/song.hpp>
 #include <tempo/system/SystemHealth.hpp>
@@ -162,7 +164,7 @@ int main(int argc, const char **argv)
 	tempo::SystemTrigger           system_trigger(world);
 	client::SystemAttack           system_attack;
 	client::SystemButtonRenderer   system_button_renderer;
-	client::SystemCombo             system_combo;
+	client::SystemCombo            system_combo;
 	client::SystemEntity           system_entity;
 	client::SystemGraphicsCreation system_gc;
 	client::SystemMovement         system_movement;
@@ -171,6 +173,7 @@ int main(int argc, const char **argv)
 	client::SystemRenderGUI        system_render_gui;
 	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
+	client::SystemRenderAttack     system_render_attack(smgr);
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
 	client::SystemLessJank system_less_jank;
@@ -186,6 +189,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_stage_renderer);
 	world.addSystem(system_render_scene_node);
 	world.addSystem(system_render_health_bars);
+	world.addSystem(system_render_attack);
 	world.addSystem(system_update_key_input);
 	world.addSystem(system_parse_key_input);
 	world.addSystem(system_movement);
@@ -325,6 +329,7 @@ int main(int argc, const char **argv)
 			system_gc.addEntities(driver, smgr, world);
 			system_render_scene_node.setup(smgr,driver);
 			system_render_health_bars.setup(smgr);
+			system_render_attack.update();
 			system_button_renderer.setup(smgr, driver);
 
 			// Recieve updates from the server
