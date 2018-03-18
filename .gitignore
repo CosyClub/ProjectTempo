@@ -16,3 +16,6 @@ bin/SDL2ConfigVersion\.cmake
 .*\.swp
 
 compile_commands.json
+
+# Ignore QT project file
+CMakeLists.txt.user
