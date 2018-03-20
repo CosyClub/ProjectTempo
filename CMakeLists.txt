@@ -89,6 +89,11 @@ set(TEMPO_IRRLICHT_INCLUDE_DIR
 	"${TEMPO_IRRLICHT_DIR}/include"
 )
 
+if (MSVC)
+    message ("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+	string(REGEX REPLACE "/GR-" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+	message ("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+endif ()
 add_subdirectory(${TEMPO_EXTLIBS_DIR})
 add_subdirectory(src)
 

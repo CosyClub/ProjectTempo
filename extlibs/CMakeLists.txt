@@ -24,6 +24,7 @@ if (TEMPO_BUILD_LAB)
 	set(FLAC_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/lab-audio-dependencies/include/flac")
 	set(FLAC_LIBRARY     "${CMAKE_CURRENT_LIST_DIR}/lab-audio-dependencies/lib64/libFLAC.so")
 endif()
+
 # Extract archive
 execute_process(COMMAND cmake -E tar xf SFML-2.4.2.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 # Build libraries
