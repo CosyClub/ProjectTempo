@@ -262,6 +262,7 @@ int main(int argc, const char **argv)
 	  entity_player.getComponent<client::ComponentRenderSceneNode>();
 
 	auto &combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
+	auto &comp_health = entity_player.getComponent<tempo::ComponentHealth>();
 
 	irr::scene::ICameraSceneNode *camera_node;
 	if (false) {
@@ -408,7 +409,7 @@ int main(int argc, const char **argv)
 		smgr->drawAll();
 		gui_env->drawAll();
 
-		system_render_gui.update(driver, gui_env, clock, combo);
+		system_render_gui.update(driver, gui_env, clock, combo, comp_health);
 		driver->endScene();
 
 		++frame_counter;
