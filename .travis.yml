@@ -4,3 +4,5 @@ os:
   - linux
 script:
   - mkdir build && cd build && cmake .. && make
+packages:
+  - libopenal-dev
