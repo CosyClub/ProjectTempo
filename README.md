@@ -2,6 +2,8 @@
 
   Repository containing the source of Rave Cave client, server, and related tools.
 
+[![Build Status](https://travis-ci.org/jnterry/nano-orm.svg?branch=master)](https://travis-ci.org/CosyClub/ProjectTempo.svg?branch=master)
+
 # Build Steps
 
   The build is managed by CMake, hence the project can be built from command line or in an IDE of your choice.

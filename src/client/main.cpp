@@ -81,11 +81,11 @@ namespace client
 					// currently combos aren't server protected, so maybe this should move into lib-tempo?
 					// this produces a lovely jumping against the wall animation!
 					trans.delta = glm::ivec2(0, 0);
-					if (entity.hasComponent<tempo::ComponentCombo>()) {
-						// what the heck this is a jank class anyway
-						tempo::ComponentCombo& combo = entity.getComponent<tempo::ComponentCombo>();
-						combo.advanceBeat();
-					}
+					//if (entity.hasComponent<tempo::ComponentCombo>()) {
+					//	// what the heck this is a jank class anyway
+					//	tempo::ComponentCombo& combo = entity.getComponent<tempo::ComponentCombo>();
+					//	combo.advanceBeat();
+					//}
 				}
 			}
 		}
