@@ -1,4 +1,5 @@
 #include <client/system/SystemRenderGUI.hpp>
+#include <client/misc/RGBtoHSV.hpp>
 
 namespace client
 {
@@ -53,22 +54,21 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
   // Display health bar
   float health_scale =  (float) comp_health.current_health /  (float) comp_health.max_health;
 
-  int health_width_left    = 0.87 * screenSize.Width;
-  int health_width_right   = 0.93 * screenSize.Width;
-  int health_height_top    = (0.80 * health_scale + (0.95 * (1.f - health_scale))) * screenSize.Height;
+  int health_width_left    = 0.90 * screenSize.Width;
+  int health_width_right   = 0.94 * screenSize.Width;
+  int health_height_top    = (0.75 * health_scale + (0.95 * (1.f - health_scale))) * screenSize.Height;
   int health_height_bottom = 0.95 * screenSize.Height;
 
+  irr::core::vector3df c1 = RGBtoHSV(colour_green);
+  irr::core::vector3df c2 = RGBtoHSV(colour_red);
 
-  if (health_scale >= 0.3) {
-    driver->draw2DRectangle(
-      colour_green,
-      irr::core::rect<irr::s32>(health_width_left, health_height_top,
-                                health_width_right, health_height_bottom));
-  } else {
-    driver->draw2DRectangle(
-      colour_red,
-      irr::core::rect<irr::s32>(health_width_left, health_height_top,
-                                health_width_right, health_height_bottom));
-  }
+  c1.X = c1.X * health_scale + c2.X * (1.f - health_scale);
+
+  irr::video::SColor colour_health = HSVtoRGB(c1);
+
+  driver->draw2DRectangle(
+    colour_health,
+    irr::core::rect<irr::s32>(health_width_left, health_height_top,
+                              health_width_right, health_height_bottom));
 }
 }
