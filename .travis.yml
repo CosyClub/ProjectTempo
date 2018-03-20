@@ -6,4 +6,4 @@ script:
   - mkdir build && cd build && cmake .. && make
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y libopenal-dev
+  - sudo apt-get install -y libopenal-dev libvorbis-dev libflac-dev
