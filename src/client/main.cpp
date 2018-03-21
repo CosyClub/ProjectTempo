@@ -173,7 +173,7 @@ int main(int argc, const char **argv)
 	client::SystemRenderGUI        system_render_gui;
 	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
-	client::SystemRenderAttack     system_render_attack(smgr);
+	client::SystemRenderAttack     system_render_attack(driver, smgr);
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
 	client::SystemLessJank system_less_jank;
@@ -384,6 +384,7 @@ int main(int argc, const char **argv)
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
 			system_translation_animation.endBeat();
+			system_render_attack.endBeat();
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;
