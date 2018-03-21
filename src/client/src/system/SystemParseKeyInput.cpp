@@ -83,7 +83,6 @@ void addAttack(anax::Entity &entity, bool withinDelta)
 void updateCombo(anax::Entity &entity, bool withinDelta)
 {
 	if (entity.hasComponent<tempo::ComponentCombo>()) {
-		tempo::ComponentCombo &c = entity.getComponent<tempo::ComponentCombo>();
 		if (withinDelta) {
 			// c.performAction();
 
