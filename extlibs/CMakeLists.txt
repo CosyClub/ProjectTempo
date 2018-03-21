@@ -1,6 +1,9 @@
 ##########################################
 # SFML
 ##########################################
+message ("SFML ===========================================================================")
+string(TIMESTAMP CMAKE_TIME)
+message ("TIME: ${CMAKE_TIME}")
 # Setup SFML's audio dependencies correctly on lab machines
 if (TEMPO_BUILD_LAB)
 	message("*** LAB MACHINE: Overriding default audio dependencies")
@@ -34,6 +37,9 @@ add_subdirectory(SFML-2.4.2)
 ##########################################
 # Anax
 ##########################################
+message ("ANAX ===========================================================================")
+string(TIMESTAMP CMAKE_TIME)
+message ("TIME: ${CMAKE_TIME}")
 # Extract archive
 execute_process(COMMAND cmake -E tar xf anax-1.1.1.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 # Build libraries
@@ -50,6 +56,9 @@ configure_file(
 ##########################################
 # GLM
 ##########################################
+message ("GLM ============================================================================")
+string(TIMESTAMP CMAKE_TIME)
+message ("TIME: ${CMAKE_TIME}")
 # Extract archive
 execute_process(COMMAND cmake -E tar xf glm-0.9.8.5.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 # Build libraries
@@ -60,6 +69,9 @@ add_subdirectory(glm)
 ##########################################
 # Irrlicht
 ##########################################
+message ("IRRLICHT =======================================================================")
+string(TIMESTAMP CMAKE_TIME)
+message ("TIME: ${CMAKE_TIME}")
 option (TEMPO_BUILD_IRRLICHT_EXTRAS "If set irrlicht examples and tools will be built" OFF)
 if(${TEMPO_BUILD_IRRLICHT_EXTRAS})
 	set(IRRLICHT_BUILD_EXAMPLES ON)
@@ -73,11 +85,23 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${TEMPO_BIN_DIR}/irrlicht/examples/b
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${TEMPO_BIN_DIR}/irrlicht/examples/bin/")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${TEMPO_BIN_DIR}/irrlicht/examples/bin/")
 # Extract archive
+message ("IRRLICHT EXTRACT ===============================================================")
+string(TIMESTAMP CMAKE_TIME)
+message ("TIME: ${CMAKE_TIME}")
 execute_process(COMMAND cmake -E tar xf irrlicht-1.8.4.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+message ("IRRLICHT COPY ==================================================================")
+string(TIMESTAMP CMAKE_TIME)
+message ("TIME: ${CMAKE_TIME}")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/irrlicht-cmake/" DESTINATION "${CMAKE_CURRENT_LIST_DIR}/irrlicht-1.8.4/")
 # Build libraries
+message ("IRRLICHT ADD_SUBDIRECTORY ======================================================")
+string(TIMESTAMP CMAKE_TIME)
+message ("TIME: ${CMAKE_TIME}")
 add_subdirectory(irrlicht-1.8.4)
 # Ensure we can run examples and tools
+message ("IRRLICHT COPY TOOLS ============================================================")
+string(TIMESTAMP CMAKE_TIME)
+message ("TIME: ${CMAKE_TIME}")
 file(COPY "${CMAKE_CURRENT_LIST_DIR}/irrlicht-1.8.4/media/" DESTINATION "${TEMPO_BIN_DIR}/irrlicht/media/")
 # Reset bin output
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${TEMPO_BIN_DIR}")
