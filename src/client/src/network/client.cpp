@@ -7,6 +7,9 @@
 
 namespace tempo
 {
+// Refer to documentation in tempo/network/base.hpp
+bool allowUnknownIfHandshake = false;
+
 // Brutalised version of the NTP Time Sync Protocol (RFC5905)
 // http://www.ietf.org/rfc/rfc5905.txt (Page 27)
 sf::Int64 timeSyncClient(tempo::Clock *clock)
@@ -109,6 +112,7 @@ void listenForServerUpdates(std::atomic<bool> &running)
 
 	sock_i.setBlocking(false);
 	sf::IpAddress  ip;
+	sf::IpAddress  local = sf::IpAddress::getLocalAddress();
 	unsigned short port;
 	sf::Packet     packet;
 
@@ -121,7 +125,10 @@ void listenForServerUpdates(std::atomic<bool> &running)
 
 		// Sort packet into respective system.
 		if (status == sf::Socket::Done) {
-			sortPacket(packet);
+			bool o = sortPacket(packet, (ip == tempo::addr_r) || (ip == local));
+			if (!o) std::cout << "Dropped invalid packet/message from unknown address ("
+
+				          << ip.toString() << ":" << port << ")." << std::endl;
 			packet = sf::Packet();
 		}
 	}
@@ -138,6 +145,7 @@ uint32_t handshakeHello(anax::World &world)
 	send << static_cast<uint32_t>(HandshakeID::HELLO);
 	send << sf::IpAddress::getLocalAddress().toInteger();
 	send << port_ci;
+	send << port_co;
 
 	std::cout << "Your address is: " 
 	          << sf::IpAddress::getLocalAddress().toString() << ":"

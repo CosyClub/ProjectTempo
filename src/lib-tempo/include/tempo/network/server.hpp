@@ -18,8 +18,9 @@
 namespace tempo
 {
 typedef struct {
-	sf::Uint32     ip;  // Use sf::IpAddress's toInt() method
-	unsigned short port;
+	sf::Uint32     ip;    // Use sf::IpAddress's toInteger() method
+	unsigned short iport; // Incoming port, where we should send messages to
+	unsigned short oport; // Outgoing port, port they send messages on
 	ClientRole     role;
 } clientConnection;
 

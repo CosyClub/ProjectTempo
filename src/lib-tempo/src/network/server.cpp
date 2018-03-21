@@ -33,6 +33,9 @@ namespace tempo
 std::map<uint32_t, tempo::clientConnection> clients;
 std::mutex                                  cmtx;
 
+// Refer to documentation in tempo/network/base.hpp
+bool allowUnknownIfHandshake = true;
+
 // For use in a separate thread by server to deal with a client so the main time
 // sync thread can continue listening for more clients whilst dealing with this.
 // This function acts as peer B in our brutalised version of NTP (RFC5905)
@@ -140,9 +143,9 @@ void timeSyncServer(tempo::Clock *clock)
 // Will not check if client already exists, just add the information as a new
 // client, so it is recommended to use `if (!findClientID(ip, port)) first!
 static uint32_t idCounter = NO_CLIENT_ID + 1;
-uint32_t        addClient(sf::Uint32 ip, unsigned short port, ClientRole role = ClientRole::NO_ROLE)
+uint32_t        addClient(sf::Uint32 ip, unsigned short iport, unsigned short oport, ClientRole role = ClientRole::NO_ROLE)
 {
-	clientConnection newClient = {ip, port, role};
+	clientConnection newClient = {ip, iport, oport, role};
 	cmtx.lock();
 	clients.insert(std::make_pair(idCounter, newClient));
 	cmtx.unlock();
@@ -151,10 +154,15 @@ uint32_t        addClient(sf::Uint32 ip, unsigned short port, ClientRole role = 
 
 uint32_t findClientID(sf::Uint32 ip, unsigned short port)
 {
+	sf::Uint32 search = ip;
+	if (search == sf::IpAddress("127.0.0.1").toInteger()) {
+		search = sf::IpAddress::getLocalAddress().toInteger();
+	}
+
 	// Loop through clients
 	cmtx.lock();
 	for (clientpair element : clients) {
-		if (element.second.ip == ip && element.second.port == port) {
+		if (element.second.ip == search && (element.second.iport == port || element.second.oport == port)) {
 			cmtx.unlock();
 			return element.first;
 		}
@@ -168,7 +176,7 @@ void removeClientId(sf::Uint32 ip, unsigned short port)
 	// Loop through clients
 	cmtx.lock();
 	for (clientpair element : clients) {
-		if (element.second.ip == ip && element.second.port == port) {
+		if (element.second.ip == ip && (element.second.iport == port || element.second.oport == port)) {
 			clients.erase(element.first);
 			cmtx.unlock();
 			return;
@@ -229,22 +237,24 @@ void handshakeHello(sf::Packet &packet, anax::World *world)
 {
 	// Extract information from packet
 	sf::Uint32     ip;
-	unsigned short updatePort = 0;
+	unsigned short iPort = 0;
+	unsigned short oPort = 0;
 	packet >> ip;
-	packet >> updatePort;
+	packet >> iPort;
+	packet >> oPort;
 	sf::IpAddress sender(ip);
-	std::cout << "New client (" << sender.toString() << ":" << updatePort << ") Connecting!"
+	std::cout << "New client (" << sender.toString() << ":" << oPort << ") Connecting!"
 	          << std::endl;
 
 	// Register Client Internally
 	uint32_t id = NO_CLIENT_ID;
-	if (findClientID(ip, updatePort) == NO_CLIENT_ID) {
-		id = addClient(ip, updatePort);
+	if (findClientID(ip, iPort) == NO_CLIENT_ID) {
+		id = addClient(ip, iPort, oPort);
 	} else {
-		id = findClientID(ip, updatePort);
+		id = findClientID(ip, iPort);
 		// TODO: Time out old client and make a new one
 		std::cout << "WARNING: Connected client tried to reconnect (" << id << ", " << sender << ":"
-		          << updatePort << ")" << std::endl;
+		          << oPort << ")" << std::endl;
 	}
 
 	// Work out how many components there are in the world
@@ -388,10 +398,10 @@ void listenForClientUpdates()
 			continue;
 		}
 
-		if (ip == "0.0.0.0") continue;
-
 		// Sort packet into respective system.
-		sortPacket(packet);
+		bool o = sortPacket(packet, findClientID(ip.toInteger(), port));
+		if (!o) std::cout << "Dropped invalid packet/message from unknown address ("
+			          << ip.toString() << ":" << port << ")." << std::endl;
 	}
 
 	return;
@@ -424,7 +434,7 @@ bool sendMessage(tempo::QueueID id, sf::Packet payload, uint32_t client_id)
 	message << id;
 	message << payload;
 
-	return sock_o.send(message, sf::IpAddress(clients[client_id].ip), clients[client_id].port)
+	return sock_o.send(message, sf::IpAddress(clients[client_id].ip), clients[client_id].iport)
 	       == sf::Socket::Done;
 }
 
