@@ -225,8 +225,8 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 				health.HealthUpdate(-1 * damage);
 
 				sf::Packet p;
-				p << static_cast<uint32_t>(tempo::MessageAttack::ATTACK_CORRECTION);
 				p << entity.getId();
+				p << static_cast<uint32_t>(tempo::MessageAttack::ATTACK_CORRECTION);
 				p << health.current_health;
 				tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);
 
@@ -236,14 +236,15 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 	}
 
 	// Clear attack intent and broadcast to clients
-	attack.damage             = tempo::Mask(glm::ivec2(0, 0), NULL, glm::ivec2(0, 0));
+	// TODO:
+	/*attack.damage             = tempo::Mask(glm::ivec2(0, 0), NULL, glm::ivec2(0, 0));
 	attack.beats_until_attack = -1;
 	sf::Packet p;
 	p << static_cast<uint32_t>(tempo::MessageAttack::UPDATE_INTENT);
 	p << attacker.getId();
 	p << attack.damage;
 	p << attack.beats_until_attack;
-	tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);
+	tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);*/
 }
 
 }  // namespace server
