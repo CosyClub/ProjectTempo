@@ -77,14 +77,23 @@ bool sendMessage(tempo::QueueID id, sf::Packet payload)
 	return sock_o.send(message, addr_r, port_si) == sf::Socket::Done;
 }
 
-sf::Packet receiveMessage(QueueID qid)
+std::pair<bool, sf::Packet> receiveMessage(QueueID qid)
 {
 	tempo::Queue<sf::Packet> *queue = get_system_queue(qid);
-	while (queue->empty())
+	uint32_t count = 0;
+	
+	// 250 * 20ms = 5 seconds
+	while (queue->empty() && count++ < 250) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-	sf::Packet packet = queue->front();
-	queue->pop();
-	return packet;
+	}
+
+	if (!queue->empty()) {
+		sf::Packet packet = queue->front();
+		queue->pop();
+		return std::pair<bool, sf::Packet>(true, packet);
+	} else {
+		return std::pair<bool, sf::Packet>(false, sf::Packet());
+	}
 }
 
 void listenForServerUpdates(std::atomic<bool> &running)
@@ -125,39 +134,54 @@ void listenForServerUpdates(std::atomic<bool> &running)
 uint32_t handshakeHello(anax::World &world)
 {
 	// Package up payload
-	sf::Packet packet;
-	packet << static_cast<uint32_t>(HandshakeID::HELLO);
-	packet << sf::IpAddress::getLocalAddress().toInteger();
-	packet << port_ci;
+	sf::Packet send, receive;
+	send << static_cast<uint32_t>(HandshakeID::HELLO);
+	send << sf::IpAddress::getLocalAddress().toInteger();
+	send << port_ci;
 
 	std::cout << sf::IpAddress::getLocalAddress().toString() << std::endl;
 
-	// Send HELLO
-	sendMessage(QueueID::HANDSHAKE, packet);
-
-	// Receive HELLO_ROG
-	packet = receiveMessage(QueueID::HANDSHAKE);
+	bool     b     = false;
+	uint32_t count = 0;
+	while (!b && count++ < 12) {
+		// Send HELLO
+		std::cout << "Attempting to connect to the server..." << std::endl;
+		sendMessage(QueueID::HANDSHAKE, send);
+	
+		// Receive HELLO_ROG
+		std::pair<bool, sf::Packet> o = receiveMessage(QueueID::HANDSHAKE);
+		b       = o.first;
+		receive = o.second;
+	}
+	if (!b) {
+		std::cout << "Failed to connect to server after 1 minute." << std::endl;
+		return NO_CLIENT_ID;
+	}
 
 	// Extract Data
 	uint32_t msg            = static_cast<uint32_t>(HandshakeID::DEFAULT);
 	uint32_t id             = NO_CLIENT_ID;
 	uint32_t componentCount = 0;
-	packet >> msg;
+	receive >> msg;
 	if (msg == static_cast<uint32_t>(HandshakeID::HELLO_ROG)) {
-		packet >> id;
-		packet >> port_si;
-		packet >> port_st;
-		packet >> componentCount;
+		receive >> id;
+		receive >> port_si;
+		receive >> port_st;
+		receive >> componentCount;
 
-		sf::Packet p2;
 		for (unsigned int i = 0; i < componentCount; i++) {
-			p2 = receiveMessage(QueueID::HANDSHAKE);
+			bool b = false;
+			while (!b) {
+				std::pair<bool, sf::Packet> o = receiveMessage(QueueID::HANDSHAKE);
+				b       = o.first;
+				receive = o.second;
+			}
 			std::cout << "Recieved " << i << "/" << componentCount << std::endl;
-			addComponent(world, p2);
+			addComponent(world, receive);
 		}
+		std::cout << "Connected to the server!" << std::endl;
 	} else {
-		std::cout << "We didn't get what we expected when connecting "
-		          << "to the server." << std::endl;
+		std::cout << "Failed to connect to server." << std::endl;
 	}
 
 	return id;
@@ -166,36 +190,50 @@ uint32_t handshakeHello(anax::World &world)
 bool handshakeRoleReq(uint32_t id, ClientRole roleID, ClientRoleData &roleData, anax::World &world)
 {
 	// Package up payload
-	sf::Packet packet;
-	packet << static_cast<uint32_t>(HandshakeID::ROLEREQ);
-	packet << id;
-	packet << roleID;
-	packet << roleData;
+	sf::Packet send, receive;
+	send << static_cast<uint32_t>(HandshakeID::ROLEREQ);
+	send << id;
+	send << roleID;
+	send << roleData;
 
-	// Send ROLEREQ
-	sendMessage(QueueID::HANDSHAKE, packet);
-
-	// Wait until we recieve ROLEREQ_ROG
-	packet = receiveMessage(QueueID::HANDSHAKE);
+	bool b = false;
+	uint32_t count = 0;
+	while (!b && count++ < 12) {
+		// Send ROLEREQ
+		std::cout << "Joining game..." << std::endl;
+		sendMessage(QueueID::HANDSHAKE, send);
+	
+		// Recieve ROLEREQ_ROG
+		std::pair<bool, sf::Packet> o = receiveMessage(QueueID::HANDSHAKE);
+		b       = o.first;
+		receive = o.second;
+	}
+	if (!b) {
+		std::cout << "Failed to join game after 1 minute." << std::endl;
+		return false;
+	}
 
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
 	int      componentCount;
-	packet >> msg;
-	packet >> componentCount;
+	receive >> msg;
+	receive >> componentCount;
 	if (msg == static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG)) {
 		// TODO Extract entity/response from ROLEREQ_ROG
-		sf::Packet   p2;
 		anax::Entity en;
 		for (int i = 0; i < componentCount; i++) {
-			p2 = receiveMessage(QueueID::HANDSHAKE);
-			en = addComponent(world, p2);
+			bool b = false;
+			while (!b) {
+				std::pair<bool, sf::Packet> o = receiveMessage(QueueID::HANDSHAKE);
+				b       = o.first;
+				receive = o.second;
+			}
+			en = addComponent(world, receive);
 		}
 		en.removeComponent<tempo::ComponentPlayerRemote>();
 		en.addComponent<tempo::ComponentPlayerLocal>();
 	} else {
-		std::cout << "The server was rude to us when we requested a "
-		          << "role. >:(" << std::endl;
+		std::cout << "Failed to join game." << std::endl;
 		return false;
 	}
 
@@ -222,17 +260,10 @@ bool connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData, ana
 		return false;
 	}
 
-	std::cout << "HELLO STARTING" << std::endl;
 	uint32_t id = handshakeHello(world);
-	std::cout << "HELLO COMPLETE" << std::endl;
-	if (id == NO_CLIENT_ID) {
-		std::cout << "Couldn't connect to the server." << std::endl;
-		return false;
-	}
+	if (id == NO_CLIENT_ID) return false;
 
-	std::cout << "ROLEREQ STARTING" << std::endl;
 	bool ret = handshakeRoleReq(id, roleID, roleData, world);
-	std::cout << "ROLEREQ COMPLETE" << std::endl;
 	world.refresh();
 	return ret;
 }
