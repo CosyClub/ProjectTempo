@@ -42,15 +42,9 @@ void SystemAttack::processServerResponses(anax::World &w)
 				          << std::endl;
 				continue;
 			}
-			tempo::ComponentAttack        &c  = e.getComponent<tempo::ComponentAttack>();
-			tempo::ComponentStagePosition &sp = e.getComponent<tempo::ComponentStagePosition>();
-			tempo::ComponentStageRotation &sr = e.getComponent<tempo::ComponentStageRotation>();
+			tempo::ComponentAttack &c = e.getComponent<tempo::ComponentAttack>();
 			p >> c.damage;
 			p >> c.beats_until_attack;
-
-			// TODO For Grant
-			std::vector<glm::ivec2> ps = c.getAbsolutePositions(sp.getOrigin(), sr.facing);
-
 			break;
 		}
 		case tempo::MessageAttack::ATTACK_CORRECTION: {
