@@ -139,7 +139,9 @@ uint32_t handshakeHello(anax::World &world)
 	send << sf::IpAddress::getLocalAddress().toInteger();
 	send << port_ci;
 
-	std::cout << sf::IpAddress::getLocalAddress().toString() << std::endl;
+	std::cout << "Your address is: " 
+	          << sf::IpAddress::getLocalAddress().toString() << ":"
+	          << tempo::port_co << std::endl;
 
 	bool     b     = false;
 	uint32_t count = 0;
