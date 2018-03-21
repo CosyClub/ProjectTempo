@@ -336,6 +336,7 @@ int main(int argc, const char **argv)
 			system_movement.processIntents(world);
 			system_movement.processCorrections(world);
 			system_combo.checkForUpdates(world);
+			system_attack.processServerResponses(world);
 
 			// Deal with local input
 			system_update_key_input.clear();

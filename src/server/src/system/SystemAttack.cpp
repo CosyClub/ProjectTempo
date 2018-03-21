@@ -85,7 +85,7 @@ bool SubSystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
 	glm::ivec2  attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
 	glm::ivec2  rot         = attacker.getComponent<tempo::ComponentStageRotation>().facing;
 	auto &      weapon      = attacker.getComponent<tempo::ComponentWeapon>();
-	
+
 	glm::ivec2 bestDirection;
 	float bestDamage = 0;
 
@@ -108,7 +108,7 @@ bool SubSystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
 
 			// Add positions after stage translation (if any) to ps vector
 			// TODO: This doesn't take into account if the movement system
-			//       doesn't accept a stage translation. Work out if 
+			//       doesn't accept a stage translation. Work out if
 			//       that matters?
 			if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
 				glm::ivec2 d = entity.getComponent<tempo::ComponentStageTranslation>().delta;
@@ -136,14 +136,14 @@ bool SubSystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
 			}
 		}
 
-		if ( currentDamage >= bestDamage ) 
+		if ( currentDamage >= bestDamage )
 		{
 			bestDamage = currentDamage;
 			bestDirection = rot;
 		}
 	}
 
-	direction = bestDirection;	
+	direction = bestDirection;
 	return bestDamage;
 }
 
@@ -237,14 +237,14 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 
 	// Clear attack intent and broadcast to clients
 	// TODO:
-	attack.damage             = tempo::Mask(glm::ivec2(0, 0), NULL, glm::ivec2(0, 0));
+	/*attack.damage             = tempo::Mask(glm::ivec2(0, 0), NULL, glm::ivec2(0, 0));
 	attack.beats_until_attack = -1;
 	sf::Packet p;
 	p << static_cast<uint32_t>(tempo::MessageAttack::UPDATE_INTENT);
 	p << attacker.getId();
 	p << attack.damage;
 	p << attack.beats_until_attack;
-	tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);
+	tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);*/
 }
 
 }  // namespace server

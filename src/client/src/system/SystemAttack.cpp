@@ -32,8 +32,11 @@ void SystemAttack::processServerResponses(anax::World &w)
 		p >> id;  // ID of the entity this message concerns
 		anax::Entity e(w, tempo::servertolocal[id]);
 
+		printf("Processing server attack message\n");
+
 		switch (static_cast<tempo::MessageAttack>(code)) {
 		case tempo::MessageAttack::UPDATE_INTENT: {
+			printf("Updating attack intent\n");
 			if (!e.hasComponent<tempo::ComponentAttack>()) {
 				std::cout << "Recieved Attack Intent Update for entity without ComponentAttack"
 				          << std::endl;
