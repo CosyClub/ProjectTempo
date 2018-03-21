@@ -18,8 +18,10 @@ namespace client
 			if(!attack.isAttacking()){
 				continue;
 			}
-			printf("Found an attacking entity, center: %i, %i\n",
-			       attack.damage.ctr.x, attack.damage.ctr.y);
+			printf("Found an attacking entity, center: %i, %i, size: {%i, %i}\n",
+			       attack.damage.ctr.x, attack.damage.ctr.y,
+			       attack.damage.positions.size(),
+			       attack.damage.mask.size());
 			for(int i = 0; i < attack.damage.positions.size(); ++i){
 				printf("  %i, %i\n",
 				       attack.damage.positions[i].x, attack.damage.positions[i].y);
