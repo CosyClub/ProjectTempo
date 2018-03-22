@@ -379,6 +379,7 @@ int main(int argc, const char **argv)
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
 			system_translation_animation.endBeat();
+			system_parse_key_input.simulateInput(entity_player);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;

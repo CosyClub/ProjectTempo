@@ -12,6 +12,7 @@
 namespace client
 {
 struct SystemParseKeyInput : anax::System<anax::Requires<ComponentKeyInput>> {
+	void simulateInput(anax::Entity e);
 	void parseInput(tempo::Clock &clock, irr::IrrlichtDevice* device);
 };
 

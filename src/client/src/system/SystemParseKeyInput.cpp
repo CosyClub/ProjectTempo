@@ -102,6 +102,25 @@ void updateCombo(anax::Entity &entity, bool withinDelta)
 	}
 }
 
+glm::ivec2 random_move()
+{
+	int dir    = rand() % 2;            // between 0 and 1
+	int amount = (rand() % 2) * 2 - 1;  //-1 or 1
+
+	if (dir) {
+		return glm::ivec2(amount, 0);
+	} else {
+		return glm::ivec2(0, amount);
+	}
+}
+
+void SystemParseKeyInput::simulateInput(anax::Entity e)
+{
+	glm::ivec2 dir = random_move();
+	addMovement(e, dir, dir, true);
+	updateCombo(e, true);
+}
+
 void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinDelta, irr::IrrlichtDevice* device )
 {
 	switch (key) {
