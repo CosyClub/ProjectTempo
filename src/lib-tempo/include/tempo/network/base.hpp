@@ -20,14 +20,14 @@ namespace tempo
 ////////////////////////////////////////////////////////////////////////
 /// Constant #define's
 
-// Default Address
+// Default Address - Null - Should break things
 #define DEFAULT_ADDR "0.0.0.0"
 // Default Port for Incoming Socket
 #define DEFAULT_PORT_IN 1337
 // Default Port for the Outgoing Socket
 #define DEFAULT_PORT_OUT 1338
 // Default Port for Time Sync (TS) protocol
-#define DEFAULT_PORT_TS 1339
+#define DEFAULT_PORT_TS 1337
 
 // Wait time for time sync protocol (millisecs)
 #define TIMESYNC_DELTA 100
