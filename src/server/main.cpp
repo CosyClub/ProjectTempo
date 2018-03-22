@@ -142,7 +142,6 @@ int main(int argc, const char **argv)
 			system_attack.recieveAttacks(world);
 			system_combo.checkForUpdates(world);
 			system_health.CheckHealth();
-			system_health.broadcastHealth();
 		}
 
 		if (clock.passed_antibeat())
@@ -176,6 +175,12 @@ int main(int argc, const char **argv)
 			system_combo.advanceBeat();
 			system_attack.processAttacks();
 			system_movement.processTranslation();
+		}
+		
+		////////////////
+		// Events all the time
+		{
+			system_health.broadcastHealth();
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
