@@ -160,8 +160,9 @@ int main(int argc, const char **argv)
 			system_trigger.updateButtons(world);
 
 			if (tick++ % 20 == 0)
-				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()
-				          << "+++++++++++++++" << std::endl;
+				std::cout << "TICK (" << tick << ") " 
+				          << clock.get_time().asMilliseconds()
+				          << std::endl;
 		}
 
 		////////////////
