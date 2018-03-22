@@ -21,6 +21,7 @@ enum QueueID {
 	QID_RESERVED_BOTTOM,
 	// Start of non-reserved zone
 
+	HEARTBEAT,
 	HANDSHAKE,
 	DISCONNECT,
 	ENTITY_CREATION,

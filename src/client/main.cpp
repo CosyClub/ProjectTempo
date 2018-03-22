@@ -371,6 +371,7 @@ int main(int argc, const char **argv)
 		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
 			// std::cout << "Start" << std::endl;
+			tempo::sendHeatbeat();
 		}
 
 		////////////////

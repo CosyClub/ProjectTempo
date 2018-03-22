@@ -143,9 +143,10 @@ void timeSyncServer(tempo::Clock *clock)
 // Will not check if client already exists, just add the information as a new
 // client, so it is recommended to use `if (!findClientID(ip, port)) first!
 static uint32_t idCounter = NO_CLIENT_ID + 1;
-uint32_t        addClient(sf::Uint32 ip, unsigned short iport, unsigned short oport, ClientRole role = ClientRole::NO_ROLE)
+
+uint32_t addClient(sf::Uint32 ip, unsigned short iport, unsigned short oport, ClientRole role = ClientRole::NO_ROLE)
 {
-	clientConnection newClient = {ip, iport, oport, role};
+	clientConnection newClient = {ip, iport, oport, role, anax::Entity::Id(), 0};
 	cmtx.lock();
 	clients.insert(std::make_pair(idCounter, newClient));
 	cmtx.unlock();
@@ -300,6 +301,7 @@ void handshakeRoleReq(sf::Packet &packet, anax::World *world)
 	// Register Role
 	cmtx.lock();
 	clients[id].role = static_cast<ClientRole>(role);
+	clients[id].id   = newEntity.getId();
 	cmtx.unlock();
 
 	// Construct ROLEREQ_ROG response
@@ -358,12 +360,17 @@ void checkForClientDeletion(anax::World &world)
 		sf::Packet       broadcast;
 		anax::Entity::Id id;
 		uint32_t         ip_d;
-		uint32_t         port;
-		packet >> id >> ip_d >> port;
+		unsigned short   port;
+		bool             intentional;
+		packet >> id >> ip_d >> port >> intentional;
 		broadcast << id;
 		sf::IpAddress ip(ip_d);
 
-		std::cout << "Client (" << ip.toString() << ":" << port << ") Disconnected." << std::endl;
+		if (intentional) {
+			std::cout << "Client (" << ip.toString() << ":" << port << ") Disconnected." << std::endl;
+		} else {
+			std::cout << "Client (" << ip.toString() << ":" << port << ") Timed Out." << std::endl;
+		}
 		try {
 			anax::Entity e(world, id);
 			world.killEntity(e);

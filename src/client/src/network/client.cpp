@@ -278,12 +278,22 @@ bool connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData, ana
 	return ret;
 }
 
+void sendHeatbeat() {
+	sf::Packet p;
+	p << (uint32_t) tempo::addr_r.toInteger();
+	p << (uint32_t) tempo::port_ci;
+	p << true;
+	tempo::sendMessage(tempo::QueueID::HEARTBEAT, p);
+
+}
+
 void disconnectFromServer(anax::Entity &entity_player)
 {
 	sf::Packet p;
 	tempo::operator<<(p, tempo::localtoserver[entity_player.getId()]);
 	p << (uint32_t) tempo::addr_r.toInteger();
 	p << (uint32_t) tempo::port_ci;
+	p << true;
 	tempo::sendMessage(tempo::QueueID::ENTITY_DELETION, p);
 }
 
