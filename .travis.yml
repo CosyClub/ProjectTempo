@@ -9,3 +9,5 @@ script:
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libopenal-dev libvorbis-dev libflac-dev
+notifications:
+   slack: cosyclub:mQ6pLLx0qmwmYUcvvk9TIT2O
