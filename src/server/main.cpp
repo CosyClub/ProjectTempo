@@ -123,6 +123,7 @@ int main(int argc, const char **argv)
 	tick++;
 
 	// Main loop, with beat printouts
+	sf::Clock c;
 	while (true) {
 		// Handshake call, DO NOT REMOVE
 		tempo::checkForClientCreation(&world);
@@ -159,9 +160,9 @@ int main(int argc, const char **argv)
 			system_combo.advanceBeat();
 			system_trigger.updateButtons(world);
 
-			if (tick++ % 20 == 0)
-				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()
-				          << "+++++++++++++++" << std::endl;
+			// if (tick++ % 20 == 0)
+			// 	std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()
+			// 	          << "+++++++++++++++" << std::endl;
 		}
 
 		////////////////
@@ -173,7 +174,9 @@ int main(int argc, const char **argv)
 			system_movement.processTranslation();
 		}
 
+		std::cout << tempo::clients.size() << " clients: " << c.getElapsedTime().asMicroseconds() << "us" << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		c.restart();
 	}
 	return 0;
 }
