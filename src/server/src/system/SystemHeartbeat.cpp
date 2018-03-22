@@ -19,7 +19,6 @@ void SystemHeartbeat::checkForHeatbeats(anax::World &world)
 	tempo::cmtx.lock();
 	for (tempo::clientpair element : tempo::clients) {
 		tempo::clients[element.first].heartbeat += 1;
-		std::cout << "Heartbeat inc from " << element.first << " " << tempo::clients[element.first].heartbeat << std::endl;
 	}
 	tempo::cmtx.unlock();
 
@@ -28,8 +27,8 @@ void SystemHeartbeat::checkForHeatbeats(anax::World &world)
 		sf::Packet p = queue->front();
 		queue->pop();
 		
-		uint32_t         ip_d;
-		uint32_t         port;
+		sf::Uint32     ip_d;
+		unsigned short port;
 		p >> ip_d >> port;
 		sf::IpAddress ip(ip_d);
 
@@ -37,7 +36,6 @@ void SystemHeartbeat::checkForHeatbeats(anax::World &world)
 		if (cid != NO_CLIENT_ID) {
 			tempo::cmtx.lock();
 			tempo::clients[cid].heartbeat = 0;
-			std::cout << "Heartbeat from " << cid << " " << tempo::clients[cid].heartbeat << std::endl;
 			tempo::cmtx.unlock();
 		}
 
