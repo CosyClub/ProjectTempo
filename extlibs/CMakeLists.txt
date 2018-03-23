@@ -28,7 +28,11 @@ if (TEMPO_BUILD_LAB)
 	set(FLAC_LIBRARY     "${CMAKE_CURRENT_LIST_DIR}/lab-audio-dependencies/lib64/libFLAC.so")
 endif()
 # Extract archive
-execute_process(COMMAND cmake -E tar xf SFML-2.4.2.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+if(IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/SFML-2.4.2/")
+	message("${CMAKE_CURRENT_LIST_DIR}/SFML-2.4.2/ is a directory, skipping...")
+else()
+	execute_process(COMMAND cmake -E tar xf SFML-2.4.2.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+endif()
 # Build libraries
 set(SFML_BUILD_EXAMPLES OFF)
 set(SFML_BUILD_DOCS     OFF)
@@ -41,7 +45,11 @@ message ("ANAX =================================================================
 string(TIMESTAMP CMAKE_TIME)
 message ("TIME: ${CMAKE_TIME}")
 # Extract archive
-execute_process(COMMAND cmake -E tar xf anax-1.1.1.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+if(IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/anax-1.1.1/")
+	message("${CMAKE_CURRENT_LIST_DIR}/anax-1.1.1/ is a directory, skipping...")
+else()
+	execute_process(COMMAND cmake -E tar xf anax-1.1.1.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+endif()
 # Build libraries
 set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(anax-1.1.1)
@@ -60,7 +68,11 @@ message ("GLM ==================================================================
 string(TIMESTAMP CMAKE_TIME)
 message ("TIME: ${CMAKE_TIME}")
 # Extract archive
-execute_process(COMMAND cmake -E tar xf glm-0.9.8.5.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+if(IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/glm/")
+	message("${CMAKE_CURRENT_LIST_DIR}/glm/ is a directory, skipping...")
+else()
+	execute_process(COMMAND cmake -E tar xf glm-0.9.8.5.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+endif()
 # Build libraries
 ##########################################
 # GLM
@@ -81,18 +93,19 @@ else()
 	set(IRRLICHT_BUILD_TOOLS    OFF)
 endif()
 # Group output into subfolder
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${TEMPO_BIN_DIR}/irrlicht/examples/bin/")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${TEMPO_BIN_DIR}/irrlicht/examples/bin/")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${TEMPO_BIN_DIR}/irrlicht/examples/bin/")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${TEMPO_BIN_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${TEMPO_BIN_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${TEMPO_BIN_DIR}")
 # Extract archive
-message ("IRRLICHT EXTRACT ===============================================================")
+message ("IRRLICHT EXTRACT COPY ==========================================================")
 string(TIMESTAMP CMAKE_TIME)
 message ("TIME: ${CMAKE_TIME}")
-execute_process(COMMAND cmake -E tar xf irrlicht-1.8.4.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
-message ("IRRLICHT COPY ==================================================================")
-string(TIMESTAMP CMAKE_TIME)
-message ("TIME: ${CMAKE_TIME}")
-file(COPY "${CMAKE_CURRENT_LIST_DIR}/irrlicht-cmake/" DESTINATION "${CMAKE_CURRENT_LIST_DIR}/irrlicht-1.8.4/")
+if(IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/irrlicht-1.8.4/")
+	message("${CMAKE_CURRENT_LIST_DIR}/SFML-2.4.2/ is a directory, skipping...")
+else()
+	execute_process(COMMAND cmake -E tar xf irrlicht-1.8.4.zip WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+	file(COPY "${CMAKE_CURRENT_LIST_DIR}/irrlicht-cmake/" DESTINATION "${CMAKE_CURRENT_LIST_DIR}/irrlicht-1.8.4/")
+endif()
 # Build libraries
 message ("IRRLICHT ADD_SUBDIRECTORY ======================================================")
 string(TIMESTAMP CMAKE_TIME)
