@@ -200,7 +200,7 @@ void loadButtons(anax::World &world, const char *tile_map)
 			continue;
 		}
 
-		fake_createButtonGroup(world, buttons[i], walls[i]);
+		// fake_createButtonGroup(world, buttons[i], walls[i]);
 		createButtonGroup(world, buttons[i], walls[i]);
 	}
 }
