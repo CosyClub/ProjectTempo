@@ -90,7 +90,7 @@ elseif (MSVC)
 	# MP for multi process build
 	# INCREMENTAL for enable incremental compilation
 	set(CMAKE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /GR /EHsc") # reset polluted flags
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /INCREMENTAL /ZI")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /ZI")
 endif ()
 message ("OPTIONS BEFORE EXTLIBS =========================================================")
 message ("CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
@@ -117,6 +117,9 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	target_compile_options(server PRIVATE -Werror -pedantic)
 	target_compile_options(client PRIVATE -Werror -pedantic)
 elseif (MSVC)
+	target_compile_options(lib_tempo PRIVATE )
+	target_compile_options(server PRIVATE )
+	target_compile_options(client PRIVATE )
 endif ()
 
 if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)" OR CMAKE_CL_64)

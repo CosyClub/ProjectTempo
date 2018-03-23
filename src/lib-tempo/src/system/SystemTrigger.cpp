@@ -58,7 +58,7 @@ void SystemTrigger::updateButtons(anax::World& world)
 			for (auto& entity : world.getEntities()) {
 				if (entity.hasComponent<tempo::ComponentStage>()) {
 					auto& component_stage = entity.getComponent<tempo::ComponentStage>();
-					component_stage.setHeight(button_group.wall_positions, 0.f);
+					component_stage.setHeight(button_group.wall_positions, 0);
 				}
 			}
 		}
