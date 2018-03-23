@@ -96,8 +96,15 @@ set(TEMPO_IRRLICHT_INCLUDE_DIR
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	# GNU Flags for the entire project added here
 elseif (MSVC)
-	#set(CMAKE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /GR /EHsc") # reset polluted flags
-	#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Gm /Yc /incremental")
+	# GR for rtti
+	# weXXX for warnings to errors
+	# woXXX for report first warning only
+	# Gm for mimimal rebuild
+	# MP for multi process build
+	# Yc, Yu for create and use precompiled headers
+	# Gi or INCREMENTAL for enable incremental compilation
+	set(CMAKE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /GR /EHsc") # reset polluted flags
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /INCREMENTAL /ZI")
 endif ()
 message ("OPTIONS BEFORE EXTLIBS =========================================================")
 message ("CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
@@ -107,21 +114,22 @@ string(TIMESTAMP CMAKE_TIME)
 message ("TIME: ${CMAKE_TIME}")
 add_subdirectory(${TEMPO_EXTLIBS_DIR})
 string(TIMESTAMP CMAKE_TIME_EXTLIBS_BEFORE)
-message ("TIME: ${CMAKE_TIME_EXTLIBS_AFTER}")
-
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-	# GNU Flags for our code only added/reset/removed here
+	# GNU Flags for the entire project added here
 elseif (MSVC)
-	#set(CMAKE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /GR /EHsc") # reset polluted flags
-	#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR /we /wo /Gm /incremental")
 	# GR for rtti
 	# we for warnings to errors
 	# wo for report first warning only
 	# Gm for mimimal rebuild
 	# MP for multi process build
 	# Yc, Yu for create and use precompiled headers
-	# incremetal for incremental 
+	# Gi or INCREMENTAL for enable incremental compilation
+	#set(CMAKE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /GR /EHsc") # reset polluted flags
+	string(REGEX REPLACE "/Wall" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+	string(REGEX REPLACE "/EHs-c-" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+	string(REGEX REPLACE "/GR-" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 endif ()
 message ("OPTIONS BEFORE SRC =============================================================")
 message ("CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
@@ -131,7 +139,6 @@ string(TIMESTAMP CMAKE_TIME)
 message ("TIME: ${CMAKE_TIME}")
 add_subdirectory(src)
 string(TIMESTAMP CMAKE_TIME_SRC_BEFORE)
-message ("TIME: ${CMAKE_TIME_SRC_AFTER}")
 
 if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)" OR CMAKE_CL_64)
 	file(COPY "${TEMPO_EXTLIBS_DIR}/SFML-2.4.2/extlibs/bin/x64/openal32.dll" DESTINATION "${TEMPO_BIN_DIR}")
