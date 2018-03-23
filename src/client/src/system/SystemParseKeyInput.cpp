@@ -83,7 +83,7 @@ void addAttack(anax::Entity &entity, bool withinDelta)
 void updateCombo(anax::Entity &entity, bool withinDelta)
 {
 	if (entity.hasComponent<tempo::ComponentCombo>()) {
-		tempo::ComponentCombo &c = entity.getComponent<tempo::ComponentCombo>();
+		// tempo::ComponentCombo &c = entity.getComponent<tempo::ComponentCombo>();
 		if (withinDelta) {
 			// c.performAction();
 
@@ -93,7 +93,7 @@ void updateCombo(anax::Entity &entity, bool withinDelta)
 			tempo::sendMessage(tempo::QueueID::COMBO_UPDATES, p);
 		} else {
 			// c.breakCombo();
-			
+
 			sf::Packet p;
 			p << tempo::localtoserver[entity.getId()];
 			p << static_cast<uint8_t>(tempo::MessageCombo::BROKEN_COMBO);
