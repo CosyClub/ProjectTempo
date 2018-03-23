@@ -100,10 +100,7 @@ string(TIMESTAMP CMAKE_TIME)
 message ("TIME: ${CMAKE_TIME}")
 add_subdirectory(${TEMPO_EXTLIBS_DIR})
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-	# GNU Flags for the entire project added here
-	set(SRC_FLAGS "-Werror")
-elseif (MSVC)
+if (MSVC)
 	string(REGEX REPLACE "/Wall" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 	string(REGEX REPLACE "/EHs-c-" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 	string(REGEX REPLACE "/GR-" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
@@ -115,7 +112,12 @@ message ("SRC ==================================================================
 string(TIMESTAMP CMAKE_TIME)
 message ("TIME: ${CMAKE_TIME}")
 add_subdirectory(src)
-
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	target_compile_options(lib_tempo PRIVATE -Werror -pedantic)
+	target_compile_options(server PRIVATE -Werror -pedantic)
+	target_compile_options(client PRIVATE -Werror -pedantic)
+elseif (MSVC)
+endif ()
 
 if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)" OR CMAKE_CL_64)
 	file(COPY "${TEMPO_EXTLIBS_DIR}/SFML-2.4.2/extlibs/bin/x64/openal32.dll" DESTINATION "${TEMPO_BIN_DIR}")

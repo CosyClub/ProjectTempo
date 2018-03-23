@@ -78,7 +78,5 @@ find_package(OpenGL REQUIRED)
 target_link_libraries(client ${OPENGL_gl_LIBRARY} )
 target_link_libraries(client ${OPENGL_glu_LIBRARY})
 
-target_compile_options(client PRIVATE ${SRC_FLAGS})
-
 # Ensure running from visual studio works correctly (finds resources for the binary)
 set_target_properties(client PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${TEMPO_BIN_DIR})

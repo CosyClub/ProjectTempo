@@ -28,7 +28,5 @@ target_link_libraries(server sfml-system)
 target_link_libraries(server sfml-network)
 target_link_libraries(server anax)
 
-target_compile_options(server PRIVATE ${SRC_FLAGS})
-
 # Ensure running from visual studio works correctly (finds resources for the binary)
 set_target_properties(server PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${TEMPO_BIN_DIR})
