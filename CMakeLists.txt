@@ -80,7 +80,7 @@ set(TEMPO_IRRLICHT_INCLUDE_DIR
 )
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-	# GNU Flags for the entire project added here
+	# irrlicht _requires_ gnu++11 instead of c++11 so there goes msvc compatibility
 	set(CMAKE_CXX_FLAGS "-std=gnu++11 -Wall -pipe -fstrict-aliasing") # reset polluted flags
 elseif (MSVC)
 	# GR for rtti
