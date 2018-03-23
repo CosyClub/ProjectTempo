@@ -10,6 +10,7 @@ Song::Song(std::string path)
 
 void Song::start()
 {
+	//sound.setLoop(true);
 	sound.play();
 }
 

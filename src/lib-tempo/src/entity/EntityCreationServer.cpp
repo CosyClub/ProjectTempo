@@ -150,7 +150,7 @@ anax::Entity createButtonGroup(anax::World &           world,
                                std::vector<glm::ivec2> positions,
                                std::vector<glm::ivec2> tiles)
 {
-	printf("Creating button\n");
+	// printf("Creating button\n");
 	anax::Entity entity_button = world.createEntity();
 	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles);
 	entity_button.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");

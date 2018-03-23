@@ -68,6 +68,8 @@ struct ComponentStage
 	ComponentID getId();
 };
 
+void loadButtons(anax::World &world, const char *tile_map);
+
 }  // namespace tempo
 
 #endif

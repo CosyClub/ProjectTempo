@@ -1,6 +1,9 @@
 #include <tempo/component/ComponentStage.hpp>
 
+#include <glm/gtx/string_cast.hpp>
 #include <glm/vec2.hpp>
+
+#include <anax/World.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.hpp>
@@ -8,10 +11,12 @@
 #include <stdint.h>
 #include <cstdio>
 #include <iostream>
+#include <map>
+
+#include <tempo/entity/EntityCreationServer.hpp>
 
 namespace tempo
 {
-
 std::vector<stage_tile> _global_stage;
 std::string             _global_stage_loaded("None");
 
@@ -51,7 +56,7 @@ void ComponentStage::loadLevel(const char *stage_file)
 			}
 		}
 	}
-	tiles = &_global_stage;
+	tiles                = &_global_stage;
 	_global_stage_loaded = std::string(stage_file);
 
 	stbi_image_free(pixel_data);
@@ -130,6 +135,74 @@ sf::Packet ComponentStage::dumpComponent()
 	sf::Packet p;
 	p << stage_file;
 	return p;
+}
+
+
+void fake_createButtonGroup(anax::World &           world,
+                            std::vector<glm::ivec2> positions,
+                            std::vector<glm::ivec2> tiles)
+{
+	std::cout << "positions = {";
+	for (int i = 0; i < positions.size() - 1; i++) {
+		std::cout << glm::to_string(positions[i]) << ",";
+	}
+	std::cout << glm::to_string(positions.back()) << "}" << std::endl;
+
+	std::cout << "tiles = {";
+	for (int i = 0; i < tiles.size() - 1; i++) {
+		std::cout << glm::to_string(tiles[i]) << ",";
+	}
+	std::cout << glm::to_string(tiles.back()) << "}" << std::endl;
+}
+
+void loadButtons(anax::World &world, const char *tile_map)
+{
+
+	int width, height, components;
+
+	uint8_t *pixel_data = (uint8_t *) stbi_load(tile_map, &width, &height, &components, 4);
+	if (pixel_data == NULL || width < 0 || height < 0 || components < 0) {
+		printf("Failed to load level '%s', pixels: %p, width: %i, height: %i, components: %i\n",
+		       tile_map, pixel_data, width, height, components);
+		return;
+	}
+
+	std::vector<std::vector<glm::ivec2>> buttons(256);
+	std::vector<std::vector<glm::ivec2>> walls(256);
+
+	// Load the new tiles
+	for (int y = 0; y < height; y++) {
+		int base = width * y * 4;
+		for (int x = 0; x < width; x++) {
+			uint8_t *pixel = &pixel_data[base + x * 4];
+
+			uint8_t r = pixel[0];
+			uint8_t g = pixel[1];
+			uint8_t b = pixel[2];
+
+			if (b == 0 && r != 0) {
+				// this is a button
+				// r = index
+				// g = level
+				buttons[r].push_back(glm::ivec2(y, x));
+			} else if (r == 0 && g != 0) {
+				// this is a wall
+				// g = index
+				// b = height
+				walls[g].push_back(glm::ivec2(y, x));
+			}
+		}
+	}
+	stbi_image_free(pixel_data);
+
+	for (int i = 0; i < 256; i++) {
+		if (buttons[i].empty() || walls[i].empty()) {
+			continue;
+		}
+
+		// fake_createButtonGroup(world, buttons[i], walls[i]);
+		createButtonGroup(world, buttons[i], walls[i]);
+	}
 }
 
 }  // namespace tempo
