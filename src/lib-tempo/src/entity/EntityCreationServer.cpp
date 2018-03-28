@@ -148,15 +148,25 @@ anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
 
 anax::Entity createButtonGroup(anax::World &           world,
                                std::vector<glm::ivec2> positions,
-                               std::vector<glm::ivec2> tiles)
+                               std::vector<glm::ivec2> tiles,
+							   std::vector<glm::ivec2> spikes)
 {
 	printf("Creating button\n");
 	anax::Entity entity_button = world.createEntity();
-	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles);
+	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles, spikes);
 	entity_button.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	entity_button.activate();
 
 	return entity_button;
+}
+
+anax::Entity createSpikes(anax::World & world, std::vector<glm::ivec2> positions) {
+	anax::Entity entity_spikes = world.createEntity();
+	entity_spikes.addComponent<tempo::ComponentSpikes>(positions);
+	entity_spikes.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	entity_spikes.activate();
+
+	return entity_spikes;
 }
 
 }  // namespace tempo

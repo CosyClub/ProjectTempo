@@ -21,13 +21,16 @@ struct ComponentButtonGroup : anax::Component , NetworkedComponent {
 	// This is a deque so that it is possible to push_front
 	std::deque<button>      buttons;
 	std::vector<glm::ivec2> wall_positions;
+	std::vector<glm::ivec2> spike_positions;
+
 
 	bool groupTriggered  = false;
 	bool action_happened = false; // TODO maybe move this to rendering component
 
 
 	ComponentButtonGroup(std::vector<glm::ivec2> button_positions,
-	                     std::vector<glm::ivec2> wall_positions);
+	                     std::vector<glm::ivec2> wall_positions,
+						 std::vector<glm::ivec2> spike_positions);
 
 	/////
 	// Required for networking
