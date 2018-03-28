@@ -1,5 +1,6 @@
 #include <client/component/ComponentKeyInput.hpp>
 #include <client/component/ComponentRenderButtonGroup.hpp>
+#include <client/component/ComponentRenderSpikes.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
 #include <client/network/client.hpp>
 #include <client/system/SystemAttack.hpp>
@@ -12,12 +13,14 @@
 #include <client/system/SystemRenderGUI.hpp>
 #include <client/system/SystemRenderHealthBars.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
+#include <client/system/SystemRenderSpikes.hpp>
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
 #include <client/system/SystemTranslationAnimation.hpp>
 
 #include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
+#include <tempo/component/ComponentSpikes.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/network/ID.hpp>
@@ -171,6 +174,7 @@ int main(int argc, const char **argv)
 	client::SystemRenderGUI        system_render_gui;
 	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
+	client::SystemRenderSpikes  	 system_render_spikes;
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
 	client::SystemLessJank system_less_jank;
@@ -184,8 +188,9 @@ int main(int argc, const char **argv)
 	world.addSystem(system_trigger);
 	world.addSystem(system_button_renderer);
 	world.addSystem(system_stage_renderer);
-	world.addSystem(system_render_scene_node);
 	world.addSystem(system_render_health_bars);
+	world.addSystem(system_render_scene_node);
+	world.addSystem(system_render_spikes);
 	world.addSystem(system_update_key_input);
 	world.addSystem(system_parse_key_input);
 	world.addSystem(system_movement);
@@ -242,6 +247,7 @@ int main(int argc, const char **argv)
 	system_render_scene_node.setup(smgr, driver);
 	system_render_health_bars.setup(smgr);
 	system_button_renderer.setup(smgr, driver);
+	system_render_spikes.setup(smgr, driver);
 
 	// Start and Sync Song
 	sync_time(clock);

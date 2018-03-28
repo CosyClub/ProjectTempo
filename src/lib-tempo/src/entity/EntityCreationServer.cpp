@@ -161,6 +161,8 @@ anax::Entity createButtonGroup(anax::World &           world,
 }
 
 anax::Entity createSpikes(anax::World & world, std::vector<glm::ivec2> positions) {
+
+	printf("Creating spikes\n");
 	anax::Entity entity_spikes = world.createEntity();
 	entity_spikes.addComponent<tempo::ComponentSpikes>(positions);
 	entity_spikes.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");

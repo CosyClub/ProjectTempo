@@ -66,11 +66,11 @@ int main(int argc, const char **argv)
 	world.refresh();
 
 	// Create some Test Entities
-	  
+
 	tempo::createMobStill(world, glm::ivec2(36, 42));
 	tempo::createMobStill(world, glm::ivec2(40, 42));
 	tempo::createMobStill(world, glm::ivec2(44, 42));
-	
+
 	tempo::createMobCreeper(world, glm::ivec2(40, 64));
 
 	std::deque<glm::ivec2> path {glm::ivec2(64, 68),
@@ -84,14 +84,14 @@ int main(int argc, const char **argv)
 	                              glm::ivec2(15, 73),
 	                              glm::ivec2(15, 67)};
 	tempo::createMobPatroller(world, path2[0], path2);
-	  
+
 	// tempo::createMobCreeper(world, glm::ivec2(12, 12));
 	// tempo::createMobCreeper(world, glm::ivec2(14, 14));
 	// tempo::createMobAntiSnail(world, glm::ivec2(4, 4));
 
 	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
 	tempo::createButtonGroup(world, { {40, 12} }, wall, {});
-	
+
 	std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};
 	tempo::createButtonGroup(world, {{40, 43},{44,43},{36,43}}, wall1, {});
 
@@ -104,6 +104,8 @@ int main(int argc, const char **argv)
 
 	std::vector<glm::ivec2> wall4          = {{40,132},{41,132},{42,132}};
 	tempo::createButtonGroup(world, {{41,110},{26,128},{57,128}}, wall4, {});
+
+	tempo::createSpikes(world, {{40,13}});
 
 	world.refresh();
 
