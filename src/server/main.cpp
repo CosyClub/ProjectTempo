@@ -90,7 +90,7 @@ int main(int argc, const char **argv)
 	// tempo::createMobAntiSnail(world, glm::ivec2(4, 4));
 
 	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
-	tempo::createButtonGroup(world, { {40, 12} }, wall, { {40,13} });
+	tempo::createButtonGroup(world, { {40, 12} }, wall, {});
 	
 	std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};
 	tempo::createButtonGroup(world, {{40, 43},{44,43},{36,43}}, wall1, {});
