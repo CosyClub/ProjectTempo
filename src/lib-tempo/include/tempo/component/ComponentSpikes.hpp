@@ -3,8 +3,6 @@
 
 #include <anax/Component.hpp>
 
-#include <deque>
-
 #include <glm/vec2.hpp>
 
 #include <tempo/component/NetworkedComponent.hpp>
@@ -13,7 +11,7 @@ namespace tempo
 {
 
 	struct ComponentSpikes : anax::Component, NetworkedComponent {
-		
+
 		std::vector<glm::ivec2>      spike_positions;
 		bool isTriggered = false;
 
