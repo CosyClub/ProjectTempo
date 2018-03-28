@@ -139,7 +139,7 @@ int main(int argc, const char **argv)
 			system_attack.receiveAttacks(world);
 			system_combo.checkForUpdates(world);
 			system_health.CheckHealth();
-			system_health.receiveHealths(world);
+			system_health.server_receiveHealth(world);
 			system_health.broadcastHealth();
 		}
 

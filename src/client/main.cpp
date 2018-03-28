@@ -1,4 +1,4 @@
-#include <client/component/ComponentKeyInput.hpp>
+	#include <client/component/ComponentKeyInput.hpp>
 #include <client/component/ComponentRenderButtonGroup.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
 #include <client/network/client.hpp>
@@ -340,8 +340,8 @@ int main(int argc, const char **argv)
 
 			// Deprecated/To-be-worked-on
 			system_health.CheckHealth();
-			system_health.sendHealth(entity_player);
-			system_health.receiveHealth(world);
+			//system_health.client_sendHealth(entity_player);
+			system_health.client_receiveHealth(world);
 
 			system_less_jank.lessJank();
 			// Update animations from translations received from server

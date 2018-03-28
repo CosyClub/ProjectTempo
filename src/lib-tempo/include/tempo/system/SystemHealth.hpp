@@ -21,9 +21,10 @@ struct SystemHealth : anax::System<anax::Requires<ComponentHealth>> {
 	void CheckHealth();
 
 	void broadcastHealth();
-	void sendHealth(anax::Entity entity);
-	void receiveHealth(anax::World &world);
-	void receiveHealths(anax::World &world);
+	void client_sendHealth(anax::Entity entity);
+	void server_sendHealth(anax::Entity entity);
+	void client_receiveHealth(anax::World &world);
+	void server_receiveHealth(anax::World &world);
 };
 }
 

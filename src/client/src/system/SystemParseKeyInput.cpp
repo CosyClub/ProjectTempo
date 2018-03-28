@@ -84,18 +84,20 @@ void addAttack(anax::Entity &entity, bool withinDelta)
 void addHeal(anax::Entity &entity, bool withinDelta)
 {
 
-	std::cout<<"HERE1\n";
 	if (entity.hasComponent<tempo::ComponentHealth>()
 	    && entity.hasComponent<tempo::ComponentCombo>()) {
-		std::cout<<"HERE10000\n";
 
 		tempo::ComponentHealth &h = entity.getComponent<tempo::ComponentHealth>();
 		tempo::ComponentCombo  &c = entity.getComponent<tempo::ComponentCombo>();
 
-		if(c.comboCounter > 2) { // 2 for testing purpose. It should be 10
-			std::cout<<"Added health\n";
-			c.comboCounter -= 2;
+		if(c.comboCounter > 3) { // 3 for testing purpose. It should be 10
+			c.comboCounter -= 3;
 			h.HealthUpdate(2);
+
+			sf::Packet p;
+			p << tempo::localtoserver[entity.getId()];
+			p << h.current_health;
+			sendMessage(tempo::QueueID::SYSTEM_HEALTH, p);
 
 		}
 	}
