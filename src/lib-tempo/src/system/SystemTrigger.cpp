@@ -3,8 +3,7 @@
 #include <tempo/component/ComponentStage.hpp>
 #include <tempo/system/SystemTrigger.hpp>
 
-#include <glm/vec2.hpp>
-
+//#include <algorithm>
 #include <iostream>
 
 namespace tempo
@@ -12,15 +11,19 @@ namespace tempo
 
 SystemTrigger::SystemTrigger(anax::World &world)
 {
-	subSystem = SubSystemGetPlayers();
-	world.addSystem(subSystem);
+	subSystemPlayers = SubSystemGetPlayers();
+	subSystemSpikes = SubSystemUpdateSpikes();
+	world.addSystem(subSystemPlayers);
+	world.addSystem(subSystemSpikes);
 	world.refresh();
 }
 
 void SystemTrigger::updateButtons(anax::World &world)
 {
 	// find all player locations in game
-	playerPos = subSystem.getPlayers();
+	playerPos = subSystemPlayers.getPlayers();
+
+	untriggerPos.clear();
 
 	// get all the button groups
 	auto entities = getEntities();
@@ -52,6 +55,12 @@ void SystemTrigger::updateButtons(anax::World &world)
 			}
 		}
 		button_group.groupTriggered |= isGroupTriggered;
+
+		if (isGroupTriggered) {
+			for (glm::ivec2 pos : button_group.spike_positions) {
+				untriggerPos.push_back(pos);
+			}
+		}
 		
 		if (button_group.groupTriggered == true && !button_group.action_happened) {
 			button_group.action_happened = true;
@@ -63,6 +72,8 @@ void SystemTrigger::updateButtons(anax::World &world)
 			}
 		}
 	}
+
+	subSystemSpikes.updateSpikes(untriggerPos);
 }
 
 std::vector<glm::ivec2> SubSystemGetPlayers::getPlayers()
@@ -82,5 +93,34 @@ std::vector<glm::ivec2> SubSystemGetPlayers::getPlayers()
 	}
 
 	return currentPlayerPos;
+}
+
+void SubSystemUpdateSpikes::updateSpikes(std::vector<glm::ivec2> untriggerPos)
+{
+	auto entities = getEntities();
+
+	for (auto &entity : entities) {
+
+		auto &comp = entity.getComponent<ComponentSpikes>();
+		std::vector<glm::ivec2> spikes = comp.spike_positions;
+
+		bool subset = true;
+
+		for (glm::ivec2 pos : spikes) {
+
+			if (!(std::find(untriggerPos.begin(), untriggerPos.end(), pos) != untriggerPos.end())) {
+				subset = false;
+			}
+		}
+
+		if (subset) {
+			comp.isTriggered = false;
+			printf("\n\n\n SPIKE UPDATED \n\n\n\n");
+		}
+		else {
+			comp.isTriggered = true;
+		}
+
+	}
 }
 }

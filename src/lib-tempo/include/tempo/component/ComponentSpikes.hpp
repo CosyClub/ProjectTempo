@@ -13,7 +13,7 @@ namespace tempo
 	struct ComponentSpikes : anax::Component, NetworkedComponent {
 
 		std::vector<glm::ivec2>      spike_positions;
-		bool isTriggered = false;
+		bool isTriggered = true;
 
 
 		ComponentSpikes(std::vector<glm::ivec2> positions);

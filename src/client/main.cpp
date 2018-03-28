@@ -384,6 +384,7 @@ int main(int argc, const char **argv)
 			j = j % 22;
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
+			system_render_spikes.updateSpikes(driver);
 			system_translation_animation.endBeat();
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
