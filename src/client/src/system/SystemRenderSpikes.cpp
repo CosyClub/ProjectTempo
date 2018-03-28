@@ -27,15 +27,21 @@ void SystemRenderSpikes::setup(irr::scene::ISceneManager *smgr, irr::video::IVid
 		auto &positions = spikes.spike_positions;
 
 		for (int i=0; i<positions.size(); i++) {
+
 			irr::scene::IMesh *spike_mesh = smgr->getMesh("resources/meshes/spikes.obj");
 
 			SpikeNode spikeNode;
 			spikeNode.spikeNode = smgr->addMeshSceneNode(spike_mesh, 0);
 
 			spikeNode.spikeNode->setPosition(
-				irr::core::Vector3df(positions[i].x, 0.0, positions[i].y));
+				irr::core::vector3df(positions[i].x, 0.0, positions[i].y));
 
-				rend.push_back(spikeNode);
+			irr::video::SMaterial &material_spikes =
+				spikeNode.spikeNode->getMaterial(0);
+			material_spikes.Shininess = 0.5f;
+			material_spikes.EmissiveColor.set(255, 100, 100, 100);
+
+				rend.spikes.push_back(spikeNode);
 		}
 	}
 }
