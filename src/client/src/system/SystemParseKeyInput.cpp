@@ -4,6 +4,7 @@
 
 #include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentCombo.hpp>
+#include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
@@ -80,6 +81,26 @@ void addAttack(anax::Entity &entity, bool withinDelta)
 	}
 }
 
+void addHeal(anax::Entity &entity, bool withinDelta)
+{
+
+	std::cout<<"HERE1\n";
+	if (entity.hasComponent<tempo::ComponentHealth>()
+	    && entity.hasComponent<tempo::ComponentCombo>()) {
+		std::cout<<"HERE10000\n";
+
+		tempo::ComponentHealth &h = entity.getComponent<tempo::ComponentHealth>();
+		tempo::ComponentCombo  &c = entity.getComponent<tempo::ComponentCombo>();
+
+		if(c.comboCounter > 2) { // 2 for testing purpose. It should be 10
+			std::cout<<"Added health\n";
+			c.comboCounter -= 2;
+			h.HealthUpdate(2);
+
+		}
+	}
+}
+
 void updateCombo(anax::Entity &entity, bool withinDelta)
 {
 	if (entity.hasComponent<tempo::ComponentCombo>()) {
@@ -93,7 +114,7 @@ void updateCombo(anax::Entity &entity, bool withinDelta)
 			tempo::sendMessage(tempo::QueueID::COMBO_UPDATES, p);
 		} else {
 			// c.breakCombo();
-			
+
 			sf::Packet p;
 			p << tempo::localtoserver[entity.getId()];
 			p << static_cast<uint8_t>(tempo::MessageCombo::BROKEN_COMBO);
@@ -133,6 +154,9 @@ void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinD
 	case irr::KEY_SPACE:
 		addAttack(entity, withinDelta);
 		updateCombo(entity, withinDelta);
+		break;
+	case irr::KEY_KEY_1:
+		addHeal(entity, withinDelta);
 		break;
 	case irr::KEY_ESCAPE:
 		device->closeDevice();

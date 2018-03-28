@@ -15,7 +15,7 @@ extern std::map<anax::Entity::Id, anax::Entity::Id> localtoserver;
 //
 // QueueID
 // This enum class should contain all the ID's for queues that are used by the
-// game to recieve messages from the network stack with.
+// game to receive messages from the network stack with.
 //
 enum QueueID {
 	QID_RESERVED_BOTTOM,

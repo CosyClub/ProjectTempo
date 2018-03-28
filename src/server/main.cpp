@@ -66,11 +66,11 @@ int main(int argc, const char **argv)
 	world.refresh();
 
 	// Create some Test Entities
-	  
+
 	tempo::createMobStill(world, glm::ivec2(36, 42));
 	tempo::createMobStill(world, glm::ivec2(40, 42));
 	tempo::createMobStill(world, glm::ivec2(44, 42));
-	
+
 	tempo::createMobCreeper(world, glm::ivec2(40, 64));
 
 	std::deque<glm::ivec2> path {glm::ivec2(64, 68),
@@ -84,7 +84,7 @@ int main(int argc, const char **argv)
 	                              glm::ivec2(15, 73),
 	                              glm::ivec2(15, 67)};
 	tempo::createMobPatroller(world, path2[0], path2);
-	  
+
 	// tempo::createMobCreeper(world, glm::ivec2(12, 12));
 	// tempo::createMobCreeper(world, glm::ivec2(14, 14));
 	// tempo::createMobAntiSnail(world, glm::ivec2(4, 4));
@@ -135,10 +135,11 @@ int main(int argc, const char **argv)
 		////////////////
 		// Events all the time
 		{
-			system_movement.recieveTranslations(world);
-			system_attack.recieveAttacks(world);
+			system_movement.receiveTranslations(world);
+			system_attack.receiveAttacks(world);
 			system_combo.checkForUpdates(world);
 			system_health.CheckHealth();
+			system_health.receiveHealths(world);
 			system_health.broadcastHealth();
 		}
 

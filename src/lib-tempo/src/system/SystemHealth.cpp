@@ -29,7 +29,7 @@ void SystemHealth::broadcastHealth()
 {
 	auto entities = getEntities();
 
-	for (auto &entity : entities) 
+	for (auto &entity : entities)
 	{
 		auto &h = entity.getComponent<ComponentHealth>();
 		anax::Entity::Id id = entity.getId();
@@ -52,7 +52,7 @@ void SystemHealth::sendHealth(anax::Entity entity)
 	sendMessage(tempo::QueueID::SYSTEM_HEALTH, p);
 }
 
-void SystemHealth::recieveHealth(anax::World &world)
+void SystemHealth::receiveHealth(anax::World &world)
 {
 	tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_HEALTH);
 	while (!q->empty())
@@ -67,6 +67,27 @@ void SystemHealth::recieveHealth(anax::World &world)
 		p >> health;
 
 		id = servertolocal[id];
+		anax::Entity e = anax::Entity(world, id);
+		ComponentHealth &h = e.getComponent<ComponentHealth>();
+		h.current_health = health;
+	}
+}
+
+void SystemHealth::receiveHealths(anax::World &world)
+{
+	tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_HEALTH);
+	while (!q->empty())
+	{
+		sf::Packet p = q->front();
+		q->pop();
+
+		anax::Entity::Id id;
+		p >> id;
+
+		int health;
+		p >> health;
+
+		id = localtoserver[id];
 		anax::Entity e = anax::Entity(world, id);
 		ComponentHealth &h = e.getComponent<ComponentHealth>();
 		h.current_health = health;

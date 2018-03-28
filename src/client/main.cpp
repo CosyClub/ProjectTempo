@@ -328,7 +328,7 @@ int main(int argc, const char **argv)
 			system_render_health_bars.setup(smgr);
 			system_button_renderer.setup(smgr, driver);
 
-			// Recieve updates from the server
+			// Receive updates from the server
 			system_movement.processIntents(world);
 			system_movement.processCorrections(world);
 			system_combo.checkForUpdates(world);
@@ -340,7 +340,8 @@ int main(int argc, const char **argv)
 
 			// Deprecated/To-be-worked-on
 			system_health.CheckHealth();
-			system_health.recieveHealth(world);
+			system_health.sendHealth(entity_player);
+			system_health.receiveHealth(world);
 
 			system_less_jank.lessJank();
 			// Update animations from translations received from server

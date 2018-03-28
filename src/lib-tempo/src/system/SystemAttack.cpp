@@ -63,7 +63,7 @@ void SystemAttack::Broadcast(anax::World &w)
 	}
 }
 
-void SystemAttack::Recieve(anax::World &w)
+void SystemAttack::Receive(anax::World &w)
 {
 	tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_ATTACK);
 
