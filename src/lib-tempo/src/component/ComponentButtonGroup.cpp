@@ -7,8 +7,10 @@ namespace tempo
 {
 ComponentButtonGroup::ComponentButtonGroup(std::vector<glm::ivec2> positions,
                                            std::vector<glm::ivec2> wall_positions,
-										   std::vector<glm::ivec2> spike_positions)
-    : wall_positions(wall_positions), spike_positions(spike_positions)
+										   std::vector<glm::ivec2> spike_positions,
+										   glm::ivec2              prev,
+										   glm::ivec2              next)
+    : wall_positions(wall_positions), spike_positions(spike_positions), prev(prev), next(next)
 {
 	for (glm::ivec2 pos : positions) {
 		button newbutton;
@@ -57,9 +59,17 @@ ComponentButtonGroup::ComponentButtonGroup(sf::Packet p)
 		spike_positions.push_back(v);
 	}
 
-	p >> prev;
+	glm::ivec2 v1;
 
-	p >> next;
+	p >> v1;
+
+	prev = v1;
+
+	glm::ivec2 v2;
+
+	p >> v2;
+
+	next = v2;
 
 }
 

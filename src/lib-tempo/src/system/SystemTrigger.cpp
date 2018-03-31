@@ -65,7 +65,6 @@ void SystemTrigger::updateButtons(anax::World &world)
 
 		//If spike buttons then never stay activated
 		if (button_group.spike_positions.size() > 0) {
-			printf("\n\n\n DEACTIVATED!!!!! \n\n\n\n\n");
 			button_group.groupTriggered = false;
 		}
 		

@@ -23,8 +23,8 @@ struct ComponentButtonGroup : anax::Component , NetworkedComponent {
 	std::vector<glm::ivec2> wall_positions;
 	std::vector<glm::ivec2> spike_positions;
 
-	glm::ivec2 prev = {};
-	glm::ivec2 next = {};
+	glm::ivec2 prev = {-1,-1};
+	glm::ivec2 next = {-1,-1};
 
 	bool groupTriggered  = false;
 	bool action_happened = false; // TODO maybe move this to rendering component
@@ -32,7 +32,9 @@ struct ComponentButtonGroup : anax::Component , NetworkedComponent {
 
 	ComponentButtonGroup(std::vector<glm::ivec2> button_positions,
 	                     std::vector<glm::ivec2> wall_positions,
-						 std::vector<glm::ivec2> spike_positions);
+						 std::vector<glm::ivec2> spike_positions,
+						 glm::ivec2              prev,
+					     glm::ivec2              next);
 
 	/////
 	// Required for networking

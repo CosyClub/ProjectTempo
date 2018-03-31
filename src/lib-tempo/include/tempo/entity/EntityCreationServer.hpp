@@ -41,7 +41,9 @@ anax::Entity createSpikes(anax::World &world, std::vector<glm::ivec2> spikes);
 anax::Entity createButtonGroup(anax::World &           world,
                                std::vector<glm::ivec2> positions,
                                std::vector<glm::ivec2> tiles,
-							   std::vector<glm::ivec2> spikes);
+							   std::vector<glm::ivec2> spikes,
+							   glm::ivec2			   prev,
+							   glm::ivec2			   next);
 
 }  // namespace tempo
 

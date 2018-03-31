@@ -30,6 +30,46 @@
 #define PLAYER_DELTA 100       // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000.f / BPM  // Time between beats (microsecs)
 
+void RythmButton(anax::World &          world,
+				std::vector<std::vector<glm::ivec2>> positions,
+				std::vector<glm::ivec2> tiles,
+				std::vector<glm::ivec2> spikes) {
+
+	for (int i = 0; i < positions.size(); i++) {
+		
+		std::vector<glm::ivec2> group = positions[i];
+		glm::ivec2 prev;
+		glm::ivec2 next;
+
+		if (i == 0) {
+			prev = {-1,-1};
+		}
+		else {
+			printf("\n\n We have an update!! \n\n");
+			prev = positions[i-1][0]; //first ivec2 in previous group
+		}
+
+		if (i == positions.size() - 1) {
+			next = {-1,-1};
+		}
+		else {
+			next = positions[i + 1][0]; //first ivec2 in next group
+		}
+
+		tempo::createButtonGroup(world, group, tiles, spikes, prev, next);
+	}
+
+}
+
+void newButton(anax::World &          world,
+	std::vector<glm::ivec2> positions,
+	std::vector<glm::ivec2> tiles,
+	std::vector<glm::ivec2> spikes) {
+
+	tempo::createButtonGroup(world, positions, tiles, spikes, { -1,-1 }, { -1,-1 });
+
+}
+
 int main(int argc, const char **argv)
 {
 	tempo::Song mainsong("resources/sound/ravecave_loop.ogg");
@@ -90,52 +130,52 @@ int main(int argc, const char **argv)
 	// tempo::createMobAntiSnail(world, glm::ivec2(4, 4));
 
 	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
-	tempo::createButtonGroup(world, { {40, 12} }, wall, {});
+	RythmButton(world, { {{40,12}}, {{40,13}}, {{41,13 }}, {{41,12}} }, wall, {});
 
 
 	std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};
-	tempo::createButtonGroup(world, {{40, 43}}, wall1, {});
+	newButton(world, { { 40, 43 } }, wall1, {});
 
 	std::vector<glm::ivec2> wall2          = {{36,62},{36,63},{36,64},{36,65},{36,66},{36,67},{36,68},
 																						{50,62},{50,63},{50,64},{50,65},{50,66},{50,67},{50,68}};
-	tempo::createButtonGroup(world, {{40, 65}}, wall2, {});
+	newButton(world, { { 40, 65 } }, wall2, {});
 
 	std::vector<glm::ivec2> wall3          = {{37,69},{38,69},{39,69},{40,69},{41,69},{42,69},{43,69}};
-	tempo::createButtonGroup(world, { {66,70},{13,69} }, wall3, {{13,70}});
+	newButton(world, { { 66,70 },{ 13,69 } }, wall3, { { 13,70 } });
 
 	std::vector<glm::ivec2> wall4          = {{40,132},{41,132},{42,132}};
-	tempo::createButtonGroup(world, {{41,110},{26,128},{57,128}}, wall4, {});
+	newButton(world, { { 41,110 },{ 26,128 },{ 57,128 } }, wall4, {});
 
 	std::vector<glm::ivec2> spikes		   = {{ 35,65 }};
-	tempo::createButtonGroup(world, { {35,63},{35,67} }, {}, spikes);
+	newButton(world, { { 35,63 },{ 35,67 } }, {}, spikes);
 	tempo::createSpikes(world, spikes);
 
 	spikes								   = {{ 34,65 }};
-	tempo::createButtonGroup(world, { { 34,63 },{ 34,67 } }, {}, spikes);
+	newButton(world, { { 34,63 },{ 34,67 } }, {}, spikes);
 	tempo::createSpikes(world, spikes);
 
 	spikes = {{ 33,65 }};
-	tempo::createButtonGroup(world, { { 33,63 },{ 33,67 } }, {}, spikes);
+	newButton(world, { { 33,63 },{ 33,67 } }, {}, spikes);
 	tempo::createSpikes(world, spikes);
 
 	spikes = {{ 32,65 }};
-	tempo::createButtonGroup(world, { { 32,63 },{ 32,67 } }, {}, spikes);
+	newButton(world, { { 32,63 },{ 32,67 } }, {}, spikes);
 	tempo::createSpikes(world, spikes);
 
 	spikes = {{ 31,65 }};
-	tempo::createButtonGroup(world, { { 31,63 },{ 31,67 } }, {}, spikes);
+	newButton(world, { { 31,63 },{ 31,67 } }, {}, spikes);
 	tempo::createSpikes(world, spikes);
 
 	spikes = {{ 30,65 }};
-	tempo::createButtonGroup(world, { { 30,63 },{ 30,67 } }, {}, spikes);
+	newButton(world, { { 30,63 },{ 30,67 } }, {}, spikes);
 	tempo::createSpikes(world, spikes);
 
 	spikes = { { 29,65 } };
-	tempo::createButtonGroup(world, { { 29,63 },{ 29,67 } }, {}, spikes);
+	newButton(world, { { 29,63 },{ 29,67 } }, {}, spikes);
 	tempo::createSpikes(world, spikes);
 
 	spikes = { { 28,65 } };
-	tempo::createButtonGroup(world, { { 28,63 },{ 28,67 } }, {}, spikes);
+	newButton(world, { { 28,63 },{ 28,67 } }, {}, spikes);
 	tempo::createSpikes(world, spikes);
 
 	world.refresh();

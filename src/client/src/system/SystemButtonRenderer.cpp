@@ -29,37 +29,47 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 
 		if (rend.setup) continue;
 
-		// button data
-		auto &buttons = group.buttons;
 
-		for (int i = 0; i < buttons.size(); i++) {
-			irr::scene::IMesh *mesh_button = smgr->getMesh("resources/meshes/button.obj");
-			irr::scene::IMesh *mesh_button_housing =
-			  smgr->getMesh("resources/meshes/button_housing.obj");
+		if (group.next.x == -1 && group.next.y == -1 && group.prev.x == -1 && group.prev.y == -1) { // Rythm-less buttons
+			// button data
+			auto &buttons = group.buttons;
 
-			// create a new struct to place meshes
-			buttonRender buttonRend;
-			buttonRend.button_housing = smgr->addMeshSceneNode(mesh_button_housing, 0);
-			buttonRend.button         = smgr->addMeshSceneNode(mesh_button, 0);
+			for (int i = 0; i < buttons.size(); i++) {
+				irr::scene::IMesh *mesh_button = smgr->getMesh("resources/meshes/button.obj");
+				irr::scene::IMesh *mesh_button_housing =
+					smgr->getMesh("resources/meshes/button_housing.obj");
 
-			buttonRend.button_housing->setPosition(
-			  irr::core::vector3df(buttons[i].pos.x, 0.0, buttons[i].pos.y));
-			buttonRend.button->setPosition(
-			  irr::core::vector3df(buttons[i].pos.x, 0.0, buttons[i].pos.y));
+				// create a new struct to place meshes
+				buttonRender buttonRend;
+				buttonRend.button_housing = smgr->addMeshSceneNode(mesh_button_housing, 0);
+				buttonRend.button = smgr->addMeshSceneNode(mesh_button, 0);
 
-			irr::video::SMaterial &material_button_housing =
-			  buttonRend.button_housing->getMaterial(0);
-			material_button_housing.Shininess = 0.5f;
-			material_button_housing.EmissiveColor.set(255, 100, 100, 100);
+				buttonRend.button_housing->setPosition(
+					irr::core::vector3df(buttons[i].pos.x, 0.0, buttons[i].pos.y));
+				buttonRend.button->setPosition(
+					irr::core::vector3df(buttons[i].pos.x, 0.0, buttons[i].pos.y));
 
-			irr::video::SMaterial &material_button = buttonRend.button->getMaterial(0);
-			material_button.Shininess              = 0.0f;
-			material_button.EmissiveColor.set(255, 255, 0, 0);
+				irr::video::SMaterial &material_button_housing =
+					buttonRend.button_housing->getMaterial(0);
+				material_button_housing.Shininess = 0.5f;
+				material_button_housing.EmissiveColor.set(255, 100, 100, 100);
 
-			rend.buttonsRender.push_front(buttonRend);
+				irr::video::SMaterial &material_button = buttonRend.button->getMaterial(0);
+				material_button.Shininess = 0.0f;
+				material_button.EmissiveColor.set(255, 255, 0, 0);
+
+				rend.buttonsRender.push_front(buttonRend);
+			}
+
 		}
+
+		else {
+
+		}
+
 		rend.setup = true;
 	}
+
 }
 
 void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
@@ -67,39 +77,44 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 	auto entities = getEntities();
 	for (auto entity : entities) {
 		auto &group = entity.getComponent<tempo::ComponentButtonGroup>();
-		auto &rend  = entity.getComponent<client::ComponentRenderButtonGroup>();
+		auto &rend = entity.getComponent<client::ComponentRenderButtonGroup>();
 
 		// button data
 		auto &buttons = group.buttons;
 		// button render data
 		auto &buttonRend = rend.buttonsRender;
 
-		if (buttons.size() != buttonRend.size()) {
-			printf("\n\n\n\n This is a significant problem buttons=%d,buttonRend = %d\n\n\n\n",
-			       buttons.size(), buttonRend.size());
-		}
+		if (group.next.x == -1 && group.next.y == -1 && group.prev.x == -1 && group.prev.y == -1) {
 
-		if (!group.groupTriggered) {
-			for (int i = 0; i < buttons.size(); i++) {
-				if (buttons[i].triggered == true) {
-					buttonRend[i].button->setPosition(
-					  irr::core::vector3df(buttons[i].pos.x, -0.1, buttons[i].pos.y));
-					irr::video::SMaterial &material_button = buttonRend[i].button->getMaterial(0);
-					material_button.EmissiveColor.set(255, 0, 255, 0);
-				} else {
-					buttonRend[i].button->setPosition(
-					  irr::core::vector3df(buttons[i].pos.x, 0, buttons[i].pos.y));
-					irr::video::SMaterial &material_button = buttonRend[i].button->getMaterial(0);
-					material_button.EmissiveColor.set(255, 255, 0, 0);
+			if (buttons.size() != buttonRend.size()) {
+				printf("\n\n\n\n This is a significant problem buttons=%d,buttonRend = %d\n\n\n\n",
+					buttons.size(), buttonRend.size());
+			}
+
+			if (!group.groupTriggered) {
+				for (int i = 0; i < buttons.size(); i++) {
+					if (buttons[i].triggered == true) {
+						buttonRend[i].button->setPosition(
+							irr::core::vector3df(buttons[i].pos.x, -0.1, buttons[i].pos.y));
+						irr::video::SMaterial &material_button = buttonRend[i].button->getMaterial(0);
+						material_button.EmissiveColor.set(255, 0, 255, 0);
+					}
+					else {
+						buttonRend[i].button->setPosition(
+							irr::core::vector3df(buttons[i].pos.x, 0, buttons[i].pos.y));
+						irr::video::SMaterial &material_button = buttonRend[i].button->getMaterial(0);
+						material_button.EmissiveColor.set(255, 255, 0, 0);
+					}
 				}
 			}
-		} else {
-			for (int i = 0; i < buttons.size(); i++) {
-				buttons[i].triggered == true;
-				buttonRend[i].button->setPosition(
-				  irr::core::vector3df(buttons[i].pos.x, -0.1, buttons[i].pos.y));
-				irr::video::SMaterial &material_button = buttonRend[i].button->getMaterial(0);
-				material_button.EmissiveColor.set(255, 0, 255, 0);
+			else {
+				for (int i = 0; i < buttons.size(); i++) {
+					buttons[i].triggered == true;
+					buttonRend[i].button->setPosition(
+						irr::core::vector3df(buttons[i].pos.x, -0.1, buttons[i].pos.y));
+					irr::video::SMaterial &material_button = buttonRend[i].button->getMaterial(0);
+					material_button.EmissiveColor.set(255, 0, 255, 0);
+				}
 			}
 		}
 	}

@@ -332,7 +332,6 @@ int main(int argc, const char **argv)
 			system_gc.addEntities(driver, smgr, world);
 			system_render_scene_node.setup(smgr,driver);
 			system_render_health_bars.setup(smgr);
-			system_button_renderer.setup(smgr, driver);
 
 			// Recieve updates from the server
 			system_movement.processIntents(world);
