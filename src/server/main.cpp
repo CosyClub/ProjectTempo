@@ -90,12 +90,11 @@ int main(int argc, const char **argv)
 	// tempo::createMobAntiSnail(world, glm::ivec2(4, 4));
 
 	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
-	std::vector<glm::ivec2> spikes = { {40,13},{41,13},{39,13} };
-	tempo::createButtonGroup(world, { {40, 12},{39,12} }, wall, spikes);
-	tempo::createSpikes(world, spikes);
+	tempo::createButtonGroup(world, { {40, 12} }, wall, {});
+
 
 	std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};
-	tempo::createButtonGroup(world, {{40, 43},{44,43},{36,43}}, wall1, {});
+	tempo::createButtonGroup(world, {{40, 43}}, wall1, {});
 
 	std::vector<glm::ivec2> wall2          = {{36,62},{36,63},{36,64},{36,65},{36,66},{36,67},{36,68},
 																						{50,62},{50,63},{50,64},{50,65},{50,66},{50,67},{50,68}};
@@ -106,6 +105,30 @@ int main(int argc, const char **argv)
 
 	std::vector<glm::ivec2> wall4          = {{40,132},{41,132},{42,132}};
 	tempo::createButtonGroup(world, {{41,110},{26,128},{57,128}}, wall4, {});
+
+	std::vector<glm::ivec2> spikes		   = {{ 35,65 }};
+	tempo::createButtonGroup(world, { {35,63},{35,67} }, {}, spikes);
+	tempo::createSpikes(world, spikes);
+
+	spikes								   = {{ 34,65 }};
+	tempo::createButtonGroup(world, { { 34,63 },{ 34,67 } }, {}, spikes);
+	tempo::createSpikes(world, spikes);
+
+	spikes = {{ 33,65 }};
+	tempo::createButtonGroup(world, { { 33,63 },{ 33,67 } }, {}, spikes);
+	tempo::createSpikes(world, spikes);
+
+	spikes = {{ 32,65 }};
+	tempo::createButtonGroup(world, { { 32,63 },{ 32,67 } }, {}, spikes);
+	tempo::createSpikes(world, spikes);
+
+	spikes = {{ 31,65 }};
+	tempo::createButtonGroup(world, { { 31,63 },{ 31,67 } }, {}, spikes);
+	tempo::createSpikes(world, spikes);
+
+	spikes = {{ 30,65 }};
+	tempo::createButtonGroup(world, { { 30,63 },{ 30,67 } }, {}, spikes);
+	tempo::createSpikes(world, spikes);
 
 	world.refresh();
 
