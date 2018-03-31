@@ -130,6 +130,14 @@ int main(int argc, const char **argv)
 	tempo::createButtonGroup(world, { { 30,63 },{ 30,67 } }, {}, spikes);
 	tempo::createSpikes(world, spikes);
 
+	spikes = { { 29,65 } };
+	tempo::createButtonGroup(world, { { 29,63 },{ 29,67 } }, {}, spikes);
+	tempo::createSpikes(world, spikes);
+
+	spikes = { { 28,65 } };
+	tempo::createButtonGroup(world, { { 28,63 },{ 28,67 } }, {}, spikes);
+	tempo::createSpikes(world, spikes);
+
 	world.refresh();
 
 	//////////////////////////////////

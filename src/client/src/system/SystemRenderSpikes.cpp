@@ -16,10 +16,6 @@ void SystemRenderSpikes::setup(irr::scene::ISceneManager *smgr, irr::video::IVid
 {
 	auto entities = getEntities();
 
-	if (entities.size() == 0) {
-		printf("\nThere does not seem to be any spikes\n");
-	}
-
 	for (auto &entity : entities) {
 		auto &spikes = entity.getComponent<tempo::ComponentSpikes>();
 		auto &rend  = entity.getComponent<client::ComponentRenderSpikes>();
