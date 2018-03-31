@@ -63,8 +63,8 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 
 		}
 
-		else {
-
+		else { // Rythm Based buttons
+			
 		}
 
 		rend.setup = true;

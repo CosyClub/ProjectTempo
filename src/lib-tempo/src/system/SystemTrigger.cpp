@@ -33,50 +33,59 @@ void SystemTrigger::updateButtons(anax::World &world)
 		auto &button_group = entity.getComponent<tempo::ComponentButtonGroup>();
 		std::deque<button> &buttons = button_group.buttons;
 
-		// search through each button in a group to see if a player location matches
-		bool isGroupTriggered = true;
+		if (button_group.next.x == -1 && button_group.next.y == -1 && button_group.prev.x == -1 && button_group.prev.y == -1) { // rythm-less buttons
 
-		for (int i = 0; i < buttons.size(); i++) {
-			glm::ivec2 tempButtonPos = buttons[i].pos;
+			// search through each button in a group to see if a player location matches
+			bool isGroupTriggered = true;
 
-			bool is_in = false;
+			for (int i = 0; i < buttons.size(); i++) {
+				glm::ivec2 tempButtonPos = buttons[i].pos;
 
-			for (int j = 0; j < playerPos.size(); j++) {
-				if ((tempButtonPos.x == playerPos[j].x) && (tempButtonPos.y == playerPos[j].y)) {
-					is_in = true;
-					break;
+				bool is_in = false;
+
+				for (int j = 0; j < playerPos.size(); j++) {
+					if ((tempButtonPos.x == playerPos[j].x) && (tempButtonPos.y == playerPos[j].y)) {
+						is_in = true;
+						break;
+					}
+				}
+
+				if (is_in) {
+					buttons[i].triggered = true;
+				}
+				else {
+					buttons[i].triggered = false;
+					isGroupTriggered = false;
+				}
+			}
+			button_group.groupTriggered |= isGroupTriggered;
+
+			if (isGroupTriggered) {
+				for (glm::ivec2 pos : button_group.spike_positions) {
+					untriggerPos.push_back(pos);
 				}
 			}
 
-			if (is_in) {
-				buttons[i].triggered = true;
-			} else {
-				buttons[i].triggered = false;
-				isGroupTriggered = false;
+			//If spike buttons then never stay activated
+			if (button_group.spike_positions.size() > 0) {
+				button_group.groupTriggered = false;
 			}
-		}
-		button_group.groupTriggered |= isGroupTriggered;
 
-		if (isGroupTriggered) {
-			for (glm::ivec2 pos : button_group.spike_positions) {
-				untriggerPos.push_back(pos);
-			}
-		}
-
-		//If spike buttons then never stay activated
-		if (button_group.spike_positions.size() > 0) {
-			button_group.groupTriggered = false;
-		}
-		
-		if (button_group.groupTriggered == true && !button_group.action_happened) {
-			button_group.action_happened = true;
-			for (auto &entity : world.getEntities()) {
-				if (entity.hasComponent<tempo::ComponentStage>()) {
-					auto &component_stage = entity.getComponent<tempo::ComponentStage>();
-					component_stage.setHeight(button_group.wall_positions, 0.f);
+			if (button_group.groupTriggered == true && !button_group.action_happened) {
+				button_group.action_happened = true;
+				for (auto &entity : world.getEntities()) {
+					if (entity.hasComponent<tempo::ComponentStage>()) {
+						auto &component_stage = entity.getComponent<tempo::ComponentStage>();
+						component_stage.setHeight(button_group.wall_positions, 0.f);
+					}
 				}
 			}
 		}
+
+		else { //rythm-based buttons
+
+		}
+
 	}
 
 	subSystemSpikes.updateSpikes(untriggerPos);
