@@ -32,9 +32,9 @@ ComponentButtonGroup::ComponentButtonGroup(sf::Packet p)
 		buttons.push_front(b);
 	}
 
-
 	p >> groupTriggered;
 	p >> action_happened;
+	p >> groupTriggerable;
 	
 	p >> size;
 	for (int i = 0; i < size; i++) {
@@ -57,19 +57,16 @@ ComponentButtonGroup::ComponentButtonGroup(sf::Packet p)
 		spike_positions.push_back(v);
 	}
 
+	p >> prev;
+
+	p >> next;
+
 }
 
 ComponentID ComponentButtonGroup::getId()
 {
 	return ComponentID::BUTTON_GROUP;
 }
-
-// // This is a deque so that it is possible to push_front
-// std::deque<button>      buttons;
-// std::vector<glm::ivec2> wall_positions;
-//
-// bool groupTriggered  = false;
-// bool action_happened = false;
 
 sf::Packet ComponentButtonGroup::dumpComponent()
 {
@@ -85,6 +82,7 @@ sf::Packet ComponentButtonGroup::dumpComponent()
 
 	p << groupTriggered;
 	p << action_happened; // TODO maybe move this to rendering component
+	p << groupTriggerable;
 
 	p << (sf::Uint32) wall_positions.size();
 	for (int i = 0; i < wall_positions.size(); i++) {
@@ -95,6 +93,10 @@ sf::Packet ComponentButtonGroup::dumpComponent()
 	for (int i = 0; i < spike_positions.size(); i++) {
 		p << spike_positions[i];
 	}
+
+	p << prev;
+
+	p << next;
 
 	return p;
 }
