@@ -104,7 +104,14 @@ void SystemTrigger::updateButtons(anax::World &world)
 				if (is_in && button_group.groupTriggerable) {
 					buttons[j].triggered = true;
 				}
+
+
 				else if (is_in && !button_group.groupTriggerable) {
+					resetButtons(entities);
+					isGroupTriggered = false;
+				}
+
+				else if (!is_in && button_group.groupTriggerable) {
 					resetButtons(entities);
 					isGroupTriggered = false;
 				}
@@ -150,6 +157,8 @@ void SystemTrigger::updateButtons(anax::World &world)
 
 void SystemTrigger::resetButtons(std::vector<anax::Entity> entities) {
 
+	printf("\n\n Reset Called! \n\n");
+
 	for (int i = 0; i < entities.size(); i ++) {
 
 		auto &entity = entities[i];
@@ -164,9 +173,11 @@ void SystemTrigger::resetButtons(std::vector<anax::Entity> entities) {
 		else {
 			if (button_group.prev.x == -1 && button_group.prev.y == -1) {
 				button_group.groupTriggerable = true;
+				button_group.groupTriggered = false;
 			}
 			else {
 				button_group.groupTriggerable = false;
+				button_group.groupTriggered = false;
 			}
 		}
 	}

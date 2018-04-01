@@ -180,25 +180,27 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 					buttonRend[j].button->setPosition(
 					irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
 					irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
-					material_button.EmissiveColor.set(255, 0, 255, 0);
+					material_button.EmissiveColor.set(255, 0, 255, 255);
 				}
 
-				//Change the colour of the upcoming button
 
 				auto& nextEntity = entities[i + 1];
 				auto &nextgroup = nextEntity.getComponent<tempo::ComponentButtonGroup>();
 				auto &nextrend = nextEntity.getComponent<client::ComponentRenderButtonGroup>();
 
-				// button data
-				auto &nextbuttons = nextgroup.buttons;
-				// button render data
-				auto &nextbuttonRend = nextrend.buttonsRender;
+				if (!(group.next.x == -1 && group.next.y == -1)) {
 
-				for (int j = 0; j < nextbuttons.size(); j++) {
-					nextbuttonRend[j].button->setPosition(
-					irr::core::vector3df(nextbuttons[j].pos.x, -0.1, nextbuttons[j].pos.y));
-					irr::video::SMaterial &material_button = nextbuttonRend[j].button->getMaterial(0);
-					material_button.EmissiveColor.set(255, 0, 255, 255);
+					// button data
+					auto &nextbuttons = nextgroup.buttons;
+					// button render data
+					auto &nextbuttonRend = nextrend.buttonsRender;
+
+					for (int j = 0; j < nextbuttons.size(); j++) {
+						nextbuttonRend[j].button->setPosition(
+							irr::core::vector3df(nextbuttons[j].pos.x, -0.1, nextbuttons[j].pos.y));
+						irr::video::SMaterial &material_button = nextbuttonRend[j].button->getMaterial(0);
+						material_button.EmissiveColor.set(255, 255, 255, 255);
+					}
 				}
 			}
 		}
