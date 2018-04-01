@@ -39,6 +39,7 @@ ComponentButtonGroup::ComponentButtonGroup(sf::Packet p)
 	p >> groupTriggered;
 	p >> action_happened;
 	p >> groupTriggerable;
+	p >> blocked;
 	
 	p >> size;
 	for (int i = 0; i < size; i++) {
@@ -97,6 +98,7 @@ sf::Packet ComponentButtonGroup::dumpComponent()
 	p << groupTriggered;
 	p << action_happened; // TODO maybe move this to rendering component
 	p << groupTriggerable;
+	p << blocked;
 
 	p << (sf::Uint32) wall_positions.size();
 	for (int i = 0; i < wall_positions.size(); i++) {

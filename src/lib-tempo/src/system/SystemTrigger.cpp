@@ -226,15 +226,15 @@ void SystemTrigger::resetButtons(int rhythmID) {
 				continue;
 			}
 
+			button_group.blocked = false;
+
 			if (button_group.prev.x == -1 && button_group.prev.y == -1) {
 				button_group.groupTriggerable = true;
-				printf("\n T \n");
 				button_group.groupTriggered = false;
 			}
 
 			else {
 				button_group.groupTriggerable = false;
-				printf("\nNOT T\n");
 				button_group.groupTriggered = false;
 			}
 
@@ -264,6 +264,7 @@ void SystemTrigger::blockButtons(int rhythmID) {
 			else {
 				button_group.groupTriggerable = false;
 				button_group.groupTriggered = false;
+				button_group.blocked = true;
 			}
 
 		}

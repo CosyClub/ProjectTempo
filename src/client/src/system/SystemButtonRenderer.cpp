@@ -17,6 +17,8 @@ namespace client
 {
 void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
 {
+	this->buttonBlocked = driver->getTexture("resources/materials/buttonBlocked.png");
+
 	auto entities = getEntities();
 
 	if (entities.size() == 0) {
@@ -171,27 +173,8 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 					buttonRend[j].button->setPosition(
 						irr::core::vector3df(buttons[j].pos.x, 0, buttons[j].pos.y));
 					irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
+					material_button.setTexture(0, nullptr);
 					material_button.EmissiveColor.set(255, 255, 255, 255);
-
-					if (!(group.next.x == -1 && group.next.y == -1)) {
-
-						//auto &nextEntity = entities[i+1];
-						//auto &nextGroup = nextEntity.getComponent<tempo::ComponentButtonGroup>();
-						//auto &nextRend = nextEntity.getComponent<client::ComponentRenderButtonGroup>();
-
-						//// button data
-						//auto &nextButtons = nextGroup.buttons;
-						//// button render data
-						//auto &nextButtonRend = nextRend.buttonsRender;
-
-						//for (int k = 0; k < buttons.size(); k++) {
-						//	nextButtonRend[k].button->setPosition(
-						//		irr::core::vector3df(nextButtons[k].pos.x, 0, nextButtons[k].pos.y));
-						//	irr::video::SMaterial &material_button = nextButtonRend[k].button->getMaterial(0);
-						//	material_button.EmissiveColor.set(255, 0, 0, 255);
-						//}
-
-					}
 				}
 			}
 
@@ -202,13 +185,23 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 						buttonRend[j].button->setPosition(
 							irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
 						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
+						material_button.setTexture(0, nullptr);
 						material_button.EmissiveColor.set(255, 0, 255, 0);
+					}
+
+					else if (group.blocked) {
+						buttonRend[j].button->setPosition(
+							irr::core::vector3df(buttons[j].pos.x, 0, buttons[j].pos.y));
+						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
+						material_button.setTexture(0, this->buttonBlocked);
+						material_button.EmissiveColor.set(255, 200, 0, 0);
 					}
 
 					else {
 						buttonRend[j].button->setPosition(
 							irr::core::vector3df(buttons[j].pos.x, 0, buttons[j].pos.y));
 						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
+						material_button.setTexture(0, nullptr);
 						material_button.EmissiveColor.set(255, 255, 0, 0);
 					}
 				}

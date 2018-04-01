@@ -26,9 +26,10 @@ struct ComponentButtonGroup : anax::Component , NetworkedComponent {
 	glm::ivec2 prev = {-1,-1};
 	glm::ivec2 next = {-1,-1};
 
-	bool groupTriggered  = false;
-	bool action_happened = false; // TODO maybe move this to rendering component
+	bool groupTriggered   = false;
+	bool action_happened  = false; // TODO maybe move this to rendering component
 	bool groupTriggerable = false;
+	bool blocked		  = false;
 
 	int rhythmID;
 

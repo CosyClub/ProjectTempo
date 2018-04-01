@@ -21,6 +21,9 @@ class SystemButtonRenderer
 	void setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver);
 
 	void updateButtons(irr::video::IVideoDriver *driver);
+
+private:
+	irr::video::ITexture *buttonBlocked;
 };
 }  // namespace client
 

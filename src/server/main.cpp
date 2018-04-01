@@ -136,7 +136,7 @@ int main(int argc, const char **argv)
 	int rhythmID = 1;
 
 	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
-	RythmButton(world, { {{40,12}}, {{40,13}}, {{41,13 }}, {{41,12}} }, wall, {}, rhythmID);
+	RythmButton(world, { { { 40,12 }},{ { 40,13 } },{ { 41,13 } },{ { 41,12 } } }, wall, {}, rhythmID);
 
 
 	std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};
