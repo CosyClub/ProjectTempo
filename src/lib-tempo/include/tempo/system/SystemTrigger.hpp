@@ -34,7 +34,8 @@ class SystemTrigger : public anax::System<anax::Requires<tempo::ComponentButtonG
 	std::vector<glm::ivec2> playerPos;
 	SystemTrigger(anax::World &world);
 	void updateButtons(anax::World &world);
-	void resetButtons(int rhythmID, bool triggerable);
+	void resetButtons(int rhythmID);
+	void blockButtons(int rhythmID);
 
    private:
 	SubSystemGetPlayers subSystemPlayers;

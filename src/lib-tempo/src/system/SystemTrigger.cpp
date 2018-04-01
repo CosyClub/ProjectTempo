@@ -5,6 +5,7 @@
 
 //#include <algorithm>
 #include <iostream>
+#include <set>
 
 namespace tempo
 {
@@ -20,6 +21,11 @@ SystemTrigger::SystemTrigger(anax::World &world)
 
 void SystemTrigger::updateButtons(anax::World &world)
 {
+	std::set<int> rhythmID_resets;
+	std::set<int> rhythmID_blocks;
+
+	bool skipNext = false;
+
 	// find all player locations in game
 	playerPos = subSystemPlayers.getPlayers();
 
@@ -90,6 +96,11 @@ void SystemTrigger::updateButtons(anax::World &world)
 				continue;
 			}
 
+			if (skipNext) {
+				skipNext = false;
+				continue;
+			}
+
 			// search through each button in a group to see if a player location matches
 			bool isGroupTriggered = true;
 
@@ -105,25 +116,43 @@ void SystemTrigger::updateButtons(anax::World &world)
 					}
 				}
 
-				if (is_in && button_group.groupTriggerable) {
-					printf("\nCorrect Button\n");
-					buttons[j].triggered = true;
+				if (is_in) {
+					if (button_group.groupTriggerable) {
+						printf("\nCorrect Button\n");
+						buttons[j].triggered = true;
+					}
 
+					else {
+						rhythmID_blocks.insert(button_group.rhythmID);
+						isGroupTriggered = false;
+					}
 				}
 
-				else if (is_in && !button_group.groupTriggerable) {
-					resetButtons(button_group.rhythmID, button_group.groupTriggerable);
-					isGroupTriggered = false;
-				}
+				else {
+					if (button_group.groupTriggerable) {
 
-				else if (!is_in) {
-					buttons[j].triggered = false;
-					isGroupTriggered = false;
+						rhythmID_resets.insert(button_group.rhythmID);
+
+						buttons[j].triggered = false;
+						isGroupTriggered = false;
+					}
+					else {
+
+						if (button_group.prev.x == -1 && button_group.prev.y == -1 && !button_group.groupTriggered) {
+							rhythmID_resets.insert(button_group.rhythmID);
+						}
+
+						isGroupTriggered = false;
+					}
 				}
 
 			}
 
 			button_group.groupTriggered |= isGroupTriggered;
+
+			if (isGroupTriggered) {
+				printf("\nGroup Triggered\n");
+			}
 
 			if (button_group.groupTriggered && button_group.groupTriggerable) {
 				button_group.groupTriggerable = false;
@@ -134,7 +163,7 @@ void SystemTrigger::updateButtons(anax::World &world)
 					auto &button_groupNext = entityNext.getComponent<tempo::ComponentButtonGroup>();
 
 					button_groupNext.groupTriggerable = true;
-
+					skipNext = true;
 				}
 			}
 
@@ -170,10 +199,18 @@ void SystemTrigger::updateButtons(anax::World &world)
 
 	}
 
+	for (int id : rhythmID_resets) {
+		resetButtons(id);
+	}
+
+	for (int id : rhythmID_blocks) {
+		blockButtons(id);
+	}
+
 	subSystemSpikes.updateSpikes(untriggerPos);
 }
 
-void SystemTrigger::resetButtons(int rhythmID, bool triggerable) {
+void SystemTrigger::resetButtons(int rhythmID) {
 
 	auto entities = getEntities();
 
@@ -206,10 +243,31 @@ void SystemTrigger::resetButtons(int rhythmID, bool triggerable) {
 
 	}
 
-	//printf("\n\n Reset Called on RhythmGroup: %d! \n", rhythmID);
+}
 
-	//printf("Group Triggerable:");
-	//printf("%s\n", triggerable ? "true" : "false");
+void SystemTrigger::blockButtons(int rhythmID) {
+
+	auto entities = getEntities();
+
+	for (int i = 0; i < entities.size(); i++) {
+		auto &entity = entities[i];
+		// get deque of all buttons in the group
+		auto &button_group = entity.getComponent<tempo::ComponentButtonGroup>();
+		std::deque<button> &buttons = button_group.buttons;
+
+		for (int j = 0; j < buttons.size(); j++) {
+
+			if (button_group.rhythmID != rhythmID) {
+				continue;
+			}
+
+			else {
+				button_group.groupTriggerable = false;
+				button_group.groupTriggered = false;
+			}
+
+		}
+	}
 
 }
 
