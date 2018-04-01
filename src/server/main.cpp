@@ -60,6 +60,10 @@ void RythmButton(anax::World &          world,
 		}
 
 		tempo::createButtonGroup(world, group, tiles, spikes, prev, next, triggerable, ID);
+
+		if (spikes.size() > 0) {
+			tempo::createSpikes(world, spikes);
+		}
 	}
 
 	ID++;
@@ -71,6 +75,10 @@ void newButton(anax::World &          world,
 	std::vector<glm::ivec2> spikes) {
 
 	tempo::createButtonGroup(world, positions, tiles, spikes, { -1,-1 }, { -1,-1 }, true, 0);
+
+	if (spikes.size() > 0) {
+		tempo::createSpikes(world, spikes);
+	}
 
 }
 
@@ -138,7 +146,6 @@ int main(int argc, const char **argv)
 	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
 	RythmButton(world, { { { 40,12 }},{ { 40,13 } },{ { 41,13 } },{ { 41,12 } } }, wall, {}, rhythmID);
 
-
 	std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};
 	newButton(world, { { 40, 43 } }, wall1, {});
 
@@ -154,35 +161,27 @@ int main(int argc, const char **argv)
 
 	std::vector<glm::ivec2> spikes		   = {{ 35,65 }};
 	newButton(world, { { 35,63 },{ 35,67 } }, {}, spikes);
-	tempo::createSpikes(world, spikes);
 
-	spikes								   = {{ 34,65 }};
+	spikes = {{ 34,65 }};
 	newButton(world, { { 34,63 },{ 34,67 } }, {}, spikes);
-	tempo::createSpikes(world, spikes);
 
 	spikes = {{ 33,65 }};
 	newButton(world, { { 33,63 },{ 33,67 } }, {}, spikes);
-	tempo::createSpikes(world, spikes);
 
 	spikes = {{ 32,65 }};
 	newButton(world, { { 32,63 },{ 32,67 } }, {}, spikes);
-	tempo::createSpikes(world, spikes);
 
 	spikes = {{ 31,65 }};
 	newButton(world, { { 31,63 },{ 31,67 } }, {}, spikes);
-	tempo::createSpikes(world, spikes);
 
 	spikes = {{ 30,65 }};
 	newButton(world, { { 30,63 },{ 30,67 } }, {}, spikes);
-	tempo::createSpikes(world, spikes);
 
 	spikes = { { 29,65 } };
 	newButton(world, { { 29,63 },{ 29,67 } }, {}, spikes);
-	tempo::createSpikes(world, spikes);
 
 	spikes = { { 28,65 } };
 	newButton(world, { { 28,63 },{ 28,67 } }, {}, spikes);
-	tempo::createSpikes(world, spikes);
 
 	world.refresh();
 

@@ -3,7 +3,6 @@
 #include <tempo/component/ComponentStage.hpp>
 #include <tempo/system/SystemTrigger.hpp>
 
-//#include <algorithm>
 #include <iostream>
 #include <set>
 
@@ -21,9 +20,11 @@ SystemTrigger::SystemTrigger(anax::World &world)
 
 void SystemTrigger::updateButtons(anax::World &world)
 {
+	//Sets to keep track of which rhythm Button groups need resetting or blocking after each update
 	std::set<int> rhythmID_resets;
 	std::set<int> rhythmID_blocks;
 
+	//this stops the overwrite when making nextButton Triggerable
 	bool skipNext = false;
 
 	// find all player locations in game
@@ -41,7 +42,9 @@ void SystemTrigger::updateButtons(anax::World &world)
 		auto &button_group = entity.getComponent<tempo::ComponentButtonGroup>();
 		std::deque<button> &buttons = button_group.buttons;
 
-		if (button_group.rhythmID == 0) { // rythm-less buttons
+		// RHYTHMLESS BUTTONS
+
+		if (button_group.rhythmID == 0) {
 
 			// search through each button in a group to see if a player location matches
 			bool isGroupTriggered = true;
@@ -90,8 +93,11 @@ void SystemTrigger::updateButtons(anax::World &world)
 			}
 		}
 
-		else { //rhythm-based buttons
+		//RHYTHM-BASED BUTTONS
 
+		else {
+
+			//ignore if already completed
 			if (button_group.action_happened) {
 				continue;
 			}
@@ -118,7 +124,6 @@ void SystemTrigger::updateButtons(anax::World &world)
 
 				if (is_in) {
 					if (button_group.groupTriggerable) {
-						printf("\nCorrect Button\n");
 						buttons[j].triggered = true;
 					}
 
@@ -129,6 +134,7 @@ void SystemTrigger::updateButtons(anax::World &world)
 				}
 
 				else {
+
 					if (button_group.groupTriggerable) {
 
 						rhythmID_resets.insert(button_group.rhythmID);
@@ -136,9 +142,11 @@ void SystemTrigger::updateButtons(anax::World &world)
 						buttons[j].triggered = false;
 						isGroupTriggered = false;
 					}
+
 					else {
 
-						if (button_group.prev.x == -1 && button_group.prev.y == -1 && !button_group.groupTriggered) {
+						//If first button is blocked, reset
+						if (button_group.prev.x == -1 && button_group.prev.y == -1 && button_group.blocked) {
 							rhythmID_resets.insert(button_group.rhythmID);
 						}
 
@@ -150,10 +158,7 @@ void SystemTrigger::updateButtons(anax::World &world)
 
 			button_group.groupTriggered |= isGroupTriggered;
 
-			if (isGroupTriggered) {
-				printf("\nGroup Triggered\n");
-			}
-
+			//Set next button to triggerable
 			if (button_group.groupTriggered && button_group.groupTriggerable) {
 				button_group.groupTriggerable = false;
 				if (!(button_group.next.x == -1 && button_group.next.y == -1)) {
@@ -167,8 +172,8 @@ void SystemTrigger::updateButtons(anax::World &world)
 				}
 			}
 
-
-			if (button_group.groupTriggered == true && !button_group.action_happened && button_group.next.x == -1 && button_group.next.y == -1) {
+			//If this is the last button and is triggered, trigger action and set all previous buttons accordingly
+			if (button_group.groupTriggered && !button_group.action_happened && button_group.next.x == -1 && button_group.next.y == -1) {
 				button_group.action_happened = true;
 
 				for (auto& entity : entities) {
@@ -184,9 +189,10 @@ void SystemTrigger::updateButtons(anax::World &world)
 						tempGroup.groupTriggered = true;
 						tempGroup.action_happened = true;
 					}
-
 				}
 
+
+				//wall drop
 				for (auto &entity : world.getEntities()) {
 					if (entity.hasComponent<tempo::ComponentStage>()) {
 						auto &component_stage = entity.getComponent<tempo::ComponentStage>();
@@ -199,14 +205,17 @@ void SystemTrigger::updateButtons(anax::World &world)
 
 	}
 
+	//reset all groups that need resetting
 	for (int id : rhythmID_resets) {
 		resetButtons(id);
 	}
 
+	//block all groups that need blocking
 	for (int id : rhythmID_blocks) {
 		blockButtons(id);
 	}
 
+	//Drop spikes where buttons have been triggered
 	subSystemSpikes.updateSpikes(untriggerPos);
 }
 

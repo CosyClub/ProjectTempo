@@ -30,12 +30,13 @@ public:
 class SystemTrigger : public anax::System<anax::Requires<tempo::ComponentButtonGroup>>
 {
    public:
-	std::vector<glm::ivec2> untriggerPos;
-	std::vector<glm::ivec2> playerPos;
+	std::vector<glm::ivec2> untriggerPos; // track which spikes need to drop
+	std::vector<glm::ivec2> playerPos; // track current player positions
 	SystemTrigger(anax::World &world);
 	void updateButtons(anax::World &world);
-	void resetButtons(int rhythmID);
-	void blockButtons(int rhythmID);
+
+	void resetButtons(int rhythmID); // make the first button triggerable and all others not
+	void blockButtons(int rhythmID); // make all buttons untriggerable, until players get off buttons
 
    private:
 	SubSystemGetPlayers subSystemPlayers;
