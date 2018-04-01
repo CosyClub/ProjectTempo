@@ -35,7 +35,7 @@ void SystemTrigger::updateButtons(anax::World &world)
 		auto &button_group = entity.getComponent<tempo::ComponentButtonGroup>();
 		std::deque<button> &buttons = button_group.buttons;
 
-		if (button_group.next.x == -1 && button_group.next.y == -1 && button_group.prev.x == -1 && button_group.prev.y == -1) { // rythm-less buttons
+		if (button_group.rhythmID == 0) { // rythm-less buttons
 
 			// search through each button in a group to see if a player location matches
 			bool isGroupTriggered = true;
@@ -84,7 +84,11 @@ void SystemTrigger::updateButtons(anax::World &world)
 			}
 		}
 
-		else { //rythm-based buttons
+		else { //rhythm-based buttons
+
+			if (button_group.action_happened) {
+				continue;
+			}
 
 			// search through each button in a group to see if a player location matches
 			bool isGroupTriggered = true;
@@ -102,49 +106,63 @@ void SystemTrigger::updateButtons(anax::World &world)
 				}
 
 				if (is_in && button_group.groupTriggerable) {
+					printf("\nCorrect Button\n");
 					buttons[j].triggered = true;
-				}
 
+				}
 
 				else if (is_in && !button_group.groupTriggerable) {
-					resetButtons(entities);
+					resetButtons(button_group.rhythmID, button_group.groupTriggerable);
 					isGroupTriggered = false;
 				}
 
-				else if (!is_in && button_group.groupTriggerable) {
-					resetButtons(entities);
-					isGroupTriggered = false;
-				}
-
-				else {
+				else if (!is_in) {
 					buttons[j].triggered = false;
 					isGroupTriggered = false;
 				}
+
 			}
+
 			button_group.groupTriggered |= isGroupTriggered;
 
-			if (button_group.groupTriggered) {
-				if (button_group.next.x == -1 && button_group.next.y == -1) { //if last button in sequence
+			if (button_group.groupTriggered && button_group.groupTriggerable) {
+				button_group.groupTriggerable = false;
+				if (!(button_group.next.x == -1 && button_group.next.y == -1)) {
+
+					auto &entityNext = entities[i + 1];
+					// get deque of all buttons in the group
+					auto &button_groupNext = entityNext.getComponent<tempo::ComponentButtonGroup>();
+
+					button_groupNext.groupTriggerable = true;
+
+				}
+			}
+
+
+			if (button_group.groupTriggered == true && !button_group.action_happened && button_group.next.x == -1 && button_group.next.y == -1) {
+				button_group.action_happened = true;
+
+				for (auto& entity : entities) {
 					
-					//If spike buttons then never stay activated
-					if (button_group.spike_positions.size() > 0) {
-						button_group.groupTriggered = false;
+					auto &tempGroup = entity.getComponent<tempo::ComponentButtonGroup>();
+					int rhythmID = tempGroup.rhythmID;
+
+					if (rhythmID != button_group.rhythmID) {
+						continue;
 					}
 
-					if (button_group.groupTriggered == true && !button_group.action_happened) {
-						button_group.action_happened = true;
-						for (auto &entity : world.getEntities()) {
-							if (entity.hasComponent<tempo::ComponentStage>()) {
-								auto &component_stage = entity.getComponent<tempo::ComponentStage>();
-								component_stage.setHeight(button_group.wall_positions, 0.f);
-							}
-						}
+					else {
+						tempGroup.groupTriggered = true;
+						tempGroup.action_happened = true;
 					}
+
 				}
 
-				else {
-					button_group.groupTriggerable = false;
-					entities[i + 1].getComponent<tempo::ComponentButtonGroup>().groupTriggerable = true; //next button can be pressed
+				for (auto &entity : world.getEntities()) {
+					if (entity.hasComponent<tempo::ComponentStage>()) {
+						auto &component_stage = entity.getComponent<tempo::ComponentStage>();
+						component_stage.setHeight(button_group.wall_positions, 0.f);
+					}
 				}
 			}
 
@@ -155,39 +173,50 @@ void SystemTrigger::updateButtons(anax::World &world)
 	subSystemSpikes.updateSpikes(untriggerPos);
 }
 
-void SystemTrigger::resetButtons(std::vector<anax::Entity> entities) {
+void SystemTrigger::resetButtons(int rhythmID, bool triggerable) {
 
-	printf("\n\n Reset Called! \n\n");
+	auto entities = getEntities();
 
-	for (int i = 0; i < entities.size(); i ++) {
-
+	for (int i = 0; i < entities.size(); i++) {
 		auto &entity = entities[i];
 		// get deque of all buttons in the group
 		auto &button_group = entity.getComponent<tempo::ComponentButtonGroup>();
 		std::deque<button> &buttons = button_group.buttons;
 
-		if (button_group.next.x == -1 && button_group.next.y == -1 && button_group.prev.x == -1 && button_group.prev.y == -1) { // rythm-less buttons
-			continue;
-		}
+		for (int j = 0; j < buttons.size(); j++) {
 
-		else {
+			if (button_group.rhythmID != rhythmID) {
+				continue;
+			}
+
 			if (button_group.prev.x == -1 && button_group.prev.y == -1) {
 				button_group.groupTriggerable = true;
+				printf("\n T \n");
 				button_group.groupTriggered = false;
 			}
+
 			else {
 				button_group.groupTriggerable = false;
+				printf("\nNOT T\n");
 				button_group.groupTriggered = false;
 			}
+
 		}
+
+
 	}
+
+	//printf("\n\n Reset Called on RhythmGroup: %d! \n", rhythmID);
+
+	//printf("Group Triggerable:");
+	//printf("%s\n", triggerable ? "true" : "false");
 
 }
 
 std::vector<glm::ivec2> SubSystemGetPlayers::getPlayers()
 {
 	std::vector<glm::ivec2> currentPlayerPos;
-
+	
 	auto entities = getEntities();
 
 	// Get all the players and save their locations

@@ -30,11 +30,15 @@ struct ComponentButtonGroup : anax::Component , NetworkedComponent {
 	bool action_happened = false; // TODO maybe move this to rendering component
 	bool groupTriggerable = false;
 
+	int rhythmID;
+
 	ComponentButtonGroup(std::vector<glm::ivec2> button_positions,
 	                     std::vector<glm::ivec2> wall_positions,
 						 std::vector<glm::ivec2> spike_positions,
 						 glm::ivec2              prev,
-					     glm::ivec2              next);
+					     glm::ivec2              next,
+						 bool					 triggerable,
+						 int					 ID);
 
 	/////
 	// Required for networking

@@ -9,8 +9,10 @@ ComponentButtonGroup::ComponentButtonGroup(std::vector<glm::ivec2> positions,
                                            std::vector<glm::ivec2> wall_positions,
 										   std::vector<glm::ivec2> spike_positions,
 										   glm::ivec2              prev,
-										   glm::ivec2              next)
-    : wall_positions(wall_positions), spike_positions(spike_positions), prev(prev), next(next)
+										   glm::ivec2              next,
+										   bool					   triggerable,
+										   int					   ID)
+    : wall_positions(wall_positions), spike_positions(spike_positions), prev(prev), next(next), groupTriggerable(triggerable), rhythmID(ID)
 {
 	for (glm::ivec2 pos : positions) {
 		button newbutton;
@@ -71,6 +73,8 @@ ComponentButtonGroup::ComponentButtonGroup(sf::Packet p)
 
 	next = v2;
 
+	p >> rhythmID;
+
 }
 
 ComponentID ComponentButtonGroup::getId()
@@ -107,6 +111,8 @@ sf::Packet ComponentButtonGroup::dumpComponent()
 	p << prev;
 
 	p << next;
+
+	p << rhythmID;
 
 	return p;
 }

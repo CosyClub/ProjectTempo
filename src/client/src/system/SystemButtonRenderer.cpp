@@ -30,7 +30,7 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 		if (rend.setup) continue;
 
 
-		if (group.next.x == -1 && group.next.y == -1 && group.prev.x == -1 && group.prev.y == -1) { // Rythm-less buttons
+		if (group.rhythmID == 0) { // Rhythm-less buttons
 			// button data
 			auto &buttons = group.buttons;
 
@@ -63,13 +63,10 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 
 		}
 
-		else { // Rythm Based buttons
-			   // button data
+		else { // Rhythm Based buttons
+			
+			// button data
 			auto &buttons = group.buttons;
-
-			if (group.prev.x == -1 && group.prev.y == -1) {
-				group.groupTriggerable = true;
-			}
 
 			for (int i = 0; i < buttons.size(); i++) {
 
@@ -102,7 +99,7 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 				else {
 					irr::video::SMaterial &material_button = buttonRend.button->getMaterial(0);
 					material_button.Shininess = 0.0f;
-					material_button.EmissiveColor.set(255, 0, 255, 0);
+					material_button.EmissiveColor.set(255, 255, 255, 255);
 				}
 
 				rend.buttonsRender.push_front(buttonRend);
@@ -127,7 +124,7 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 		// button render data
 		auto &buttonRend = rend.buttonsRender;
 
-		if (group.next.x == -1 && group.next.y == -1 && group.prev.x == -1 && group.prev.y == -1) { //Rythm-less buttons
+		if (group.rhythmID == 0) { //Rhythm-less buttons
 
 			if (buttons.size() != buttonRend.size()) {
 				printf("\n\n\n\n This is a significant problem buttons=%d,buttonRend = %d\n\n\n\n",
@@ -161,48 +158,62 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 			}
 		}
 
-		else { // Rythm-based buttons
+		else { // Rhythm-based buttons
+
 			if (buttons.size() != buttonRend.size()) {
-				printf("\n\n\n\n This is a significant problem Rythmbuttons=%d,buttonRend = %d\n\n\n\n",
+				printf("\n\n\n\n This is a significant problem Rhythmbuttons=%d,buttonRend = %d\n\n\n\n",
 					buttons.size(), buttonRend.size());
 			}
 
-			if (!group.groupTriggerable) {
+			if (group.groupTriggerable) {
 				for (int j = 0; j < buttons.size(); j++) {
-						buttonRend[j].button->setPosition(
-						irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
-						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
-						material_button.EmissiveColor.set(255, 255, 0, 0);
-				}
-			}
-			else {
-				for (int j = 0; j < buttons.size(); j++) {
+
 					buttonRend[j].button->setPosition(
-					irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
+						irr::core::vector3df(buttons[j].pos.x, 0, buttons[j].pos.y));
 					irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
-					material_button.EmissiveColor.set(255, 0, 255, 255);
-				}
+					material_button.EmissiveColor.set(255, 255, 255, 255);
 
+					if (!(group.next.x == -1 && group.next.y == -1)) {
 
-				auto& nextEntity = entities[i + 1];
-				auto &nextgroup = nextEntity.getComponent<tempo::ComponentButtonGroup>();
-				auto &nextrend = nextEntity.getComponent<client::ComponentRenderButtonGroup>();
+						//auto &nextEntity = entities[i+1];
+						//auto &nextGroup = nextEntity.getComponent<tempo::ComponentButtonGroup>();
+						//auto &nextRend = nextEntity.getComponent<client::ComponentRenderButtonGroup>();
 
-				if (!(group.next.x == -1 && group.next.y == -1)) {
+						//// button data
+						//auto &nextButtons = nextGroup.buttons;
+						//// button render data
+						//auto &nextButtonRend = nextRend.buttonsRender;
 
-					// button data
-					auto &nextbuttons = nextgroup.buttons;
-					// button render data
-					auto &nextbuttonRend = nextrend.buttonsRender;
+						//for (int k = 0; k < buttons.size(); k++) {
+						//	nextButtonRend[k].button->setPosition(
+						//		irr::core::vector3df(nextButtons[k].pos.x, 0, nextButtons[k].pos.y));
+						//	irr::video::SMaterial &material_button = nextButtonRend[k].button->getMaterial(0);
+						//	material_button.EmissiveColor.set(255, 0, 0, 255);
+						//}
 
-					for (int j = 0; j < nextbuttons.size(); j++) {
-						nextbuttonRend[j].button->setPosition(
-							irr::core::vector3df(nextbuttons[j].pos.x, -0.1, nextbuttons[j].pos.y));
-						irr::video::SMaterial &material_button = nextbuttonRend[j].button->getMaterial(0);
-						material_button.EmissiveColor.set(255, 255, 255, 255);
 					}
 				}
 			}
+
+			else {
+				for (int j = 0; j < buttons.size(); j++) {
+
+					if (group.groupTriggered) {
+						buttonRend[j].button->setPosition(
+							irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
+						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
+						material_button.EmissiveColor.set(255, 0, 255, 0);
+					}
+
+					else {
+						buttonRend[j].button->setPosition(
+							irr::core::vector3df(buttons[j].pos.x, 0, buttons[j].pos.y));
+						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
+						material_button.EmissiveColor.set(255, 255, 0, 0);
+					}
+				}
+			}
+
 		}
 	}
 }

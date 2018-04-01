@@ -33,7 +33,8 @@
 void RythmButton(anax::World &          world,
 				std::vector<std::vector<glm::ivec2>> positions,
 				std::vector<glm::ivec2> tiles,
-				std::vector<glm::ivec2> spikes) {
+				std::vector<glm::ivec2> spikes,
+				int &ID) {
 
 	for (int i = 0; i < positions.size(); i++) {
 		
@@ -41,12 +42,14 @@ void RythmButton(anax::World &          world,
 		glm::ivec2 prev;
 		glm::ivec2 next;
 
+		bool triggerable = true;
+
 		if (i == 0) {
 			prev = {-1,-1};
 		}
 		else {
-			printf("\n\n We have an update!! \n\n");
 			prev = positions[i-1][0]; //first ivec2 in previous group
+			triggerable = false;
 		}
 
 		if (i == positions.size() - 1) {
@@ -56,9 +59,10 @@ void RythmButton(anax::World &          world,
 			next = positions[i + 1][0]; //first ivec2 in next group
 		}
 
-		tempo::createButtonGroup(world, group, tiles, spikes, prev, next);
+		tempo::createButtonGroup(world, group, tiles, spikes, prev, next, triggerable, ID);
 	}
 
+	ID++;
 }
 
 void newButton(anax::World &          world,
@@ -66,7 +70,7 @@ void newButton(anax::World &          world,
 	std::vector<glm::ivec2> tiles,
 	std::vector<glm::ivec2> spikes) {
 
-	tempo::createButtonGroup(world, positions, tiles, spikes, { -1,-1 }, { -1,-1 });
+	tempo::createButtonGroup(world, positions, tiles, spikes, { -1,-1 }, { -1,-1 }, true, 0);
 
 }
 
@@ -129,8 +133,10 @@ int main(int argc, const char **argv)
 	// tempo::createMobCreeper(world, glm::ivec2(14, 14));
 	// tempo::createMobAntiSnail(world, glm::ivec2(4, 4));
 
+	int rhythmID = 1;
+
 	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
-	RythmButton(world, { {{40,12}}, {{40,13}}, {{41,13 }}, {{41,12}} }, wall, {});
+	RythmButton(world, { {{40,12}}, {{40,13}}, {{41,13 }}, {{41,12}} }, wall, {}, rhythmID);
 
 
 	std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};

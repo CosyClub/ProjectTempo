@@ -151,11 +151,13 @@ anax::Entity createButtonGroup(anax::World &           world,
                                std::vector<glm::ivec2> tiles,
 							   std::vector<glm::ivec2> spikes,
 							   glm::ivec2			   prev,
-							   glm::ivec2              next)
+							   glm::ivec2              next,
+							   bool					   triggerable,
+							   int					   ID)
 {
 	
 	anax::Entity entity_button = world.createEntity();
-	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles, spikes, prev, next);
+	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles, spikes, prev, next, triggerable, ID);
 	entity_button.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	entity_button.activate();
 
