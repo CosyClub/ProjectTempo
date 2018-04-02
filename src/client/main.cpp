@@ -1,12 +1,14 @@
 #include <client/component/ComponentKeyInput.hpp>
 #include <client/component/ComponentRenderButtonGroup.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
+#include <client/misc/Lighting.hpp>
 #include <client/network/client.hpp>
 #include <client/system/SystemAttack.hpp>
 #include <client/system/SystemButtonRenderer.hpp>
 #include <client/system/SystemCombo.hpp>
 #include <client/system/SystemEntity.hpp>
 #include <client/system/SystemGraphicsCreation.hpp>
+#include <client/system/SystemLighting.hpp>
 #include <client/system/SystemMovement.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
 #include <client/system/SystemRenderGUI.hpp>
@@ -35,7 +37,6 @@
 
 #include <irrlicht.h>
 #include <vector3d.h>
-#include <IVolumeLightSceneNode.h>
 
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
@@ -167,6 +168,7 @@ int main(int argc, const char **argv)
 	client::SystemCombo             system_combo;
 	client::SystemEntity           system_entity;
 	client::SystemGraphicsCreation system_gc;
+	client::SystemLighting		   system_lighting;
 	client::SystemMovement         system_movement;
 	client::SystemStageRenderer    system_stage_renderer;
 	client::SystemParseKeyInput    system_parse_key_input;
@@ -183,6 +185,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
 	world.addSystem(system_gc);
+	world.addSystem(system_lighting);
 	world.addSystem(system_trigger);
 	world.addSystem(system_button_renderer);
 	world.addSystem(system_stage_renderer);
@@ -244,6 +247,7 @@ int main(int argc, const char **argv)
 	system_render_scene_node.setup(smgr, driver);
 	system_render_health_bars.setup(smgr);
 	system_button_renderer.setup(smgr, driver);
+	system_lighting.setup(smgr, driver);
 
 	// Start and Sync Song
 	sync_time(clock);
@@ -297,186 +301,9 @@ int main(int argc, const char **argv)
 	                                     irr::video::SColorf(0.8f, 0.8f, 0.8f), 5.0f);
 	// irr::video::SLight& light_data = light_node->getLightData();
 
-	/// This is the main light responsible for all the stage colors:
-	irr::scene::ILightSceneNode* light_ML1;
-	irr::video::SLight data_ML1;
+	client::createLasers(smgr, driver, { {40,12}, {40,52}, {40,92} });
 
-	/// Create LASER LIGHTS:
-	// Get images:
-	irr::core::array<irr::video::ITexture*> texturesLaser;
-	for (irr::s32 n = 0; n<13; n++) {
-		irr::core::stringc tmp; tmp = "resources/materials/lasers/laser_light_"; tmp += n; tmp += ".jpg";
-		irr::video::ITexture* tx = driver->getTexture(tmp.c_str());
-		texturesLaser.push_back(tx);
-	};
-
-	irr::scene::IVolumeLightSceneNode* nodeLaserA[10] = {};
-
-	for (int i = 0; i<8; i++) {
-		nodeLaserA[i] = smgr->addVolumeLightSceneNode(0, -1, 4, 4, irr::video::SColor(0, 255, 255, 255), irr::video::SColor(0, 0, 0, 0)); // Set: | ? | ? | Subdivisions on U axis | Subdivisions on V axis | foot color | tail color
-																																// nodeLaserA[i]->enableCastShadow(false);
-		nodeLaserA[i]->setMaterialFlag(irr::video::EMF_LIGHTING, false); // Node is affected by LIGHT?
-		nodeLaserA[i]->setScale(irr::core::vector3df(0.1f, 900.0f, 0.1f));
-		nodeLaserA[i]->setPosition(irr::core::vector3df(40, 10, 12)); /// Position Y = 384.1f is perfect!
-																		// Create texture animator
-		irr::scene::ISceneNodeAnimator* glow = smgr->createTextureAnimator(texturesLaser, 250, true); // Time between images (textures)
-																								 // Add the animator: G/// Create LASER LIGHTS at the left:low
-		nodeLaserA[i]->addAnimator(glow);
-		// Drop the animator because it was created with a create() function
-		glow->drop();
-	};
-
-	if (nodeLaserA[0]) {
-		irr::scene::ISceneNodeAnimator* animLaser = smgr->createRotationAnimator(irr::core::vector3df(0.1f, 0, 1.0f));
-		nodeLaserA[0]->addAnimator(animLaser);
-		animLaser->drop();
-	};
-	// Add the animator: Rotation:
-	if (nodeLaserA[1]) {
-		irr::scene::ISceneNodeAnimator* animLaser = smgr->createRotationAnimator(irr::core::vector3df(0.1f, 0, -1.0f));
-		nodeLaserA[1]->addAnimator(animLaser);
-		animLaser->drop();
-	};
-	// Add the animator: Rotation:
-	if (nodeLaserA[2]) {
-		irr::scene::ISceneNodeAnimator* animLaser = smgr->createRotationAnimator(irr::core::vector3df(-0.1f, 0, 0.2f));
-		nodeLaserA[2]->addAnimator(animLaser);
-		animLaser->drop();
-	};
-	// Add the animator: Rotation:
-	if (nodeLaserA[3]) {
-		irr::scene::ISceneNodeAnimator* animLaser = smgr->createRotationAnimator(irr::core::vector3df(-0.1f, 0, -0.2f));
-		nodeLaserA[3]->addAnimator(animLaser);
-		animLaser->drop();
-	};
-	// Add the animator: Rotation:
-	if (nodeLaserA[4]) {
-		irr::scene::ISceneNodeAnimator* animLaser = smgr->createRotationAnimator(irr::core::vector3df(0.1f, 0, 0.7f));
-		nodeLaserA[4]->addAnimator(animLaser);
-		animLaser->drop();
-	};
-	// Add the animator: Rotation:
-	if (nodeLaserA[5]) {
-		irr::scene::ISceneNodeAnimator* animLaser = smgr->createRotationAnimator(irr::core::vector3df(0.1f, 0, -0.7f));
-		nodeLaserA[5]->addAnimator(animLaser);
-		animLaser->drop();
-	};
-	// Add the animator: Rotation:
-	if (nodeLaserA[6]) {
-		irr::scene::ISceneNodeAnimator* animLaser = smgr->createRotationAnimator(irr::core::vector3df(-0.1f, 0, 1.7f));
-		nodeLaserA[6]->addAnimator(animLaser);
-		animLaser->drop();
-	};
-	// Add the animator: Rotation:
-	if (nodeLaserA[7]) {
-		irr::scene::ISceneNodeAnimator* animLaser = smgr->createRotationAnimator(irr::core::vector3df(-0.1f, 0, -1.7f));
-		nodeLaserA[7]->addAnimator(animLaser);
-		animLaser->drop();
-	};
-
-	/// Create (Loads Object) DISCO BALL N1:
-	irr::scene::IAnimatedMeshSceneNode* nodeDiscoBall1 = smgr->addAnimatedMeshSceneNode(smgr->getMesh("resources/meshes/disco_ball.obj"));
-	nodeDiscoBall1->setPosition(irr::core::vector3df(40, 10, 12));
-	// nodeDiscoBall1->setRotation(vector3df(0, 180, 0));
-	nodeDiscoBall1->setScale(irr::core::vector3df(0.1, 0.1, 0.1));
-	nodeDiscoBall1->setMaterialFlag(irr::video::EMF_LIGHTING, true);           // Node is affected by LIGHT?
-	nodeDiscoBall1->setMaterialFlag(irr::video::EMF_FOG_ENABLE, false);        // Node is affected by FOG?
-	nodeDiscoBall1->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false); // Render both sides?
-	nodeDiscoBall1->setMaterialFlag(irr::video::EMF_ANISOTROPIC_FILTER, true); // Increase view distance quality (similar to sharpness)
-	nodeDiscoBall1->setMaterialFlag(irr::video::EMF_NORMALIZE_NORMALS, true);
-	nodeDiscoBall1->setMaterialType(irr::video::EMT_REFLECTION_2_LAYER);       // EMT_REFLECTION_2_LAYER
-
-	for (irr::u32 i = 0; i<nodeDiscoBall1->getMaterialCount(); i++) {
-		nodeDiscoBall1->getMaterial(i).setTexture(0, driver->getTexture("resources/materials/disco_ball.jpg")); // Apply texture to my specified material
-		nodeDiscoBall1->getMaterial(i).getTextureMatrix(0).setTextureScale(3.0f, 1.0f);   /// Repeat (tile) the texture
-		nodeDiscoBall1->getMaterial(i).setTexture(1, driver->getTexture("resources/materials/reflexes.jpg"));
-		nodeDiscoBall1->getMaterial(i).getTextureMatrix(1).setTextureScale(0.015f, 0.015f); /// Repeat (tile) the texture
-
-																							/// Start Colors:
-																							/// Set size of specular highlights
-		nodeDiscoBall1->getMaterial(i).Lighting = true;
-		nodeDiscoBall1->getMaterial(i).Shininess = 100.0f; /// Reflex type: 20.0f == Metallic (Range: 0.5 to 128)
-														   /// Affect the colour of the reflected light:
-		nodeDiscoBall1->getMaterial(i).SpecularColor = irr::video::SColor(255, 250, 250, 250); /// The lights reflexes (a (0 = transparent | 255 = opaque), r, g, b)
-																						  /// Tweak all the light related aspects of the material:
-		nodeDiscoBall1->getMaterial(i).AmbientColor = irr::video::SColor(200, 200, 200, 200); /// How much ambient light (a global light) is reflected by this material (a (0 = transparent | 255 = opaque), r, g, b)
-		nodeDiscoBall1->getMaterial(i).DiffuseColor = irr::video::SColor(200, 200, 200, 200); /// How much diffuse light coming from a light source is reflected by this material (a (0 = transparent | 255 = opaque), r, g, b)
-		nodeDiscoBall1->getMaterial(i).EmissiveColor = irr::video::SColor(0, 0, 0, 0); /// Light emitted by this material. Default is to emit no light (a (0 = transparent | 255 = opaque), r, g, b)
-																				  /// End Colors
-
-		for (irr::u32 t = 0; t<_IRR_MATERIAL_MAX_TEXTURES_; t++) {
-			nodeDiscoBall1->getMaterial(i).TextureLayer[t].AnisotropicFilter = 8;
-			nodeDiscoBall1->getMaterial(i).TextureLayer[t].LODBias = 128;
-		};
-		nodeDiscoBall1->getMaterial(i).MaterialTypeParam = 1.f / 64.f; /// Adjust height for parallax effect
-	};
-
-	irr::scene::ISceneNodeAnimator* anim11 = smgr->createRotationAnimator(irr::core::vector3df(0, 1.0f, 0));
-	nodeDiscoBall1->addAnimator(anim11);
-	anim11->drop();
-
-	/// Create particle system: (DISCO BALL N1 - reflexed lights)
-	irr::scene::IParticleSystemSceneNode* ps60 = smgr->addParticleSystemSceneNode(false);
-
-	irr::scene::IParticleEmitter* em60 = ps60->createSphereEmitter( /// SPHERE Emitter (Same geometry as the mesh is)
-		irr::core::vector3df(0.0f, 0.0f, 0.0f),  // emitter position
-		0.282f,                           // f32 radius
-		irr::core::vector3df(0.0f, 0.0f, 0.0f),  // initial direction & speed (all set to 0.0f == particles stopped)
-		0, 0,                              // minParticlesPerSecond / maxParticlesPerSecond (Will change in main loop)
-										   // video::SColor(0,0,0,255),      // darkest color
-		irr::video::SColor(0, 0, 0, 0),           // darkest color
-		irr::video::SColor(255, 255, 255, 255),   // brightest color
-		90, 200, 0,                         // min age, max age, angle
-		irr::core::dimension2df(5.0f, 5.0f),  // min size
-		irr::core::dimension2df(25.0f, 25.0f)); // max size
-
-	ps60->setEmitter(em60); // Grabs the emitter
-	em60->drop(); // We can drop it here, without deleting it
-
-	ps60->setParent(nodeDiscoBall1); /// Attach these reflexed lights to the Disco Ball N1 (Match to the same position & rotation)
-									 // ps60->setPosition(core::vector3df(-550,100,-500)); // x, y, z: profundidade
-									 // ps60->setScale(core::vector3df(100,100,100));
-	ps60->setScale(irr::core::vector3df(.6, .6, .6));
-	ps60->setMaterialFlag(irr::video::EMF_ZWRITE_ENABLE, false);
-	ps60->setMaterialTexture(0, driver->getTexture("resources/materials/estrela_squared.png"));
-	// ps60->setMaterialType(video::EMT_TRANSPARENT_VERTEX_ALPHA); // Transparent texture.
-	ps60->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL); // Transparent texture.
-	ps60->setMaterialFlag(irr::video::EMF_LIGHTING, true); // Node is affected by LIGHT?
-	ps60->setMaterialFlag(irr::video::EMF_NORMALIZE_NORMALS, true);
-	// effect->excludeNodeFromLightingCalculations(ps60);
-	// ps60->getMaterial(0).Lighting = false;
-	// ps60->getMaterial(0).Shininess = 100.0f; // Set size of specular highlights
-	// ps60->getMaterial(0).SpecularColor.set(255,255,255,255);
-	// ps60->getMaterial(0).DiffuseColor.set(255,255,255,255);
-	// ps60->getMaterial(0).EmissiveColor.set(255,255,255,255);
-	/// Disabled:
-	em60->setMinParticlesPerSecond(0);
-	em60->setMaxParticlesPerSecond(0);
-
-	/// Create Main Colored LIGHT, does cast shadows:
-	irr::scene::ISceneNode* node_ML1 = 0;
-	irr::scene::IBillboardSceneNode* billboard_ML1 = smgr->addBillboardSceneNode(node_ML1);
-	billboard_ML1->setPosition(irr::core::vector3df(0, 190, -420));
-	billboard_ML1->setMaterialTexture(0, driver->getTexture("dummy.png")); /// Invisible: "dummy.png" - Visible: "estrela.png"
-	billboard_ML1->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-	billboard_ML1->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL); // Transparent texture.
-	billboard_ML1->setScale(irr::core::vector3df(450, 450, 450));
-
-	// Add animator:
-	irr::scene::ISceneNodeAnimator* anim_ML1 = smgr->createFlyCircleAnimator(irr::core::vector3df(0, 190, -420), 3.0f, 0.0030f);
-	billboard_ML1->addAnimator(anim_ML1);
-	anim_ML1->drop();
-
-	/// Create the light: (This is the main light responsible for all the stage colors)
-	light_ML1 = smgr->addLightSceneNode(billboard_ML1, irr::core::vector3df(0, 0, 0), irr::video::SColorf(1.0, 1.0, 1.0, 0.0), 3000); // SColorf: 0.0f to 1.0f full color. SColorf = r,g,b,a
-	light_ML1->enableCastShadow(true);
-	light_ML1->setVisible(true);
-	data_ML1.Type = irr::video::ELT_POINT; // ELT_POINT | ELT_SPOT | ELT_DIRECTIONAL
-									  // data_ML1.Direction = vector3df(0,-1,0);
-	data_ML1.AmbientColor = irr::video::SColorf(0, 0, 0, 0); // Will change in main loop
-	data_ML1.SpecularColor = irr::video::SColorf(0, 0, 0, 0); // Will change in main loop
-	data_ML1.DiffuseColor = irr::video::SColorf(0, 0, 0, 0); // Will change in main loop
-	light_ML1->setLightData(data_ML1); // Apply data to the light (Will change in main loop)
+	client::createDiscoBalls(smgr, driver, { {40,6} });
 
 	/////////////////////////////////////////////////
 	// Main loop
@@ -492,15 +319,6 @@ int main(int argc, const char **argv)
 	frame_clock.restart();
 	update_floor_clock.restart();
 
-	int lastFPS = -1; // Will be set in the main loop...
-	irr::u32 then = 0.0; // Will be set in the main loop...
-	irr::f32 frameDeltaTime = 0.0f; // Will be set in the main loop...
-
-
-	lastFPS = -1;
-	then = device->getTimer()->getTime();
-	frameDeltaTime = 0.0;
-
 	printf("Entering main loop\n");
 	while (device->run()) {
 		// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
@@ -510,17 +328,10 @@ int main(int argc, const char **argv)
 		// Work out a frame delta time.
 		const irr::u32 now = device->getTimer()->getTime();
 		/// frameDeltaTime = (f32)(now - then)/1000.f; // Time in seconds
-		frameDeltaTime = (irr::f32)(now - then);
-		then = now;
 
 		////////////////
 		// Events all the time
 		{
-			static int cqt_90 = 0;
-			static int cqt_100 = 0;
-			cqt_90 += 0.150*frameDeltaTime; if (cqt_90 >= 90) { cqt_90 = 90; }; /// <-- Force a smooth gradually start
-			cqt_100 += 0.150*frameDeltaTime; if (cqt_100 >= 100) { cqt_100 = 100; }; /// <-- Force a smooth gradually start
-			em60->setMinParticlesPerSecond(cqt_90); em60->setMaxParticlesPerSecond(cqt_100); /// disco ball n1 - lights reflexes
 
 			// Check for new entities from server
 			system_entity.creationCheck(world);
@@ -532,7 +343,7 @@ int main(int argc, const char **argv)
 			system_render_health_bars.setup(smgr);
 			system_button_renderer.setup(smgr, driver);
 
-			// Recieve updates from the server
+			// Receive updates from the server
 			system_movement.processIntents(world);
 			system_movement.processCorrections(world);
 			system_combo.checkForUpdates(world);
@@ -583,18 +394,10 @@ int main(int argc, const char **argv)
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
 			system_translation_animation.endBeat();
+			system_lighting.update();
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;
-
-			/// Animated light: ( Change to a random color... )
-			irr::f32 red = ((1.0 - 0.0)*((float)rand() / RAND_MAX)) + 0.0; // from (0.0 to 1.0)
-			irr::f32 green = ((1.0 - 0.0)*((float)rand() / RAND_MAX)) + 0.0; // from (0.0 to 1.0)
-			irr::f32 blue = ((1.0 - 0.0)*((float)rand() / RAND_MAX)) + 0.0; // from (0.0 to 1.0)
-			data_ML1.AmbientColor = irr::video::SColorf(red, green, blue, 0.0);
-			data_ML1.SpecularColor = irr::video::SColorf(red, green, blue, 0.0);
-			data_ML1.DiffuseColor = irr::video::SColorf(red, green, blue, 0.0);
-			light_ML1->setLightData(data_ML1); // Apply data to the light
 
 		}
 		glm::ivec2 playerpos =
