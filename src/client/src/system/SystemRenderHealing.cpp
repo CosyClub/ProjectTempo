@@ -26,19 +26,19 @@ void SystemRenderHealing::update()
 
 		if(c.comboCounter > 20 && h.current_health != h.max_health)
 		 {
-			irr::scene::IParticleSystemSceneNode* psystem = this->smgr->addParticleSystemSceneNode(false);
+			irr::scene::IParticleSystemSceneNode* psystem = this->smgr->addParticleSystemSceneNode(false, sn.node);
 
 			irr::scene::IParticleEmitter* emitter = psystem->createBoxEmitter
 				(
 				 irr::core::aabbox3d<irr::f32>(-0.5f, 0, -0.5f,   0.5f, 1.0f, 0.5f), // size of emitter
 				 irr::core::vector3df(0.0f, 0.0001f, 0.0f), // direction
-				 100, 500,                                    // emit rate
+				 10, 25,                                    // emit rate
 				 irr::video::SColor(0, 000, 200, 40),        // darkest color
 				 irr::video::SColor(0, 000, 255, 70),        // brightest color
 				 800, 1500,                                 // min and max age
 				 50.0f,                                     // emit angle
-				 irr::core::dimension2df(0.05f, 0.05f),     // min size
-				 irr::core::dimension2df(0.20f, 0.20f)        // max size
+				 irr::core::dimension2df(0.10f, 0.10f),     // min size
+				 irr::core::dimension2df(0.35f, 0.35f)        // max size
 				 );
 
 			psystem->setEmitter(emitter);
@@ -52,13 +52,13 @@ void SystemRenderHealing::update()
 			// psystem->setPosition(irr::core::vector3df(pos.getOrigin().x,
 			//                                           stage.getHeight(pos.getOrigin()),
 			//                                           pos.getOrigin().y));
-			psystem->setPosition(sn.node->getPosition());
+			psystem->setPosition(psystem->getPosition() + irr::core::vector3df(0.1f,0.1f,0.f));
 			psystem->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 			psystem->setMaterialFlag(irr::video::EMF_ZWRITE_ENABLE, false);
 			psystem->setMaterialTexture(0, driver->getTexture("resources/materials/textures/particlewhite.bmp"));
 			psystem->setMaterialType(irr::video::EMT_TRANSPARENT_ADD_COLOR);
 
-			this->particle_systems.push_back(psystem);
+			this->particle_systems.push_back(std::make_pair(psystem,0));
 		}
 	}
 
@@ -66,11 +66,29 @@ void SystemRenderHealing::update()
 
 void SystemRenderHealing::endBeat()
 {
+
 	for(auto it = particle_systems.begin(); it != particle_systems.end(); ++it)
 	{
-		(*it)->remove();
+		if((*it).second == 3) {
+			(*it).first->remove();
+		}
+		(*it).second +=1;
 	}
-	particle_systems.clear();
+
+	auto it = particle_systems.begin();
+
+	while(it != particle_systems.end()) {
+
+    if((*it).second == 4) {
+
+        it = particle_systems.erase(it);
+    }
+    else ++it;
+	}
+
+	//particle_systems.clear();
+
+
 }
 
 

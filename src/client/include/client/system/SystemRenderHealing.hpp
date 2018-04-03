@@ -14,6 +14,7 @@
 
 #include <unordered_map>
 #include <vector>
+#include <utility>
 
 namespace std
 {
@@ -46,7 +47,7 @@ private:
 	irr::video::IVideoDriver*                                 driver;
 	//std::unordered_map<glm::ivec2,
 	//                   irr::scene::IParticleSystemSceneNode*> particle_systems;
-	std::vector<irr::scene::IParticleSystemSceneNode*> particle_systems;
+	std::vector<std::pair<irr::scene::IParticleSystemSceneNode*,int>> particle_systems;
 public:
 	SystemRenderHealing(irr::video::IVideoDriver * driver,
 	                   irr::scene::ISceneManager* smgr);
