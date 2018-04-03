@@ -340,7 +340,6 @@ int main(int argc, const char **argv)
 
 			// Deprecated/To-be-worked-on
 			system_health.CheckHealth();
-			//system_health.client_sendHealth(entity_player);
 			system_health.client_receiveHealth(world);
 
 			system_less_jank.lessJank();

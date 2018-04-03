@@ -1,6 +1,7 @@
 #include <tempo/system/SystemHealth.hpp>
 
 #include <tempo/component/ComponentStagePosition.hpp>  //Just temporary
+#include <tempo/component/ComponentCombo.hpp>
 
 namespace tempo
 {
@@ -41,17 +42,6 @@ void SystemHealth::broadcastHealth()
 	}
 }
 
-void SystemHealth::server_sendHealth(anax::Entity entity)
-{
-	auto &h = entity.getComponent<ComponentHealth>();
-	anax::Entity::Id id = entity.getId();
-
-	sf::Packet p;
-	p << id;
-	p << h.current_health;
-	sendMessage(tempo::QueueID::SYSTEM_HEALTH, p);
-}
-
 void SystemHealth::client_sendHealth(anax::Entity entity)
 {
 	auto &h = entity.getComponent<ComponentHealth>();
@@ -83,6 +73,17 @@ void SystemHealth::client_receiveHealth(anax::World &world)
 	}
 }
 
+void SystemHealth::server_sendHealth(anax::Entity entity)
+{
+	auto &h = entity.getComponent<ComponentHealth>();
+	anax::Entity::Id id = entity.getId();
+
+	sf::Packet p;
+	p << id;
+	p << h.current_health;
+	sendMessage(tempo::QueueID::SYSTEM_HEALTH, p);
+}
+
 void SystemHealth::server_receiveHealth(anax::World &world)
 {
 	tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_HEALTH);
@@ -105,6 +106,27 @@ void SystemHealth::server_receiveHealth(anax::World &world)
 		} else {
 		ComponentHealth &h = e.getComponent<ComponentHealth>();
 		h.current_health = health;
+		}
+	}
+}
+
+void SystemHealth::regenerate()
+{
+	auto entities = getEntities();
+
+	for (auto &entity : entities)
+	{
+		if (!entity.hasComponent<tempo::ComponentHealth>() ||
+	      !entity.hasComponent<tempo::ComponentCombo>()) {
+
+			continue;
+		}
+
+		auto &h = entity.getComponent<tempo::ComponentHealth>();
+		auto &c = entity.getComponent<tempo::ComponentCombo>();
+
+		if( c.comboCounter > 20) {
+			h.HealthUpdate(1);
 		}
 	}
 }

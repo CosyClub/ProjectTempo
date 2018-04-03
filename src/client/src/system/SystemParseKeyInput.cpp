@@ -157,9 +157,6 @@ void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinD
 		addAttack(entity, withinDelta);
 		updateCombo(entity, withinDelta);
 		break;
-	case irr::KEY_KEY_1:
-		addHeal(entity, withinDelta);
-		break;
 	case irr::KEY_ESCAPE:
 		device->closeDevice();
 		break;
