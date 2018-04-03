@@ -10,6 +10,7 @@
 #include <client/system/SystemMovement.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
 #include <client/system/SystemRenderGUI.hpp>
+#include <client/system/SystemRenderHealing.hpp>
 #include <client/system/SystemRenderHealthBars.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
 #include <client/system/SystemStageRenderer.hpp>
@@ -169,6 +170,7 @@ int main(int argc, const char **argv)
 	client::SystemStageRenderer    system_stage_renderer;
 	client::SystemParseKeyInput    system_parse_key_input;
 	client::SystemRenderGUI        system_render_gui;
+	client::SystemRenderHealing    system_render_healing(driver, smgr);
 	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
 	client::SystemUpdateKeyInput   system_update_key_input;
@@ -185,6 +187,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_button_renderer);
 	world.addSystem(system_stage_renderer);
 	world.addSystem(system_render_scene_node);
+	world.addSystem(system_render_healing);
 	world.addSystem(system_render_health_bars);
 	world.addSystem(system_update_key_input);
 	world.addSystem(system_parse_key_input);
@@ -352,6 +355,7 @@ int main(int argc, const char **argv)
 			// std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" <<
 			// std::endl;
 			system_render_health_bars.update();
+			system_render_healing.update();
 
 			// TODO: Make a system for updating camera position
 			irr::core::vector3df camera_target = sn.node->getAbsolutePosition();
@@ -378,6 +382,7 @@ int main(int argc, const char **argv)
 			j = j % 22;
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
+			system_render_healing.endBeat();
 			system_translation_animation.endBeat();
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"

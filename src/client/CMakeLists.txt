@@ -14,6 +14,7 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemMovement.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemParseKeyInput.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderGUI.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderHealing.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderHealthBars.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderSceneNode.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemStageRenderer.hpp
@@ -33,6 +34,7 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemMovement.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemParseKeyInput.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderGUI.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderHealing.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderHealthBars.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderSceneNode.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemStageRenderer.cpp
