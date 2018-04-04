@@ -4,9 +4,9 @@ namespace client {
 
 
 	void createLasers(irr::scene::ISceneManager *smgr,
-					  irr::video::IVideoDriver * driver, 
+					  irr::video::IVideoDriver * driver,
 					  std::vector<glm::ivec2> positions) {
-		
+
 		irr::core::array<irr::video::ITexture*> texturesLaser;
 
 		/// Create LASER LIGHTS:
@@ -87,9 +87,10 @@ namespace client {
 
 	void createDiscoBalls(irr::scene::ISceneManager *smgr,
 						  irr::video::IVideoDriver * driver,
-						  std::vector<glm::ivec2> positions) {
+						  std::vector<glm::ivec2> positions,
+						  irr::scene::ISceneNode *parent) {
 
-		irr::scene::IAnimatedMeshSceneNode* nodeDiscoBall1 = smgr->addAnimatedMeshSceneNode(smgr->getMesh("resources/meshes/disco_ball.obj"));
+		irr::scene::IAnimatedMeshSceneNode* nodeDiscoBall1 = smgr->addAnimatedMeshSceneNode(smgr->getMesh("resources/meshes/disco_ball.obj"), parent);
 
 		for (glm::ivec2 pos : positions) {
 
