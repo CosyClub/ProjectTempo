@@ -54,7 +54,7 @@ void main()
 	vec4 refractiveColor = texture2D(RefractionMap, ProjectedRefractionTexCoords );
 	
 	//reflection
-	vec2 ProjectedReflectionTexCoords = clamp(reflectionMapTexCoord.xy / reflectionMapTexCoord.z + perturbation, 0.0, 1.0);
+	vec2 ProjectedReflectionTexCoords = clamp(reflectionMapTexCoord.xy / reflectionMapTexCoord.z + perturbation, 0.0, 0.1);
 	//calculate final reflection color
 	vec4 reflectiveColor = texture2D(ReflectionMap, ProjectedReflectionTexCoords );
 

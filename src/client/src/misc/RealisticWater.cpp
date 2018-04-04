@@ -29,12 +29,12 @@ RealisticWaterSceneNode::RealisticWaterSceneNode(scene::ISceneManager* sceneMana
 												 scene::ISceneNode* parent, s32 id):
 	scene::ISceneNode(parent, sceneManager, id), _time(0),
 	_size(width, height), _sceneManager(sceneManager), _refractionMap(NULL), _reflectionMap(NULL),
-	_windForce(0.2f),_windDirection(0, 1),_waveHeight(0.9f), _waterColor(0.1f, 0.05f, 0.1f, 1.0f), _colorBlendFactor(0.2f), _camera(NULL)
+	_windForce(0.2f),_windDirection(0, 1),_waveHeight(0.5f), _waterColor(0.1f, 0.05f, 0.1f, 1.0f), _colorBlendFactor(0.2f), _camera(NULL)
 {
 	_videoDriver = sceneManager->getVideoDriver();
 
 	//create new camera
-	_camera = sceneManager->addCameraSceneNode(0, core::vector3df(0, -2.f, 0), core::vector3df(0, 0, 0), -1, false);
+	_camera = sceneManager->addCameraSceneNode(0, core::vector3df(0, 0, 0), core::vector3df(0, 0, 0), -1, false);
 
 	_waterMesh = sceneManager->addHillPlaneMesh("RealisticWater", _size, core::dimension2d<u32>(1, 1));
 
