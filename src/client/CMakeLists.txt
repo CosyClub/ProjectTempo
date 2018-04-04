@@ -40,9 +40,11 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemUpdateKeyInput.cpp
 
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/CBatchingMesh.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/RealisticWater.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/RGBtoHSV.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/YAlignedBillboardSceneNode.hpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/CBatchingMesh.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/misc/RealisticWater.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/RGBtoHSV.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/YAlignedBillboardSceneNode.cpp
 

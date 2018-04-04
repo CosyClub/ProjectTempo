@@ -16,6 +16,8 @@
 #include <client/system/SystemUpdateKeyInput.hpp>
 #include <client/system/SystemTranslationAnimation.hpp>
 
+#include <client/misc/RealisticWater.hpp>
+
 #include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
@@ -242,6 +244,14 @@ int main(int argc, const char **argv)
 	system_render_scene_node.setup(smgr, driver);
 	system_render_health_bars.setup(smgr);
 	system_button_renderer.setup(smgr, driver);
+
+
+	const f32 width = 512.0f;
+	const f32 height = 512.0f;
+	//std::string resourcePath = "resources";
+	irr::core::stringc resourcePath("resources/realisticWater");
+	RealisticWaterSceneNode* water = new RealisticWaterSceneNode(smgr, width, height, resourcePath);
+	smgr->getRootSceneNode()->addChild(water);
 
 	// Start and Sync Song
 	sync_time(clock);
