@@ -10,6 +10,10 @@
 #include <ISceneManager.h>
 #include <IVideoDriver.h>
 
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+
 namespace client
 {
 // Initalises all rendering for buttons
@@ -24,6 +28,10 @@ class SystemButtonRenderer
 
 private:
 	irr::video::ITexture *buttonBlocked;
+	irr::video::ITexture *buttonArrow;
+
+	//Used to rotate the button so that the arrow is facing the correct way
+	void setRotation(std::vector<anax::Entity> entities, int i, int j, irr::scene::IMeshSceneNode *button, glm::ivec2 pos);
 };
 }  // namespace client
 

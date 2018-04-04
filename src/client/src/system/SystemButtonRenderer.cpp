@@ -18,6 +18,7 @@ namespace client
 void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
 {
 	this->buttonBlocked = driver->getTexture("resources/materials/buttonBlocked.png");
+	this->buttonArrow = driver->getTexture("resources/materials/buttonArrow.png");
 
 	auto entities = getEntities();
 
@@ -25,6 +26,7 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 		printf("\nThere does not seem to be any buttons\n");
 	}
 
+	int j = 0; //used in setRotation
 	for (auto &entity : entities) {
 		auto &group = entity.getComponent<tempo::ComponentButtonGroup>();
 		auto &rend  = entity.getComponent<client::ComponentRenderButtonGroup>();
@@ -92,16 +94,21 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 				material_button_housing.Shininess = 0.5f;
 				material_button_housing.EmissiveColor.set(255, 100, 100, 100);
 
+				//Rotate each button so that the arows are facing the correct direction
+				setRotation(entities, j, i, buttonRend.button, buttons[i].pos);
+
 				if (!group.groupTriggerable) {
 					irr::video::SMaterial &material_button = buttonRend.button->getMaterial(0);
 					material_button.Shininess = 0.0f;
 					material_button.EmissiveColor.set(255, 255, 0, 0);
+					material_button.setTexture(0, this->buttonArrow);
 				}
 
 				else {
 					irr::video::SMaterial &material_button = buttonRend.button->getMaterial(0);
 					material_button.Shininess = 0.0f;
 					material_button.EmissiveColor.set(255, 255, 255, 255);
+					material_button.setTexture(0, this->buttonArrow);
 				}
 
 				rend.buttonsRender.push_front(buttonRend);
@@ -109,7 +116,50 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 		}
 
 		rend.setup = true;
+		j++;
 	}
+
+}
+
+void SystemButtonRenderer::setRotation(std::vector<anax::Entity> entities, int j, int i, irr::scene::IMeshSceneNode *button, glm::ivec2 pos) {
+	
+	//Last button group in level
+	if (j == entities.size() - 1) {
+		return;
+	}
+
+	//if last button in sequence
+	if (entities[j].getComponent<tempo::ComponentButtonGroup>().next.x == -1 && entities[j].getComponent<tempo::ComponentButtonGroup>().next.y == -1) {
+		return;
+	}
+
+	glm::ivec2 newPos = entities[j + 1].getComponent<tempo::ComponentButtonGroup>().buttons[i].pos;
+
+	int dx, dy;
+
+	dx = newPos.x - pos.x;
+
+	dy = newPos.y - pos.y;
+
+	int n = NAN; // for error checking
+
+	if (dx == 1) {
+		n = 180;
+	}
+
+	else if (dx == -1) {
+		n = 0;
+	}
+
+	else if (dy == 1) {
+		n = 90;
+	}
+
+	else if (dy == -1) {
+		n = 270;
+	}
+
+	button->setRotation(irr::core::vector3df(0, n, 0));
 
 }
 
@@ -173,8 +223,14 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 					buttonRend[j].button->setPosition(
 						irr::core::vector3df(buttons[j].pos.x, 0, buttons[j].pos.y));
 					irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
-					material_button.setTexture(0, nullptr);
+					material_button.setTexture(0, this->buttonArrow);
 					material_button.EmissiveColor.set(255, 255, 255, 255);
+
+					//Dont display arrow on last button
+					if (group.next.x == -1 && group.next.y == -1) {
+						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
+						material_button.setTexture(0, nullptr);
+					}
 				}
 			}
 
@@ -185,7 +241,7 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 						buttonRend[j].button->setPosition(
 							irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
 						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
-						material_button.setTexture(0, nullptr);
+						material_button.setTexture(0, this->buttonArrow);
 						material_button.EmissiveColor.set(255, 0, 255, 0);
 					}
 
@@ -201,9 +257,16 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 						buttonRend[j].button->setPosition(
 							irr::core::vector3df(buttons[j].pos.x, 0, buttons[j].pos.y));
 						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
-						material_button.setTexture(0, nullptr);
+						material_button.setTexture(0, this->buttonArrow);
 						material_button.EmissiveColor.set(255, 255, 0, 0);
 					}
+
+					//Dont display arrow on last button
+					if (group.next.x == -1 && group.next.y == -1 && !group.blocked) {
+						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
+						material_button.setTexture(0, nullptr);
+					}
+
 				}
 			}
 
