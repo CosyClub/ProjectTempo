@@ -11,11 +11,10 @@ namespace client {
 		/// Create Main Colored LIGHT, does cast shadows:
 		this->node_ML1 = 0;
 		this->billboard_ML1 = smgr->addBillboardSceneNode(node_ML1);
-		this->billboard_ML1->setPosition(irr::core::vector3df(0, 190, -420));
+		this->billboard_ML1->setPosition(irr::core::vector3df(0, 0, 0));
 		this->billboard_ML1->setMaterialTexture(0, driver->getTexture("dummy.png")); /// Invisible: "dummy.png" - Visible: "estrela.png"
 		this->billboard_ML1->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 		this->billboard_ML1->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
-		this->billboard_ML1->setScale(irr::core::vector3df(450, 450, 450));
 
 		// Add animator:
 		irr::scene::ISceneNodeAnimator* anim_ML1 = smgr->createFlyCircleAnimator(irr::core::vector3df(0, 190, -420), 3.0f, 0.0030f);
