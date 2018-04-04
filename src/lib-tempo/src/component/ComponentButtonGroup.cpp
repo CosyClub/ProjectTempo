@@ -6,8 +6,13 @@
 namespace tempo
 {
 ComponentButtonGroup::ComponentButtonGroup(std::vector<glm::ivec2> positions,
-                                           std::vector<glm::ivec2> wall_positions)
-    : wall_positions(wall_positions)
+                                           std::vector<glm::ivec2> wall_positions,
+										   std::vector<glm::ivec2> spike_positions,
+										   glm::ivec2              prev,
+										   glm::ivec2              next,
+										   bool					   triggerable,
+										   int					   ID)
+    : wall_positions(wall_positions), spike_positions(spike_positions), prev(prev), next(next), groupTriggerable(triggerable), rhythmID(ID)
 {
 	for (glm::ivec2 pos : positions) {
 		button newbutton;
@@ -31,9 +36,10 @@ ComponentButtonGroup::ComponentButtonGroup(sf::Packet p)
 		buttons.push_front(b);
 	}
 
-
 	p >> groupTriggered;
 	p >> action_happened;
+	p >> groupTriggerable;
+	p >> blocked;
 	
 	p >> size;
 	for (int i = 0; i < size; i++) {
@@ -48,19 +54,34 @@ ComponentButtonGroup::ComponentButtonGroup(sf::Packet p)
 			}
 		}
 	}
+
+	p >> size;
+	for (int i = 0; i < size; i++) {
+		glm::ivec2 v;
+		p >> v;
+		spike_positions.push_back(v);
+	}
+
+	glm::ivec2 v1;
+
+	p >> v1;
+
+	prev = v1;
+
+	glm::ivec2 v2;
+
+	p >> v2;
+
+	next = v2;
+
+	p >> rhythmID;
+
 }
 
 ComponentID ComponentButtonGroup::getId()
 {
 	return ComponentID::BUTTON_GROUP;
 }
-
-// // This is a deque so that it is possible to push_front
-// std::deque<button>      buttons;
-// std::vector<glm::ivec2> wall_positions;
-//
-// bool groupTriggered  = false;
-// bool action_happened = false;
 
 sf::Packet ComponentButtonGroup::dumpComponent()
 {
@@ -76,11 +97,24 @@ sf::Packet ComponentButtonGroup::dumpComponent()
 
 	p << groupTriggered;
 	p << action_happened; // TODO maybe move this to rendering component
+	p << groupTriggerable;
+	p << blocked;
 
 	p << (sf::Uint32) wall_positions.size();
 	for (int i = 0; i < wall_positions.size(); i++) {
 		p << wall_positions[i];
 	}
+
+	p << (sf::Uint32) spike_positions.size();
+	for (int i = 0; i < spike_positions.size(); i++) {
+		p << spike_positions[i];
+	}
+
+	p << prev;
+
+	p << next;
+
+	p << rhythmID;
 
 	return p;
 }
