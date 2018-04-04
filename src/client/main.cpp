@@ -18,6 +18,8 @@
 #include <client/system/SystemUpdateKeyInput.hpp>
 #include <client/system/SystemTranslationAnimation.hpp>
 
+#include <client/misc/RealisticWater.hpp>
+
 #include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentSpikes.hpp>
@@ -249,6 +251,14 @@ int main(int argc, const char **argv)
 	system_button_renderer.setup(smgr, driver);
 	system_render_spikes.setup(smgr, driver);
 
+
+	const f32 width = 512.0f;
+	const f32 height = 512.0f;
+	//std::string resourcePath = "resources";
+	irr::core::stringc resourcePath("resources/realisticWater");
+	RealisticWaterSceneNode* water = new RealisticWaterSceneNode(smgr, width, height, resourcePath);
+	smgr->getRootSceneNode()->addChild(water);
+
 	// Start and Sync Song
 	sync_time(clock);
 	// long offset = 0;
@@ -290,15 +300,15 @@ int main(int argc, const char **argv)
 		device->getCursorControl()->setVisible(true);
 	}
 
-	// irr::scene::ISceneNode* camera_light;
-	// camera_light = smgr->addLightSceneNode(camera_node,
-	//                                        irr::core::vector3df(0.0f, 0.0f, 0.0f),
-	//                                        irr::video::SColorf(0.8f, 0.8f, 0.8f),
-	//                                        10.0f);
+	irr::scene::ISceneNode* camera_light;
+	camera_light = smgr->addLightSceneNode(camera_node,
+	                                       irr::core::vector3df(0.0f, 4.0f, 0.0f),
+	                                       irr::video::SColorf(0.8f, 0.8f, 0.8f),
+	                                       3.0f);
 	// debug static light
-	irr::scene::ILightSceneNode *light_node;
-	light_node = smgr->addLightSceneNode(0, irr::core::vector3df(10.0f, 10.0f, 10.0f),
-	                                     irr::video::SColorf(0.8f, 0.8f, 0.8f), 5.0f);
+	// irr::scene::ILightSceneNode *light_node;
+	// light_node = smgr->addLightSceneNode(0, irr::core::vector3df(10.0f, 10.0f, 10.0f),
+	//                                      irr::video::SColorf(0.8f, 0.8f, 0.8f), 5.0f);
 	// irr::video::SLight& light_data = light_node->getLightData();
 
 	/////////////////////////////////////////////////
