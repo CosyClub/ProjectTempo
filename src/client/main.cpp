@@ -3,6 +3,7 @@
 #include <client/component/ComponentRenderSpikes.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
 #include <client/misc/Lighting.hpp>
+#include <client/misc/RGBtoHSV.hpp>
 #include <client/network/client.hpp>
 #include <client/system/SystemAttack.hpp>
 #include <client/system/SystemButtonRenderer.hpp>
@@ -158,7 +159,7 @@ int main(int argc, const char **argv)
 	irr::scene::ISceneManager *smgr    = device->getSceneManager();
 	irr::gui::IGUIEnvironment *gui_env = device->getGUIEnvironment();
 	// Debug
-	smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
+	//smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
 
 	/////////////////////////////////////////////////
 	// Setup ECS
@@ -296,11 +297,11 @@ int main(int argc, const char **argv)
 		device->getCursorControl()->setVisible(true);
 	}
 
-	irr::scene::ISceneNode* camera_light;
-	camera_light = smgr->addLightSceneNode(camera_node,
-	                                       irr::core::vector3df(0.0f, 4.0f, 0.0f),
-	                                       irr::video::SColorf(0.8f, 0.8f, 0.8f),
-	                                       2.0f);
+	// irr::scene::ISceneNode* camera_light;
+	// camera_light = smgr->addLightSceneNode(camera_node,
+	//                                        irr::core::vector3df(0.0f, 4.0f, 0.0f),
+	//                                        irr::video::SColorf(0.8f, 0.8f, 0.8f),
+	//                                        2.0f);
 	// debug static light
 	// irr::scene::ILightSceneNode *light_node;
 	// light_node = smgr->addLightSceneNode(0, irr::core::vector3df(10.0f, 10.0f, 10.0f),
@@ -324,6 +325,10 @@ int main(int argc, const char **argv)
 	sf::Clock update_floor_clock = sf::Clock();
 	frame_clock.restart();
 	update_floor_clock.restart();
+
+	irr::video::SColor colour;
+	irr::video::SColor colour_red(255, 255, 0, 0);
+	irr::video::SColor colour_purple(255, 255, 0, 255);
 
 	printf("Entering main loop\n");
 	while (device->run()) {
@@ -400,7 +405,14 @@ int main(int argc, const char **argv)
 			system_button_renderer.updateButtons(driver);
 			system_render_spikes.updateSpikes(driver);
 			system_translation_animation.endBeat();
-			system_lighting.update();
+
+			double scale = (double) ((1.0 - 0.0)*((double)rand() / RAND_MAX)) + 0.0; // from (0.0 to 1.0)
+			irr::core::vector3df c1 = client::RGBtoHSV(colour_red);
+			irr::core::vector3df c2 = client::RGBtoHSV(colour_purple);
+			c1.X = c1.X * scale + c2.X * (1.f - scale);
+			colour = client::HSVtoRGB(c1);
+
+			system_lighting.update(colour);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;
@@ -408,7 +420,7 @@ int main(int argc, const char **argv)
 		}
 		glm::ivec2 playerpos =
 		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-		system_stage_renderer.updateStage(smgr, driver, j, playerpos);
+		system_stage_renderer.updateStage(smgr, driver, j, playerpos, colour);
 
 		////////////////
 		// Events at "Delta End"
