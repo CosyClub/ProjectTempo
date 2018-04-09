@@ -28,8 +28,8 @@ namespace client {
 		this->data_ML1.Type = irr::video::ELT_POINT; // ELT_POINT | ELT_SPOT | ELT_DIRECTIONAL
 
 		this->data_ML1.AmbientColor = irr::video::SColorf(0, 0, 0, 0);
-		this->data_ML1.SpecularColor = irr::video::SColorf(0, 0, 0, 0);
-		this->data_ML1.DiffuseColor = irr::video::SColorf(0, 0, 0, 0);
+		this->data_ML1.SpecularColor = irr::video::SColorf(0.5, 0.5, 0.5, 0);
+		this->data_ML1.DiffuseColor = irr::video::SColorf(0.5, 0.5, 0.5, 0);
 		this->light_ML1->setLightData(data_ML1);
 
 	}
@@ -37,8 +37,8 @@ namespace client {
 	void SystemLighting::update(irr::video::SColor colour) {
 
 		this->data_ML1.AmbientColor = colour;//irr::video::SColorf(red, green, blue, 0.0);
-		this->data_ML1.SpecularColor = colour;//irr::video::SColorf(red, green, blue, 0.0);
-		this->data_ML1.DiffuseColor = colour;//irr::video::SColorf(red, green, blue, 0.0);
+		//this->data_ML1.SpecularColor = colour;//irr::video::SColorf(red, green, blue, 0.0);
+		//this->data_ML1.DiffuseColor = colour;//irr::video::SColorf(red, green, blue, 0.0);
 		this->light_ML1->setLightData(data_ML1); // Apply data to the light
 	}
 

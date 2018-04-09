@@ -42,6 +42,7 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 
   this->meshC2->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
 	this->meshC2->getMeshBuffer(1)->getMaterial().EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
+  this->meshC2->getMeshBuffer(1)->getMaterial().DiffuseColor.set(0, 0, 0, 0);
 	this->meshC2->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
 	this->meshC2->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
 
