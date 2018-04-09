@@ -114,7 +114,7 @@ void SystemStageRenderer::updateStage(irr::scene::ISceneManager *smgr,
 
 		float height = heights[i].height;
 
-		// qqii:: uncommented this block with no problems, is this legacy???
+		// Stop logic on tiles that are not visible to camera
 		if (pos.y < playerpos.x - 30 || pos.y > playerpos.x + 13 || pos.x < playerpos.y - 30
 		    || pos.x > playerpos.y + 30) {
 			continue;

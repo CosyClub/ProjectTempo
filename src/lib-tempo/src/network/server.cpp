@@ -13,6 +13,7 @@
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
+#include <tempo/component/ComponentSpikes.hpp>
 #include <tempo/component/ComponentTeam.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
 
@@ -210,6 +211,7 @@ sf::Packet packageComponents(anax::Entity entity)
 	ADD_COMPONENT(entity, c, packet, ComponentStagePosition)
 	ADD_COMPONENT(entity, c, packet, ComponentStageRotation)
 	ADD_COMPONENT(entity, c, packet, ComponentStageTranslation)
+	ADD_COMPONENT(entity, c, packet, ComponentSpikes)
 	ADD_COMPONENT(entity, c, packet, ComponentTeam)
 	ADD_COMPONENT(entity, c, packet, ComponentWeapon)
 
