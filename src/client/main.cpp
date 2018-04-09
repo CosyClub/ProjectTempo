@@ -159,7 +159,7 @@ int main(int argc, const char **argv)
 	irr::scene::ISceneManager *smgr    = device->getSceneManager();
 	irr::gui::IGUIEnvironment *gui_env = device->getGUIEnvironment();
 	// Debug
-	smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
+	//smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
 
 	/////////////////////////////////////////////////
 	// Setup ECS
@@ -297,11 +297,11 @@ int main(int argc, const char **argv)
 		device->getCursorControl()->setVisible(true);
 	}
 
-	irr::scene::ISceneNode* camera_light;
-	camera_light = smgr->addLightSceneNode(camera_node,
-	                                       irr::core::vector3df(0.0f, 4.0f, 0.0f),
-	                                       irr::video::SColorf(0.8f, 0.8f, 0.8f),
-	                                       2.0f);
+	// irr::scene::ISceneNode* camera_light;
+	// camera_light = smgr->addLightSceneNode(camera_node,
+	//                                        irr::core::vector3df(0.0f, 4.0f, 0.0f),
+	//                                        irr::video::SColorf(0.8f, 0.8f, 0.8f),
+	//                                        2.0f);
 	// debug static light
 	// irr::scene::ILightSceneNode *light_node;
 	// light_node = smgr->addLightSceneNode(0, irr::core::vector3df(10.0f, 10.0f, 10.0f),
