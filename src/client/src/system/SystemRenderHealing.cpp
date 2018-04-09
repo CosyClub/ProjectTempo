@@ -49,9 +49,6 @@ void SystemRenderHealing::update()
 			psystem->addAffector(affector_fade);
 			affector_fade->drop();
 
-			// psystem->setPosition(irr::core::vector3df(pos.getOrigin().x,
-			//                                           stage.getHeight(pos.getOrigin()),
-			//                                           pos.getOrigin().y));
 			psystem->setPosition(psystem->getPosition() + irr::core::vector3df(0.1f,0.1f,0.f));
 			psystem->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 			psystem->setMaterialFlag(irr::video::EMF_ZWRITE_ENABLE, false);
@@ -85,9 +82,6 @@ void SystemRenderHealing::endBeat()
     }
     else ++it;
 	}
-
-	//particle_systems.clear();
-
 
 }
 
