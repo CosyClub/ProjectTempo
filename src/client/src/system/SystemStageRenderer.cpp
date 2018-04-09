@@ -83,8 +83,13 @@ void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVi
 void SystemStageRenderer::updateStage(irr::scene::ISceneManager *smgr,
                                       irr::video::IVideoDriver * driver,
                                       int                        j,
-                                      glm::ivec2                 playerpos)
+                                      glm::ivec2                 playerpos,
+                                      irr::video::SColor colour)
 {
+
+  this->meshC1->getMeshBuffer(1)->getMaterial().EmissiveColor = colour;//set(colour.a, colour.r, colour.g, colour.b);
+
+
 	irr::scene::ISceneNode *par = this->node->getParent();
 	par->removeChild(this->node);
 
