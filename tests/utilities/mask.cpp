@@ -26,7 +26,7 @@ TEST_CASE("2x2 mask at origin", "[libtempo][utilities][mask]"){
 	}
 }
 
-TEST_CASE("4x2 mask at origin", "[utilities][mask]"){
+TEST_CASE("4x2 mask at origin", "[libtempo][utilities][mask]"){
 	float values[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
 	tempo::Mask mask(glm::ivec2(0, 0), values, glm::ivec2(4, 2));
 
@@ -53,7 +53,7 @@ TEST_CASE("4x2 mask at origin", "[utilities][mask]"){
 	}
 }
 
-TEST_CASE("3x3 mask at (10,20)", "[utilities][mask]"){
+TEST_CASE("3x3 mask at (10,20)", "[libtempo][utilities][mask]"){
 	float values[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 	tempo::Mask mask(glm::ivec2(10, 20), values, glm::ivec2(3, 3));
 
