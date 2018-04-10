@@ -145,7 +145,7 @@ int main(int argc, const char **argv)
 
 
 	irr::IrrlichtDevice *device = irr::createDevice(
-	  irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1280, 720), 16, false, false, false);
+	  irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1920, 1080), 16, true, false, false);
 	if (!device) {
 		printf("Failed to create Irrlicht Device\n");
 		return 1;
@@ -204,6 +204,7 @@ int main(int argc, const char **argv)
 	system_update_key_input.setup(device);
 	system_stage_renderer.setup(smgr, driver,{255, 175, 0, 0}, {255, 50, 50, 50});
 	system_render_scene_node.setup(smgr, driver);
+	system_render_gui.setup(device, driver);
 
 	// must be after system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);

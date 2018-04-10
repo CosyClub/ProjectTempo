@@ -8,11 +8,16 @@
 namespace client
 {
 struct SystemRenderGUI {
+
+	void setup(irr::IrrlichtDevice* device,
+	           irr::video::IVideoDriver* driver);
+
 	void update(irr::video::IVideoDriver * driver,
 	            irr::gui::IGUIEnvironment *gui_env,
 	            tempo::Clock &             clock,
 	            int                        combo,
 						  tempo::ComponentHealth     comp_health);
+
 };
 }
 

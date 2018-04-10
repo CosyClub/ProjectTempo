@@ -3,6 +3,16 @@
 
 namespace client
 {
+
+void SystemRenderGUI::setup(irr::IrrlichtDevice *device,
+                             irr::video::IVideoDriver* driver) {
+
+  device->getGUIEnvironment()->addImage(
+                  driver->getTexture("resources/materials/textures/HUD.png"),
+                  irr::core::position2d<irr::s32>(0,0), true);
+
+}
+
 void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
                              irr::gui::IGUIEnvironment *gui_env,
                              tempo::Clock &             clock,
@@ -33,10 +43,10 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
   // Display combo bar
 	float combo_scale = clock.beat_progress_desc();
 
-  int combo_width_left    = screenSize.Width / 2 - (screenSize.Width * 0.22) * combo_scale;
-  int combo_width_right   = screenSize.Width / 2 + (screenSize.Width * 0.22) * combo_scale;
-  int combo_height_top    = 0.91 * screenSize.Height;
-  int combo_height_bottom = 0.95 * screenSize.Height;
+  int combo_width_left    = screenSize.Width / 2 - (screenSize.Width * 0.26) * combo_scale;
+  int combo_width_right   = screenSize.Width / 2 + (screenSize.Width * 0.26) * combo_scale;
+  int combo_height_top    = (1.f - 3.f / 36) * screenSize.Height;
+  int combo_height_bottom = (1.f - 1.f / 36) * screenSize.Height;
 
 	if (combo_scale >= 0.3) {
 		driver->draw2DRectangle(
@@ -54,10 +64,10 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
   // Display health bar
   float health_scale =  (float) comp_health.current_health /  (float) comp_health.max_health;
 
-  int health_width_left    = 0.90 * screenSize.Width;
-  int health_width_right   = 0.94 * screenSize.Width;
-  int health_height_top    = (0.75 * health_scale + (0.95 * (1.f - health_scale))) * screenSize.Height;
-  int health_height_bottom = 0.95 * screenSize.Height;
+  int health_width_left    = (1.f - 3.f / 64) * screenSize.Width;
+  int health_width_right   = (1.f - 1.f / 64) * screenSize.Width;
+  int health_height_top    = (1.f - 1.f / 36 - 0.499 * health_scale  ) * screenSize.Height;
+  int health_height_bottom = (1.f - 1.f / 36) * screenSize.Height;
 
   irr::core::vector3df c1 = RGBtoHSV(colour_green);
   irr::core::vector3df c2 = RGBtoHSV(colour_red);
