@@ -2,6 +2,8 @@ link_directories("${TEMPO_LIB_DIR}")
 
 add_executable(unit-tests
 	${CMAKE_CURRENT_LIST_DIR}/main.cpp
+
+	${CMAKE_CURRENT_LIST_DIR}/utilities/mask.cpp
 )
 
 set_target_properties(unit-tests PROPERTIES OUTPUT_NAME "UnitTests")
