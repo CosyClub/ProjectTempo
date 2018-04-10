@@ -89,6 +89,13 @@ set(TEMPO_IRRLICHT_INCLUDE_DIR
 	"${TEMPO_IRRLICHT_DIR}/include"
 )
 
+set(TEMPO_CLIENT_DIR
+	"${CMAKE_CURRENT_LIST_DIR}/src/client"
+)
+set(TEMPO_CLIENT_INCLUDE_DIR
+	"${TEMPO_CLIENT_DIR}/include"
+)
+
 add_subdirectory(${TEMPO_EXTLIBS_DIR})
 add_subdirectory(src)
 add_subdirectory(tests)

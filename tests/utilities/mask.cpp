@@ -3,7 +3,7 @@
 
 #include <tempo/mask.hpp>
 
-TEST_CASE("2x2 mask at origin", "[utilities][mask]"){
+TEST_CASE("2x2 mask at origin", "[libtempo][utilities][mask]"){
 	float values[] = { 1, 2, 3, 4 };
 	tempo::Mask mask(glm::ivec2(0, 0), values, glm::ivec2(2, 2));
 
