@@ -6,6 +6,7 @@ os:
   - linux
 script:
   - mkdir build && cd build && cmake .. && make
+  - cd bin && ./UnitTests
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libopenal-dev libvorbis-dev libflac-dev
