@@ -31,11 +31,14 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
   // Display Combo text
 	irr::gui::IGUIFont *font = gui_env->getFont("resources/fonts/joystix/Joystix.xml");
 	if (font) {
-		irr::core::stringw str = L"Combo:";
-		str += combo;
+    char buffer[5];
+    sprintf(buffer, "%3d", combo);
+
+		irr::core::stringw str = L"";
+		str += buffer;
 		font->draw(
 		  str.c_str(),
-		  irr::core::rect<irr::s32>(10, 0.9 * screenSize.Height, 0.1 * screenSize.Width, 300),
+		  irr::core::rect<irr::s32>(60, 0.85 * screenSize.Height, 0.2 * screenSize.Width, 300),
 		  irr::video::SColor(255, 255, 255, 255));
 	}
 
