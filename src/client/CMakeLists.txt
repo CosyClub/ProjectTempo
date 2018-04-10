@@ -12,6 +12,7 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemCombo.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemEntity.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemGraphicsCreation.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemLighting.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemMovement.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemParseKeyInput.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderGUI.hpp
@@ -34,6 +35,7 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemCombo.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemEntity.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemGraphicsCreation.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemLighting.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemMovement.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemParseKeyInput.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderGUI.cpp
@@ -46,9 +48,11 @@ add_executable(client
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemUpdateKeyInput.cpp
 
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/CBatchingMesh.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/Lighting.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/RGBtoHSV.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/YAlignedBillboardSceneNode.hpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/CBatchingMesh.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/misc/Lighting.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/RGBtoHSV.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/YAlignedBillboardSceneNode.cpp
 

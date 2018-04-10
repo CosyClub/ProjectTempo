@@ -2,12 +2,15 @@
 #include <client/component/ComponentRenderButtonGroup.hpp>
 #include <client/component/ComponentRenderSpikes.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
+#include <client/misc/Lighting.hpp>
+#include <client/misc/RGBtoHSV.hpp>
 #include <client/network/client.hpp>
 #include <client/system/SystemAttack.hpp>
 #include <client/system/SystemButtonRenderer.hpp>
 #include <client/system/SystemCombo.hpp>
 #include <client/system/SystemEntity.hpp>
 #include <client/system/SystemGraphicsCreation.hpp>
+#include <client/system/SystemLighting.hpp>
 #include <client/system/SystemMovement.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
 #include <client/system/SystemRenderGUI.hpp>
@@ -38,6 +41,7 @@
 #include <SFML/System/Time.hpp>
 
 #include <irrlicht.h>
+#include <vector3d.h>
 
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
@@ -156,7 +160,7 @@ int main(int argc, const char **argv)
 	irr::scene::ISceneManager *smgr    = device->getSceneManager();
 	irr::gui::IGUIEnvironment *gui_env = device->getGUIEnvironment();
 	// Debug
-	smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
+	//smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
 
 	/////////////////////////////////////////////////
 	// Setup ECS
@@ -169,6 +173,7 @@ int main(int argc, const char **argv)
 	client::SystemCombo             system_combo;
 	client::SystemEntity           system_entity;
 	client::SystemGraphicsCreation system_gc;
+	client::SystemLighting		   system_lighting;
 	client::SystemMovement         system_movement;
 	client::SystemStageRenderer    system_stage_renderer;
 	client::SystemParseKeyInput    system_parse_key_input;
@@ -187,6 +192,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
 	world.addSystem(system_gc);
+	world.addSystem(system_lighting);
 	world.addSystem(system_trigger);
 	world.addSystem(system_button_renderer);
 	world.addSystem(system_stage_renderer);
@@ -252,6 +258,7 @@ int main(int argc, const char **argv)
 	system_render_health_bars.setup(smgr);
 	system_button_renderer.setup(smgr, driver);
 	system_render_spikes.setup(smgr, driver);
+	system_lighting.setup(smgr, driver);
 
 	// Start and Sync Song
 	sync_time(clock);
@@ -296,14 +303,18 @@ int main(int argc, const char **argv)
 
 	// irr::scene::ISceneNode* camera_light;
 	// camera_light = smgr->addLightSceneNode(camera_node,
-	//                                        irr::core::vector3df(0.0f, 0.0f, 0.0f),
+	//                                        irr::core::vector3df(0.0f, 4.0f, 0.0f),
 	//                                        irr::video::SColorf(0.8f, 0.8f, 0.8f),
-	//                                        10.0f);
+	//                                        2.0f);
 	// debug static light
-	irr::scene::ILightSceneNode *light_node;
-	light_node = smgr->addLightSceneNode(0, irr::core::vector3df(10.0f, 10.0f, 10.0f),
-	                                     irr::video::SColorf(0.8f, 0.8f, 0.8f), 5.0f);
+	// irr::scene::ILightSceneNode *light_node;
+	// light_node = smgr->addLightSceneNode(0, irr::core::vector3df(10.0f, 10.0f, 10.0f),
+	//                                      irr::video::SColorf(0.8f, 0.8f, 0.8f), 5.0f);
 	// irr::video::SLight& light_data = light_node->getLightData();
+
+	client::createLasers(smgr, driver, { {40,12}, {40,52}, {40,92} });
+
+	client::createDiscoBalls(smgr, driver, { {40,6} });
 
 	/////////////////////////////////////////////////
 	// Main loop
@@ -319,15 +330,24 @@ int main(int argc, const char **argv)
 	frame_clock.restart();
 	update_floor_clock.restart();
 
+	irr::video::SColor colour;
+	irr::video::SColor colour_red(255, 255, 0, 0);
+	irr::video::SColor colour_purple(255, 255, 0, 255);
+
 	printf("Entering main loop\n");
 	while (device->run()) {
 		// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
 		// float dt = dt_timer.getElapsedTime().asSeconds();
 		// dt_timer.restart();
 
+		// Work out a frame delta time.
+		const irr::u32 now = device->getTimer()->getTime();
+		/// frameDeltaTime = (f32)(now - then)/1000.f; // Time in seconds
+
 		////////////////
 		// Events all the time
 		{
+
 			// Check for new entities from server
 			system_entity.creationCheck(world);
 			system_entity.deletionCheck(world);
@@ -393,13 +413,22 @@ int main(int argc, const char **argv)
 			system_render_spikes.updateSpikes(driver);
 
 			system_translation_animation.endBeat();
+
+			double scale = (double) ((1.0 - 0.0)*((double)rand() / RAND_MAX)) + 0.0; // from (0.0 to 1.0)
+			irr::core::vector3df c1 = client::RGBtoHSV(colour_red);
+			irr::core::vector3df c2 = client::RGBtoHSV(colour_purple);
+			c1.X = c1.X * scale + c2.X * (1.f - scale);
+			colour = client::HSVtoRGB(c1);
+
+			system_lighting.update(colour);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;
+
 		}
 		glm::ivec2 playerpos =
 		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-		system_stage_renderer.updateStage(smgr, driver, j, playerpos);
+		system_stage_renderer.updateStage(smgr, driver, j, playerpos, colour);
 
 		////////////////
 		// Events at "Delta End"
