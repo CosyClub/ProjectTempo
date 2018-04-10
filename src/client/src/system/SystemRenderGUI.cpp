@@ -29,7 +29,7 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
   irr::video::SColor colour_blue(255, 135, 206, 250);
 
   // Display Combo text
-	irr::gui::IGUIFont *font = gui_env->getFont("resources/fonts/joystix/Joystix.xml");
+	irr::gui::IGUIFont *font = gui_env->getFont("resources/fonts/joystix72/myfont.xml");
 	if (font) {
     char buffer[5];
     sprintf(buffer, "%3d", combo);
@@ -38,7 +38,7 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
 		str += buffer;
 		font->draw(
 		  str.c_str(),
-		  irr::core::rect<irr::s32>(60, 0.85 * screenSize.Height, 0.2 * screenSize.Width, 300),
+		  irr::core::rect<irr::s32>(40, 0.84 * screenSize.Height, 0.2 * screenSize.Width, 300),
 		  irr::video::SColor(255, 255, 255, 255));
 	}
 
