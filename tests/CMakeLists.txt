@@ -11,6 +11,7 @@ add_executable(unit-tests
 
 	# Test cases below...
 	${CMAKE_CURRENT_LIST_DIR}/utilities/mask.cpp
+	${CMAKE_CURRENT_LIST_DIR}/utilities/RGBandHSV.cpp
 )
 
 set_target_properties(unit-tests PROPERTIES OUTPUT_NAME "UnitTests")
