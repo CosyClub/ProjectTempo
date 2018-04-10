@@ -11,12 +11,10 @@ add_executable(unit-tests
 
 	# Test cases below...
 	${CMAKE_CURRENT_LIST_DIR}/utilities/mask.cpp
-	${CMAKE_CURRENT_LIST_DIR}/utilities/RGBandHSV.cpp
 )
 
 set_target_properties(unit-tests PROPERTIES OUTPUT_NAME "UnitTests")
 
-message("****** ${TEMPO_CLIENT_INCLUDE_DIR}")
 target_include_directories(unit-tests PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 target_include_directories(unit-tests PRIVATE ${TEMPO_CLIENT_INCLUDE_DIR})
 target_include_directories(unit-tests PRIVATE ${TEMPO_IRRLICHT_INCLUDE_DIR})
