@@ -1,4 +1,4 @@
-	#include <client/component/ComponentKeyInput.hpp>
+#include <client/component/ComponentKeyInput.hpp>
 #include <client/component/ComponentRenderButtonGroup.hpp>
 #include <client/component/ComponentRenderSpikes.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
@@ -331,8 +331,6 @@ int main(int argc, const char **argv)
 	update_floor_clock.restart();
 
 	irr::video::SColor colour;
-	irr::video::SColor colour_red(255, 255, 0, 0);
-	irr::video::SColor colour_purple(255, 255, 0, 255);
 
 	printf("Entering main loop\n");
 	while (device->run()) {
@@ -414,11 +412,7 @@ int main(int argc, const char **argv)
 
 			system_translation_animation.endBeat();
 
-			double scale = (double) ((1.0 - 0.0)*((double)rand() / RAND_MAX)) + 0.0; // from (0.0 to 1.0)
-			irr::core::vector3df c1 = client::RGBtoHSV(colour_red);
-			irr::core::vector3df c2 = client::RGBtoHSV(colour_purple);
-			c1.X = c1.X * scale + c2.X * (1.f - scale);
-			colour = client::HSVtoRGB(c1);
+			colour = client::randomHSV();
 
 			system_lighting.update(colour);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
