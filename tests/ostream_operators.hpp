@@ -16,6 +16,9 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
+#include <vector3d.h>
+#include <SColor.h>
+
 namespace glm {
 	template<typename T>
 	inline std::ostream& operator<<(std::ostream& os, glm::tvec2<T> v){
@@ -30,6 +33,23 @@ namespace glm {
 	template<typename T>
 	inline std::ostream& operator<<(std::ostream& os, glm::tvec4<T> v){
 		return os << "(" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ")";
+	}
+}
+
+namespace irr {
+	namespace core {
+		inline std::ostream& operator<<(std::ostream& os, irr::core::vector3df v){
+		  return os << "(" << v.X << ", " << v.Y << ", " << v.Z << ")";
+		}
+	}
+	namespace video {
+		inline std::ostream& operator<<(std::ostream& os, irr::video::SColor c){
+			return os << "{ r: " << c.getRed()
+			          << ", g: " << c.getGreen()
+			          << ", b: " << c.getBlue()
+			          << ", a: " << c.getAlpha()
+			          << " }";
+		}
 	}
 }
 

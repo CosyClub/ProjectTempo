@@ -1,4 +1,5 @@
 #include <client/misc/RGBtoHSV.hpp>
+#include <algorithm>
 
 /*
 Copyright (c) 2014 Adam 'entity' Krupicka
@@ -32,12 +33,12 @@ namespace client {
      if (hsv.X < 0)
          hsv.X += 360;
 
-     hsv.Y = M;
+     hsv.Z = M;
 
-     if (hsv.Y == 0)
-         hsv.Z = 0;
+     if (hsv.Z == 0)
+         hsv.Y = 0;
      else
-         hsv.Z = C / hsv.Y;
+         hsv.Y = C / hsv.Z;
 
      return hsv;
   }
@@ -49,32 +50,34 @@ namespace client {
 
   irr::video::SColorf HSVtoRGBf(irr::core::vector3df hsv)
   {
-     irr::video::SColorf rgb;
+	  // Taken from:
+	  // https://www.splinter.com.au/converting-hsv-to-rgb-colour-using-c/
+	  irr::f32 h = hsv.X;
+	  irr::f32 s = hsv.Y;
+	  irr::f32 v = hsv.Z;
 
-     irr::f32 C = hsv.Z * hsv.Y;
-     irr::f32 H = hsv.X / 60;
-     irr::f32 Hmod = H - (2 * (int(H) / 2)); // same as H = fmod(H, 2)
-     irr::f32 X = C * (1 - std::abs(Hmod - 1));
+	  h /= 360.0;
 
-     if (H < 1)
-         rgb = irr::video::SColorf(C, X, 0);
-     else if (H < 2)
-         rgb = irr::video::SColorf(X, C, 0);
-     else if (H < 3)
-         rgb = irr::video::SColorf(0, C, X);
-     else if (H < 4)
-         rgb = irr::video::SColorf(0, X, C);
-     else if (H < 5)
-         rgb = irr::video::SColorf(X, 0, C);
-     else if (H < 6)
-         rgb = irr::video::SColorf(C, 0, X);
+	  int i      = h * 6;
+	  irr::f32 f = h * 6 - i;
+	  irr::f32 p = v * (1 - s      );
+	  irr::f32 q = v * (1 - f*s    );
+	  irr::f32 t = v * (1 - (1-f)*s);
 
-     irr::f32 m = hsv.Z - C;
-     rgb.r += m;
-     rgb.g += m;
-     rgb.b += m;
-
-     return rgb;
+	  // -1 and 6 cases are included in case float rounding errors
+	  // push us just over the limit, hue and hence i wraps around
+	  // as its measured in degrees
+	  switch(i){
+	  case  6 :
+	  case  0 : return irr::video::SColorf(v,t,p);
+	  case  1 : return irr::video::SColorf(q,v,p);
+	  case  2 : return irr::video::SColorf(p,v,t);
+	  case  3 : return irr::video::SColorf(p,q,v);
+	  case  4 : return irr::video::SColorf(t,p,v);
+	  case -1 :
+	  case  5 : return irr::video::SColorf(v,p,q);
+	  }
+	  return irr::video::SColorf(0,0,0);
   }
 
   irr::video::SColor HSVtoRGB(irr::core::vector3df hsv)
