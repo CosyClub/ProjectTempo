@@ -5,7 +5,8 @@ compiler:
 os:
   - linux
 script:
-  - mkdir build && cd build && cmake .. && make
+  - mkdir -p $TRAVIS_BUILD_DIR/build && cd $TRAVIS_BUILD_DIR/build && cmake .. && make
+  - cd $TRAVIS_BUILD_DIR/bin && ./UnitTests
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libopenal-dev libvorbis-dev libflac-dev
