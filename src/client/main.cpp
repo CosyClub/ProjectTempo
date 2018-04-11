@@ -331,6 +331,7 @@ int main(int argc, const char **argv)
 	update_floor_clock.restart();
 
 	irr::video::SColor colour;
+	srand(clock.get_time().asMicroseconds());
 
 	printf("Entering main loop\n");
 	while (device->run()) {
