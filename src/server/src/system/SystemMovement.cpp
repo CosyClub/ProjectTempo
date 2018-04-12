@@ -10,7 +10,7 @@ namespace server
 using tempo::operator<<;
 using tempo::operator>>;
 
-void SystemMovement::recieveTranslations(anax::World &w)
+void SystemMovement::receiveTranslations(anax::World &w)
 {
 	tempo::Queue<sf::Packet> *queue =
 	  tempo::get_system_queue(tempo::QueueID::MOVEMENT_INTENT_UPDATES);

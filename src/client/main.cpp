@@ -14,6 +14,7 @@
 #include <client/system/SystemMovement.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
 #include <client/system/SystemRenderGUI.hpp>
+#include <client/system/SystemRenderHealing.hpp>
 #include <client/system/SystemRenderHealthBars.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
 #include <client/system/SystemRenderSpikes.hpp>
@@ -177,6 +178,7 @@ int main(int argc, const char **argv)
 	client::SystemStageRenderer    system_stage_renderer;
 	client::SystemParseKeyInput    system_parse_key_input;
 	client::SystemRenderGUI        system_render_gui;
+	client::SystemRenderHealing    system_render_healing(driver, smgr);
 	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
 	client::SystemRenderSpikes  	 system_render_spikes;
@@ -194,6 +196,8 @@ int main(int argc, const char **argv)
 	world.addSystem(system_trigger);
 	world.addSystem(system_button_renderer);
 	world.addSystem(system_stage_renderer);
+
+	world.addSystem(system_render_healing);
 	world.addSystem(system_render_health_bars);
 	world.addSystem(system_render_scene_node);
 	world.addSystem(system_render_spikes);
@@ -333,15 +337,11 @@ int main(int argc, const char **argv)
 	frame_clock.restart();
 	update_floor_clock.restart();
 
-	irr::video::SColor colour;
-	irr::video::SColor colour_red(255, 255, 0, 0);
-	irr::video::SColor colour_purple(255, 255, 0, 255);
+	irr::video::SColor random_colour;
+	srand(clock.get_time().asMicroseconds());
 
 	printf("Entering main loop\n");
 	while (device->run()) {
-		// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
-		// float dt = dt_timer.getElapsedTime().asSeconds();
-		// dt_timer.restart();
 
 		// Work out a frame delta time.
 		const irr::u32 now = device->getTimer()->getTime();
@@ -372,7 +372,7 @@ int main(int argc, const char **argv)
 
 			// Deprecated/To-be-worked-on
 			system_health.CheckHealth();
-			system_health.recieveHealth(world);
+			system_health.client_receiveHealth(world);
 
 			system_less_jank.lessJank();
 			// Update animations from translations received from server
@@ -381,6 +381,7 @@ int main(int argc, const char **argv)
 			// Graphics updates
 			system_render_scene_node.update();
 			system_render_health_bars.update();
+			system_render_healing.update();
 
 			// TODO: Make a system for updating camera position
 			irr::core::vector3df camera_target = sn.node->getAbsolutePosition();
@@ -408,24 +409,20 @@ int main(int argc, const char **argv)
 			j = j % 22;
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
+
+			system_render_healing.endBeat();
 			system_render_spikes.updateSpikes(driver);
+
 			system_translation_animation.endBeat();
 
-			double scale = (double) ((1.0 - 0.0)*((double)rand() / RAND_MAX)) + 0.0; // from (0.0 to 1.0)
-			irr::core::vector3df c1 = client::RGBtoHSV(colour_red);
-			irr::core::vector3df c2 = client::RGBtoHSV(colour_purple);
-			c1.X = c1.X * scale + c2.X * (1.f - scale);
-			colour = client::HSVtoRGB(c1);
+			random_colour = client::randomHSV();
 
-			system_lighting.update(colour);
-			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
-			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
-			// << std::endl;
+			system_lighting.update(random_colour);
 
 		}
 		glm::ivec2 playerpos =
 		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-		system_stage_renderer.updateStage(smgr, driver, j, playerpos, colour);
+		system_stage_renderer.updateStage(smgr, driver, j, playerpos, random_colour);
 
 		////////////////
 		// Events at "Delta End"
@@ -433,16 +430,6 @@ int main(int argc, const char **argv)
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 		}
-
-		// Rendering Code
-		// if (!device->isWindowActive()) {
-		//	device->yield();
-		//	continue;
-		//}
-
-		// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
-		// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
-		// << std::endl;
 
 		driver->beginScene(true, true);
 		smgr->drawAll();

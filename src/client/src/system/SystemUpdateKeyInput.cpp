@@ -71,7 +71,7 @@ void SystemUpdateKeyInput::addKeys()
 		ki.keysPressed.insert(ki.keysPressed.end(), keys.begin(), keys.end());
 	}
 
-	// clear the keys in the reciever
+	// clear the keys in the receiver
 	receiver.clearChars();
 }
 
