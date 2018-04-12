@@ -84,7 +84,7 @@ std::pair<bool, sf::Packet> receiveMessage(QueueID qid)
 {
 	tempo::Queue<sf::Packet> *queue = get_system_queue(qid);
 	uint32_t count = 0;
-	
+
 	// 250 * 20ms = 5 seconds
 	while (queue->empty() && count++ < 250) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
@@ -147,7 +147,7 @@ uint32_t handshakeHello(anax::World &world)
 	send << port_ci;
 	send << port_co;
 
-	std::cout << "Your address is: " 
+	std::cout << "Your address is: "
 	          << sf::IpAddress::getLocalAddress().toString() << ":"
 	          << tempo::port_co << std::endl;
 
@@ -157,7 +157,7 @@ uint32_t handshakeHello(anax::World &world)
 		// Send HELLO
 		std::cout << "Attempting to connect to the server..." << std::endl;
 		sendMessage(QueueID::HANDSHAKE, send);
-	
+
 		// Receive HELLO_ROG
 		std::pair<bool, sf::Packet> o = receiveMessage(QueueID::HANDSHAKE);
 		b       = o.first;
@@ -212,7 +212,7 @@ bool handshakeRoleReq(uint32_t id, ClientRole roleID, ClientRoleData &roleData, 
 		// Send ROLEREQ
 		std::cout << "Joining game..." << std::endl;
 		sendMessage(QueueID::HANDSHAKE, send);
-	
+
 		// Recieve ROLEREQ_ROG
 		std::pair<bool, sf::Packet> o = receiveMessage(QueueID::HANDSHAKE);
 		b       = o.first;
@@ -289,11 +289,17 @@ void sendHeatbeat() {
 void disconnectFromServer(anax::Entity &entity_player)
 {
 	sf::Packet p;
-	tempo::operator<<(p, tempo::localtoserver[entity_player.getId()]);
-	p << sf::IpAddress::getLocalAddress().toInteger();
-	p << tempo::port_ci;
-	p << true;
-	tempo::sendMessage(tempo::QueueID::ENTITY_DELETION, p);
+	anax::Entity::Id id = entity_player.getId();
+	LOCALTOSERVER(id);
+	if (id.isNull()) {
+		printf("Wat!??! When trying to disconnect, we couldn't find the ID of ourself!\n");
+	} else {
+		tempo::operator<<(p, id);
+		p << sf::IpAddress::getLocalAddress().toInteger();
+		p << tempo::port_ci;
+		p << true;
+		tempo::sendMessage(tempo::QueueID::ENTITY_DELETION, p);
+	}
 }
 
 

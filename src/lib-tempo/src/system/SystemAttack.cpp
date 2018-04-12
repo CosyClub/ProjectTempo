@@ -45,10 +45,16 @@ void SystemAttack::Attack(anax::Entity attacker)
 		health.HealthUpdate(-1 * damage);
 	}
 
-	sf::Packet p;
-	p << Messages::ATTACK;
-	p << localtoserver[attacker.getId()];
-	sendMessage(QueueID::SYSTEM_ATTACK, p);
+	anax::Entity::Id id = attacker.getId();
+	LOCALTOSERVER(id)
+	if (id.isNull()) {
+		printf("Failed to find ID (%s:%s)", __FILE__, __LINE__);
+	} else {
+		sf::Packet p;
+		p << Messages::ATTACK;
+		p << id;
+		sendMessage(QueueID::SYSTEM_ATTACK, p);
+	}
 }
 
 void SystemAttack::Broadcast(anax::World &w)

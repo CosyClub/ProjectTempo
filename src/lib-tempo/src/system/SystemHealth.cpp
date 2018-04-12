@@ -29,7 +29,7 @@ void SystemHealth::broadcastHealth()
 {
 	auto entities = getEntities();
 
-	for (auto &entity : entities) 
+	for (auto &entity : entities)
 	{
 		auto &h = entity.getComponent<ComponentHealth>();
 		anax::Entity::Id id = entity.getId();
@@ -62,11 +62,12 @@ void SystemHealth::recieveHealth(anax::World &world)
 
 		anax::Entity::Id id;
 		p >> id;
+		SERVERTOLOCAL(id)
+		if (id.isNull()) continue;
 
 		int health;
 		p >> health;
 
-		id = servertolocal[id];
 		anax::Entity e = anax::Entity(world, id);
 		ComponentHealth &h = e.getComponent<ComponentHealth>();
 		h.current_health = health;

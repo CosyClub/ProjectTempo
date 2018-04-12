@@ -36,7 +36,16 @@ void SystemEntity::deletionCheck(anax::World &w)
 
 		anax::Entity::Id id, ids;
 		p >> id;
-		ids = tempo::servertolocal[id];
+
+		// Not using macro as this requires special case stuff
+		std::map<anax::Entity::Id, anax::Entity::Id>::iterator it = tempo::servertolocal.find(id);
+		if (it != tempo::servertolocal.end()) {
+			ids = tempo::servertolocal[id];
+		} else {
+			ids = anax::Entity::Id();
+		}
+		if (ids.isNull()) continue;
+
 		tempo::servertolocal.erase(id);
 		tempo::localtoserver.erase(ids);
 		anax::Entity e(w, ids);

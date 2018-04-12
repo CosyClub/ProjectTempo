@@ -27,7 +27,13 @@ void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing, b
 {
 	// Send Movement Intent to Networking
 	sf::Packet p;
-	p << tempo::localtoserver[entity.getId()];
+	anax::Entity::Id id = entity.getId();
+	LOCALTOSERVER(id)
+	if (id.isNull()) {
+		printf("Failed to find ID (%s:%s)", __FILE__, __LINE__);
+		abort();
+	}
+	p << id;
 	// Always include change of facing direction
 	auto &sr = entity.getComponent<tempo::ComponentStageRotation>();
 
@@ -71,9 +77,16 @@ void addAttack(anax::Entity &entity, bool withinDelta)
 		a.damage                  = w.damage;
 		a.beats_until_attack      = w.beats_until_attack;
 
+		anax::Entity::Id id = entity.getId();
+		LOCALTOSERVER(id)
+		if (id.isNull()) {
+			printf("Failed to find ID (%s:%s)", __FILE__, __LINE__);
+			abort();
+		}
+
 		sf::Packet p;
 		p << static_cast<uint32_t>(tempo::MessageAttack::UPDATE_INTENT);
-		p << tempo::localtoserver[entity.getId()];
+		p << id;
 		p << a.damage;
 		p << a.beats_until_attack;
 		tempo::sendMessage(tempo::QueueID::SYSTEM_ATTACK, p);
@@ -84,18 +97,25 @@ void updateCombo(anax::Entity &entity, bool withinDelta)
 {
 	if (entity.hasComponent<tempo::ComponentCombo>()) {
 		tempo::ComponentCombo &c = entity.getComponent<tempo::ComponentCombo>();
+		anax::Entity::Id id = entity.getId();
+		LOCALTOSERVER(id)
+		if (id.isNull()) {
+			printf("Failed to find ID (%s:%s)", __FILE__, __LINE__);
+			abort();
+		}
+
 		if (withinDelta) {
 			// c.performAction();
 
 			sf::Packet p;
-			p << tempo::localtoserver[entity.getId()];
+			p << id;
 			p << static_cast<uint8_t>(tempo::MessageCombo::INCREMENT_COMBO);
 			tempo::sendMessage(tempo::QueueID::COMBO_UPDATES, p);
 		} else {
 			// c.breakCombo();
-			
+
 			sf::Packet p;
-			p << tempo::localtoserver[entity.getId()];
+			p << id;
 			p << static_cast<uint8_t>(tempo::MessageCombo::BROKEN_COMBO);
 			tempo::sendMessage(tempo::QueueID::COMBO_UPDATES, p);
 		}
