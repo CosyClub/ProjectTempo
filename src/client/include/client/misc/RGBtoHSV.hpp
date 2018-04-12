@@ -1,8 +1,8 @@
 #ifndef CLIENT_MISC_RGBtoHSV
 #define CLIENT_MISC_RGBtoHSV
 
-#include <irrlicht.h>
-#include <algorithm>
+#include <vector3d.h>
+#include <SColor.h>
 
 namespace client{
 	irr::core::vector3df RGBftoHSV(irr::video::SColorf rgb);
