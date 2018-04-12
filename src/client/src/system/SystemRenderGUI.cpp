@@ -7,10 +7,13 @@ namespace client
 void SystemRenderGUI::setup(irr::IrrlichtDevice *device,
                              irr::video::IVideoDriver* driver) {
 
-  device->getGUIEnvironment()->addImage(
-                  driver->getTexture("resources/materials/textures/HUD.png"),
-                  irr::core::position2d<irr::s32>(0,0), true);
+  texture_HUD = driver->getTexture("resources/materials/textures/HUD.png");
+  texture_HUD_Active = driver->getTexture("resources/materials/textures/HUD-Active.png");
+  texture_HUD_Semi_Active = driver->getTexture("resources/materials/textures/HUD-SemiActive.png");
 
+  HUD = device->getGUIEnvironment()->addImage(
+                  texture_HUD,
+                  irr::core::position2d<irr::s32>(0,0), true);
 }
 
 void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
@@ -19,6 +22,15 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
                              int                        combo,
                              tempo::ComponentHealth     comp_health)
 {
+
+  if(combo > 20) {
+    HUD->setImage(texture_HUD_Active);
+  } else if(combo == 20) {
+    HUD->setImage(texture_HUD_Semi_Active);
+  } else {
+    HUD->setImage(texture_HUD);
+  }
+
   // Get the screen size to adjust the position and size of UI elements
 	const irr::core::dimension2du &screenSize = driver->getScreenSize();
 
