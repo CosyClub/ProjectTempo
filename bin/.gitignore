@@ -2,6 +2,7 @@
 RaveCave
 RaveCave_Server
 glm_dummy
+UnitTests
 
 # MSVC compiler output
 *.exe

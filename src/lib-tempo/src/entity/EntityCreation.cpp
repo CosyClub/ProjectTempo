@@ -9,6 +9,7 @@
 #include <tempo/component/ComponentModel.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
+#include <tempo/component/ComponentSpikes.hpp>
 #include <tempo/component/ComponentStage.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
@@ -81,6 +82,7 @@ anax::Entity addComponent(anax::World &w, sf::Packet p)
 			CASE(ComponentModel, MODEL)
 			CASE(ComponentPlayerLocal, PLAYER_LOCAL)
 			CASE(ComponentPlayerRemote, PLAYER_REMOTE)
+			CASE(ComponentSpikes, SPIKES)
 			CASE(ComponentStage, STAGE)
 			CASE(ComponentStagePosition, STAGE_POSITION)
 			CASE(ComponentStageRotation, STAGE_ROTATION)
