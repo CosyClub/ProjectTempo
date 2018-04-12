@@ -89,8 +89,16 @@ set(TEMPO_IRRLICHT_INCLUDE_DIR
 	"${TEMPO_IRRLICHT_DIR}/include"
 )
 
+set(TEMPO_CLIENT_DIR
+	"${CMAKE_CURRENT_LIST_DIR}/src/client"
+)
+set(TEMPO_CLIENT_INCLUDE_DIR
+	"${TEMPO_CLIENT_DIR}/include"
+)
+
 add_subdirectory(${TEMPO_EXTLIBS_DIR})
 add_subdirectory(src)
+add_subdirectory(tests)
 
 if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)" OR CMAKE_CL_64)
 	file(COPY "${TEMPO_EXTLIBS_DIR}/SFML-2.4.2/extlibs/bin/x64/openal32.dll" DESTINATION "${TEMPO_BIN_DIR}")
