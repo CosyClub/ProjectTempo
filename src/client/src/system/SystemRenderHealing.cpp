@@ -12,7 +12,8 @@ SystemRenderHealing::SystemRenderHealing(irr::video::IVideoDriver * driver,
 	// no-op
 }
 
-void SystemRenderHealing::update()
+void SystemRenderHealing::update(irr::video::SColor colour_dark,
+                                 irr::video::SColor colour_bright)
 {
 
 	auto& entities = this->getEntities();
@@ -25,20 +26,20 @@ void SystemRenderHealing::update()
 		auto &sn    = entity.getComponent<client::ComponentRenderSceneNode>();
 
 		if(c.comboCounter > 20 && h.current_health != h.max_health)
-		 {
+		{
 			irr::scene::IParticleSystemSceneNode* psystem = this->smgr->addParticleSystemSceneNode(false, sn.node);
 
 			irr::scene::IParticleEmitter* emitter = psystem->createBoxEmitter
 				(
-				 irr::core::aabbox3d<irr::f32>(-0.5f, 0, -0.5f,   0.5f, 1.0f, 0.5f), // size of emitter
+				 irr::core::aabbox3d<irr::f32>(-0.5f, 0, -0.5f,   0.5f, 1.5f, 0.5f), // size of emitter
 				 irr::core::vector3df(0.0f, 0.0001f, 0.0f), // direction
-				 10, 25,                                    // emit rate
-				 irr::video::SColor(0, 000, 200, 40),        // darkest color
-				 irr::video::SColor(0, 000, 255, 70),        // brightest color
-				 800, 1500,                                 // min and max age
+				 10, 15,                                    // emit rate
+				 colour_dark,                               // darkest color
+				 colour_bright,                             // brightest color
+				 300, 2500,                                 // min and max age
 				 50.0f,                                     // emit angle
-				 irr::core::dimension2df(0.10f, 0.10f),     // min size
-				 irr::core::dimension2df(0.35f, 0.35f)        // max size
+				 irr::core::dimension2df(0.15f, 0.15f),     // min size
+				 irr::core::dimension2df(0.40f, 0.40f)        // max size
 				 );
 
 			psystem->setEmitter(emitter);
@@ -49,9 +50,9 @@ void SystemRenderHealing::update()
 			psystem->addAffector(affector_fade);
 			affector_fade->drop();
 
-			psystem->setPosition(psystem->getPosition() + irr::core::vector3df(0.1f,0.1f,0.f));
+			psystem->setPosition(psystem->getPosition() + irr::core::vector3df(0.3f,0.1f,0.f));
 			psystem->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-			psystem->setMaterialFlag(irr::video::EMF_ZWRITE_ENABLE, false);
+			psystem->setMaterialFlag(irr::video::EMF_ZWRITE_ENABLE, true);
 			psystem->setMaterialTexture(0, driver->getTexture("resources/materials/textures/particlewhite.bmp"));
 			psystem->setMaterialType(irr::video::EMT_TRANSPARENT_ADD_COLOR);
 

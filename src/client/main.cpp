@@ -1,4 +1,4 @@
-	#include <client/component/ComponentKeyInput.hpp>
+#include <client/component/ComponentKeyInput.hpp>
 #include <client/component/ComponentRenderButtonGroup.hpp>
 #include <client/component/ComponentRenderSpikes.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
@@ -330,15 +330,11 @@ int main(int argc, const char **argv)
 	frame_clock.restart();
 	update_floor_clock.restart();
 
-	irr::video::SColor colour;
-	irr::video::SColor colour_red(255, 255, 0, 0);
-	irr::video::SColor colour_purple(255, 255, 0, 255);
+	irr::video::SColor random_colour;
+	srand(clock.get_time().asMicroseconds());
 
 	printf("Entering main loop\n");
 	while (device->run()) {
-		// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
-		// float dt = dt_timer.getElapsedTime().asSeconds();
-		// dt_timer.restart();
 
 		// Work out a frame delta time.
 		const irr::u32 now = device->getTimer()->getTime();
@@ -414,21 +410,14 @@ int main(int argc, const char **argv)
 
 			system_translation_animation.endBeat();
 
-			double scale = (double) ((1.0 - 0.0)*((double)rand() / RAND_MAX)) + 0.0; // from (0.0 to 1.0)
-			irr::core::vector3df c1 = client::RGBtoHSV(colour_red);
-			irr::core::vector3df c2 = client::RGBtoHSV(colour_purple);
-			c1.X = c1.X * scale + c2.X * (1.f - scale);
-			colour = client::HSVtoRGB(c1);
+			random_colour = client::randomHSV();
 
-			system_lighting.update(colour);
-			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
-			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
-			// << std::endl;
+			system_lighting.update(random_colour);
 
 		}
 		glm::ivec2 playerpos =
 		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-		system_stage_renderer.updateStage(smgr, driver, j, playerpos, colour);
+		system_stage_renderer.updateStage(smgr, driver, j, playerpos, random_colour);
 
 		////////////////
 		// Events at "Delta End"
@@ -436,16 +425,6 @@ int main(int argc, const char **argv)
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 		}
-
-		// Rendering Code
-		// if (!device->isWindowActive()) {
-		//	device->yield();
-		//	continue;
-		//}
-
-		// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
-		// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
-		// << std::endl;
 
 		driver->beginScene(true, true);
 		smgr->drawAll();

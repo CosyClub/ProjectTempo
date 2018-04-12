@@ -32,7 +32,16 @@ public:
 	SystemRenderHealing(irr::video::IVideoDriver * driver,
 	                   irr::scene::ISceneManager* smgr);
 
-	void update();
+	// Healing
+	// Updates the healing particle effect
+	//
+	// Arguments:
+	//          colour_dark   - darkest   colour used for the particle system
+	//          colour_bright - brightest colour used for the particle system
+	// Returns:
+	//          void
+	void update(irr::video::SColor colour_dark   = irr::video::SColor(0, 000, 200, 40),
+              irr::video::SColor colour_bright = irr::video::SColor(0, 000, 230, 70));
 
 	void endBeat();
 };
