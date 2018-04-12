@@ -213,10 +213,11 @@ int main(int argc, const char **argv)
 		////////////////
 		// Events all the time
 		{
-			system_movement.recieveTranslations(world);
-			system_attack.recieveAttacks(world);
+			system_movement.receiveTranslations(world);
+			system_attack.receiveAttacks(world);
 			system_combo.checkForUpdates(world);
 			system_health.CheckHealth();
+			//system_health.server_receiveHealth(world);
 			system_health.broadcastHealth();
 		}
 
@@ -234,7 +235,6 @@ int main(int argc, const char **argv)
 		// Events at "Beat Passed"
 		if (clock.passed_beat()) {
 			system_ai.update(system_attack);
-			system_combo.advanceBeat();
 			system_trigger.updateButtons(world);
 
 			if (tick++ % 20 == 0)
@@ -248,6 +248,7 @@ int main(int argc, const char **argv)
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 			system_attack.processAttacks();
+			system_health.regenerate();
 			system_movement.processTranslation();
 		}
 

@@ -1,5 +1,6 @@
 link_directories("${TEMPO_LIB_DIR}")
 
+
 #
 # Looking for the source file list?
 # Its now in client_sources.cmake in this directory
@@ -7,6 +8,7 @@ link_directories("${TEMPO_LIB_DIR}")
 # This is so the unit tests can automatically include client code
 # to test stuff in the client namespace
 #
+
 
 include(client_sources.cmake)
 

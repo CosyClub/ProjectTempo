@@ -105,4 +105,17 @@ namespace client {
   {
      return hueShift(irr::video::SColorf(col), shift).toSColor();
   }
+
+	irr::video::SColor randomHSV()
+	{
+		irr::video::SColor colour;
+		const irr::video::SColor colour_red(255, 255, 0, 0);
+		const irr::video::SColor colour_purple(255, 255, 0, 255);
+
+		double scale = (double) ((1.0 - 0.0)*((double)rand() / RAND_MAX)) + 0.0; // from (0.0 to 1.0)
+		irr::core::vector3df c1 = client::RGBtoHSV(colour_red);
+		irr::core::vector3df c2 = client::RGBtoHSV(colour_purple);
+		c1.X = c1.X * scale + c2.X * (1.f - scale);
+		return HSVtoRGB(c1);
+	}
 }

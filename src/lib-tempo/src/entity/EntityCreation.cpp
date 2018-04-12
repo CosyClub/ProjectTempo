@@ -50,7 +50,7 @@ anax::Entity addComponent(anax::World &w, sf::Packet p)
 	auto a = servertolocal.find(id);
 	if (a == servertolocal.end()) {
 		// Looks like it's a new one
-		std::cout << "Recieved New Entity with server ID " << id.index << std::endl;
+		std::cout << "Received New Entity with server ID " << id.index << std::endl;
 		e       = w.createEntity();
 		localid = e.getId();
 		servertolocal.emplace(id, localid);
@@ -93,7 +93,7 @@ anax::Entity addComponent(anax::World &w, sf::Packet p)
 		// End of new Component Zone
 		default:
 			std::cout << "WARNING: Unimplemented deserialisation of"
-			             " recieved component occured, ignoring."
+			             " received component occured, ignoring."
 			          << std::endl;
 			assert(false);
 		}

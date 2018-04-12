@@ -7,7 +7,7 @@
 namespace client
 {
 struct SystemMovement : anax::System<anax::Requires<>> {
-	// Processes the movement intents recieved from the server
+	// Processes the movement intents received from the server
 	void processIntents(anax::World &world);
 
 	// Processes the movement corrections (absolute updates) from the server

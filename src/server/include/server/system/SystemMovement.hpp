@@ -13,8 +13,8 @@ struct SystemMovement
     : anax::System<anax::Requires<tempo::ComponentStage,
                                   tempo::ComponentStageTranslation,
                                   tempo::ComponentStagePosition>> {
-	// Recieve Movement Intents and Broadcasts them to everyone else
-	void recieveTranslations(anax::World &world);
+	// Receive Movement Intents and Broadcasts them to everyone else
+	void receiveTranslations(anax::World &world);
 
 	// Processes Intents and Broadcasts Corrections
 	void processTranslation();

@@ -24,7 +24,7 @@ sf::Int64 timeSyncClient(tempo::Clock *clock)
 	sf::Int64 T3  = 0;  // PACKET: Current pakcet time of departure
 	sf::Int64 T4  = 0;  // PACKET: Current packet time of arrival
 	sf::Int64 org = 0;  // STATE:  Time when message departed from peer
-	// sf::Int64 rec    = 0; // STATE:  Time when we recieved from the peer
+	// sf::Int64 rec    = 0; // STATE:  Time when we received from the peer
 	sf::Int64 xmt    = 0;  // STATE:  Time when we transmitted to the peer
 	sf::Int64 offset = 0;  // Final Result
 
@@ -152,7 +152,7 @@ uint32_t handshakeHello(anax::World &world)
 		sf::Packet p2;
 		for (unsigned int i = 0; i < componentCount; i++) {
 			p2 = receiveMessage(QueueID::HANDSHAKE);
-			std::cout << "Recieved " << i << "/" << componentCount << std::endl;
+			std::cout << "Received " << i << "/" << componentCount << std::endl;
 			addComponent(world, p2);
 		}
 	} else {
@@ -175,7 +175,7 @@ bool handshakeRoleReq(uint32_t id, ClientRole roleID, ClientRoleData &roleData, 
 	// Send ROLEREQ
 	sendMessage(QueueID::HANDSHAKE, packet);
 
-	// Wait until we recieve ROLEREQ_ROG
+	// Wait until we receive ROLEREQ_ROG
 	packet = receiveMessage(QueueID::HANDSHAKE);
 
 	// Extract Data

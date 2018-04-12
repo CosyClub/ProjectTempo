@@ -34,7 +34,7 @@ void SystemAttack::processServerResponses(anax::World &w)
 		switch (static_cast<tempo::MessageAttack>(code)) {
 		case tempo::MessageAttack::UPDATE_INTENT: {
 			if (!e.hasComponent<tempo::ComponentAttack>()) {
-				std::cout << "Recieved Attack Intent Update for entity without ComponentAttack"
+				std::cout << "Received Attack Intent Update for entity without ComponentAttack"
 				          << std::endl;
 				continue;
 			}
@@ -45,7 +45,7 @@ void SystemAttack::processServerResponses(anax::World &w)
 		}
 		case tempo::MessageAttack::ATTACK_CORRECTION: {
 			if (!e.hasComponent<tempo::ComponentHealth>()) {
-				std::cout << "Recieved Attack Correction for entity without ComponentHealth"
+				std::cout << "Received Attack Correction for entity without ComponentHealth"
 				          << std::endl;
 				continue;
 			}
