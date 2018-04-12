@@ -3,6 +3,7 @@
 #include <server/system/SystemAI.hpp>
 #include <server/system/SystemAttack.hpp>
 #include <server/system/SystemCombo.hpp>
+#include <server/system/SystemHeartbeat.hpp>
 #include <server/system/SystemMovement.hpp>
 
 #include <tempo/time.hpp>
@@ -102,16 +103,18 @@ int main(int argc, const char **argv)
 	anax::World world;
 
 	// Create Systems
-	server::SystemAI system_ai;
-	server::SystemAttack   system_attack(world);
-	server::SystemCombo  system_combo;
-	server::SystemMovement system_movement;
-	tempo::SystemHealth system_health;
-	tempo::SystemTrigger system_trigger(world);
+	server::SystemAI        system_ai;
+	server::SystemAttack    system_attack(world);
+	server::SystemCombo     system_combo;
+	server::SystemHeartbeat system_heatbeat;
+	server::SystemMovement  system_movement;
+	tempo::SystemHealth     system_health;
+	tempo::SystemTrigger    system_trigger(world);
 
 	world.addSystem(system_ai);
 	world.addSystem(system_attack);
 	world.addSystem(system_combo);
+	world.addSystem(system_heatbeat);
 	world.addSystem(system_movement);
 	world.addSystem(system_health);
 	world.addSystem(system_trigger);
@@ -238,18 +241,26 @@ int main(int argc, const char **argv)
 			system_trigger.updateButtons(world);
 
 			if (tick++ % 20 == 0)
-				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()
-				          << "+++++++++++++++" << std::endl;
+				std::cout << "TICK (" << tick << ") " 
+				          << clock.get_time().asMilliseconds()
+				          << std::endl;
 		}
 
 		////////////////
 		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
 			// std::cout << "End" << std::endl;
+			system_heatbeat.checkForHeatbeats(world);
 			system_combo.advanceBeat();
 			system_attack.processAttacks();
 			system_health.regenerate();
 			system_movement.processTranslation();
+		}
+		
+		////////////////
+		// Events all the time
+		{
+			system_health.broadcastHealth();
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
