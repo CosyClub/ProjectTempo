@@ -373,13 +373,13 @@ void checkForClientDeletion(anax::World &world)
 		} else {
 			std::cout << "Client (" << ip.toString() << ":" << port << ") Timed Out." << std::endl;
 		}
-		try {
+		
+		if (!id.isNull()) {
 			anax::Entity e(world, id);
 			world.killEntity(e);
-			removeClientId(ip.toInteger(), port);
-		} catch (...) {
-			std::cout << "Something went very wrong!!!" << std::endl;
 		}
+		removeClientId(ip.toInteger(), port);
+		
 		broadcastMessage(tempo::QueueID::ENTITY_DELETION, broadcast);
 	}
 	world.refresh();
