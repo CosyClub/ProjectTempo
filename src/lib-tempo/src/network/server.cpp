@@ -46,7 +46,7 @@ void timeSyncHandler(tempo::Clock *clock, sf::TcpSocket *client)
 	sf::Int64 T3  = 0;  // PACKET: Current pakcet time of departure
 	sf::Int64 T4  = 0;  // PACKET: Current packet time of arrival
 	sf::Int64 org = 0;  // STATE:  Time when message departed from peer
-	sf::Int64 rec = 0;  // STATE:  Time when we recieved from the peer
+	sf::Int64 rec = 0;  // STATE:  Time when we received from the peer
 	sf::Int64 xmt = 0;  // STATE:  Time when we transmitted to the peer
 
 	for (int i = 0; i < TIMESYNC_ITERS; i++) {
@@ -330,7 +330,7 @@ void checkForClientCreation(anax::World *world)
 		case HandshakeID::ROLEREQ: handshakeRoleReq(packet, world); break;
 		default:
 			std::cout << "WARNING: an invalid handshake message was "
-			          << "recieved ... ignoring" << std::endl;
+			          << "received ... ignoring" << std::endl;
 			break;
 		}
 	}

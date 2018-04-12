@@ -4,6 +4,7 @@
 
 #include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentCombo.hpp>
+#include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
@@ -80,6 +81,28 @@ void addAttack(anax::Entity &entity, bool withinDelta)
 	}
 }
 
+void addHeal(anax::Entity &entity, bool withinDelta)
+{
+
+	if (entity.hasComponent<tempo::ComponentHealth>()
+	    && entity.hasComponent<tempo::ComponentCombo>()) {
+
+		tempo::ComponentHealth &h = entity.getComponent<tempo::ComponentHealth>();
+		tempo::ComponentCombo  &c = entity.getComponent<tempo::ComponentCombo>();
+
+		if(c.comboCounter > 3) { // 3 for testing purpose. It should be 10
+			c.comboCounter -= 3;
+			h.HealthUpdate(2);
+
+			sf::Packet p;
+			p << tempo::localtoserver[entity.getId()];
+			p << h.current_health;
+			sendMessage(tempo::QueueID::SYSTEM_HEALTH, p);
+
+		}
+	}
+}
+
 void updateCombo(anax::Entity &entity, bool withinDelta)
 {
 	if (entity.hasComponent<tempo::ComponentCombo>()) {
@@ -93,7 +116,7 @@ void updateCombo(anax::Entity &entity, bool withinDelta)
 			tempo::sendMessage(tempo::QueueID::COMBO_UPDATES, p);
 		} else {
 			// c.breakCombo();
-			
+
 			sf::Packet p;
 			p << tempo::localtoserver[entity.getId()];
 			p << static_cast<uint8_t>(tempo::MessageCombo::BROKEN_COMBO);

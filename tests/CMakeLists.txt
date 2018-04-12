@@ -24,9 +24,16 @@ target_include_directories(unit-tests PRIVATE ${TEMPO_LIB_TEMPO_INCLUDE_DIR})
 target_include_directories(unit-tests PRIVATE ${TEMPO_ANAX_INCLUDE_DIR})
 target_include_directories(unit-tests PRIVATE ${TEMPO_GLM_INCLUDE_DIR})
 
+target_link_libraries(unit-tests ${IRRLICHT_LIBRARY})
+
+if(UNIX)
+	target_link_libraries(unit-tests z)
+	target_link_libraries(unit-tests X11)
+	target_link_libraries(unit-tests Xxf86vm)
+endif(UNIX)
+
 target_link_libraries(unit-tests lib_tempo          )
 target_link_libraries(unit-tests sfml-system        )
 target_link_libraries(unit-tests sfml-network       )
 target_link_libraries(unit-tests sfml-audio         )
-target_link_libraries(unit-tests ${IRRLICHT_LIBRARY})
 target_link_libraries(unit-tests anax               )
