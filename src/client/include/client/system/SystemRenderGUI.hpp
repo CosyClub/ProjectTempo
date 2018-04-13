@@ -4,6 +4,7 @@
 #include <irrlicht.h>
 #include <tempo/time.hpp>
 #include <tempo/component/ComponentHealth.hpp>
+#include <ctime>
 
 namespace client
 {
@@ -14,6 +15,13 @@ struct SystemRenderGUI {
 		irr::video::ITexture*     texture_HUD;
 		irr::video::ITexture*     texture_HUD_Active;
 		irr::video::ITexture*     texture_HUD_Semi_Active;
+
+		std::clock_t timer_nudge;
+		int message = 2;
+
+		irr::core::stringw move_str[3] = {L"Keep moving!!!",
+		                                  L"Time to party!",
+		                                  L" Just dance!"};
 
 	public:
 		void setup(irr::IrrlichtDevice* device,

@@ -14,6 +14,8 @@ void SystemRenderGUI::setup(irr::IrrlichtDevice *device,
   HUD = device->getGUIEnvironment()->addImage(
                   texture_HUD,
                   irr::core::position2d<irr::s32>(0,0), true);
+
+  timer_nudge = std::clock();
 }
 
 void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
@@ -40,6 +42,13 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
   irr::video::SColor colour_green(255, 0, 255, 0);
   irr::video::SColor colour_blue(255, 135, 206, 250);
 
+
+
+  if((std::clock() - timer_nudge ) / (double) CLOCKS_PER_SEC > 5.0 ) {
+    timer_nudge = std::clock();
+    message = rand() % 3;
+  }
+
   // Display Combo text
 	irr::gui::IGUIFont *font = gui_env->getFont("resources/fonts/joystix72/myfont.xml");
 	if (font) {
@@ -52,6 +61,14 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
 		  str.c_str(),
 		  irr::core::rect<irr::s32>(40, 0.84 * screenSize.Height, 0.2 * screenSize.Width, 300),
 		  irr::video::SColor(255, 255, 255, 255));
+
+
+    if(combo == 0) {
+      font->draw(
+  		  move_str[message].c_str(),
+  		  irr::core::rect<irr::s32>( 0.30 * screenSize.Width, 0.70 * screenSize.Height, 0.2 * screenSize.Width, 300),
+  		  irr::video::SColor(255, 255, 255, 255));
+    }
 	}
 
 
@@ -63,18 +80,18 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
   int combo_height_top    = (1.f - 3.f / 36) * screenSize.Height;
   int combo_height_bottom = (1.f - 1.f / 36) * screenSize.Height;
 
-	if (combo_scale >= 0.3) {
-		driver->draw2DRectangle(
-		  colour_white,
-		  irr::core::rect<irr::s32>(combo_width_left, combo_height_top,
-		                            combo_width_right, combo_height_bottom));
-	} else {
-		driver->draw2DRectangle(
-		  colour_blue,
-		  irr::core::rect<irr::s32>(combo_width_left, combo_height_top,
-		                            combo_width_right, combo_height_bottom));
-	}
+  irr::video::SColor colour_combo_bar;
 
+  if(combo_scale >= 0.3){
+    colour_combo_bar = colour_white;
+  } else {
+    colour_combo_bar = colour_blue;
+  }
+
+	driver->draw2DRectangle(
+	  colour_combo_bar,
+	  irr::core::rect<irr::s32>(combo_width_left, combo_height_top,
+	                            combo_width_right, combo_height_bottom));
 
   // Display health bar
   float health_scale =  (float) comp_health.current_health /  (float) comp_health.max_health;
