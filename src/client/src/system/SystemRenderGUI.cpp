@@ -15,9 +15,13 @@ void SystemRenderGUI::setup(irr::IrrlichtDevice *device,
                   texture_HUD,
                   irr::core::position2d<irr::s32>(0,0), true);
 
-  timer_nudge = std::clock();
+  timer_nudge  = std::clock();
+  timer_missed = std::clock();
   timer_HUD_transition = std::clock();
   HUD_transition_state = 0;
+
+  prev_combo = 0;
+  missed_combos = 0;
 }
 
 void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
@@ -27,10 +31,80 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
                              tempo::ComponentHealth     comp_health)
 {
 
-
   std::clock_t time_now = std::clock();
 
-  // HUD transition animation
+  // Get the screen size to adjust the position and size of UI elements
+	const irr::core::dimension2du &screenSize = driver->getScreenSize();
+
+  if(prev_combo > combo) {
+    missed_combos++;
+  } else if(prev_combo < combo) {
+    missed_combos = 0;
+  }
+
+  if(missed_combos == 3) {
+    missed_combos = 0;
+    timer_missed = std::clock();
+  }
+  prev_combo = combo;
+
+	irr::gui::IGUIFont *font = gui_env->getFont("resources/fonts/joystix72/myfont.xml");
+	if (font) {
+    updateComboCounter(font, combo, screenSize);
+
+    if ((time_now - timer_missed ) / (double) CLOCKS_PER_SEC < 1.0) { // Player kept getting the combo wrong
+      irr::core::stringw str = L" Missed Beat!";
+      font->draw(
+        str.c_str(),
+        irr::core::rect<irr::s32>( 0.30 * screenSize.Width, 0.70 * screenSize.Height, 0.2 * screenSize.Width, 300),
+        irr::video::SColor(255, 255, 255, 255));
+
+    } else if(combo == 0) { // Nudge the player if their combo is 0
+      updateNudge(font, time_now, screenSize);
+    }
+	}
+
+  // HUD transition animatio
+  updateHUD(time_now, combo);
+  // Display combo bar
+  updateComboBar(driver, clock, combo, screenSize);
+  // Display health bar
+  updateHealthBar(driver, comp_health, screenSize);
+}
+
+
+void SystemRenderGUI::updateComboCounter(irr::gui::IGUIFont *font,
+                                         int combo,
+                                         const irr::core::dimension2du screenSize) {
+  char buffer[5];
+  sprintf(buffer, "%3d", combo);
+
+  // Display Combo text
+  irr::core::stringw str = L"";
+  str += buffer;
+  font->draw(
+    str.c_str(),
+    irr::core::rect<irr::s32>(40, 0.84 * screenSize.Height, 0.2 * screenSize.Width, 300),
+    irr::video::SColor(255, 255, 255, 255));
+}
+
+void SystemRenderGUI::updateNudge(irr::gui::IGUIFont *font,
+                                  std::clock_t time_now,
+                                  const irr::core::dimension2du screenSize) {
+
+  if((time_now - timer_nudge ) / (double) CLOCKS_PER_SEC > 5.0) {
+    timer_nudge = time_now;
+    message = rand() % 3;
+  }
+
+  font->draw(
+    move_str[message].c_str(),
+    irr::core::rect<irr::s32>( 0.30 * screenSize.Width, 0.70 * screenSize.Height, 0.2 * screenSize.Width, 300),
+    irr::video::SColor(255, 255, 255, 255));
+}
+
+void SystemRenderGUI::updateHUD(std::clock_t time_now, int combo)
+{
   if((time_now - timer_HUD_transition ) / (double) CLOCKS_PER_SEC > 0.4 ) {
     if(combo > 20 && HUD_transition_state == 1) {
       HUD_transition_state = 2;
@@ -47,48 +121,14 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
       timer_HUD_transition = time_now;
     }
   }
+}
 
-  // Get the screen size to adjust the position and size of UI elements
-	const irr::core::dimension2du &screenSize = driver->getScreenSize();
-
-  // Misc Colours
-  irr::video::SColor colour_white(255, 255, 255, 255);
-  irr::video::SColor colour_red(255, 255, 0, 0);
-  irr::video::SColor colour_green(255, 0, 255, 0);
-  irr::video::SColor colour_blue(255, 135, 206, 250);
-
-
-  // Nudge the player if their combo is 0
-  if((time_now - timer_nudge ) / (double) CLOCKS_PER_SEC > 5.0 ) {
-    timer_nudge = time_now;
-    message = rand() % 3;
-  }
-
-	irr::gui::IGUIFont *font = gui_env->getFont("resources/fonts/joystix72/myfont.xml");
-	if (font) {
-    char buffer[5];
-    sprintf(buffer, "%3d", combo);
-
-    // Display Combo text
-		irr::core::stringw str = L"";
-		str += buffer;
-		font->draw(
-		  str.c_str(),
-		  irr::core::rect<irr::s32>(40, 0.84 * screenSize.Height, 0.2 * screenSize.Width, 300),
-		  irr::video::SColor(255, 255, 255, 255));
-
-    // Display nudge
-    if(combo == 0) {
-      font->draw(
-  		  move_str[message].c_str(),
-  		  irr::core::rect<irr::s32>( 0.30 * screenSize.Width, 0.70 * screenSize.Height, 0.2 * screenSize.Width, 300),
-  		  irr::video::SColor(255, 255, 255, 255));
-    }
-	}
-
-
-  // Display combo bar
-	float combo_scale = clock.beat_progress_desc();
+void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
+                                     tempo::Clock &             clock,
+                                     int                        combo,
+                                     const irr::core::dimension2du screenSize)
+{
+  float combo_scale = clock.beat_progress_desc();
 
   int combo_width_left    = screenSize.Width / 2 - (screenSize.Width * 0.26) * combo_scale;
   int combo_width_right   = screenSize.Width / 2 + (screenSize.Width * 0.26) * combo_scale;
@@ -103,12 +143,17 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
     colour_combo_bar = colour_blue;
   }
 
-	driver->draw2DRectangle(
-	  colour_combo_bar,
-	  irr::core::rect<irr::s32>(combo_width_left, combo_height_top,
-	                            combo_width_right, combo_height_bottom));
+  driver->draw2DRectangle(
+    colour_combo_bar,
+    irr::core::rect<irr::s32>(combo_width_left, combo_height_top,
+                              combo_width_right, combo_height_bottom));
+}
 
-  // Display health bar
+void SystemRenderGUI::updateHealthBar(irr::video::IVideoDriver * driver,
+                                      tempo::ComponentHealth     comp_health,
+                                      const irr::core::dimension2du screenSize)
+{
+
   float health_scale =  (float) comp_health.current_health /  (float) comp_health.max_health;
 
   int health_width_left    = (1.f - 3.f / 64) * screenSize.Width;
@@ -127,5 +172,6 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
     colour_health,
     irr::core::rect<irr::s32>(health_width_left, health_height_top,
                               health_width_right, health_height_bottom));
+
 }
 }
