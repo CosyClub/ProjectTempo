@@ -27,20 +27,24 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
                              tempo::ComponentHealth     comp_health)
 {
 
-  if((std::clock() - timer_HUD_transition ) / (double) CLOCKS_PER_SEC > 0.4 ) {
+
+  std::clock_t time_now = std::clock();
+
+  // HUD transition animation
+  if((time_now - timer_HUD_transition ) / (double) CLOCKS_PER_SEC > 0.4 ) {
     if(combo > 20 && HUD_transition_state == 1) {
       HUD_transition_state = 2;
-      timer_HUD_transition = std::clock();
+      timer_HUD_transition = time_now;
       HUD->setImage(texture_HUD_Active);
     } else if((combo > 20 && HUD_transition_state == 0) ||
               (combo < 20 && HUD_transition_state == 2) ) {
       HUD_transition_state = 1;
       HUD->setImage(texture_HUD_Semi_Active);
-      timer_HUD_transition = std::clock();
+      timer_HUD_transition = time_now;
     } else if(combo < 20 && HUD_transition_state == 1) {
       HUD_transition_state = 0;
       HUD->setImage(texture_HUD);
-      timer_HUD_transition = std::clock();
+      timer_HUD_transition = time_now;
     }
   }
 
@@ -54,18 +58,18 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
   irr::video::SColor colour_blue(255, 135, 206, 250);
 
 
-
-  if((std::clock() - timer_nudge ) / (double) CLOCKS_PER_SEC > 5.0 ) {
-    timer_nudge = std::clock();
+  // Nudge the player if their combo is 0
+  if((time_now - timer_nudge ) / (double) CLOCKS_PER_SEC > 5.0 ) {
+    timer_nudge = time_now;
     message = rand() % 3;
   }
 
-  // Display Combo text
 	irr::gui::IGUIFont *font = gui_env->getFont("resources/fonts/joystix72/myfont.xml");
 	if (font) {
     char buffer[5];
     sprintf(buffer, "%3d", combo);
 
+    // Display Combo text
 		irr::core::stringw str = L"";
 		str += buffer;
 		font->draw(
@@ -73,7 +77,7 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
 		  irr::core::rect<irr::s32>(40, 0.84 * screenSize.Height, 0.2 * screenSize.Width, 300),
 		  irr::video::SColor(255, 255, 255, 255));
 
-
+    // Display nudge
     if(combo == 0) {
       font->draw(
   		  move_str[message].c_str(),
