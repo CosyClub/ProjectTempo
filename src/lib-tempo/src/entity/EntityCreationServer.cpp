@@ -155,7 +155,6 @@ anax::Entity createButtonGroup(anax::World &           world,
 							   bool					   triggerable,
 							   int					   ID)
 {
-	
 	anax::Entity entity_button = world.createEntity();
 	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles, spikes, prev, next, triggerable, ID);
 	entity_button.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");

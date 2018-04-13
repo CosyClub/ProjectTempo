@@ -2,9 +2,28 @@
 #define TEMPO_NETWORK_ID_HPP
 
 #include <anax/Component.hpp>
+#include <anax/Entity.hpp>
 #include <anax/System.hpp>
 
 #include <SFML/Network.hpp>
+
+#define SERVERTOLOCAL(ID)                                      \
+	std::map<anax::Entity::Id, anax::Entity::Id>::iterator \
+		it = tempo::servertolocal.find(ID);            \
+	if (it != tempo::servertolocal.end()) {                \
+		ID = tempo::servertolocal[ID];                 \
+	} else {                                               \
+		ID = anax::Entity::Id();                       \
+	}
+
+#define LOCALTOSERVER(ID)                                      \
+	std::map<anax::Entity::Id, anax::Entity::Id>::iterator \
+	 it = tempo::localtoserver.find(ID);                   \
+	if (it != tempo::localtoserver.end()) {                \
+		ID = tempo::localtoserver[ID];                 \
+	} else {                                               \
+		ID = anax::Entity::Id();                       \
+	}
 
 namespace tempo
 {
@@ -21,6 +40,7 @@ enum QueueID {
 	QID_RESERVED_BOTTOM,
 	// Start of non-reserved zone
 
+	HEARTBEAT,
 	HANDSHAKE,
 	DISCONNECT,
 	ENTITY_CREATION,

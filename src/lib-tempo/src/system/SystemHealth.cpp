@@ -62,11 +62,12 @@ void SystemHealth::client_receiveHealth(anax::World &world)
 
 		anax::Entity::Id id;
 		p >> id;
+		SERVERTOLOCAL(id)
+		if (id.isNull()) continue;
 
 		int health;
 		p >> health;
 
-		id = servertolocal[id];
 		anax::Entity e = anax::Entity(world, id);
 		ComponentHealth &h = e.getComponent<ComponentHealth>();
 		h.current_health = health;

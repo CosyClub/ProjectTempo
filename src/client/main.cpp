@@ -227,9 +227,9 @@ int main(int argc, const char **argv)
 		tempo::addr_r = argv[1];
 	if (tempo::addr_r == "127.0.0.1") {
 		std::srand(time(NULL));
-		int d          = std::rand() % 10;
-		tempo::port_ci = DEFAULT_PORT_IN + 10 + d;
-		tempo::port_co = DEFAULT_PORT_OUT + 10 + d;
+		int d          = std::rand() % 1000;
+		tempo::port_ci = DEFAULT_PORT_IN + 1000 + d;
+		tempo::port_co = DEFAULT_PORT_OUT + 1000 + d;
 	} else {
 		tempo::port_ci = DEFAULT_PORT_IN;
 		tempo::port_co = DEFAULT_PORT_OUT;
@@ -251,7 +251,14 @@ int main(int argc, const char **argv)
 	tempo::ClientRoleData roleData = {"Bilbo Baggins"};
 
 	// Connect to server and handshake information
-	tempo::connectToAndSyncWithServer(role, roleData, world);
+	if (!tempo::connectToAndSyncWithServer(role, roleData, world)) {
+		std::cout << "Failed to connect/join server." << std::endl;
+		running.store(false);
+		listener.join();
+		world.clear();
+		device->drop();
+		return 1;
+	}
 
 	// Sort out graphics after handshake
 	system_gc.addEntities(driver, smgr, world);
@@ -373,10 +380,7 @@ int main(int argc, const char **argv)
 			system_translation_animation.updateAnimations();
 
 			// Graphics updates
-			// std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl;
 			system_render_scene_node.update();
-			// std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" <<
-			// std::endl;
 			system_render_health_bars.update();
 			system_render_healing.update();
 
@@ -391,6 +395,7 @@ int main(int argc, const char **argv)
 		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
 			// std::cout << "Start" << std::endl;
+			tempo::sendHeatbeat();
 		}
 
 		////////////////

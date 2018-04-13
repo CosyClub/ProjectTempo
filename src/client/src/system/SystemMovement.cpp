@@ -32,7 +32,11 @@ void SystemMovement::processIntents(anax::World &world)
 		glm::ivec2 facing(0,0);
 		bool moved;
 		update >> instance_id >> facing.x >> facing.y >> delta.x >> delta.y >> moved;
-		anax::Entity entity = anax::Entity(world, tempo::servertolocal[instance_id]);
+
+		SERVERTOLOCAL(instance_id)
+		if (instance_id.isNull()) continue;
+
+		anax::Entity entity = anax::Entity(world, instance_id);
 
 		if (entity.hasComponent<tempo::ComponentStageRotation>()) {
 			entity.getComponent<tempo::ComponentStageRotation>().facing = facing;
