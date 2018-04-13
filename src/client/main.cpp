@@ -319,9 +319,15 @@ int main(int argc, const char **argv)
 	//                                      irr::video::SColorf(0.8f, 0.8f, 0.8f), 5.0f);
 	// irr::video::SLight& light_data = light_node->getLightData();
 
-	client::createLasers(smgr, driver, { {40,12}, {40,52}, {40,92} });
+	int n = 10;
 
-	client::createDiscoBalls(smgr, driver, { {40,6} });
+	for (int i = 0; i < 20; i++){
+
+	client::createLasers(smgr, driver, { {3 + (i*n),12}, {3 + (i*n),52}, {3 + (i*n),92} });
+
+	client::createDiscoBalls(smgr, driver, { {3 + (i*n),6} });
+
+ }
 
 	/////////////////////////////////////////////////
 	// Main loop
