@@ -127,7 +127,7 @@ void SystemHealth::regenerate()
 		auto &c = entity.getComponent<tempo::ComponentCombo>();
 
 		if( c.comboCounter > 20) {
-			h.HealthUpdate(1);
+			h.HealthUpdate(2);
 		}
 	}
 }

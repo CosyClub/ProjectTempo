@@ -222,7 +222,7 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 			if (damage != 0) {
 				std::cout << "hit entity " << entity.getId().index << " for " << damage
 				          << std::endl;
-				health.HealthUpdate(-1 * damage);
+				health.HealthUpdate(-10 * damage);
 
 				sf::Packet p;
 				p << entity.getId();
