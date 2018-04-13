@@ -38,7 +38,7 @@ void RythmButton(anax::World &          world,
 				int &ID) {
 
 	for (int i = 0; i < positions.size(); i++) {
-		
+
 		std::vector<glm::ivec2> group = positions[i];
 		glm::ivec2 prev;
 		glm::ivec2 next;
@@ -146,46 +146,54 @@ int main(int argc, const char **argv)
 
 	int rhythmID = 1;
 
-	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
-	RythmButton(world, { { { 40,12 }},{ { 40,13 } },{ { 41,13 } },{ { 41,12 } } }, wall, {}, rhythmID);
+	int n = 10;
 
-	std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};
-	newButton(world, { { 40, 43 } }, wall1, {});
+	for(int i = 0; i < 20; i++){
 
-	std::vector<glm::ivec2> wall2          = {{36,62},{36,63},{36,64},{36,65},{36,66},{36,67},{36,68},
-																						{50,62},{50,63},{50,64},{50,65},{50,66},{50,67},{50,68}};
-	newButton(world, { { 40, 65 } }, wall2, {});
+		std::vector<glm::ivec2> spikes = {{ 3 + (i * n), 3 }};
+		newButton(world, { { 3 + (i * n), 2 } }, {}, spikes);
 
-	std::vector<glm::ivec2> wall3          = {{37,69},{38,69},{39,69},{40,69},{41,69},{42,69},{43,69}};
-	newButton(world, { { 66,70 },{ 13,69 } }, wall3, { { 13,70 } });
+	// std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
+	// RythmButton(world, { { { 40,12 }},{ { 40,13 } },{ { 41,13 } },{ { 41,12 } } }, wall, {}, rhythmID);
+	//
+	// std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};
+	// newButton(world, { { 40, 43 } }, wall1, {});
+	//
+	// std::vector<glm::ivec2> wall2          = {{36,62},{36,63},{36,64},{36,65},{36,66},{36,67},{36,68},
+	// 																					{50,62},{50,63},{50,64},{50,65},{50,66},{50,67},{50,68}};
+	// newButton(world, { { 40, 65 } }, wall2, {});
+	//
+	// std::vector<glm::ivec2> wall3          = {{37,69},{38,69},{39,69},{40,69},{41,69},{42,69},{43,69}};
+	// newButton(world, { { 66,70 },{ 13,69 } }, wall3, { { 13,70 } });
+	//
+	// std::vector<glm::ivec2> wall4          = {{40,132},{41,132},{42,132}};
+	// newButton(world, { { 41,110 },{ 26,128 },{ 57,128 } }, wall4, {});
+	//
+	// std::vector<glm::ivec2> spikes		   = {{ 35,65 }};
+	// newButton(world, { { 35,63 },{ 35,67 } }, {}, spikes);
+	//
+	// spikes = {{ 34,65 }};
+	// newButton(world, { { 34,63 },{ 34,67 } }, {}, spikes);
+	//
+	// spikes = {{ 33,65 }};
+	// newButton(world, { { 33,63 },{ 33,67 } }, {}, spikes);
+	//
+	// spikes = {{ 32,65 }};
+	// newButton(world, { { 32,63 },{ 32,67 } }, {}, spikes);
+	//
+	// spikes = {{ 31,65 }};
+	// newButton(world, { { 31,63 },{ 31,67 } }, {}, spikes);
+	//
+	// spikes = {{ 30,65 }};
+	// newButton(world, { { 30,63 },{ 30,67 } }, {}, spikes);
+	//
+	// spikes = { { 29,65 } };
+	// newButton(world, { { 29,63 },{ 29,67 } }, {}, spikes);
+	//
+	// spikes = { { 28,65 } };
+	// newButton(world, { { 28,63 },{ 28,67 } }, {}, spikes);
 
-	std::vector<glm::ivec2> wall4          = {{40,132},{41,132},{42,132}};
-	newButton(world, { { 41,110 },{ 26,128 },{ 57,128 } }, wall4, {});
-
-	std::vector<glm::ivec2> spikes		   = {{ 35,65 }};
-	newButton(world, { { 35,63 },{ 35,67 } }, {}, spikes);
-
-	spikes = {{ 34,65 }};
-	newButton(world, { { 34,63 },{ 34,67 } }, {}, spikes);
-
-	spikes = {{ 33,65 }};
-	newButton(world, { { 33,63 },{ 33,67 } }, {}, spikes);
-
-	spikes = {{ 32,65 }};
-	newButton(world, { { 32,63 },{ 32,67 } }, {}, spikes);
-
-	spikes = {{ 31,65 }};
-	newButton(world, { { 31,63 },{ 31,67 } }, {}, spikes);
-
-	spikes = {{ 30,65 }};
-	newButton(world, { { 30,63 },{ 30,67 } }, {}, spikes);
-
-	spikes = { { 29,65 } };
-	newButton(world, { { 29,63 },{ 29,67 } }, {}, spikes);
-
-	spikes = { { 28,65 } };
-	newButton(world, { { 28,63 },{ 28,67 } }, {}, spikes);
-
+}
 	world.refresh();
 
 	//////////////////////////////////
@@ -241,7 +249,7 @@ int main(int argc, const char **argv)
 			system_trigger.updateButtons(world);
 
 			if (tick++ % 20 == 0)
-				std::cout << "TICK (" << tick << ") " 
+				std::cout << "TICK (" << tick << ") "
 				          << clock.get_time().asMilliseconds()
 				          << std::endl;
 		}
@@ -256,7 +264,7 @@ int main(int argc, const char **argv)
 			system_health.regenerate();
 			system_movement.processTranslation();
 		}
-		
+
 		////////////////
 		// Events all the time
 		{
