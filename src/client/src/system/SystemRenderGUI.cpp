@@ -16,6 +16,8 @@ void SystemRenderGUI::setup(irr::IrrlichtDevice *device,
                   irr::core::position2d<irr::s32>(0,0), true);
 
   timer_nudge = std::clock();
+  timer_HUD_transition = std::clock();
+  HUD_transition_state = 0;
 }
 
 void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
@@ -25,12 +27,21 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
                              tempo::ComponentHealth     comp_health)
 {
 
-  if(combo > 20) {
-    HUD->setImage(texture_HUD_Active);
-  } else if(combo == 20) {
-    HUD->setImage(texture_HUD_Semi_Active);
-  } else {
-    HUD->setImage(texture_HUD);
+  if((std::clock() - timer_HUD_transition ) / (double) CLOCKS_PER_SEC > 0.4 ) {
+    if(combo > 20 && HUD_transition_state == 1) {
+      HUD_transition_state = 2;
+      timer_HUD_transition = std::clock();
+      HUD->setImage(texture_HUD_Active);
+    } else if((combo > 20 && HUD_transition_state == 0) ||
+              (combo < 20 && HUD_transition_state == 2) ) {
+      HUD_transition_state = 1;
+      HUD->setImage(texture_HUD_Semi_Active);
+      timer_HUD_transition = std::clock();
+    } else if(combo < 20 && HUD_transition_state == 1) {
+      HUD_transition_state = 0;
+      HUD->setImage(texture_HUD);
+      timer_HUD_transition = std::clock();
+    }
   }
 
   // Get the screen size to adjust the position and size of UI elements

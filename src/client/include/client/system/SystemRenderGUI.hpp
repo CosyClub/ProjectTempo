@@ -16,6 +16,9 @@ struct SystemRenderGUI {
 		irr::video::ITexture*     texture_HUD_Active;
 		irr::video::ITexture*     texture_HUD_Semi_Active;
 
+		std::clock_t timer_HUD_transition;
+		int          HUD_transition_state;
+
 		std::clock_t timer_nudge;
 		int message = 2;
 
