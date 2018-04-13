@@ -288,9 +288,11 @@ int main(int argc, const char **argv)
 	auto &combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
 	auto &comp_health = entity_player.getComponent<tempo::ComponentHealth>();
 
-	client::createLasers(smgr, driver, { {40,12}, {40,52}, {40,92} });
+	glm::ivec2 startingPos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-	client::createDiscoBalls(smgr, driver, { {40,6} });
+	client::createLasers(smgr, driver, { {40,12}, {40,52}, {40,92} }, startingPos);
+
+	client::createDiscoBalls(smgr, driver, { {40,6} }, startingPos);
 
 	/////////////////////////////////////////////////
 	// Main loop
