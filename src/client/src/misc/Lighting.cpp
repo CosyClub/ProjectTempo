@@ -5,7 +5,8 @@ namespace client {
 
 	void createLasers(irr::scene::ISceneManager *smgr,
 					  irr::video::IVideoDriver * driver,
-					  std::vector<glm::ivec2> positions) {
+					  std::vector<glm::ivec2> positions,
+					  glm::ivec2 playerPos) {
 
 		irr::core::array<irr::video::ITexture*> texturesLaser;
 
@@ -18,6 +19,10 @@ namespace client {
 		};
 
 		for (glm::ivec2 pos : positions) {
+
+			if (pos.x < playerPos.x - 20 || pos.x > playerPos.x + 20) {
+				continue;
+			}
 
 			irr::scene::IVolumeLightSceneNode* nodeLaserA[10];
 
@@ -88,11 +93,23 @@ namespace client {
 	void createDiscoBalls(irr::scene::ISceneManager *smgr,
 						  irr::video::IVideoDriver * driver,
 						  std::vector<glm::ivec2> positions,
+						  glm::ivec2 playerPos,
 						  irr::scene::ISceneNode *parent) {
 
-		irr::scene::IAnimatedMeshSceneNode* nodeDiscoBall1 = smgr->addAnimatedMeshSceneNode(smgr->getMesh("resources/meshes/disco_ball.obj"), parent);
+		irr::scene::IAnimatedMeshSceneNode* nodeDiscoBall1;
+
+		bool created = false;
 
 		for (glm::ivec2 pos : positions) {
+
+			if (pos.x < playerPos.x - 20 || pos.x > playerPos.x + 20) {
+				continue;
+			}
+
+			if (!created) {
+				nodeDiscoBall1 = smgr->addAnimatedMeshSceneNode(smgr->getMesh("resources/meshes/disco_ball.obj"), parent);
+				created = true;
+			}
 
 			nodeDiscoBall1->setPosition(irr::core::vector3df(pos.x, 10, pos.y));
 			// nodeDiscoBall1->setRotation(vector3df(0, 180, 0));
