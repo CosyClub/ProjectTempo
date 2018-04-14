@@ -18,8 +18,11 @@ std::string             _global_stage_loaded("None");
 void ComponentStage::loadLevel(const char *stage_file)
 {
 
-	int fwidth = 13;
-	int fheight = 10;
+	//Needed so that the player cannot see other feeder areas
+	int emptySpace = 40;
+
+	int fwidth = 60;
+	int fheight = 20 + emptySpace;
 
 	if (_global_stage_loaded == std::string(stage_file)) {
 		tiles = &_global_stage;
@@ -56,7 +59,7 @@ void ComponentStage::loadLevel(const char *stage_file)
 
 			// Repeat tiles for feeder areas
 			else if (x < fwidth){
-				int modBase = width * y%fheight * 4;
+				int modBase = width * (y%fheight) * 4;
 				uint8_t *modPixel = &pixel_data[modBase + x * 4];
 
 				if (modPixel[0] > 0) {

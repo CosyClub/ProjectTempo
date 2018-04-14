@@ -20,7 +20,7 @@ namespace client {
 
 		for (glm::ivec2 pos : positions) {
 
-			if (pos.x < playerPos.x - 20 || pos.x > playerPos.x + 20) {
+			if (pos.x < playerPos.x - 50 || pos.x > playerPos.x + 50) {
 				continue;
 			}
 
@@ -102,7 +102,7 @@ namespace client {
 
 		for (glm::ivec2 pos : positions) {
 
-			if (pos.x < playerPos.x - 20 || pos.x > playerPos.x + 20) {
+			if (pos.x < playerPos.x - 50 || pos.x > playerPos.x + 50) {
 				continue;
 			}
 

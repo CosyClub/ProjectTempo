@@ -207,7 +207,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_translation_animation);
 	world.addSystem(system_less_jank);
 
-	anax::Entity entity_stage = createEntityStage(world);
+	createEntityStage(world);
 	world.refresh();
 
 	// Initialise Systems
@@ -290,9 +290,16 @@ int main(int argc, const char **argv)
 
 	glm::ivec2 startingPos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-	client::createLasers(smgr, driver, { {40,12}, {40,52}, {40,92} }, startingPos);
+	int fheight = 10;
+	int feeder_areas = 20;
 
-	client::createDiscoBalls(smgr, driver, { {40,6} }, startingPos);
+	for (int i=0; i < feeder_areas; i++){
+
+	client::createLasers(smgr, driver, { {4 + (i*fheight),12}, {4 + (i*fheight),52}, {4 + (i*fheight),92} }, startingPos);
+
+	client::createDiscoBalls(smgr, driver, { {4 + (i*fheight),6} }, startingPos);
+
+}
 
 	/////////////////////////////////////////////////
 	// Main loop
@@ -315,8 +322,8 @@ int main(int argc, const char **argv)
 	while (device->run()) {
 
 		// Work out a frame delta time.
-		const irr::u32 now = device->getTimer()->getTime();
-		/// frameDeltaTime = (f32)(now - then)/1000.f; // Time in seconds
+		// const irr::u32 now = device->getTimer()->getTime();
+		// frameDeltaTime = (f32)(now - then)/1000.f; // Time in seconds
 
 		////////////////
 		// Events all the time
