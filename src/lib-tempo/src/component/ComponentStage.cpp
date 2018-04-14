@@ -18,8 +18,8 @@ std::string             _global_stage_loaded("None");
 void ComponentStage::loadLevel(const char *stage_file)
 {
 
-	int m = 13;
-	int n = 10;
+	int fwidth = 13;
+	int fheight = 10;
 
 	if (_global_stage_loaded == std::string(stage_file)) {
 		tiles = &_global_stage;
@@ -54,8 +54,9 @@ void ComponentStage::loadLevel(const char *stage_file)
 				_global_stage.push_back(stage_tile(glm::ivec2(y, x), (float) height));
 			}
 
-			else if (x < m){
-				int modBase = width * y%n * 4;
+			// Repeat tiles for feeder areas
+			else if (x < fwidth){
+				int modBase = width * y%fheight * 4;
 				uint8_t *modPixel = &pixel_data[modBase + x * 4];
 
 				if (modPixel[0] > 0) {

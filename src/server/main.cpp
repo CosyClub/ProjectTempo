@@ -146,12 +146,13 @@ int main(int argc, const char **argv)
 
 	int rhythmID = 1;
 
-	int n = 10;
+	int fheight = 10;
+	int feeder_areas = 20;
 
-	for(int i = 0; i < 20; i++){
+	for(int i = 0; i < feeder_areas; i++){
 
-		std::vector<glm::ivec2> spikes = {{ 3 + (i * n), 3 }};
-		newButton(world, { { 3 + (i * n), 2 } }, {}, spikes);
+		std::vector<glm::ivec2> spikes = {{ 3 + (i * fheight), 3 }};
+		newButton(world, { { 3 + (i * fheight), 2 } }, {}, spikes);
 
 	// std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
 	// RythmButton(world, { { { 40,12 }},{ { 40,13 } },{ { 41,13 } },{ { 41,12 } } }, wall, {}, rhythmID);
