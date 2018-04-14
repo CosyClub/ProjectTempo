@@ -50,7 +50,7 @@ sf::Packet &operator<<(sf::Packet &packet, const tempo::Mask &m)
 	uint32_t size = m.positions.size();
 	packet << size;
 
-	for (int I = 0; I < size; I++) {
+	for (uint32_t I = 0; I < size; I++) {
 		packet << m.positions[I];
 	}
 
@@ -75,7 +75,7 @@ sf::Packet &operator>>(sf::Packet &packet, tempo::Mask &m)
 
 	m.positions = std::vector<glm::ivec2>();
 
-	for (int I = 0; I < size; I++) {
+	for (uint32_t I = 0; I < size; I++) {
 		glm::ivec2 tmp_vec;
 		packet >> tmp_vec;
 		m.positions.push_back(tmp_vec);

@@ -31,7 +31,7 @@ private:
 	irr::video::ITexture *buttonArrow;
 
 	//Used to rotate the button so that the arrow is facing the correct way
-	void setRotation(std::vector<anax::Entity> entities, int i, int j, irr::scene::IMeshSceneNode *button, glm::ivec2 pos);
+	void setRotation(std::vector<anax::Entity> entities, uint32_t i, uint32_t j, irr::scene::IMeshSceneNode *button, glm::ivec2 pos);
 };
 }  // namespace client
 

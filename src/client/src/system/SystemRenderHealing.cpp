@@ -21,8 +21,8 @@ void SystemRenderHealing::update(irr::video::SColor colour_dark,
 
 		auto& h     = entity.getComponent<tempo::ComponentHealth>();
 		auto& c     = entity.getComponent<tempo::ComponentCombo>();
-		auto& pos   = entity.getComponent<tempo::ComponentStagePosition>();
-		auto& stage = entity.getComponent<tempo::ComponentStage        >();
+		// auto& pos   = entity.getComponent<tempo::ComponentStagePosition>();
+		// auto& stage = entity.getComponent<tempo::ComponentStage        >();
 		auto &sn    = entity.getComponent<client::ComponentRenderSceneNode>();
 
 		if(c.comboCounter > 20 && h.current_health != h.max_health)
