@@ -26,12 +26,12 @@ struct SystemRenderGUI {
 		int          HUD_transition_state;
 
 		std::clock_t timer_nudge;
+		std::clock_t timer_nudge_picker;
 		std::clock_t timer_missed;
-		int message = 2;
+		int message = 0;
 
-		irr::core::stringw move_str[3] = {L"Keep moving!!!",
-		                                  L"Time to party!",
-		                                  L" Just dance!"};
+		irr::core::stringw move_str[2] = {L"  Move on the beat!",
+		                                  L"  Press E to dance!"};
 
 		int          prev_combo;
 		int          missed_combos;

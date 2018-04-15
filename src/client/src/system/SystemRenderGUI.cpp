@@ -28,6 +28,7 @@ void SystemRenderGUI::setup(irr::IrrlichtDevice *device,
                   irr::core::position2d<irr::s32>(0,0), true);
 
   timer_nudge  = std::clock();
+  timer_nudge_picker  = std::clock();
   timer_missed = std::clock();
   timer_HUD_transition = std::clock();
   HUD_transition_state = 0;
@@ -57,7 +58,7 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
     missed_combos = 0;
   }
 
-  if(missed_combos == 3) {
+  if(missed_combos == 4) {
     missed_combos = 0;
     timer_missed = std::clock();
   }
@@ -74,8 +75,12 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
         irr::core::rect<irr::s32>( 0.30 * screenSize.Width, 0.70 * screenSize.Height, 0.2 * screenSize.Width, 300),
         irr::video::SColor(255, 255, 255, 255));
 
-    } else if(combo == 0) { // Nudge the player if their combo is 0
+    } else if(combo == 0 && (time_now - timer_nudge ) / (double) CLOCKS_PER_SEC > 5.0) { // Nudge the player if their combo is 0
       updateNudge(font, time_now, screenSize);
+    } else{
+      if(combo > 0) {
+        timer_nudge = time_now;
+      }
     }
 	}
 
@@ -105,30 +110,30 @@ void SystemRenderGUI::updateNudge(irr::gui::IGUIFont *font,
                                   std::clock_t time_now,
                                   const irr::core::dimension2du screenSize) {
 
-  if((time_now - timer_nudge ) / (double) CLOCKS_PER_SEC > 5.0) {
-    timer_nudge = time_now;
-    message = rand() % 3;
+  if((time_now - timer_nudge_picker ) / (double) CLOCKS_PER_SEC > 8.5) {
+    timer_nudge_picker = time_now;
+    message = rand() % 2;
   }
 
   font->draw(
     move_str[message].c_str(),
-    irr::core::rect<irr::s32>( 0.30 * screenSize.Width, 0.70 * screenSize.Height, 0.2 * screenSize.Width, 300),
+    irr::core::rect<irr::s32>( 0.2 * screenSize.Width, 0.70 * screenSize.Height, 0.2 * screenSize.Width, 300),
     irr::video::SColor(255, 255, 255, 255));
 }
 
 void SystemRenderGUI::updateHUD(std::clock_t time_now, int combo, int colour_index)
 {
   if((time_now - timer_HUD_transition ) / (double) CLOCKS_PER_SEC > 0.4 ) {
-    if(combo > 5 && HUD_transition_state == 1) {
+    if(combo > 20 && HUD_transition_state == 1) {
       HUD_transition_state = 2;
       timer_HUD_transition = time_now;
       HUD->setImage(texture_HUD_Active[colour_index]);
-    } else if((combo > 5 && HUD_transition_state == 0) ||
-              (combo < 5 && HUD_transition_state == 2) ) {
+    } else if((combo > 20 && HUD_transition_state == 0) ||
+              (combo < 20 && HUD_transition_state == 2) ) {
       HUD_transition_state = 1;
       HUD->setImage(texture_HUD_Semi_Active[colour_index]);
       timer_HUD_transition = time_now;
-    } else if(combo < 5 && HUD_transition_state == 1) {
+    } else if(combo < 20 && HUD_transition_state == 1) {
       HUD_transition_state = 0;
       HUD->setImage(texture_HUD);
       timer_HUD_transition = time_now;
