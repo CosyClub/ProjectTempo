@@ -1,5 +1,7 @@
 #include <client/system/SystemRenderAttack.hpp>
 
+#include <tempo/component/ComponentPlayerLocal.hpp>
+
 namespace client
 {
 void SystemRenderAttack::setup(irr::scene::ISceneManager *smgr)
@@ -11,18 +13,19 @@ void SystemRenderAttack::setup(irr::scene::ISceneManager *smgr)
 	auto entities = getEntities();
 
 	for (auto &entity : entities) {
-		// auto &attack    = entity.getComponent<tempo::ComponentAttack>();
-		// auto &healthbar = entity.getComponent<client::ComponentHealthBar>();
-		// auto &sn        = entity.getComponent<client::ComponentRenderSceneNode>();
-		//
-		// if (healthbar.node != nullptr)
-		// 	continue;
-		//
-		// healthbar.node = smgr->addBillboardSceneNode(sn.node, size,
-		//                                              pos,  // fix alignment
-		//                                              -1, color, color);
-		// healthbar.node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-		// healthbar.node->grab();
+
+		auto &attack = entity.getComponent<tempo::ComponentAttack>();
+		auto &rend   = entity.getComponent<client::ComponentRenderAttack>();
+		auto &sn     = entity.getComponent<client::ComponentRenderSceneNode>();
+
+		if(rend.node != nullptr){
+			continue;
+		}
+
+		irr::video::SColor colour = (255, 255, 255, 0);
+		rend.node = smgr->addBillboardSceneNode(sn.node, size, pos, -1, colour, colour);
+		rend.node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+		rend.node->grab();
 	}
 }
 
@@ -33,35 +36,19 @@ void SystemRenderAttack::update()
 	double scale;
 
 	for (auto &entity : entities) {
-		// auto &health    = entity.getComponent<tempo::ComponentHealth>();
-		// auto &healthbar = entity.getComponent<client::ComponentHealthBar>().node;
-		//
-		// // Fraction of health left
-		// scale = (double) health.current_health / health.max_health;
-		//
-		// float new_width = original_size.Width * scale;
-		// irr::core::dimension2d<irr::f32> newSize(new_width, original_size.Height);
-		// healthbar->setSize(newSize);
-		//
-		// irr::core::vector3df c1 = RGBtoHSV(colour_green);
-		// irr::core::vector3df c2 = RGBtoHSV(colour_red);
-		// c1.X = c1.X * scale + c2.X * (1.f - scale);
-		// irr::video::SColor colour_health = HSVtoRGB(c1);
-		// healthbar->setColor(colour_health);
-		//
-		//
-		// if (entity.hasComponent<tempo::ComponentCombo>())
-		// {
-		// 	tempo::ComponentCombo& c = entity.getComponent<tempo::ComponentCombo>();
-		// 	float scale = c.comboCounter / 20.f;
-		// 	scale = fmin(scale, 0.5);
-		// 	newSize += newSize * scale;
-		// 	irr::core::vector3df          pos(-0.3f, 1.6f + newSize.Height / 2, 0.0f);
-		// 	pos += pos * scale;
-		// 	healthbar->setSize(newSize);
-		// 	healthbar->setPosition(pos);
-		//
-		// }
+
+		auto &attack = entity.getComponent<tempo::ComponentAttack>();
+		auto &rend   = entity.getComponent<client::ComponentRenderAttack>();
+		auto &sn     = entity.getComponent<client::ComponentRenderSceneNode>();
+
+		if(entity.hasComponent<tempo::ComponentPlayerLocal>()){
+			if(!attack.isAttacking()){
+				printf("NOT ATTACKING\n");
+			}
+			else{
+				printf("ATTACKING\n");
+			}
+		}
 	}
 }
 }

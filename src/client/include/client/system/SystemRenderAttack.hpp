@@ -4,6 +4,7 @@
 #include <anax/Component.hpp>
 #include <anax/System.hpp>
 
+#include <client/component/ComponentRenderAttack.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
 #include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
