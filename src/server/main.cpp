@@ -31,14 +31,13 @@
 #define PLAYER_DELTA 100       // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000.f / BPM  // Time between beats (microsecs)
 
-void RythmButton(anax::World &          world,
-				std::vector<std::vector<glm::ivec2>> positions,
-				std::vector<glm::ivec2> tiles,
-				std::vector<glm::ivec2> spikes,
-				int &ID) {
-
+void RythmButton(anax::World &                        world,
+                 std::vector<std::vector<glm::ivec2>> positions,
+                 std::vector<glm::ivec2>              tiles,
+                 std::vector<glm::ivec2>              spikes,
+                 int &                                ID)
+{
 	for (int i = 0; i < positions.size(); i++) {
-		
 		std::vector<glm::ivec2> group = positions[i];
 		glm::ivec2 prev;
 		glm::ivec2 next;
@@ -70,11 +69,11 @@ void RythmButton(anax::World &          world,
 	ID++;
 }
 
-void newButton(anax::World &          world,
+void newButton(anax::World &    world,
 	std::vector<glm::ivec2> positions,
 	std::vector<glm::ivec2> tiles,
-	std::vector<glm::ivec2> spikes) {
-
+	std::vector<glm::ivec2> spikes)
+{
 	tempo::createButtonGroup(world, positions, tiles, spikes, { -1,-1 }, { -1,-1 }, true, 0);
 
 	if (spikes.size() > 0) {
@@ -202,9 +201,13 @@ int main(int argc, const char **argv)
 
 	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	tick++;
+	sf::Int64 tick_time_s = clock.get_time().asMicroseconds();
+	sf::Int64 tick_time_e = 0;
 
 	// Main loop, with beat printouts
 	while (true) {
+		tick_time_s = clock.get_time().asMicroseconds();
+
 		// Handshake call, DO NOT REMOVE
 		tempo::checkForClientCreation(&world);
 		tempo::checkForClientDeletion(world);
@@ -220,8 +223,6 @@ int main(int argc, const char **argv)
 			system_attack.receiveAttacks(world);
 			system_combo.checkForUpdates(world);
 			system_health.CheckHealth();
-			//system_health.server_receiveHealth(world);
-			system_health.broadcastHealth();
 		}
 
 		if (clock.passed_antibeat())
@@ -241,7 +242,7 @@ int main(int argc, const char **argv)
 			system_trigger.updateButtons(world);
 
 			if (tick++ % 20 == 0)
-				std::cout << "TICK (" << tick << ") " 
+				std::cout << "TICK (" << tick << ") "
 				          << clock.get_time().asMilliseconds()
 				          << std::endl;
 		}
@@ -256,14 +257,15 @@ int main(int argc, const char **argv)
 			system_health.regenerate();
 			system_movement.processTranslation();
 		}
-		
+
 		////////////////
 		// Events all the time
 		{
 			system_health.broadcastHealth();
 		}
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		tick_time_e = clock.get_time().asMicroseconds();
+		std::this_thread::sleep_for(std::chrono::milliseconds(20000 - (tick_time_e - tick_time_s)));
 	}
 	return 0;
 }
