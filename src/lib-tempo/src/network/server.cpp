@@ -299,7 +299,7 @@ void handshakeRoleReq(sf::Packet &packet, anax::World *world)
 
 	// Create Entity for selected role from client
 	// Only creating players for now (spectators are not a thing)
-	anax::Entity newEntity = newPlayer(*world);
+	anax::Entity newEntity = newPlayer(*world, roleData.party_number);
 	sf::Packet   newPlayer = packageComponents(newEntity);
 
 	// Register Role

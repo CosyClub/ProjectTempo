@@ -31,7 +31,7 @@
 
 namespace tempo
 {
-anax::Entity newPlayer(anax::World &world);
+anax::Entity newPlayer(anax::World &world, uint32_t party_number);
 
 anax::Entity createMobStill(anax::World &world, glm::ivec2 pos);
 anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos);

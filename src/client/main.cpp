@@ -23,6 +23,7 @@
 #include <client/system/SystemTranslationAnimation.hpp>
 
 #include <tempo/component/ComponentButtonGroup.hpp>
+#include <tempo/component/ComponentParty.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentSpikes.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
@@ -247,7 +248,8 @@ int main(int argc, const char **argv)
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
 	tempo::ClientRole     role     = tempo::ClientRole::PLAYER;
-	tempo::ClientRoleData roleData = {"Bilbo Baggins"};
+	//tempo::ClientRoleData roleData = {"Bilbo Baggins", 0};
+	tempo::ClientRoleData roleData = {"Bilbo Baggins", atol(argv[2])};
 
 	// Connect to server and handshake information
 	if (!tempo::connectToAndSyncWithServer(role, roleData, world)) {
@@ -370,6 +372,7 @@ int main(int argc, const char **argv)
 			camera_node->setTarget(camera_target);
 		}
 
+		std::cout<<entity_player.getComponent<tempo::ComponentParty>().party_number<<"\n";
 		////////////////
 		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {

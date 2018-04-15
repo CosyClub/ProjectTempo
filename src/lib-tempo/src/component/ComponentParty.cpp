@@ -8,6 +8,9 @@ namespace tempo
 	{
 		party_number = 0;
 	}
+
+	ComponentParty::ComponentParty(uint32_t party_number) :
+	    party_number(party_number) {}
 	/////
 	// Required for networking
 	/////

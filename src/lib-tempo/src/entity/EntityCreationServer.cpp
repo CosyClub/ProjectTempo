@@ -2,7 +2,7 @@
 
 namespace tempo
 {
-anax::Entity newPlayer(anax::World &world)
+anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 {
 	// TODO:: Add Entity to Specific Tile
 
@@ -30,7 +30,7 @@ anax::Entity newPlayer(anax::World &world)
 	entity_player.addComponent<tempo::ComponentAOEIndicator>();
 	entity_player.addComponent<tempo::ComponentHealth>(10);
 	entity_player.addComponent<tempo::ComponentTeam>(Team::BADGUYS);
-	entity_player.addComponent<tempo::ComponentParty>();
+	entity_player.addComponent<tempo::ComponentParty>(party_number);
 
 	entity_player.activate();
 

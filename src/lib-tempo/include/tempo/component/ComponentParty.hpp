@@ -14,6 +14,8 @@ struct ComponentParty : anax::Component {
 
 	ComponentParty();
 
+	ComponentParty(uint32_t party_number);
+
 	ComponentParty(sf::Packet p);
 
 	sf::Packet dumpComponent();
