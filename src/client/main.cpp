@@ -248,8 +248,8 @@ int main(int argc, const char **argv)
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
 	tempo::ClientRole     role     = tempo::ClientRole::PLAYER;
-	//tempo::ClientRoleData roleData = {"Bilbo Baggins", 0};
-	tempo::ClientRoleData roleData = {"Bilbo Baggins", atol(argv[2])};
+
+	tempo::ClientRoleData roleData = {"Bilbo Baggins", atoi(argv[2])};
 
 	// Connect to server and handshake information
 	if (!tempo::connectToAndSyncWithServer(role, roleData, world)) {
@@ -372,7 +372,6 @@ int main(int argc, const char **argv)
 			camera_node->setTarget(camera_target);
 		}
 
-		std::cout<<entity_player.getComponent<tempo::ComponentParty>().party_number<<"\n";
 		////////////////
 		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
