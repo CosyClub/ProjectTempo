@@ -7,7 +7,7 @@ namespace client
 void SystemRenderGUI::setup(irr::IrrlichtDevice *device,
                              irr::video::IVideoDriver* driver) {
 
-  texture_HUD = driver->getTexture("resources/materials/textures/HUD.png");
+  texture_HUD = driver->getTexture("resources/materials/textures/hud/HUD.png");
 
   irr::core::stringw active_path = L"resources/materials/textures/hud/HUD-Active-";
   irr::core::stringw semi_path = L"resources/materials/textures/hud/HUD-SemiActive-";
