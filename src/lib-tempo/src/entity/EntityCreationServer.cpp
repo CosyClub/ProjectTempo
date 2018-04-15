@@ -30,6 +30,7 @@ anax::Entity newPlayer(anax::World &world)
 	entity_player.addComponent<tempo::ComponentAOEIndicator>();
 	entity_player.addComponent<tempo::ComponentHealth>(10);
 	entity_player.addComponent<tempo::ComponentTeam>(Team::BADGUYS);
+	entity_player.addComponent<tempo::ComponentParty>();
 
 	entity_player.activate();
 
@@ -165,7 +166,7 @@ anax::Entity createButtonGroup(anax::World &           world,
 
 anax::Entity createSpikes(anax::World & world, std::vector<glm::ivec2> positions) {
 
-	
+
 	anax::Entity entity_spikes = world.createEntity();
 	entity_spikes.addComponent<tempo::ComponentSpikes>(positions);
 	entity_spikes.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");

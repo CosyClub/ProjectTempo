@@ -13,6 +13,7 @@
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentModel.hpp>
+#include <tempo/component/ComponentParty.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
