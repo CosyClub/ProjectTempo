@@ -5,7 +5,8 @@
 
 namespace tempo
 {
-void SystemHealth::CheckHealth()
+
+void SystemHealth::check_health()
 {
 	auto entities = getEntities();
 
@@ -26,6 +27,27 @@ void SystemHealth::CheckHealth()
 	}
 }
 
+void SystemHealth::regenerate()
+{
+	auto entities = getEntities();
+
+	for (auto &entity : entities)
+	{
+		if (!entity.hasComponent<tempo::ComponentHealth>() ||
+		    !entity.hasComponent<tempo::ComponentCombo>()) {
+
+			continue;
+		}
+
+		auto &h = entity.getComponent<tempo::ComponentHealth>();
+		auto &c = entity.getComponent<tempo::ComponentCombo>();
+
+		if( c.comboCounter > 20) {
+			h.HealthUpdate(1);
+		}
+	}
+}
+
 void SystemHealth::broadcastHealth()
 {
 	auto entities = getEntities();
@@ -33,6 +55,14 @@ void SystemHealth::broadcastHealth()
 	for (auto &entity : entities)
 	{
 		auto &h = entity.getComponent<ComponentHealth>();
+
+		// Lets try not to send health all the time please
+		if (h.current_health != h.__prev_health) {
+			h.__prev_health = h.current_health;
+		} else {
+			continue;
+		}
+
 		anax::Entity::Id id = entity.getId();
 
 		sf::Packet p;
@@ -40,16 +70,6 @@ void SystemHealth::broadcastHealth()
 		p << h.current_health;
 		broadcastMessage(tempo::QueueID::SYSTEM_HEALTH, p);
 	}
-}
-
-void SystemHealth::client_sendHealth(anax::Entity entity)
-{
-	auto &h = entity.getComponent<ComponentHealth>();
-
-	sf::Packet p;
-	p << tempo::localtoserver[entity.getId()];
-	p << h.current_health;
-	sendMessage(tempo::QueueID::SYSTEM_HEALTH, p);
 }
 
 void SystemHealth::client_receiveHealth(anax::World &world)
@@ -64,72 +84,65 @@ void SystemHealth::client_receiveHealth(anax::World &world)
 		p >> id;
 		SERVERTOLOCAL(id)
 		if (id.isNull()) continue;
-
-		int health;
-		p >> health;
-
 		anax::Entity e = anax::Entity(world, id);
 		ComponentHealth &h = e.getComponent<ComponentHealth>();
-		h.current_health = health;
+
+		p >> h.current_health;
 	}
 }
 
-void SystemHealth::server_sendHealth(anax::Entity entity)
-{
-	auto &h = entity.getComponent<ComponentHealth>();
-	anax::Entity::Id id = entity.getId();
+/////////////////////////////////
+//// DEPRECATED CODE GRAVEYARD
+//// There's a chance someone may need something from here so I haven't deleted
+//// it entirely, just removed it from sight and mind.
 
-	sf::Packet p;
-	p << id;
-	p << h.current_health;
-	sendMessage(tempo::QueueID::SYSTEM_HEALTH, p);
-}
+// void SystemHealth::client_sendHealth(anax::Entity entity)
+// {
+// 	auto &h = entity.getComponent<ComponentHealth>();
 
-void SystemHealth::server_receiveHealth(anax::World &world)
-{
-	tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_HEALTH);
-	while (!q->empty())
-	{
-		sf::Packet p = q->front();
-		q->pop();
+// 	sf::Packet p;
+// 	p << tempo::localtoserver[entity.getId()];
+// 	p << h.current_health;
+// 	sendMessage(tempo::QueueID::SYSTEM_HEALTH, p);
+// }
 
-		anax::Entity::Id id;
-		p >> id;
+// void SystemHealth::server_sendHealth(anax::Entity entity)
+// {
+// 	auto &h = entity.getComponent<ComponentHealth>();
+// 	anax::Entity::Id id = entity.getId();
 
-		int health;
-		p >> health;
+// 	sf::Packet p;
+// 	p << id;
+// 	p << h.current_health;
+// 	sendMessage(tempo::QueueID::SYSTEM_HEALTH, p);
+// }
 
-		//id = localtoserver[id];
-		anax::Entity e(world, id);
-		if (!e.hasComponent<tempo::ComponentHealth>()) {
-			std::cout << "Received Health  from entity without ComponentHealth"
-								<< std::endl;
-		} else {
-		ComponentHealth &h = e.getComponent<ComponentHealth>();
-		h.current_health = health;
-		}
-	}
-}
+//void SystemHealth::server_receiveHealth(anax::World &world)
+//{
+//	tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_HEALTH);
+//	while (!q->empty())
+//	{
+//		sf::Packet p = q->front();
+//		q->pop();
 
-void SystemHealth::regenerate()
-{
-	auto entities = getEntities();
+//		anax::Entity::Id id;
+//		p >> id;
 
-	for (auto &entity : entities)
-	{
-		if (!entity.hasComponent<tempo::ComponentHealth>() ||
-	      !entity.hasComponent<tempo::ComponentCombo>()) {
+//		int health;
+//		p >> health;
 
-			continue;
-		}
-
-		auto &h = entity.getComponent<tempo::ComponentHealth>();
-		auto &c = entity.getComponent<tempo::ComponentCombo>();
-
-		if( c.comboCounter > 20) {
-			h.HealthUpdate(1);
-		}
-	}
-}
+//		ERROR: THIS SHOULD BE CHANGED TO THE NEW LOCALTOSERVER MACRO IF
+//		EVER UNCOMMENTED AND USED AGAIN:
+//		id = localtoserver[id];
+//		anax::Entity e(world, id);
+//		if (!e.hasComponent<tempo::ComponentHealth>()) {
+//			std::cout << "Received Health from entity without ComponentHealth"
+//								<< std::endl;
+//		} else {
+//		ComponentHealth &h = e.getComponent<ComponentHealth>();
+//		h.current_health = health;
+//		}
+//	}
+//}
 
 }
