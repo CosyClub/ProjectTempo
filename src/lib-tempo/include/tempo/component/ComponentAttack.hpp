@@ -9,7 +9,7 @@
 
 namespace tempo
 {
-enum MessageAttack { UPDATE_INTENT, ATTACK_CORRECTION };
+enum MessageAttack { UPDATE_INTENT };
 
 // Component captures a combo mechanic for the entity with this component.
 struct ComponentAttack
