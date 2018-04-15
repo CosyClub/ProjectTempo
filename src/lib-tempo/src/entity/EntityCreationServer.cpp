@@ -44,7 +44,7 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
-	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentModel>("resources/materials/textures/totem.png", glm::vec3(255, 255, 255), false, glm::vec2(1,1));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(1);
 	float arr[2] = {0, 1};
@@ -65,7 +65,7 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
-	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentModel>("resources/materials/textures/totem.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(2);
 	float arr[9] = {1, 1, 1,
@@ -165,7 +165,7 @@ anax::Entity createButtonGroup(anax::World &           world,
 
 anax::Entity createSpikes(anax::World & world, std::vector<glm::ivec2> positions) {
 
-	
+
 	anax::Entity entity_spikes = world.createEntity();
 	entity_spikes.addComponent<tempo::ComponentSpikes>(positions);
 	entity_spikes.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
