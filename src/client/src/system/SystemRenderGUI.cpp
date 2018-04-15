@@ -8,8 +8,20 @@ void SystemRenderGUI::setup(irr::IrrlichtDevice *device,
                              irr::video::IVideoDriver* driver) {
 
   texture_HUD = driver->getTexture("resources/materials/textures/HUD.png");
-  texture_HUD_Active = driver->getTexture("resources/materials/textures/HUD-Active.png");
-  texture_HUD_Semi_Active = driver->getTexture("resources/materials/textures/HUD-SemiActive.png");
+
+  irr::core::stringw active_path = L"resources/materials/textures/hud/HUD-Active-";
+  irr::core::stringw semi_path = L"resources/materials/textures/hud/HUD-SemiActive-";
+
+  char buffer[5];
+
+  irr::core::stringw str = L"";
+  str += buffer;
+  for(int i = 0; i < 10; i++)
+  {
+    sprintf(buffer, "%d", i);
+    texture_HUD_Active[i] = driver->getTexture(active_path + buffer + ".png");
+    texture_HUD_Semi_Active[i] = driver->getTexture(semi_path + buffer + ".png");
+  }
 
   HUD = device->getGUIEnvironment()->addImage(
                   texture_HUD,
@@ -28,11 +40,14 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
                              irr::gui::IGUIEnvironment *gui_env,
                              tempo::Clock &             clock,
                              int                        combo,
-                             tempo::ComponentHealth     comp_health)
+                             tempo::ComponentHealth     comp_health,
+                             int                        colour_index)
 {
 
   std::clock_t time_now = std::clock();
 
+  // HUD transition animatio
+  updateHUD(time_now, combo, colour_index);
   // Get the screen size to adjust the position and size of UI elements
 	const irr::core::dimension2du &screenSize = driver->getScreenSize();
 
@@ -64,8 +79,6 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
     }
 	}
 
-  // HUD transition animatio
-  updateHUD(time_now, combo);
   // Display combo bar
   updateComboBar(driver, clock, combo, screenSize);
   // Display health bar
@@ -103,24 +116,31 @@ void SystemRenderGUI::updateNudge(irr::gui::IGUIFont *font,
     irr::video::SColor(255, 255, 255, 255));
 }
 
-void SystemRenderGUI::updateHUD(std::clock_t time_now, int combo)
+void SystemRenderGUI::updateHUD(std::clock_t time_now, int combo, int colour_index)
 {
   if((time_now - timer_HUD_transition ) / (double) CLOCKS_PER_SEC > 0.4 ) {
-    if(combo > 20 && HUD_transition_state == 1) {
+    if(combo > 5 && HUD_transition_state == 1) {
       HUD_transition_state = 2;
       timer_HUD_transition = time_now;
-      HUD->setImage(texture_HUD_Active);
-    } else if((combo > 20 && HUD_transition_state == 0) ||
-              (combo < 20 && HUD_transition_state == 2) ) {
+      HUD->setImage(texture_HUD_Active[colour_index]);
+    } else if((combo > 5 && HUD_transition_state == 0) ||
+              (combo < 5 && HUD_transition_state == 2) ) {
       HUD_transition_state = 1;
-      HUD->setImage(texture_HUD_Semi_Active);
+      HUD->setImage(texture_HUD_Semi_Active[colour_index]);
       timer_HUD_transition = time_now;
-    } else if(combo < 20 && HUD_transition_state == 1) {
+    } else if(combo < 5 && HUD_transition_state == 1) {
       HUD_transition_state = 0;
       HUD->setImage(texture_HUD);
       timer_HUD_transition = time_now;
     }
   }
+
+  if(HUD_transition_state == 2) {
+    HUD->setImage(texture_HUD_Active[colour_index]);
+  } else if(HUD_transition_state == 1) {
+    HUD->setImage(texture_HUD_Semi_Active[colour_index]);
+  }
+
 }
 
 void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,

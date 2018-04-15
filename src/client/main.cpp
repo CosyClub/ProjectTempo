@@ -331,6 +331,7 @@ int main(int argc, const char **argv)
 	// sf::Clock dt_timer;
 
 	int j = 0;
+	int colour_index;
 
 	sf::Int64 tick               = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	sf::Clock frame_clock        = sf::Clock();
@@ -416,7 +417,8 @@ int main(int argc, const char **argv)
 
 			system_translation_animation.endBeat();
 
-			random_colour = client::randomHSV();
+			colour_index = rand() % 10;
+			random_colour = client::randomHSV(colour_index);
 
 			system_lighting.update(random_colour);
 
@@ -436,7 +438,7 @@ int main(int argc, const char **argv)
 		smgr->drawAll();
 		gui_env->drawAll();
 
-		system_render_gui.update(driver, gui_env, clock, combo, comp_health);
+		system_render_gui.update(driver, gui_env, clock, combo, comp_health, colour_index);
 		driver->endScene();
 
 		++frame_counter;

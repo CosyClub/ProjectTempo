@@ -19,8 +19,8 @@ struct SystemRenderGUI {
 
 		irr::gui::IGUIImage*      HUD;
 		irr::video::ITexture*     texture_HUD;
-		irr::video::ITexture*     texture_HUD_Active;
-		irr::video::ITexture*     texture_HUD_Semi_Active;
+		irr::video::ITexture*     texture_HUD_Active[10];
+		irr::video::ITexture*     texture_HUD_Semi_Active[10];
 
 		std::clock_t timer_HUD_transition;
 		int          HUD_transition_state;
@@ -44,7 +44,7 @@ struct SystemRenderGUI {
 		                 std::clock_t time_now,
 		                 const irr::core::dimension2du screenSize);
 
-		void updateHUD(std::clock_t time_now, int combo);
+		void updateHUD(std::clock_t time_now, int combo, int colour_index);
 
 		void updateComboBar(irr::video::IVideoDriver * driver,
 												tempo::Clock &             clock,
@@ -63,7 +63,8 @@ struct SystemRenderGUI {
 		            irr::gui::IGUIEnvironment *gui_env,
 		            tempo::Clock &             clock,
 		            int                        combo,
-							  tempo::ComponentHealth     comp_health);
+							  tempo::ComponentHealth     comp_health,
+							  int                        colour_index);
 
 };
 }
