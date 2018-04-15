@@ -9,7 +9,9 @@
 namespace client
 {
 struct ComponentRenderAttack : public anax::Component {
+public:
 	irr::scene::IBillboardSceneNode *node;
+	float posx;
 	ComponentRenderAttack(irr::scene::IBillboardSceneNode *node);
 	~ComponentRenderAttack();
 };
