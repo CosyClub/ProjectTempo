@@ -22,7 +22,7 @@ void ComponentStage::loadLevel(const char *stage_file)
 	int emptySpace = 40;
 
 	int fwidth = 60;
-	int fheight = 20 + emptySpace;
+	int fheight = 20;
 
 	if (_global_stage_loaded == std::string(stage_file)) {
 		tiles = &_global_stage;
