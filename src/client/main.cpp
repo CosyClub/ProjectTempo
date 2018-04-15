@@ -288,40 +288,11 @@ int main(int argc, const char **argv)
 	auto &combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
 	auto &comp_health = entity_player.getComponent<tempo::ComponentHealth>();
 
-	irr::scene::ICameraSceneNode *camera_node;
-	if (false) {
-		float rotateSpeed = 25.0f;
-		float moveSpeed   = 0.1f;
-		camera_node       = smgr->addCameraSceneNodeFPS(nullptr, rotateSpeed, moveSpeed);
-		device->getCursorControl()->setVisible(false);
-	} else {
-		float rotate    = 0.0f;
-		float translate = 0.0f;  //-100
-		float zoom      = 0.0f;  // 100
-		float distance  = 0.0f;
-		// camera_node = smgr->addCameraSceneNodeMaya(sn.node, rotate, translate, zoom, -1,
-		// distance); camera_node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
-		camera_node = smgr->addCameraSceneNode();
-		camera_node->setPosition(irr::core::vector3df(14, 9, 0));
-		camera_node->setTarget(sn.node->getPosition());
-		// camera_node->setRotation(irr::core::vector3df(0,0,90));
-		device->getCursorControl()->setVisible(true);
-	}
+	glm::ivec2 startingPos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-	// irr::scene::ISceneNode* camera_light;
-	// camera_light = smgr->addLightSceneNode(camera_node,
-	//                                        irr::core::vector3df(0.0f, 4.0f, 0.0f),
-	//                                        irr::video::SColorf(0.8f, 0.8f, 0.8f),
-	//                                        2.0f);
-	// debug static light
-	// irr::scene::ILightSceneNode *light_node;
-	// light_node = smgr->addLightSceneNode(0, irr::core::vector3df(10.0f, 10.0f, 10.0f),
-	//                                      irr::video::SColorf(0.8f, 0.8f, 0.8f), 5.0f);
-	// irr::video::SLight& light_data = light_node->getLightData();
+	client::createLasers(smgr, driver, { {40,12}, {40,52}, {40,92} }, startingPos);
 
-	client::createLasers(smgr, driver, { {40,12}, {40,52}, {40,92} });
-
-	client::createDiscoBalls(smgr, driver, { {40,6} });
+	client::createDiscoBalls(smgr, driver, { {40,6} }, startingPos);
 
 	/////////////////////////////////////////////////
 	// Main loop
@@ -384,8 +355,10 @@ int main(int argc, const char **argv)
 			system_render_healing.update();
 
 			// TODO: Make a system for updating camera position
+			irr::scene::ICameraSceneNode *camera_node;
+			camera_node = smgr->addCameraSceneNode();
 			irr::core::vector3df camera_target = sn.node->getAbsolutePosition();
-			camera_node->setPosition(camera_target + irr::core::vector3df(14, 9, 0));
+			camera_node->setPosition(camera_target + irr::core::vector3df(7, 9, 0));
 			camera_node->updateAbsolutePosition();
 			camera_node->setTarget(camera_target);
 		}

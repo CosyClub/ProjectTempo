@@ -15,11 +15,13 @@ namespace client {
 
 	void createLasers(irr::scene::ISceneManager *smgr,
 					  irr::video::IVideoDriver * driver,
-					  std::vector<glm::ivec2> positions);
+					  std::vector<glm::ivec2> positions,
+					  glm::ivec2 playerPos);
 
 	void createDiscoBalls(irr::scene::ISceneManager *smgr,
 					  irr::video::IVideoDriver * driver,
 					  std::vector<glm::ivec2> positions,
+					  glm::ivec2 playerPos,
 					  irr::scene::ISceneNode *parent=0);
 }
 
