@@ -4,9 +4,7 @@
 namespace client
 {
 
-SystemRenderAttack::SystemRenderAttack(irr::video::IVideoDriver * driver,
-                                       irr::scene::ISceneManager* smgr)
-	: smgr(smgr), driver(driver)
+SystemRenderAttack::SystemRenderAttack()
 {
 	// no-op
 }
@@ -33,10 +31,6 @@ void SystemRenderAttack::update(SystemStageRenderer& sr)
 		}
 	}
 
-}
-
-void SystemRenderAttack::endBeat()
-{
 }
 
 

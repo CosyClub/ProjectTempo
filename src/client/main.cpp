@@ -184,7 +184,7 @@ int main(int argc, const char **argv)
 	client::SystemRenderHealing    system_render_healing(driver, smgr);
 	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
-	client::SystemRenderAttack     system_render_attack(driver, smgr);
+	client::SystemRenderAttack     system_render_attack;
 	client::SystemRenderSpikes  	 system_render_spikes;
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
@@ -403,7 +403,6 @@ int main(int argc, const char **argv)
 			system_render_spikes.updateSpikes(driver);
 
 			system_translation_animation.endBeat();
-			system_render_attack.endBeat();
 
 			double scale = (double) ((1.0 - 0.0)*((double)rand() / RAND_MAX)) + 0.0; // from (0.0 to 1.0)
 			irr::core::vector3df c1;
