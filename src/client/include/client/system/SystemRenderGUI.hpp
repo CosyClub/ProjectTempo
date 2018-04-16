@@ -57,14 +57,16 @@ struct SystemRenderGUI {
 
 	public:
 		void setup(irr::IrrlichtDevice* device,
-		           irr::video::IVideoDriver* driver);
+		           irr::video::IVideoDriver* driver,
+		           bool enable_hud);
 
 		void update(irr::video::IVideoDriver * driver,
 		            irr::gui::IGUIEnvironment *gui_env,
 		            tempo::Clock &             clock,
 		            int                        combo,
 		            tempo::ComponentHealth     comp_health,
-		            int                        colour_index);
+		            int                        colour_index,
+		            bool                       enable_hud);
 
 };
 }

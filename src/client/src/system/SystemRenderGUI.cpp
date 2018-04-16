@@ -5,27 +5,30 @@ namespace client
 {
 
 void SystemRenderGUI::setup(irr::IrrlichtDevice *device,
-	                          irr::video::IVideoDriver* driver) {
+	                          irr::video::IVideoDriver* driver,
+	                          bool enable_hud) {
 
-	texture_HUD = driver->getTexture("resources/materials/textures/hud/HUD.png");
+	if(enable_hud) {
+		texture_HUD = driver->getTexture("resources/materials/textures/hud/HUD.png");
 
-	irr::core::stringw active_path = L"resources/materials/textures/hud/HUD-Active-";
-	irr::core::stringw semi_path = L"resources/materials/textures/hud/HUD-SemiActive-";
+		irr::core::stringw active_path = L"resources/materials/textures/hud/HUD-Active-";
+		irr::core::stringw semi_path = L"resources/materials/textures/hud/HUD-SemiActive-";
 
-	char buffer[5];
+		char buffer[5];
 
-	irr::core::stringw str = L"";
-	str += buffer;
-	for(int i = 0; i < 10; i++)
-	{
-		sprintf(buffer, "%d", i);
-		texture_HUD_Active[i] = driver->getTexture(active_path + buffer + ".png");
-		texture_HUD_Semi_Active[i] = driver->getTexture(semi_path + buffer + ".png");
+		irr::core::stringw str = L"";
+		str += buffer;
+		for(int i = 0; i < 10; i++)
+		{
+			sprintf(buffer, "%d", i);
+			texture_HUD_Active[i] = driver->getTexture(active_path + buffer + ".png");
+			texture_HUD_Semi_Active[i] = driver->getTexture(semi_path + buffer + ".png");
+		}
+
+		HUD = device->getGUIEnvironment()->addImage(
+		                texture_HUD,
+		                irr::core::position2d<irr::s32>(0,0), true);
 	}
-
-	HUD = device->getGUIEnvironment()->addImage(
-	                texture_HUD,
-	                irr::core::position2d<irr::s32>(0,0), true);
 
 	timer_nudge  = std::clock();
 	timer_nudge_picker  = std::clock();
@@ -42,13 +45,16 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
 	                           tempo::Clock &             clock,
 	                           int                        combo,
 	                           tempo::ComponentHealth     comp_health,
-	                           int                        colour_index)
+	                           int                        colour_index,
+	                           bool                       enable_hud)
 {
 
 	std::clock_t time_now = std::clock();
 
 	// HUD transition animatio
-	updateHUD(time_now, combo, colour_index);
+	if(enable_hud) {
+		updateHUD(time_now, combo, colour_index);
+	}
 	// Get the screen size to adjust the position and size of UI elements
 	const irr::core::dimension2du &screenSize = driver->getScreenSize();
 
