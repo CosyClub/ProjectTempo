@@ -45,15 +45,17 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 	irr::video::ITexture *tile_texture;
 
 	irr::scene::IMeshSceneNode *node;
-	irr::scene::IMesh *         mesh;
 	irr::scene::IMesh *         walls;
 	irr::scene::CBatchingMesh * batchMesh;
 
 	std::map<glm::ivec2, tile_t, 
 	         vec2less, std::allocator<std::pair<const glm::ivec2, tile_t>>> tileMap;
 
+	std::map<irr::video::SColor, irr::scene::IMesh*> meshMap;
+
 	// Creates a static irrlitch scene node based on the component stage heights
 	void setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver);
+
 
 	void Update(irr::scene::ISceneManager *smgr,
                     irr::video::IVideoDriver * driver);
@@ -68,7 +70,7 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 	void setTileColor(glm::ivec2 pos, irr::video::SColor color);
 
    private:
-	
+	void initColorMesh(irr::video::SColor color, irr::scene::ISceneManager *smgr);
 
 	inline void addFloorTilesToScene(irr::scene::ISceneManager *smgr,
 	                                 irr::video::IVideoDriver * driver,

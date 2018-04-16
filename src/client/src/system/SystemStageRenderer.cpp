@@ -27,18 +27,16 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 	this->wall_normal_map  = driver->getTexture("resources/materials/walls/cobblestone_n.png");
 	this->tile_texture     = driver->getTexture("resources/materials/TileLightMaskPixelOn.png");
 
-	mesh = smgr->getMeshManipulator()->createMeshCopy(smgr->getMesh("resources/meshes/tile.obj"));
 	walls = smgr->getMeshManipulator()->createMeshCopy(smgr->getMesh("resources/meshes/tile.obj"));
 
-	this->mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
-	// this->mesh->getMeshBuffer(1)->getMaterial().EmissiveColor = c1;
-	this->mesh->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
-	this->mesh->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
 
 	this->walls->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
 	this->walls->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
 	this->walls->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
 	this->walls->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
+
+	irr::video::SColor white(255, 255, 255, 255);
+	initColorMesh(white, smgr);
 
 	for (auto tile : tiles)
 	{
@@ -53,6 +51,19 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 
 	batchMesh = new irr::scene::CBatchingMesh();
 	this->node = smgr->addMeshSceneNode(batchMesh, 0);
+}
+
+void SystemStageRenderer::initColorMesh(irr::video::SColor color, irr::scene::ISceneManager *smgr)
+{
+	irr::scene::IMesh *mesh;
+
+	mesh = smgr->getMeshManipulator()->createMeshCopy(smgr->getMesh("resources/meshes/tile.obj"));
+	mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
+	mesh->getMeshBuffer(1)->getMaterial().EmissiveColor = color;
+	mesh->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
+	mesh->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
+
+	meshMap.emplace(color, mesh);
 }
 
 void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
@@ -189,11 +200,15 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 			continue;
 		}
 
-		this->mesh->getMeshBuffer(1)->getMaterial().EmissiveColor = tile.color;
-		batchMesh->addMesh(mesh, irr::core::vector3df(pos.x, tile.height, pos.y));
+		if (meshMap.find(tile.color) == meshMap.end())
+		{
+			initColorMesh(tile.color, smgr);
+		}
+		batchMesh->addMesh(meshMap[tile.color], irr::core::vector3df(pos.x, tile.height, pos.y));
 	}
 
 	batchMesh->update();
+	batchMesh->finalize();
 	this->node = smgr->addMeshSceneNode(batchMesh, 0);
 	batchMesh->drop();
 }
