@@ -44,7 +44,7 @@ class Clock
 	sf::Time get_time();
 	void     set_time(sf::Time t);
 
-	// Checks to see if we have passed the beat as marked by "Beat Passed", 
+	// Checks to see if we have passed the beat as marked by "Beat Passed",
 	// "Midpoint of 2 beats", "Delta Start" and "Delta End" in Figure 1.
 	// Returns true if so. Will return false after returning true
 	// (i.e. a beat passing), until the next beat passes.
@@ -77,6 +77,9 @@ class Clock
 	// period as per Figure 1.
 	bool within_delta();
 
+	// Retrieves the number of beats passed since the creation of this clock
+	unsigned int get_beat_number();
+
    private:
 	// Cached time and our underlying clock
 	sf::Time  time;
@@ -96,6 +99,9 @@ class Clock
 	bool passed_ab;
 	bool passed_ds;
 	bool passed_de;
+
+	// The number of beats that have passed so far since the creation of this clock
+	unsigned int beat_number;
 
 	// Caches the internal time
 	void cache_time();
