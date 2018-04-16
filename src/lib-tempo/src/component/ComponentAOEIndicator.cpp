@@ -23,7 +23,7 @@ ComponentAOEIndicator::ComponentAOEIndicator(sf::Packet p)
 	p >> duration;
 	p >> items;
 
-	for (int I = 0; I < items; I++) {
+	for (uint32_t I = 0; I < items; I++) {
 		glm::ivec2 tmp;
 		p >> tmp;
 		tiles.push_back(tmp);
@@ -38,7 +38,7 @@ sf::Packet ComponentAOEIndicator::dumpComponent()
 	p << duration;
 	p << items;
 
-	for (int I = 0; I < items; I++) {
+	for (uint32_t I = 0; I < items; I++) {
 		p << tiles[I];
 	}
 

@@ -20,7 +20,7 @@ namespace tempo {
 		p >> isTriggered;
 
 		p >> size;
-		for (int i = 0; i < size; i++) {
+		for (uint32_t i = 0; i < size; i++) {
 			glm::ivec2 v;
 			p >> v;
 			spike_positions.push_back(v);
@@ -41,7 +41,7 @@ namespace tempo {
 		p << isTriggered;
 
 		p << (sf::Uint32) spike_positions.size();
-		for (int i = 0; i < spike_positions.size(); i++) {
+		for (uint32_t i = 0; i < spike_positions.size(); i++) {
 			p << spike_positions[i];
 		}
 
