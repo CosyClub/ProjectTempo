@@ -201,7 +201,6 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 			}
 			else {
 				for (uint32_t j = 0; j < buttons.size(); j++) {
-					buttons[j].triggered |= true;
 					buttonRend[j].button->setPosition(
 						irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
 					irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
