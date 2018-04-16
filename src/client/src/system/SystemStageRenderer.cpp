@@ -189,8 +189,8 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 		tile_t tile = it.second;
 		glm::ivec2 pos = tile.pos;
 
-		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 24
-		    || pos.y > playerpos.y + 24) {
+		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
+		    || pos.y > playerpos.y + 33) {
 			continue;
 		}
 
