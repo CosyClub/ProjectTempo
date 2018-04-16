@@ -2,6 +2,7 @@
 #include <client/component/ComponentRenderButtonGroup.hpp>
 #include <client/component/ComponentRenderSpikes.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
+#include <client/misc/Color.hpp>
 #include <client/misc/Lighting.hpp>
 #include <client/misc/RGBtoHSV.hpp>
 #include <client/network/client.hpp>
@@ -330,6 +331,7 @@ int main(int argc, const char **argv)
 	frame_clock.restart();
 	update_floor_clock.restart();
 
+	init_pallettes();
 	irr::video::SColor colour;
 	irr::video::SColor colour_red(255, 255, 0, 0);
 	irr::video::SColor colour_purple(255, 255, 0, 255);
@@ -400,6 +402,8 @@ int main(int argc, const char **argv)
 
 		////////////////
 		// Events at "Beat Passed"
+		glm::vec4 c1;
+		glm::vec4 c2;
 		if (clock.passed_beat()) {
 			// click.play();
 			if (tick++ % 20 == 0)
@@ -415,20 +419,21 @@ int main(int argc, const char **argv)
 			system_render_attack.endBeat();
 
 			double scale = (double) ((1.0 - 0.0)*((double)rand() / RAND_MAX)) + 0.0; // from (0.0 to 1.0)
-			irr::core::vector3df c1 = client::RGBtoHSV(colour_red);
-			irr::core::vector3df c2 = client::RGBtoHSV(colour_purple);
-			c1.X = c1.X * scale + c2.X * (1.f - scale);
+			irr::core::vector3df c1;
+			irr::core::vector3df c1_1 = client::RGBtoHSV(colour_red);
+			irr::core::vector3df c1_2 = client::RGBtoHSV(colour_purple);
+			c1.X = c1_1.X * scale + c1_2.X * (1.f - scale);
 			colour = client::HSVtoRGB(c1);
 
 			system_lighting.update(colour);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;
-
 		}
+
 		glm::ivec2 playerpos =
 		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-		system_stage_renderer.updateStage(smgr, driver, j, playerpos, colour);
+		system_stage_renderer.colorStage(j, playerpos, c1, c2);
 
 		////////////////
 		// Events at "Delta End"

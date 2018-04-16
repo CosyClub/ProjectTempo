@@ -46,6 +46,7 @@ set(TEMPO_CLIENT_SOURCES
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemUpdateKeyInput.cpp
 
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/CBatchingMesh.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/Color.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/Lighting.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/RGBtoHSV.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/YAlignedBillboardSceneNode.hpp
