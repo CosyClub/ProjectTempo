@@ -22,7 +22,7 @@ void SystemRenderSpikes::setup(irr::scene::ISceneManager *smgr, irr::video::IVid
 
 		auto &positions = spikes.spike_positions;
 
-		for (int i=0; i<positions.size(); i++) {
+		for (uint32_t i=0; i<positions.size(); i++) {
 
 			irr::scene::IMesh *spike_mesh = smgr->getMesh("resources/meshes/spikes.obj");
 
@@ -49,13 +49,13 @@ void SystemRenderSpikes::updateSpikes(irr::video::IVideoDriver *driver)
 		auto &rend  = entity.getComponent<client::ComponentRenderSpikes>();
 
 		if (comp.isTriggered) {
-			for (int i = 0; i<comp.spike_positions.size(); i++) {
+			for (uint32_t i = 0; i<comp.spike_positions.size(); i++) {
 				rend.spikes[i].spikeNode->setPosition(irr::core::vector3df(
 					comp.spike_positions[i].x, 0.0, comp.spike_positions[i].y));
 			}
 		}
 		else {
-			for (int i = 0; i<comp.spike_positions.size(); i++) {
+			for (uint32_t i = 0; i<comp.spike_positions.size(); i++) {
 				rend.spikes[i].spikeNode->setPosition(irr::core::vector3df(
 					comp.spike_positions[i].x, -2.0f, comp.spike_positions[i].y));
 			}

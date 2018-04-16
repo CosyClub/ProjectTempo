@@ -37,7 +37,7 @@ void RythmButton(anax::World &          world,
 				std::vector<glm::ivec2> spikes,
 				int &ID) {
 
-	for (int i = 0; i < positions.size(); i++) {
+	for (uint32_t i = 0; i < positions.size(); i++) {
 		
 		std::vector<glm::ivec2> group = positions[i];
 		glm::ivec2 prev;
