@@ -212,7 +212,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_translation_animation);
 	world.addSystem(system_less_jank);
 
-	anax::Entity entity_stage = createEntityStage(world);
+	createEntityStage(world);
 	world.refresh();
 
 	// Initialise Systems
@@ -325,7 +325,7 @@ int main(int argc, const char **argv)
 	while (device->run()) {
 
 		// Work out a frame delta time.
-		const irr::u32 now = device->getTimer()->getTime();
+		// const irr::u32 now = device->getTimer()->getTime();
 		dt = frame_clock.restart().asSeconds();
 		/// frameDeltaTime = (f32)(now - then)/1000.f; // Time in seconds
 
