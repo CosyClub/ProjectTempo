@@ -20,31 +20,31 @@
 namespace client
 {
 typedef std::vector<glm::ivec2>                    stage_nodes;
-typedef std::vector<std::tuple<glm::ivec2, float>> heights;
 
-struct Vec3Funcs
+struct Vec2Funcs
 {
-    size_t operator()(const glm::ivec3& k)const
-    {
-        return std::hash<int>()(k.x) ^ std::hash<int>()(k.y) ^ std::hash<int>()(k.z);
-    }
-
-    bool operator()(const glm::vec3& a, const glm::vec3& b)const
-    {
-            return a.x == b.x && a.y == b.y && a.z == b.z;
-    }
+	size_t operator()(const glm::ivec2& k)const
+	{
+		return std::hash<int>()(k.x) ^ std::hash<int>()(k.y);
+	}
+	
+	bool operator()(const glm::ivec2& a, const glm::ivec2& b)const
+	{
+		return a.x == b.x && a.y == b.y;
+	}
 };
+
+typedef struct {
+	glm::ivec2 pos;
+	float height;
+	float height_target;
+	irr::video::SColor color;
+} tile_t;
 
 // Initalises all rendering for the static stage
 class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentStage>>
 {
    public:
-	stage_nodes                    tile_nodes;
-	std::vector<tempo::stage_tile> old_positions;
-	std::vector<double>            fractions;
-
-	std::vector<float> currentHeight = {-1.f};
-
 	irr::video::ITexture *wall_diffuse_map;
 	irr::video::ITexture *wall_normal_map;
 	irr::video::ITexture *tile_texture;
@@ -54,30 +54,28 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 	irr::scene::IMesh *         walls;
 	irr::scene::CBatchingMesh * batchMesh;
 
-	std::map<glm::ivec3, std::vector<glm::ivec2>, 
-	         Vec3Funcs, std::allocator<std::pair<const glm::ivec2, int>>> colorDeltaMap;
+	std::map<glm::ivec2, tile_t, 
+	         Vec2Funcs, std::allocator<std::pair<const glm::ivec2, tile_t>>> tileMap;
 
 	// Creates a static irrlitch scene node based on the component stage heights
-	void setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver,
-						 glm::ivec4 colour1, glm::ivec4 colour2);
+	void setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver);
 
 	void Update(irr::scene::ISceneManager *smgr,
                     irr::video::IVideoDriver * driver);
 
 	void colorStage(int                        j,
                         glm::ivec2                 playerpos,
-                        glm::vec3                  C1,
-			glm::vec3                  C2);
+                        irr::video::SColor         C1,
+			irr::video::SColor         C2);
 
-	void setTileColor(glm::ivec2 pos, glm::ivec3 color);
+	void setTileColor(glm::ivec2 pos, irr::video::SColor color);
 
    private:
 	
 
 	inline void addFloorTilesToScene(irr::scene::ISceneManager *smgr,
 	                                 irr::video::IVideoDriver * driver,
-	                                 tempo::ComponentStage &    stage,
-																 glm::ivec4 colour1, glm::ivec4 colour2);
+	                                 tempo::ComponentStage &    stage);
 
 
 	inline bool checkerBoardPattern(int                       i,

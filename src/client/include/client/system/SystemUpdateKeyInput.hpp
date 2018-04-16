@@ -17,7 +17,7 @@ class KeyInput : public irr::IEventReceiver
 	keyStatesENUM keyState[irr::KEY_KEY_CODES_COUNT];
 
    private:
-	// A list of characters that have been recieved
+	// A list of characters that have been received
 	std::mutex chars_mutex;
 
    public:

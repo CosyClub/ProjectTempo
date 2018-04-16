@@ -2,8 +2,7 @@
 
 namespace client {
 
-	void init_pallettes()
+	void init_palettes()
 	{
-		asdf
 	}
 }

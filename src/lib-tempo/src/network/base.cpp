@@ -41,7 +41,7 @@ bool bindSocket(char socket, unsigned short port)
 	}
 }
 
-bool sortPacket(sf::Packet p)
+bool sortPacket(sf::Packet p, bool knownAddress)
 {
 	int            id;  // Should be a tempo::QueueID but they're the same
 	tempo::QueueID qid;
@@ -52,7 +52,12 @@ bool sortPacket(sf::Packet p)
 	// Convert
 	qid = tempo::QueueID(id);
 
-	// Basic checking
+	// Check if we allow unknown messages
+	if (!knownAddress && !(allowUnknownIfHandshake && qid == tempo::QueueID::HANDSHAKE)) {
+		return false;
+	}
+
+	// Check if queue id is valid
 	if (id <= tempo::QID_RESERVED_BOTTOM || id >= tempo::QID_RESERVED_TOP) {
 		return false;
 	}

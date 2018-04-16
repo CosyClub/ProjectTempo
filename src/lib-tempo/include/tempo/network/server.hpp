@@ -18,9 +18,12 @@
 namespace tempo
 {
 typedef struct {
-	sf::Uint32     ip;  // Use sf::IpAddress's toInt() method
-	unsigned short port;
-	ClientRole     role;
+	sf::Uint32       ip;    // Use sf::IpAddress's toInteger() method
+	unsigned short   iport; // Incoming port, where we should send messages to
+	unsigned short   oport; // Outgoing port, port they send messages on
+	ClientRole       role;
+	anax::Entity::Id id;    // Entity ID of the player's entity
+	uint32_t         heartbeat;
 } clientConnection;
 
 // Map of all the connected clients IP addresses and ID's, with some

@@ -25,7 +25,7 @@ SystemAttack::SystemAttack(anax::World &world)
 	world.refresh();
 }
 
-void SystemAttack::recieveAttacks(anax::World &w)
+void SystemAttack::receiveAttacks(anax::World &w)
 {
 	tempo::Queue<sf::Packet> *q = tempo::get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
 
@@ -46,7 +46,7 @@ void SystemAttack::recieveAttacks(anax::World &w)
 		switch (static_cast<tempo::MessageAttack>(code)) {
 		case tempo::MessageAttack::UPDATE_INTENT: {
 			if (!e.hasComponent<tempo::ComponentAttack>()) {
-				std::cout << "Recieved Attack Intent Update from entity without ComponentAttack"
+				std::cout << "Received Attack Intent Update from entity without ComponentAttack"
 				          << std::endl;
 				continue;
 			}
@@ -59,7 +59,7 @@ void SystemAttack::recieveAttacks(anax::World &w)
 			break;
 		}
 		case tempo::MessageAttack::ATTACK_CORRECTION:
-			// do nothing, server should not recieve corrections
+			// do nothing, server should not receive corrections
 			break;
 		default: std::cout << "ATTACK: Unhandled/erroneous message" << std::endl;
 		}

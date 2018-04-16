@@ -16,14 +16,12 @@ namespace client
 {
 inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager *smgr,
                                                       irr::video::IVideoDriver * driver,
-                                                      tempo::ComponentStage &    stage,
-                                                      glm::ivec4 colour1, glm::ivec4 colour2)
+                                                      tempo::ComponentStage &    stage)
 {
 	auto tiles = stage.getHeights();
 
-	if (tile_nodes.size() == tiles.size())
+	if (tileMap.size() == tiles.size())
 		return;
-
 
 	this->wall_diffuse_map = driver->getTexture("resources/materials/walls/cobblestone.png");
 	this->wall_normal_map  = driver->getTexture("resources/materials/walls/cobblestone_n.png");
@@ -32,10 +30,8 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 	mesh = smgr->getMeshManipulator()->createMeshCopy(smgr->getMesh("resources/meshes/tile.obj"));
 	walls = smgr->getMeshManipulator()->createMeshCopy(smgr->getMesh("resources/meshes/tile.obj"));
 
-	batchMesh = new irr::scene::CBatchingMesh();
-
 	this->mesh->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
-	this->mesh->getMeshBuffer(1)->getMaterial().EmissiveColor.set(colour1[0], colour1[1], colour1[2], colour1[3]);
+	// this->mesh->getMeshBuffer(1)->getMaterial().EmissiveColor = c1;
 	this->mesh->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
 	this->mesh->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
 
@@ -44,24 +40,16 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 	this->walls->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
 	this->walls->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
 
-	for (unsigned int i = tile_nodes.size(); i < tiles.size(); ++i) {
-		float grid_x = tiles[i].position.x;
-		float grid_y = tiles[i].position.y;
-		float height = tiles[i].height;
-
-		batchMesh->addMesh(walls, irr::core::vector3df(grid_x, height, grid_y));
-
-		tile_nodes.push_back(glm::ivec2(grid_y, grid_x));
-		old_positions.push_back(tempo::stage_tile(glm::ivec2(grid_y, grid_x), height));
-		fractions.push_back(0.00001f);
+	for (auto tile : tiles)
+	{
+		glm::ivec2 pos = tile.position;
+		tileMap[pos].pos = pos;
+		tileMap[pos].height = tile.height;
+		tileMap[pos].height_target = tile.height;
 	}
-
-	batchMesh->update();
-	this->node = smgr->addMeshSceneNode(batchMesh, 0);
-	batchMesh->drop();
 }
 
-void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver, glm::ivec4 colour1, glm::ivec4 colour2)
+void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
 {
 	printf("SystemStageRenderer initializing\n");
 
@@ -70,18 +58,18 @@ void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVi
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 
 	// tile_nodes =
-	addFloorTilesToScene(smgr, driver, stage, colour1, colour2);
+	addFloorTilesToScene(smgr, driver, stage);
 }
 
-void SystemStageRenderer::setTileColor(glm::ivec2 pos, glm::ivec3 color)
+void SystemStageRenderer::setTileColor(glm::ivec2 pos, irr::video::SColor color)
 {
-	colorDeltaMap[color].push_back(pos);
+	tileMap[pos].color = color;
 }
 
-void SystemStageRenderer::colorStage(int                        j,
+void SystemStageRenderer::colorStage(int                        step,
                                      glm::ivec2                 playerpos,
-                                     glm::vec3                  C1,
-				     glm::vec3                  C2)
+                                     irr::video::SColor         C1,
+				     irr::video::SColor         C2)
 {
 	auto  entities = getEntities();
 	auto  entity   = std::begin(entities);
@@ -89,18 +77,22 @@ void SystemStageRenderer::colorStage(int                        j,
 
 	auto heights = stage.getHeights();
 
-	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
-		glm::ivec2 pos = tile_nodes[i];
+	int index = 0;
+	for (auto& it : tileMap)
+	{
+		tile_t tile = it.second;
+	// for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
+		glm::ivec2 pos = tile.pos;
 
 		// Stop logic on tiles that are not visible to camera
-		if (pos.y < playerpos.x - 30 || pos.y > playerpos.x + 13 || pos.x < playerpos.y - 30
-		    || pos.x > playerpos.y + 30) {
+		if (pos.y < playerpos.x - 24 || pos.y > playerpos.x + 7 || pos.x < playerpos.y - 33
+		    || pos.x > playerpos.y + 33) {
 			continue;
 		}
 
 		bool render;
 
-		switch (j) {
+		switch (step) {
 		case 0:
 		case 1:
 		case 2:
@@ -108,21 +100,21 @@ void SystemStageRenderer::colorStage(int                        j,
 		case 9:
 		case 10:
 		case 11:
-		case 12: render = checkerBoardPattern(i, j); break;
+		case 12: render = checkerBoardPattern(pos, step); break;
 		case 4:
 		case 5:
 		case 6:
 		case 7:
-		case 8: render = linePattern(0, 5, i, j - 4); break;
+		case 8: render = linePattern(0, 5, pos, step - 4); break;
 		case 13:
 		case 14:
 		case 15:
 		case 16:
-		case 17: render = linePattern(1, 5, i, j - 13); break;
+		case 17: render = linePattern(1, 5, i, step - 13); break;
 		case 18:
 		case 19:
 		case 20:
-		case 21: render = squarePattern(1, 12, i, j); break;
+		case 21: render = squarePattern(1, 12, pos, step); break;
 		}
 
 		if (render) {
@@ -146,31 +138,26 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 
 	bool firstRun = false;
 
-	if (this->currentHeight.size() <= 1) {
-		this->currentHeight = std::vector<float>(this->tile_nodes.size());
-		firstRun            = true;
-	}
-
 	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 		glm::ivec2 pos = tile_nodes[i];
 
 		float old_height = old_positions[i].height;
 
-		if (firstRun) {
-			this->currentHeight[i] = old_height;
+		if (heightMap.find(pos) == heightMap.end()) {
+			heightMap[pos] = old_height;
 		}
 
-		float height = heights[i].height;
+		float height = heightMap[pos];
 		auto animation_pos = currentHeight[i];
 
 		if (old_height != height) {
 			if (animation_pos < height - 1.f || height + 1.f < animation_pos) {
 				animation_pos += (height - old_height) * fractions[i];
 				fractions[i]           = fractions[i] * 1.15f;
-				this->currentHeight[i] = animation_pos;
+				heightMap[pos] = animation_pos;
 
 			} else {
-				this->currentHeight[i] = height;
+				heightMap[pos] = height;
 				old_height             = height;
 				fractions[i]           = 0.00001f;
 			}
@@ -184,14 +171,10 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 
 	for (auto& it : colorDeltaMap)
 	{
-		glm::ivec3 c = it.first;
-		std::vector<glm::ivec2> ps = it.second;
-		for (glm::ivec2 p : ps)
-		{
-			irr::video::SColor color(255, c.x, c.y, c.z);
-			this->mesh->getMeshBuffer(1)->getMaterial().EmissiveColor = color;
-			batchMesh->addMesh(mesh, irr::core::vector3df(p.y, currentHeight[i], p.x));
-		}
+		glm::ivec2 p = it.first;
+		irr::video::SColor c = it.second;
+		this->mesh->getMeshBuffer(1)->getMaterial().EmissiveColor = c;
+		batchMesh->addMesh(mesh, irr::core::vector3df(p.y, currentHeight[i], p.x));
 	}
 
 	batchMesh->update();
@@ -199,19 +182,15 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 	batchMesh->drop();
 }
 
-inline bool SystemStageRenderer::checkerBoardPattern(int                       i,
-                                                     int                       j)
+inline bool SystemStageRenderer::checkerBoardPattern(glm::ivec2 pos, int step)
 {
-	return (((int) ((this->tile_nodes[i]).x % 2) == (int) ((this->tile_nodes[i]).y % 2)) ^ (j % 2));
+	return (pos.x % 2 == pos.y % 2) ^ (step % 2);
 }
 
 
-inline bool SystemStageRenderer::linePattern(int                       orientation,
-                                             int                       size,
-                                             int                       i,
-                                             int                       j)
+inline bool SystemStageRenderer::linePattern(int orientation, int size, glm::ivec2 pos, int step)
 {
-	return ((int) !((this->tile_nodes[i])[orientation] % size == j));
+	return !(pos[orientation] % size == step);
 }
 
 inline bool SystemStageRenderer::squarePattern(int                       orientation,
