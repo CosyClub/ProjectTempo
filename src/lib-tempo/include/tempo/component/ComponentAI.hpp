@@ -17,6 +17,7 @@ enum MoveType{
 	MOVE_PATH,
 	MOVE_PATROL,
 	MOVE_WANDER,
+	MOVE_SNAKE,
 };
 
 struct ComponentAI : anax::Component, NetworkedComponent 
@@ -27,6 +28,9 @@ struct ComponentAI : anax::Component, NetworkedComponent
 	bool hitTeleport;
 	bool hitSlide;
 
+	int index;
+
+	ComponentAI(MoveType m, bool teleport, bool slide, int index);
 	ComponentAI(MoveType m, bool teleport, bool slide);
 	ComponentAI(MoveType m, bool teleport, bool slide, std::deque<glm::ivec2> p);
 

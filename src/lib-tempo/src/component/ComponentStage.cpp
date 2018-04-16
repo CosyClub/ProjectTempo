@@ -111,6 +111,14 @@ bool ComponentStage::existstTile(glm::ivec2 position)
 		return false;
 }
 
+bool ComponentStage::isNavigable(glm::ivec2 position)
+{
+	if (existstTile(position))
+	{
+		return getHeight(position) < 5;
+	}
+}
+
 /////
 // Required for networking
 /////

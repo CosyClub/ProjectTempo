@@ -25,6 +25,7 @@ class Queue
 	T    front();
 	bool empty();
 };
+
 }
 
 #endif

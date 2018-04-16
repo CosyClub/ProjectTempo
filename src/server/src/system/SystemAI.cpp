@@ -84,12 +84,120 @@ void generate_moves(tempo::ComponentAI &ai)
 	}
 }
 
+std::vector<glm::ivec2> gen_moves(glm::ivec2 pos, tempo::ComponentStage &s)
+{
+	std::vector<glm::ivec2> moves;
+	for (int I = -1; I < 2; I+=2)
+	{
+		for (int J = -1; J < 2; J+=2)
+		{
+			glm::ivec2 delta(I, J);
+			glm::ivec2 move = pos + delta;
+			if (s.isNavigable(move)) moves.push_back(move);
+		}
+	}
+
+	return moves;
+}
+
+struct node {
+	glm::ivec2 pos;
+	int G;
+	int H;
+	int F;
+	
+	node()
+	{
+		pos = glm::ivec2(0, 0);
+		G = 0;
+		H = 0;
+		F = 0;
+	}
+	node(glm::ivec2 p, int g, glm::ivec2 tgt)
+	{
+		pos = p;
+		G = g;
+
+		glm::ivec2 diff = tgt - pos;
+		H = abs(diff.x) + abs(diff.y);
+
+		F = G + H;
+	}
+};
+
+node pop_min(std::vector<node>& list)
+{
+	int min = INT_MAX;
+	node min_node;
+	int min_index = 0;
+
+	int index = 0;
+	for (node n : list)
+	{
+		if (n.G + n.H < min)
+		{
+			min = n.G + n.H;
+			min_node = n;
+			min_index = index;
+		}
+		index++;
+	}
+
+	list.erase(list.begin() + min_index);
+	return min_node;
+}
+
+bool contains (std::vector<node>& list, node m)
+{
+	for (node n : list)
+	{
+		if (n.pos == m.pos) return true;
+	}
+
+	return false;
+}
+
+bool update (std::vector<node>& list, node m)
+{
+	for (node& n : list)
+	{
+		if (n.pos == m.pos && n.F > m.F)
+		{
+			// n.
+		}
+	}
+
+	return false;
+}
+
+void Astar_pathfind(glm::ivec2 pos, glm::vec2 tgt, std::deque<glm::ivec2> &path,
+                    tempo::ComponentStage &s)
+{
+	std::vector<node> open;
+	std::vector<node> closed;
+
+	node n(pos, 0, tgt);
+	open.push_back(n);
+
+	node S = pop_min(open);
+	closed.push_back(S);
+
+	std::vector<glm::ivec2> moves = gen_moves(S.pos, s);
+	for (glm::ivec2 T : moves)
+	{
+		node N(T, S.G + 1, tgt);
+		if (  contains(closed, N)) continue;
+		if (! contains(open,   N)) open.push_back(N);
+	}
+}
+
 void SystemAI::update(server::SystemAttack s_attack)
 {
 	auto entities = getEntities();
 
 	for (auto &entity : entities) {
 
+		auto &s  = entity.getComponent<tempo::ComponentStage>();
 		auto &st = entity.getComponent<tempo::ComponentStageTranslation>();
 		auto &sp = entity.getComponent<tempo::ComponentStagePosition>();
 		auto &sr = entity.getComponent<tempo::ComponentStageRotation>();
@@ -148,6 +256,11 @@ void SystemAI::update(server::SystemAttack s_attack)
 			case tempo::MoveType::MOVE_WANDER:
 			{
 				st.delta = random_move();
+				break;
+			}
+			case tempo::MoveType::MOVE_SNAKE:
+			{
+					
 				break;
 			}
 		}
