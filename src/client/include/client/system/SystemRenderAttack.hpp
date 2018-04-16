@@ -9,6 +9,8 @@
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStage.hpp>
 
+#include <client/system/SystemStageRenderer.hpp>
+
 #include <ISceneManager.h>
 #include <IParticleSystemSceneNode.h>
 
@@ -50,7 +52,7 @@ public:
 	SystemRenderAttack(irr::video::IVideoDriver * driver,
 	                   irr::scene::ISceneManager* smgr);
 
-	void update();
+	void update(SystemStageRenderer& sr);
 
 	void endBeat();
 };

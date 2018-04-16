@@ -27,6 +27,7 @@ std::vector<glm::ivec2> ComponentAttack::getAbsolutePositions(glm::ivec2 pos, Fa
 	glm::ivec2 left = glm::ivec2(-rot.y, -rot.x);  // Hacky cross product
 
 	for (glm::ivec2 p : damage.positions) {
+		p -= damage.ctr;
 		ps.push_back(pos + ((p.x * left) + (p.y * forward)));
 	}
 

@@ -332,7 +332,7 @@ int main(int argc, const char **argv)
 		////////////////
 		// Events all the time
 		{
-
+			system_stage_renderer.colorStage(j, colour_red, colour_purple);
 			// Check for new entities from server
 			system_entity.creationCheck(world);
 			system_entity.deletionCheck(world);
@@ -341,7 +341,7 @@ int main(int argc, const char **argv)
 			system_gc.addEntities(driver, smgr, world);
 			system_render_scene_node.setup(smgr,driver);
 			system_render_health_bars.setup(smgr);
-			system_render_attack.update();
+			system_render_attack.update(system_stage_renderer);
 			system_button_renderer.setup(smgr, driver);
 
 			// Receive updates from the server
@@ -422,8 +422,6 @@ int main(int argc, const char **argv)
 
 		glm::ivec2 playerpos =
 		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-
-		system_stage_renderer.colorStage(j, colour_red, colour_purple);
 
 		////////////////
 		// Events at "Delta End"
