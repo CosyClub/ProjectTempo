@@ -207,7 +207,7 @@ SystemParseKeyInput::SystemParseKeyInput(){
 	printf("SystemParseKeyInput is opening input dump file: '%s'\n", filename.c_str());
 
 	this->data_output.open(filename);
-	this->data_output << "BeatNumber, OnBeat, BeatDiff, UntilBeat, Key" << std::endl;
+	this->data_output << "BeatNumber, OnBeat, BeatDiff, Key" << std::endl;
 	#endif
 }
 
