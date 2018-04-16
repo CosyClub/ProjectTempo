@@ -10,7 +10,7 @@ namespace tempo
 	}
 
 	ComponentParty::ComponentParty(uint32_t party_number) :
-	    party_number(party_number) {}
+		party_number(party_number) {}
 	/////
 	// Required for networking
 	/////
