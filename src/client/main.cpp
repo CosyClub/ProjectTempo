@@ -217,7 +217,7 @@ int main(int argc, const char **argv)
 
 	// Initialise Systems
 	system_update_key_input.setup(device);
-	system_stage_renderer.setup(smgr, driver,{255, 175, 0, 0}, {255, 50, 50, 50});
+	system_stage_renderer.setup(smgr, driver);
 	system_render_scene_node.setup(smgr, driver);
 
 	// must be after system_render_scene_node.setup(smgr);
@@ -414,13 +414,14 @@ int main(int argc, const char **argv)
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;
-			system_lighting.update();
+			// system_lighting.update();
 
 		}
 
 		glm::ivec2 playerpos =
 		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-		system_stage_renderer.colorStage(j, playerpos, c1, c2);
+
+		system_stage_renderer.colorStage(j, playerpos, colour_red, colour_purple);
 
 		////////////////
 		// Events at "Delta End"
@@ -428,6 +429,8 @@ int main(int argc, const char **argv)
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 		}
+
+		system_stage_renderer.Update(smgr, driver);
 
 		driver->beginScene(true, true);
 		smgr->drawAll();

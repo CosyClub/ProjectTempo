@@ -47,6 +47,9 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 		tileMap[pos].height = tile.height;
 		tileMap[pos].height_target = tile.height;
 	}
+
+	batchMesh = new irr::scene::CBatchingMesh();
+	this->node = smgr->addMeshSceneNode(batchMesh, 0);
 }
 
 void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
@@ -81,7 +84,6 @@ void SystemStageRenderer::colorStage(int                        step,
 	for (auto& it : tileMap)
 	{
 		tile_t tile = it.second;
-	// for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
 		glm::ivec2 pos = tile.pos;
 
 		// Stop logic on tiles that are not visible to camera
@@ -110,7 +112,7 @@ void SystemStageRenderer::colorStage(int                        step,
 		case 14:
 		case 15:
 		case 16:
-		case 17: render = linePattern(1, 5, i, step - 13); break;
+		case 17: render = linePattern(1, 5, pos, step - 13); break;
 		case 18:
 		case 19:
 		case 20:
@@ -136,45 +138,23 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 	irr::scene::ISceneNode *par = this->node->getParent();
 	par->removeChild(this->node);
 
-	bool firstRun = false;
+	for (auto& it : tileMap)
+	{
+		tile_t tile = it.second;
+		glm::ivec2 pos = tile.pos;
 
-	for (unsigned int i = 0; i < this->tile_nodes.size(); ++i) {
-		glm::ivec2 pos = tile_nodes[i];
-
-		float old_height = old_positions[i].height;
-
-		if (heightMap.find(pos) == heightMap.end()) {
-			heightMap[pos] = old_height;
+		if (tile.height != tile.height_target)
+		{
+			tile.height += fmin(tile.height_target - tile.height, 0.1);
 		}
 
-		float height = heightMap[pos];
-		auto animation_pos = currentHeight[i];
-
-		if (old_height != height) {
-			if (animation_pos < height - 1.f || height + 1.f < animation_pos) {
-				animation_pos += (height - old_height) * fractions[i];
-				fractions[i]           = fractions[i] * 1.15f;
-				heightMap[pos] = animation_pos;
-
-			} else {
-				heightMap[pos] = height;
-				old_height             = height;
-				fractions[i]           = 0.00001f;
-			}
-		}
-
-		if (currentHeight[i] >= 5) {
-			batchMesh->addMesh(walls, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
+		if (tile.height >= 5) {
+			batchMesh->addMesh(walls, irr::core::vector3df(pos.y, tile.height, pos.x));
 			continue;
 		}
-	}
 
-	for (auto& it : colorDeltaMap)
-	{
-		glm::ivec2 p = it.first;
-		irr::video::SColor c = it.second;
-		this->mesh->getMeshBuffer(1)->getMaterial().EmissiveColor = c;
-		batchMesh->addMesh(mesh, irr::core::vector3df(p.y, currentHeight[i], p.x));
+		this->mesh->getMeshBuffer(1)->getMaterial().EmissiveColor = tile.color;
+		batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, tile.height, pos.x));
 	}
 
 	batchMesh->update();
@@ -193,22 +173,20 @@ inline bool SystemStageRenderer::linePattern(int orientation, int size, glm::ive
 	return !(pos[orientation] % size == step);
 }
 
-inline bool SystemStageRenderer::squarePattern(int                       orientation,
-                                               int                       size,
-                                               int                       i,
-                                               int                       j)
+inline bool SystemStageRenderer::squarePattern(int orientation, int size, glm::ivec2 pos, int step)
 {
 	glm::ivec2 centrePoint;
-	centrePoint.x = (this->tile_nodes[i]).x - (this->tile_nodes[i]).x % size + size / 2;
-	centrePoint.y = (this->tile_nodes[i]).y - (this->tile_nodes[i]).y % size + size / 2;
+	centrePoint.x = pos.x - pos.x % size + size / 2;
+	centrePoint.y = pos.y - pos.y % size + size / 2;
 
-	int dx = abs((this->tile_nodes[i]).x - centrePoint.x);
-	int dy = abs((this->tile_nodes[i]).y - centrePoint.y);
+	int dx = abs(pos.x - centrePoint.x);
+	int dy = abs(pos.y - centrePoint.y);
 
+	//What the fuck
 	return ((((dx % 2 == 0 && dy == 0) || (dx > 0 && dx % 2 == 0 && dy < dx)) ||  // columns
 	         ((dy % 2 == 0 && dx == 0) || (dy > 0 && dy % 2 == 0 && dx < dy)) ||  // rows
 	         (dx == dy && dx % 2 == 0 && dy % 2 == 0))                            // corners
-	        ^ (j % 2));
+	        ^ (step % 2));
 }
 
 }  // namespace client

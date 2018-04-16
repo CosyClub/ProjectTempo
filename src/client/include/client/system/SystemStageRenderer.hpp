@@ -78,18 +78,9 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 	                                 tempo::ComponentStage &    stage);
 
 
-	inline bool checkerBoardPattern(int                       i,
-	                                int                       j);
-
-	inline bool linePattern(int                       orientation,
-	                        int                       size,
-	                        int                       i,
-	                        int                       j);
-
-	inline bool squarePattern(int                       orientation,
-	                          int                       size,
-	                          int                       i,
-	                          int                       j);
+	inline bool checkerBoardPattern(glm::ivec2 pos, int step);
+	inline bool linePattern(int orientation, int size, glm::ivec2 pos, int step);
+	inline bool squarePattern(int orientation, int size, glm::ivec2 pos, int step);
 };
 }  // namespace client
 

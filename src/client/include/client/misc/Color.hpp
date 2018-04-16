@@ -17,8 +17,8 @@ typedef struct{
 } palette;
 
 namespace client {
-	palette curr_pallette;
-	std::queue<palette> palettes;
+	extern palette curr_pallette;
+	extern std::queue<palette> palettes;
 
 	void init_palettes();
 }
