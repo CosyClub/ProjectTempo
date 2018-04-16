@@ -25,13 +25,13 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 		return;
 
 
-  this->wall_diffuse_map = driver->getTexture("resources/materials/walls/cobblestone.png");
-  this->wall_normal_map  = driver->getTexture("resources/materials/walls/cobblestone_n.png");
-  this->tile_texture     = driver->getTexture("resources/materials/TileLightMaskPixelOn.png");
+	this->wall_diffuse_map = driver->getTexture("resources/materials/walls/cobblestone.png");
+	this->wall_normal_map  = driver->getTexture("resources/materials/walls/cobblestone_n.png");
+	this->tile_texture     = driver->getTexture("resources/materials/TileLightMaskPixelOn.png");
 
 	meshC1 = smgr->getMeshManipulator()->createMeshCopy(smgr->getMesh("resources/meshes/tile.obj"));
-  meshC2 = smgr->getMeshManipulator()->createMeshCopy(smgr->getMesh("resources/meshes/tile.obj"));
-  walls = smgr->getMeshManipulator()->createMeshCopy(smgr->getMesh("resources/meshes/tile.obj"));
+	meshC2 = smgr->getMeshManipulator()->createMeshCopy(smgr->getMesh("resources/meshes/tile.obj"));
+	walls = smgr->getMeshManipulator()->createMeshCopy(smgr->getMesh("resources/meshes/tile.obj"));
 
 	batchMesh = new irr::scene::CBatchingMesh();
 
@@ -40,13 +40,13 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 	this->meshC1->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
 	this->meshC1->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
 
-  this->meshC2->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
+	this->meshC2->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
 	this->meshC2->getMeshBuffer(1)->getMaterial().EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
-  this->meshC2->getMeshBuffer(1)->getMaterial().DiffuseColor.set(0, 0, 0, 0);
+	this->meshC2->getMeshBuffer(1)->getMaterial().DiffuseColor.set(0, 0, 0, 0);
 	this->meshC2->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
 	this->meshC2->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
 
-  this->walls->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
+	this->walls->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
 	this->walls->getMeshBuffer(1)->getMaterial().DiffuseColor.set(255, 10, 10, 10);
 	this->walls->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
 	this->walls->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
@@ -141,10 +141,10 @@ void SystemStageRenderer::updateStage(irr::scene::ISceneManager *smgr,
 			}
 		}
 
-    	if (currentHeight[i] >= 5) {
-        batchMesh->addMesh(walls, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
-    		continue;
-    	}
+		if (currentHeight[i] >= 5) {
+			batchMesh->addMesh(walls, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
+			continue;
+		}
 
 		bool render;
 
@@ -175,12 +175,12 @@ void SystemStageRenderer::updateStage(irr::scene::ISceneManager *smgr,
 
 		if (render) {
 			batchMesh->addMesh(meshC1, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
-      continue;
+			continue;
 		}
-    else{
-      batchMesh->addMesh(meshC2, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
-      continue;
-    }
+		else{
+			batchMesh->addMesh(meshC2, irr::core::vector3df(pos.y, currentHeight[i], pos.x));
+			continue;
+		}
 	}
 
 	firstRun = false;
