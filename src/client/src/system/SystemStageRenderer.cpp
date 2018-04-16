@@ -43,9 +43,12 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 	for (auto tile : tiles)
 	{
 		glm::ivec2 pos = tile.position;
-		tileMap[pos].pos = pos;
-		tileMap[pos].height = tile.height;
-		tileMap[pos].height_target = tile.height;
+		tile_t t;
+		t.pos = pos;
+		t.height = tile.height;
+		t.height_target = tile.height;
+
+		tileMap.emplace(pos, t);
 	}
 
 	batchMesh = new irr::scene::CBatchingMesh();
@@ -80,20 +83,18 @@ void SystemStageRenderer::colorStage(int                        step,
 
 	auto heights = stage.getHeights();
 
-	int index = 0;
 	for (auto& it : tileMap)
 	{
 		tile_t tile = it.second;
 		glm::ivec2 pos = tile.pos;
 
 		// Stop logic on tiles that are not visible to camera
-		if (pos.y < playerpos.x - 24 || pos.y > playerpos.x + 7 || pos.x < playerpos.y - 33
-		    || pos.x > playerpos.y + 33) {
+		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
+		    || pos.y > playerpos.y + 33) {
 			continue;
 		}
 
 		bool render;
-
 		switch (step) {
 		case 0:
 		case 1:
@@ -128,7 +129,46 @@ void SystemStageRenderer::colorStage(int                        step,
 			continue;
 		}
 	}
+}
 
+void SystemStageRenderer::AnimateTiles(float dt)
+{
+	auto  entities = getEntities();
+	auto  entity   = std::begin(entities);
+	auto &stage    = entity->getComponent<tempo::ComponentStage>();
+	auto tiles = stage.getHeights();
+	for (auto tile : tiles)
+	{
+		glm::ivec2 pos = tile.position;
+
+		if (tileMap.find(pos) != tileMap.end())
+		{
+			tileMap[pos].height_target = tile.height;
+		}
+		else
+		{
+			tile_t t;
+			t.pos = pos;
+			t.height = tile.height;
+			t.height_target = tile.height;
+
+			tileMap.emplace(pos, t);
+		}
+	}
+	
+	for (auto& it : tileMap)
+	{
+		tile_t tile = it.second;
+		glm::ivec2 pos = tile.pos;
+
+		if (tile.height != tile.height_target)
+		{
+			float gap = tile.height_target - tile.height;
+			float delta = 5 * (gap / fabs(gap)) * dt / 1.5f; //1.5 seconds to collapse
+			if (fabs(delta) > fabs(gap)) delta = gap;
+			tileMap[pos].height += delta;
+		}
+	}
 }
 
 void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
@@ -138,23 +178,19 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 	irr::scene::ISceneNode *par = this->node->getParent();
 	par->removeChild(this->node);
 
+
 	for (auto& it : tileMap)
 	{
 		tile_t tile = it.second;
 		glm::ivec2 pos = tile.pos;
 
-		if (tile.height != tile.height_target)
-		{
-			tile.height += fmin(tile.height_target - tile.height, 0.1);
-		}
-
 		if (tile.height >= 5) {
-			batchMesh->addMesh(walls, irr::core::vector3df(pos.y, tile.height, pos.x));
+			batchMesh->addMesh(walls, irr::core::vector3df(pos.x, tile.height, pos.y));
 			continue;
 		}
 
 		this->mesh->getMeshBuffer(1)->getMaterial().EmissiveColor = tile.color;
-		batchMesh->addMesh(mesh, irr::core::vector3df(pos.y, tile.height, pos.x));
+		batchMesh->addMesh(mesh, irr::core::vector3df(pos.x, tile.height, pos.y));
 	}
 
 	batchMesh->update();

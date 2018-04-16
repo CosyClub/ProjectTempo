@@ -21,16 +21,11 @@ namespace client
 {
 typedef std::vector<glm::ivec2>                    stage_nodes;
 
-struct Vec2Funcs
+struct vec2less
 {
-	size_t operator()(const glm::ivec2& k)const
-	{
-		return std::hash<int>()(k.x) ^ std::hash<int>()(k.y);
-	}
-	
 	bool operator()(const glm::ivec2& a, const glm::ivec2& b)const
 	{
-		return a.x == b.x && a.y == b.y;
+		return a.x < b.x || a.x == b.x && a.y < b.y;
 	}
 };
 
@@ -55,7 +50,7 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 	irr::scene::CBatchingMesh * batchMesh;
 
 	std::map<glm::ivec2, tile_t, 
-	         Vec2Funcs, std::allocator<std::pair<const glm::ivec2, tile_t>>> tileMap;
+	         vec2less, std::allocator<std::pair<const glm::ivec2, tile_t>>> tileMap;
 
 	// Creates a static irrlitch scene node based on the component stage heights
 	void setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver);
@@ -67,6 +62,8 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
                         glm::ivec2                 playerpos,
                         irr::video::SColor         C1,
 			irr::video::SColor         C2);
+
+	void AnimateTiles(float dt);
 
 	void setTileColor(glm::ivec2 pos, irr::video::SColor color);
 

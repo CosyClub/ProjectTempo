@@ -310,7 +310,6 @@ int main(int argc, const char **argv)
 	sf::Int64 tick               = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	sf::Clock frame_clock        = sf::Clock();
 	sf::Clock update_floor_clock = sf::Clock();
-	frame_clock.restart();
 	update_floor_clock.restart();
 
 	client::init_palettes();
@@ -320,11 +319,14 @@ int main(int argc, const char **argv)
 	irr::video::SColor random_colour;
 	srand(clock.get_time().asMicroseconds());
 
+	float dt;
+
 	printf("Entering main loop\n");
 	while (device->run()) {
 
 		// Work out a frame delta time.
 		const irr::u32 now = device->getTimer()->getTime();
+		dt = frame_clock.restart().asSeconds();
 		/// frameDeltaTime = (f32)(now - then)/1000.f; // Time in seconds
 
 		////////////////
@@ -430,6 +432,7 @@ int main(int argc, const char **argv)
 			system_combo.advanceBeat();
 		}
 
+		system_stage_renderer.AnimateTiles(dt);
 		system_stage_renderer.Update(smgr, driver);
 
 		driver->beginScene(true, true);
