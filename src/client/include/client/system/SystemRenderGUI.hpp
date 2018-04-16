@@ -47,9 +47,9 @@ struct SystemRenderGUI {
 		void updateHUD(std::clock_t time_now, int combo, int colour_index);
 
 		void updateComboBar(irr::video::IVideoDriver * driver,
-												tempo::Clock &             clock,
-												int                        combo,
-												const irr::core::dimension2du screenSize);
+		                    tempo::Clock &             clock,
+		                    int                        combo,
+		                    const irr::core::dimension2du screenSize);
 
 		void updateHealthBar(irr::video::IVideoDriver * driver,
 		                     tempo::ComponentHealth     comp_health,
@@ -63,8 +63,8 @@ struct SystemRenderGUI {
 		            irr::gui::IGUIEnvironment *gui_env,
 		            tempo::Clock &             clock,
 		            int                        combo,
-							  tempo::ComponentHealth     comp_health,
-							  int                        colour_index);
+		            tempo::ComponentHealth     comp_health,
+		            int                        colour_index);
 
 };
 }

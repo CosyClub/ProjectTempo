@@ -397,7 +397,7 @@ int main(int argc, const char **argv)
 
 		}
 		glm::ivec2 playerpos =
-		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
+			entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 		system_stage_renderer.updateStage(smgr, driver, j, playerpos, random_colour);
 
 		////////////////
