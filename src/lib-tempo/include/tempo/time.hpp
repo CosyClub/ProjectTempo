@@ -68,6 +68,12 @@ class Clock
 	// Returns time until the next delta start event as in Figure 1
 	sf::Time until_delta_start();
 
+	// Retrieves the size of the window to either side of the beat within which
+	// actions may be performed
+	// Note that it is this much time before AND after the beat within which
+	// actions can be performed
+	sf::Time get_beat_window_delta();
+
 	// Sets when the next beat should be. The time given is an
 	// absolute time. From this point on the beats will continue to
 	// progress with a time between beats of (next_beat - last_beat)
