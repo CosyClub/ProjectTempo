@@ -28,7 +28,6 @@ void SystemRenderAttack::update(SystemStageRenderer& sr)
 
 		for (auto& target : targets)
 		{
-			printf("%d\n", 255/ (attack.beats_until_attack + 1));
 			irr::video::SColor color = (255, 0, 0, 255 / (attack.beats_until_attack + 1));
 			sr.setTileColor(target, color);
 		}
