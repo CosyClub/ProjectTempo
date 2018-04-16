@@ -24,10 +24,13 @@ void SystemRenderAttack::update(SystemStageRenderer& sr)
 		auto& stage = entity.getComponent<tempo::ComponentStage        >();
 
 		auto targets = attack.getAbsolutePositions(pos.getOrigin(), rot.facing);
+		
 
 		for (auto& target : targets)
 		{
-			sr.setTileColor(target, irr::video::SColor(255, 0, 0, 255));
+			printf("%d\n", 255/ (attack.beats_until_attack + 1));
+			irr::video::SColor color = (255, 0, 0, 255 / (attack.beats_until_attack + 1));
+			sr.setTileColor(target, color);
 		}
 	}
 
