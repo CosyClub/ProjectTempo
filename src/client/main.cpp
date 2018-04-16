@@ -423,7 +423,7 @@ int main(int argc, const char **argv)
 		glm::ivec2 playerpos =
 		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-		system_stage_renderer.colorStage(j, playerpos, colour_red, colour_purple);
+		system_stage_renderer.colorStage(j, colour_red, colour_purple);
 
 		////////////////
 		// Events at "Delta End"
@@ -433,7 +433,7 @@ int main(int argc, const char **argv)
 		}
 
 		system_stage_renderer.AnimateTiles(dt);
-		system_stage_renderer.Update(smgr, driver);
+		system_stage_renderer.Update(smgr, driver, playerpos);
 
 		driver->beginScene(true, true);
 		smgr->drawAll();

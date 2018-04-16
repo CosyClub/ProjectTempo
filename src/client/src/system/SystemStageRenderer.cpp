@@ -84,7 +84,6 @@ void SystemStageRenderer::setTileColor(glm::ivec2 pos, irr::video::SColor color)
 }
 
 void SystemStageRenderer::colorStage(int                        step,
-                                     glm::ivec2                 playerpos,
                                      irr::video::SColor         C1,
 				     irr::video::SColor         C2)
 {
@@ -98,12 +97,6 @@ void SystemStageRenderer::colorStage(int                        step,
 	{
 		tile_t tile = it.second;
 		glm::ivec2 pos = tile.pos;
-
-		// Stop logic on tiles that are not visible to camera
-		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
-		    || pos.y > playerpos.y + 33) {
-			continue;
-		}
 
 		bool render;
 		switch (step) {
@@ -183,7 +176,8 @@ void SystemStageRenderer::AnimateTiles(float dt)
 }
 
 void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
-                                 irr::video::IVideoDriver * driver)
+                                 irr::video::IVideoDriver * driver,
+                                 glm::ivec2                 playerpos)
 {
 	batchMesh = new irr::scene::CBatchingMesh();
 	irr::scene::ISceneNode *par = this->node->getParent();
@@ -194,6 +188,11 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 	{
 		tile_t tile = it.second;
 		glm::ivec2 pos = tile.pos;
+
+		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 24
+		    || pos.y > playerpos.y + 24) {
+			continue;
+		}
 
 		if (tile.height >= 5) {
 			batchMesh->addMesh(walls, irr::core::vector3df(pos.x, tile.height, pos.y));
