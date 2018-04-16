@@ -18,6 +18,8 @@
 #include <glm/vec2.hpp>
 
 #include <iostream>
+#include <ctime>
+#include <string>
 
 namespace client
 {
@@ -182,6 +184,38 @@ void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinD
 		break;
 	default: break;
 	}
+}
+
+
+SystemParseKeyInput::SystemParseKeyInput(){
+	#ifdef TEMPO_DATA_CAPTURE
+
+	char datetime_cstring[80];
+	time_t rawtime;
+	struct tm* timeinfo;
+
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	strftime(datetime_cstring, sizeof(datetime_cstring),
+	         "%Y-%m-%d_%I:%M:%S", timeinfo
+	        );
+
+	std::string filename = (std::string("client_input_" ) +
+	                        std::string(datetime_cstring) +
+	                        std::string(".dat"));
+
+	printf("SystemParseKeyInput is opening input dump file: '%s'\n", filename.c_str());
+
+
+	this->data_output.open(filename);
+	#endif
+}
+
+SystemParseKeyInput::~SystemParseKeyInput(){
+	#ifdef TEMPO_DATA_CAPTURE
+	this->data_output.close();
+	#endif
 }
 
 void SystemParseKeyInput::parseInput(tempo::Clock &clock, irr::IrrlichtDevice* device)
