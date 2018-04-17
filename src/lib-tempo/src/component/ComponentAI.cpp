@@ -24,11 +24,11 @@ ComponentAI::ComponentAI(sf::Packet p)
 	uint32_t tmp;
 	uint32_t path_size;
 	p >> tmp;
-	type = (MoveType) tmp;
+	type = (MoveType)tmp;
 	p >> hitTeleport;
 	p >> hitSlide;
 	p >> path_size;
-	for (int I = 0; I < path_size; I++)
+	for (uint32_t I = 0; I < path_size; I++)
 	{
 		glm::ivec2 tmp;
 		p >> tmp;
@@ -45,17 +45,16 @@ sf::Packet ComponentAI::dumpComponent()
 {
 	sf::Packet p;
 
-	p << (uint32_t) type;
+	p << (uint32_t)type;
 	p << hitTeleport;
 	p << hitSlide;
 	p << (uint32_t) path.size();
-	for (int I = 0; I < path.size(); I++)
+	for (uint32_t I = 0; I < path.size(); I++)
 	{
 		glm::ivec2 vec = path.front();
 		path.pop_front();
 		p << vec;
 		path.push_back(vec);
-
 	}
 	return p;  // does nothing
 }

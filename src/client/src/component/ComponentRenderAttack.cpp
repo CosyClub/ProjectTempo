@@ -5,7 +5,6 @@ namespace client
 ComponentRenderAttack::ComponentRenderAttack(irr::scene::IBillboardSceneNode *node)
     : node(node)
 {
-	float posx;
 }
 
 ComponentRenderAttack::~ComponentRenderAttack()

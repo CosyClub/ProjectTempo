@@ -17,7 +17,6 @@ void SystemRenderAttack::setup(irr::scene::ISceneManager *smgr, irr::video::IVid
 
 	for (auto &entity : entities) {
 
-		auto &attack = entity.getComponent<tempo::ComponentAttack>();
 		auto &rend   = entity.getComponent<client::ComponentRenderAttack>();
 		auto &sn     = entity.getComponent<client::ComponentRenderSceneNode>();
 
@@ -25,7 +24,7 @@ void SystemRenderAttack::setup(irr::scene::ISceneManager *smgr, irr::video::IVid
 			continue;
 		}
 
-		irr::video::SColor colour = (0, 255, 255, 255);
+		irr::video::SColor colour;
 		rend.posx = 1.f / 3;
 
 		rend.node = smgr->addBillboardSceneNode(sn.node, size, pos, -1, colour, colour);
@@ -56,7 +55,6 @@ void SystemRenderAttack::update(irr::IrrlichtDevice *device)
 
 		auto &attack = entity.getComponent<tempo::ComponentAttack>();
 		auto &rend   = entity.getComponent<client::ComponentRenderAttack>();
-		auto &sn     = entity.getComponent<client::ComponentRenderSceneNode>();
 
 		if(entity.hasComponent<tempo::ComponentPlayerLocal>()){
 			if(attack.isAttacking()){

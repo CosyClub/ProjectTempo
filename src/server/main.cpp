@@ -31,13 +31,14 @@
 #define PLAYER_DELTA 100       // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000.f / BPM  // Time between beats (microsecs)
 
-void RythmButton(anax::World &                        world,
-                 std::vector<std::vector<glm::ivec2>> positions,
-                 std::vector<glm::ivec2>              tiles,
-                 std::vector<glm::ivec2>              spikes,
-                 int &                                ID)
-{
-	for (int i = 0; i < positions.size(); i++) {
+void RythmButton(anax::World &          world,
+				std::vector<std::vector<glm::ivec2>> positions,
+				std::vector<glm::ivec2> tiles,
+				std::vector<glm::ivec2> spikes,
+				int &ID) {
+
+	for (uint32_t i = 0; i < positions.size(); i++) {
+
 		std::vector<glm::ivec2> group = positions[i];
 		glm::ivec2 prev;
 		glm::ivec2 next;

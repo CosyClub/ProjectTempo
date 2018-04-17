@@ -15,7 +15,7 @@ namespace
 }
 namespace client
 {
-void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
+void SystemButtonRenderer::setup(irr::scene::ISceneManager* smgr, irr::video::IVideoDriver* driver)
 {
 	this->buttonBlocked = driver->getTexture("resources/materials/buttonBlocked.png");
 	this->buttonArrow = driver->getTexture("resources/materials/buttonArrow.png");
@@ -31,14 +31,14 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 		auto &group = entity.getComponent<tempo::ComponentButtonGroup>();
 		auto &rend  = entity.getComponent<client::ComponentRenderButtonGroup>();
 
-		if (rend.setup) continue;
-
+		if (rend.setup)
+			continue;
 
 		if (group.rhythmID == 0) { // Rhythm-less buttons
 			// button data
 			auto &buttons = group.buttons;
 
-			for (int i = 0; i < buttons.size(); i++) {
+			for (uint32_t i = 0; i < buttons.size(); i++) {
 				irr::scene::IMesh *mesh_button = smgr->getMesh("resources/meshes/button.obj");
 				irr::scene::IMesh *mesh_button_housing =
 					smgr->getMesh("resources/meshes/button_housing.obj");
@@ -72,7 +72,7 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 			// button data
 			auto &buttons = group.buttons;
 
-			for (int i = 0; i < buttons.size(); i++) {
+			for (uint32_t i = 0; i < buttons.size(); i++) {
 
 				irr::scene::IMesh *mesh_button = smgr->getMesh("resources/meshes/button.obj");
 				irr::scene::IMesh *mesh_button_housing =
@@ -121,7 +121,7 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 
 }
 
-void SystemButtonRenderer::setRotation(std::vector<anax::Entity> entities, int j, int i, irr::scene::IMeshSceneNode *button, glm::ivec2 pos) {
+void SystemButtonRenderer::setRotation(std::vector<anax::Entity> entities, uint32_t j, uint32_t i, irr::scene::IMeshSceneNode *button, glm::ivec2 pos) {
 	
 	//Last button group in level
 	if (j == entities.size() - 1) {
@@ -141,7 +141,7 @@ void SystemButtonRenderer::setRotation(std::vector<anax::Entity> entities, int j
 
 	dy = newPos.y - pos.y;
 
-	int n = NAN; // for error checking
+	double n = NAN; // for error checking
 
 	if (dx == 1) {
 		n = 180;
@@ -163,7 +163,7 @@ void SystemButtonRenderer::setRotation(std::vector<anax::Entity> entities, int j
 
 }
 
-void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
+void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 {
 	auto entities = getEntities();
 	for (int i = entities.size() - 1; i >= 0; i--) {
@@ -172,19 +172,19 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 		auto &rend = entity.getComponent<client::ComponentRenderButtonGroup>();
 
 		// button data
-		auto &buttons = group.buttons;
+		auto& buttons = group.buttons;
 		// button render data
-		auto &buttonRend = rend.buttonsRender;
+		auto& buttonRend = rend.buttonsRender;
 
 		if (group.rhythmID == 0) { //Rhythm-less buttons
 
 			if (buttons.size() != buttonRend.size()) {
-				printf("\n\n\n\n This is a significant problem buttons=%d,buttonRend = %d\n\n\n\n",
+				printf("\n\n\n\n This is a significant problem buttons=%ld,buttonRend = %ld\n\n\n\n",
 					buttons.size(), buttonRend.size());
 			}
 
 			if (!group.groupTriggered) {
-				for (int j = 0; j < buttons.size(); j++) {
+				for (uint32_t j = 0; j < buttons.size(); j++) {
 					if (buttons[j].triggered == true) {
 						buttonRend[j].button->setPosition(
 							irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
@@ -200,8 +200,7 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 				}
 			}
 			else {
-				for (int j = 0; j < buttons.size(); j++) {
-					buttons[j].triggered == true;
+				for (uint32_t j = 0; j < buttons.size(); j++) {
 					buttonRend[j].button->setPosition(
 						irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
 					irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
@@ -213,12 +212,12 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 		else { // Rhythm-based buttons
 
 			if (buttons.size() != buttonRend.size()) {
-				printf("\n\n\n\n This is a significant problem Rhythmbuttons=%d,buttonRend = %d\n\n\n\n",
+				printf("\n\n\n\n This is a significant problem Rhythmbuttons=%ld,buttonRend = %ld\n\n\n\n",
 					buttons.size(), buttonRend.size());
 			}
 
 			if (group.groupTriggerable) {
-				for (int j = 0; j < buttons.size(); j++) {
+				for (uint32_t j = 0; j < buttons.size(); j++) {
 
 					buttonRend[j].button->setPosition(
 						irr::core::vector3df(buttons[j].pos.x, 0, buttons[j].pos.y));
@@ -235,7 +234,7 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 			}
 
 			else {
-				for (int j = 0; j < buttons.size(); j++) {
+				for (uint32_t j = 0; j < buttons.size(); j++) {
 
 					if (group.groupTriggered) {
 						buttonRend[j].button->setPosition(

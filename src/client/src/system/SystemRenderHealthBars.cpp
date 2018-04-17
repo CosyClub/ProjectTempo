@@ -13,7 +13,7 @@ void SystemRenderHealthBars::setup(irr::scene::ISceneManager *smgr)
 	auto entities = getEntities();
 
 	for (auto &entity : entities) {
-		auto &health    = entity.getComponent<tempo::ComponentHealth>();
+		// auto &health    = entity.getComponent<tempo::ComponentHealth>();
 		auto &healthbar = entity.getComponent<client::ComponentHealthBar>();
 		auto &sn        = entity.getComponent<client::ComponentRenderSceneNode>();
 
