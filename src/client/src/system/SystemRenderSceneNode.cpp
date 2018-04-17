@@ -61,7 +61,7 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 			sn.billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 			sn.billboard->setMaterialType( irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL );
 			sn.billboard->setMaterialTexture( 0, spritesheet);
-			
+
 			sn.spriteDim = m.spriteDim;
 			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(1.f / sn.spriteDim.y, 1.f / sn.spriteDim.x);
 			sn.updateNeeded = true;

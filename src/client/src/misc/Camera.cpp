@@ -148,7 +148,7 @@ void Camera::setRotation(const core::vector3df& rotation)
 //! \return Returns the current look at target of the camera
 const core::vector3df& Camera::getTarget() const
 {
-	return Target + Parent->getAbsolutePosition();
+	return Target;
 }
 
 

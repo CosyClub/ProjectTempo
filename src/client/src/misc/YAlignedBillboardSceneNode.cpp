@@ -67,7 +67,7 @@ void YAlignedBillboardSceneNode::render()
 	core::vector3df pos = getAbsolutePosition();
 
 	core::vector3df campos = camera->getAbsolutePosition();
-	core::vector3df target = camera->getTarget();
+	core::vector3df target = camera->getTarget() + camera->getParent()->getAbsolutePosition();
 	core::vector3df up     = camera->getUpVector();
 	core::vector3df view   = target - campos;
 	view.normalize();
