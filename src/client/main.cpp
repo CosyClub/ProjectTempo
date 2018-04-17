@@ -148,8 +148,16 @@ int main(int argc, const char** argv)
 	// irr::IrrlichtDevice *device = irr::createDevice(
 	//   irr::video::EDT_OPENGL, deskres, 16, true, false, false);
 
-	irr::IrrlichtDevice* device = irr::createDevice(
-	  irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1280, 720), 16, false, false, false);
+
+	bool enable_hud = false;
+	if (argc == 4) {
+		std::string HUD = argv[3];
+		enable_hud = (HUD == "HUD" || HUD == "hud");
+	}
+
+	irr::IrrlichtDevice *device = irr::createDevice(
+	  irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1920, 1080), 16, enable_hud, false, false);
+
 	if (!device) {
 		printf("Failed to create Irrlicht Device\n");
 		return 1;
@@ -165,14 +173,16 @@ int main(int argc, const char** argv)
 	// Setup ECS
 	anax::World world;
 	// tempo::SystemRender           system_render(app);
-	tempo::SystemHealth system_health;
-	tempo::SystemTrigger system_trigger(world);
-	client::SystemAttack system_attack;
-	client::SystemButtonRenderer system_button_renderer;
-	client::SystemCombo system_combo;
-	client::SystemEntity system_entity;
+
+	tempo::SystemHealth            system_health;
+	tempo::SystemTrigger           system_trigger(world);
+	client::SystemAttack           system_attack;
+	client::SystemButtonRenderer   system_button_renderer;
+	client::SystemCombo            system_combo;
+	client::SystemEntity           system_entity;
+
 	client::SystemGraphicsCreation system_gc;
-	client::SystemLighting		   system_lighting;
+	client::SystemLighting         system_lighting;
 	client::SystemMovement         system_movement;
 	client::SystemStageRenderer    system_stage_renderer;
 	client::SystemParseKeyInput    system_parse_key_input;
@@ -180,7 +190,7 @@ int main(int argc, const char** argv)
 	client::SystemRenderHealing    system_render_healing(driver, smgr);
 	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
-	client::SystemRenderSpikes  	 system_render_spikes;
+	client::SystemRenderSpikes     system_render_spikes;
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
 	client::SystemLessJank system_less_jank;
@@ -213,9 +223,33 @@ int main(int argc, const char** argv)
 	system_update_key_input.setup(device);
 	system_stage_renderer.setup(smgr, driver, {255, 175, 0, 0}, {255, 50, 50, 50});
 	system_render_scene_node.setup(smgr, driver);
+	system_render_gui.init(device, driver, enable_hud);
 
 	// must be after system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);
+
+
+	if (enable_hud) {
+		device->getGUIEnvironment()->addImage(
+		    driver->getTexture("resources/materials/textures/splash-full.png"),
+		    irr::core::position2d<irr::s32>(0,0), true);
+		bool waiting = true;
+
+		while (device->run() && waiting) {
+			std::vector<client::KeyEvent> keys = system_update_key_input.getKeys();
+			for (unsigned int i = 0; i < keys.size(); i++) {
+				if (keys[i].press) waiting = false;
+			}
+
+			driver->beginScene(true, true);
+			smgr->drawAll();
+			gui_env->drawAll();
+			driver->endScene();
+		}
+
+		device->getGUIEnvironment()->clear();
+	}
+	system_render_gui.setup(device, driver, enable_hud);
 
 	// Set up remote address, local ports and remote handshake port
 	// Note, IF statement is to change ports for local development, bit
@@ -300,6 +334,7 @@ int main(int argc, const char** argv)
 	// sf::Clock dt_timer;
 
 	int j = 0;
+	int colour_index;
 
 	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	sf::Clock frame_clock = sf::Clock();
@@ -309,6 +344,7 @@ int main(int argc, const char** argv)
 
 	irr::video::SColor random_colour;
 	srand(clock.get_time().asMicroseconds());
+
 
 	printf("Entering main loop\n");
 	while (device->run()) {
@@ -387,13 +423,14 @@ int main(int argc, const char** argv)
 
 			system_translation_animation.endBeat();
 
-			random_colour = client::randomHSV();
+			colour_index = rand() % 10;
+			random_colour = client::randomHSV(colour_index);
 
 			system_lighting.update(random_colour);
 
 		}
 		glm::ivec2 playerpos =
-		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
+			entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 		system_stage_renderer.updateStage(smgr, driver, j, playerpos, random_colour);
 
 		////////////////
@@ -407,7 +444,7 @@ int main(int argc, const char** argv)
 		smgr->drawAll();
 		gui_env->drawAll();
 
-		system_render_gui.update(driver, gui_env, clock, combo, comp_health);
+		system_render_gui.update(driver, gui_env, clock, combo, comp_health, colour_index, enable_hud);
 		driver->endScene();
 
 		++frame_counter;
