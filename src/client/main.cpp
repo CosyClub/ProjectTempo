@@ -318,32 +318,26 @@ int main(int argc, const char **argv)
 	irr::video::SColor random_colour;
 	srand(clock.get_time().asMicroseconds());
 
-	device->run();
-	if( enable_hud ) {
+	if (enable_hud) {
 		device->getGUIEnvironment()->addImage(
 		    driver->getTexture("resources/materials/textures/splash-full.png"),
-	      irr::core::position2d<irr::s32>(0,0), true);
+		    irr::core::position2d<irr::s32>(0,0), true);
+		bool waiting = true;
 
+		while (device->run() && waiting) {
+			if (clock.passed_delta_start()) tempo::sendHeatbeat();
 
-		bool startGame = false;
-		std::vector<client::KeyEvent> keys;
-
-		while(!startGame) {
-			keys = system_update_key_input.getKeys();
-
-			// std::cout<<"Number of keys:"<<keys.size()<<"\n";
+			std::vector<client::KeyEvent> keys = system_update_key_input.getKeys();
 			for (unsigned int i = 0; i < keys.size(); i++) {
-				if (keys[i].press) startGame = true;
+				if (keys[i].press) waiting = false;
 			}
-			keys.clear();
-
 
 			driver->beginScene(true, true);
 			smgr->drawAll();
 			gui_env->drawAll();
 			driver->endScene();
 		}
-
+		
 		device->getGUIEnvironment()->clear();
 	}
 	system_render_gui.setup(device, driver, enable_hud);
