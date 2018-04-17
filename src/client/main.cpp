@@ -302,9 +302,9 @@ int main(int argc, const char **argv)
 
 	for (int i=0; i < feeder_areas; i++){
 
-	client::createLasers(smgr, driver, { {4 + (i*fheight),12}, {4 + (i*fheight),52}, {4 + (i*fheight),92} }, startingPos);
+	client::createLasers(smgr, driver, { {40 + (i*fheight),12}, {40 + (i*fheight),52}, {40 + (i*fheight),92} }, startingPos);
 
-	client::createDiscoBalls(smgr, driver, { {4 + (i*fheight),6} }, startingPos);
+	client::createDiscoBalls(smgr, driver, { {40 + (i*fheight),6} }, startingPos);
 
 }
 
