@@ -48,9 +48,11 @@ ComponentButtonGroup::ComponentButtonGroup(sf::Packet p)
 		wall_positions.push_back(v);
 
 		// TODO Make stage sync properly - this is a hack
-		for (uint32_t i = 0; i < _global_stage.size(); i++) {
-			if (groupTriggered && _global_stage[i].position == v) {
-				_global_stage[i].height = 0.f;
+		for (auto &a : _global_stage)
+		{
+			if (groupTriggered && a.second.position == v)
+			{
+				a.second.height = 0.f;
 			}
 		}
 	}

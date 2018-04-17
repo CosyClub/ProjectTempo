@@ -27,7 +27,25 @@ struct stage_tile {
 	stage_tile() {}
 };
 
-extern std::vector<stage_tile> _global_stage;
+struct vec2less
+{
+	bool operator()(const glm::ivec2& a, const glm::ivec2& b)const
+	{
+		return a.x < b.x || a.x == b.x && a.y < b.y;
+	}
+};
+
+template< typename tPair >
+struct second_t {
+	typename tPair::second_type operator()( const tPair& p ) const { return p.second; }
+};
+
+typedef std::map<glm::ivec2,
+                stage_tile,
+                vec2less,
+                std::allocator<std::pair<const glm::ivec2, stage_tile>>> tileMap;
+
+extern tileMap _global_stage;
 extern std::string             _global_stage_loaded;
 
 // An entity that is bound by the world stage
@@ -35,13 +53,13 @@ struct ComponentStage
     : anax::Component
     , NetworkedComponent {
    private:
-	std::vector<stage_tile> *tiles;
+	std::map<glm::ivec2,
+                stage_tile,
+                vec2less,
+                std::allocator<std::pair<const glm::ivec2, stage_tile>>> *tiles;
 	std::string              stage_file;
 
 	void loadLevel(const char *stage_file);
-
-	// Finds the index for position
-	inline int findIndex(glm::ivec2 position);
 
    public:
 	// Constructor requires stage file

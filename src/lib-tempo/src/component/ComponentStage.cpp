@@ -12,7 +12,7 @@
 namespace tempo
 {
 
-std::vector<stage_tile> _global_stage;
+tileMap _global_stage;
 std::string             _global_stage_loaded("None");
 
 void ComponentStage::loadLevel(const char *stage_file)
@@ -54,7 +54,8 @@ void ComponentStage::loadLevel(const char *stage_file)
 
 			if (pixel[0] > 0) {
 				int height = (int) (pixel[0] - 127) / 25.6;
-				_global_stage.push_back(stage_tile(glm::ivec2(y, x), (float) height));
+					_global_stage.emplace(glm::ivec2(y, x),
+					                      (stage_tile(glm::ivec2(y, x), (float) height)));
 			}
 
 			// Repeat tiles for feeder areas
@@ -64,7 +65,8 @@ void ComponentStage::loadLevel(const char *stage_file)
 
 				if (modPixel[0] > 0) {
 					int modHeight = (int) (modPixel[0] - 127) / 25.6;
-					_global_stage.push_back(stage_tile(glm::ivec2(y, x), (float) modHeight));
+					_global_stage.emplace(glm::ivec2(y, x),
+					                      (stage_tile(glm::ivec2(y, x), (float) modHeight)));
 				}
 			}
 		}
@@ -81,37 +83,26 @@ ComponentStage::ComponentStage(const char *stage_file)
 	loadLevel(stage_file);
 }
 
-inline int ComponentStage::findIndex(glm::ivec2 position)
-{
-	for (unsigned int i = 0; i < tiles->size(); i++) {
-		auto &pos = (*tiles)[i].position;
-		if (pos == position) {
-			return i;
-		}
+std::vector<stage_tile> ComponentStage::getHeights()
+{    	
+	std::vector<stage_tile> vec;
+	for (auto a : (*tiles))
+	{
+		vec.push_back(a.second);
 	}
-
-	return -1;
-}
-
-std::vector<tempo::stage_tile> ComponentStage::getHeights()
-{
-	return *tiles;
+	return vec;
 }
 
 float ComponentStage::getHeight(glm::ivec2 position)
 {
-	int index = findIndex(position);
-	if (index >= 0)
-		return (*tiles)[index].height;
-	else
-		return -10.0f;
+	auto itr = (*tiles).find(position);
+	if (itr == (*tiles).end()) return -10.f;
+	return itr->second.height;
 }
 
 void ComponentStage::setHeight(glm::ivec2 position, int height)
 {
-	int index = findIndex(position);
-	if (index >= 0)
-		(*tiles)[index].height = height;
+	if ((*tiles).find(position) != (*tiles).end()) (*tiles)[position].height = height;
 }
 
 void ComponentStage::setHeight(std::vector<glm::ivec2> positions, int height)
@@ -122,11 +113,7 @@ void ComponentStage::setHeight(std::vector<glm::ivec2> positions, int height)
 
 bool ComponentStage::existstTile(glm::ivec2 position)
 {
-	int index = findIndex(position);
-	if (index >= 0)
-		return true;
-	else
-		return false;
+	return (*tiles).find(position) != (*tiles).end();
 }
 
 /////
