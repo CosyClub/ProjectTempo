@@ -349,7 +349,7 @@ int main(int argc, const char** argv)
 			system_translation_animation.updateAnimations();
 
 			// Graphics updates
-			system_render_scene_node.update();
+			system_render_scene_node.update(driver);
 			system_render_health_bars.update();
 			system_render_healing.update();
 
