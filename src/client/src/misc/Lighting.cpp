@@ -139,7 +139,7 @@ namespace client {
 
 				for (irr::u32 t = 0; t<_IRR_MATERIAL_MAX_TEXTURES_; t++) {
 					nodeDiscoBall1->getMaterial(i).TextureLayer[t].AnisotropicFilter = 8;
-					nodeDiscoBall1->getMaterial(i).TextureLayer[t].LODBias = 128;
+					nodeDiscoBall1->getMaterial(i).TextureLayer[t].LODBias = 0;
 				};
 				nodeDiscoBall1->getMaterial(i).MaterialTypeParam = 1.f / 64.f; /// Adjust height for parallax effect
 			};

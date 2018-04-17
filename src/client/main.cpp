@@ -102,13 +102,13 @@ namespace client
 
 }  // namespace client
 
-void sync_time(tempo::Clock &clock)
+void sync_time(tempo::Clock& clock)
 {
 	sf::Int64 offset = tempo::timeSyncClient(&clock);
 	clock.set_time(clock.get_time() + sf::microseconds(offset));
 }
 
-anax::Entity createEntityStage(anax::World &world)
+anax::Entity createEntityStage(anax::World& world)
 {
 	printf("Creating entity stage\n");
 	anax::Entity entity_stage = world.createEntity();
@@ -122,7 +122,8 @@ anax::Entity createEntityStage(anax::World &world)
 // 	printf("Creating entity player\n");
 // 	anax::Entity entity_player = world.createEntity();
 // 	entity_player.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-// 	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(5, 5));
+// 	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(5,
+// 5));
 // 	entity_player.addComponent<client::ComponentRenderSceneNode>(nullptr);
 // 	entity_player.addComponent<client::ComponentKeyInput>();
 // 	entity_player.activate();
@@ -130,7 +131,7 @@ anax::Entity createEntityStage(anax::World &world)
 // 	return entity_player;
 // }
 
-int main(int argc, const char **argv)
+int main(int argc, const char** argv)
 {
 	sf::SoundBuffer clickbuf;
 	clickbuf.loadFromFile("resources/sound/tick.ogg");
@@ -140,26 +141,26 @@ int main(int argc, const char **argv)
 	// Clock
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
 
-	KeyInput             receiver;
+	KeyInput receiver;
 
 	// This makes it full-screen
 	// irr::IrrlichtDevice *nulldevice = irr::createDevice(irr::video::EDT_NULL);
-	// irr::core::dimension2d<irr::u32> deskres = nulldevice->getVideoModeList()->getDesktopResolution();
+	// irr::core::dimension2d<irr::u32> deskres =
+	// nulldevice->getVideoModeList()->getDesktopResolution();
 	// nulldevice -> drop();
 	// irr::IrrlichtDevice *device = irr::createDevice(
 	//   irr::video::EDT_OPENGL, deskres, 16, true, false, false);
 
-
-	irr::IrrlichtDevice *device = irr::createDevice(
+	irr::IrrlichtDevice* device = irr::createDevice(
 	  irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1280, 720), 16, false, false, false);
 	if (!device) {
 		printf("Failed to create Irrlicht Device\n");
 		return 1;
 	}
 	device->setWindowCaption(L"RaveCave");
-	irr::video::IVideoDriver * driver  = device->getVideoDriver();
-	irr::scene::ISceneManager *smgr    = device->getSceneManager();
-	irr::gui::IGUIEnvironment *gui_env = device->getGUIEnvironment();
+	irr::video::IVideoDriver* driver = device->getVideoDriver();
+	irr::scene::ISceneManager* smgr = device->getSceneManager();
+	irr::gui::IGUIEnvironment* gui_env = device->getGUIEnvironment();
 	// Debug
 	//smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
 
@@ -167,12 +168,12 @@ int main(int argc, const char **argv)
 	// Setup ECS
 	anax::World world;
 	// tempo::SystemRender           system_render(app);
-	tempo::SystemHealth            system_health;
-	tempo::SystemTrigger           system_trigger(world);
-	client::SystemAttack           system_attack;
-	client::SystemButtonRenderer   system_button_renderer;
-	client::SystemCombo             system_combo;
-	client::SystemEntity           system_entity;
+	tempo::SystemHealth system_health;
+	tempo::SystemTrigger system_trigger(world);
+	client::SystemAttack system_attack;
+	client::SystemButtonRenderer system_button_renderer;
+	client::SystemCombo system_combo;
+	client::SystemEntity system_entity;
 	client::SystemGraphicsCreation system_gc;
 	client::SystemLighting		   system_lighting;
 	client::SystemMovement         system_movement;
@@ -213,7 +214,7 @@ int main(int argc, const char **argv)
 
 	// Initialise Systems
 	system_update_key_input.setup(device);
-	system_stage_renderer.setup(smgr, driver,{255, 175, 0, 0}, {255, 50, 50, 50});
+	system_stage_renderer.setup(smgr, driver, {255, 175, 0, 0}, {255, 50, 50, 50});
 	system_render_scene_node.setup(smgr, driver);
 
 	// must be after system_render_scene_node.setup(smgr);
@@ -243,7 +244,7 @@ int main(int argc, const char **argv)
 
 	// Start Listener Thread to catch server updates after connecting
 	std::atomic<bool> running(true);
-	std::thread       listener(tempo::listenForServerUpdates, std::ref(running));
+	std::thread listener(tempo::listenForServerUpdates, std::ref(running));
 	// Hack to allow printouts to line up a bit nicer :)
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
@@ -281,7 +282,7 @@ int main(int argc, const char **argv)
 	// Player
 	// TODO: use better way to find out player, for now this is a search
 	anax::Entity entity_player;
-	for (auto &entity : world.getEntities()) {
+	for (auto& entity : world.getEntities()) {
 		if (entity.hasComponent<tempo::ComponentPlayerLocal>()) {
 			entity_player = entity;
 			break;
@@ -289,11 +290,11 @@ int main(int argc, const char **argv)
 	}
 	entity_player.addComponent<client::ComponentKeyInput>();
 	entity_player.activate();
-	client::ComponentRenderSceneNode &sn =
+	client::ComponentRenderSceneNode& sn =
 	  entity_player.getComponent<client::ComponentRenderSceneNode>();
 
-	auto &combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
-	auto &comp_health = entity_player.getComponent<tempo::ComponentHealth>();
+	auto& combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
+	auto& comp_health = entity_player.getComponent<tempo::ComponentHealth>();
 
 	glm::ivec2 startingPos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
@@ -314,14 +315,14 @@ int main(int argc, const char **argv)
 
 	/////////////////////////////////////////////////
 	// Main loop
-	int       frame_counter = 0;
+	int frame_counter = 0;
 	sf::Clock fps_timer;
 	// sf::Clock dt_timer;
 
 	int j = 0;
 
-	sf::Int64 tick               = clock.get_time().asMicroseconds() / sf::Int64(TIME);
-	sf::Clock frame_clock        = sf::Clock();
+	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	sf::Clock frame_clock = sf::Clock();
 	sf::Clock update_floor_clock = sf::Clock();
 	frame_clock.restart();
 	update_floor_clock.restart();
@@ -349,7 +350,7 @@ int main(int argc, const char **argv)
 
 			// Initialise Graphics for new entities
 			system_gc.addEntities(driver, smgr, world);
-			system_render_scene_node.setup(smgr,driver);
+			system_render_scene_node.setup(smgr, driver);
 			system_render_health_bars.setup(smgr);
 
 			// Receive updates from the server
@@ -432,7 +433,7 @@ int main(int argc, const char **argv)
 		++frame_counter;
 		if (fps_timer.getElapsedTime().asSeconds() > 1.0f) {
 			float seconds = fps_timer.getElapsedTime().asSeconds();
-			std::cout << "FPS: " << (int) (frame_counter / seconds) << std::endl;
+			std::cout << "FPS: " << (int)(frame_counter / seconds) << std::endl;
 			fps_timer.restart();
 			frame_counter = 0;
 		}

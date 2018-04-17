@@ -17,7 +17,7 @@ ComponentButtonGroup::ComponentButtonGroup(std::vector<glm::ivec2> positions,
 	for (glm::ivec2 pos : positions) {
 		button newbutton;
 		buttons.push_front(newbutton);
-		buttons[0].pos       = pos;
+		buttons[0].pos = pos;
 		buttons[0].triggered = false;
 		buttons[0].combo_req = 0;
 	}
@@ -121,12 +121,12 @@ sf::Packet ComponentButtonGroup::dumpComponent()
 	return p;
 }
 
-sf::Packet &operator<<(sf::Packet &p, const button &c)
+sf::Packet& operator<<(sf::Packet& p, const button& c)
 {
 	return p << c.pos << c.combo_req << c.triggered;
 }
 
-sf::Packet &operator>>(sf::Packet &p, button &c)
+sf::Packet& operator>>(sf::Packet& p, button& c)
 {
 	return p >> c.pos >> c.combo_req >> c.triggered;
 }
