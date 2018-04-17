@@ -275,7 +275,12 @@ void SystemAI::update(server::SystemAttack s_attack)
 						break;
 					}
 				}
-				if(st.delta == glm::ivec2(0, 0)) st.delta = random_move();
+				if(st.delta == glm::ivec2(0, 0))
+				{
+					//we're the head
+					st.delta = random_move();
+					if (st.delta == sr.facing * -1) st.delta *= -1; //Nudge to go forwards(ish)
+				}
 				break;
 			}
 		}
