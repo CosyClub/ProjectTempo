@@ -85,9 +85,12 @@ void SystemRenderSceneNode::update(glm::ivec2 playerpos)
 		glm::ivec2 pos = sp.getOrigin();
 
 		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
-		    || pos.y > playerpos.y + 33) {
+		    || pos.y > playerpos.y + 33) 
+		{
+			sn.billboard->setVisible(false);
 			continue;
 		}
+		sn.billboard->setVisible(true);
 
 		if (sn.isMesh) continue;
 
