@@ -250,7 +250,12 @@ int main(int argc, const char **argv)
 
 	tempo::ClientRole     role     = tempo::ClientRole::PLAYER;
 
-	tempo::ClientRoleData roleData = {"Bilbo Baggins", atoi(argv[2])};
+	int party_number = 0;
+	if(argc >= 3 ){
+		party_number = atoi(argv[2]);
+	}
+
+	tempo::ClientRoleData roleData = {"Bilbo Baggins", party_number};
 
 	// Connect to server and handshake information
 	if (!tempo::connectToAndSyncWithServer(role, roleData, world)) {
