@@ -141,11 +141,9 @@ int main(int argc, const char **argv)
 
 		// Create some Test Entities
 
-		tempo::createMobStill(world, glm::ivec2(36 + (i* fheight), 42));
-		tempo::createMobStill(world, glm::ivec2(40 + (i* fheight), 42));
-		tempo::createMobStill(world, glm::ivec2(44 + (i* fheight), 42));
-
-		tempo::createMobCreeper(world, glm::ivec2(40 + (i* fheight), 64));
+		for(int j = 0; j < 10; j++){
+		tempo::createMobCreeper(world, glm::ivec2(40 + (i* fheight), 40));
+	}
 
 		std::deque<glm::ivec2> path {glm::ivec2(64 + (i* fheight), 68),
 																 glm::ivec2(64 + (i* fheight), 72),

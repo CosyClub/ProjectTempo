@@ -1,6 +1,7 @@
 #include <client/system/SystemRenderHealthBars.hpp>
 #include <client/misc/RGBtoHSV.hpp>
 
+
 namespace client
 {
 void SystemRenderHealthBars::setup(irr::scene::ISceneManager *smgr)
@@ -28,7 +29,7 @@ void SystemRenderHealthBars::setup(irr::scene::ISceneManager *smgr)
 	}
 }
 
-void SystemRenderHealthBars::update()
+void SystemRenderHealthBars::update(const glm::ivec2 playerpos)
 {
 	irr::video::SColor colour_green(255, 0, 255, 0);
 	irr::video::SColor colour_red(255, 255, 0, 0);
@@ -39,6 +40,19 @@ void SystemRenderHealthBars::update()
 	for (auto &entity : entities) {
 		auto &health    = entity.getComponent<tempo::ComponentHealth>();
 		auto &healthbar = entity.getComponent<client::ComponentHealthBar>().node;
+		auto &sp        = entity.getComponent<tempo::ComponentStagePosition>();
+
+
+		glm::ivec2 pos = sp.getOrigin();
+
+		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
+		    || pos.y > playerpos.y + 33)
+		{
+			healthbar->setVisible(false);
+			continue;
+		}
+		healthbar->setVisible(true);
+
 
 		// Fraction of health left
 		scale = (double) health.current_health / health.max_health;

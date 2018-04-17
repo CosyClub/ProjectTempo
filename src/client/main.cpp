@@ -60,45 +60,46 @@
 #include <tempo/component/ComponentStage.hpp>
 namespace client
 {
-	// TLDR: enforce the game logic on client side and server side
-	class SystemLessJank
-		: public anax::System<
-		anax::Requires<
-		tempo::ComponentStageTranslation,
-		tempo::ComponentStagePosition,
-		tempo::ComponentStage>
-		>
-	{
-	public:
-		void lessJank() {
-			// uncomment this for more jank:
-			//return;
-
-			auto& entities = getEntities();
-
-			for (auto& entity : entities) {
-				tempo::ComponentStageTranslation& trans = entity.getComponent<tempo::ComponentStageTranslation>();
-				tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
-				glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
-
-
-
-				glm::ivec2 dest = origin + trans.delta;
-
-				if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5) {
-					// consume the moment before the server rejects you
-					// currently combos aren't server protected, so maybe this should move into lib-tempo?
-					// this produces a lovely jumping against the wall animation!
-					trans.delta = glm::ivec2(0, 0);
-					//if (entity.hasComponent<tempo::ComponentCombo>()) {
-					//	// what the heck this is a jank class anyway
-					//	tempo::ComponentCombo& combo = entity.getComponent<tempo::ComponentCombo>();
-					//	combo.advanceBeat();
-					//}
-				}
-			}
-		}
-	};
+	// // TLDR: enforce the game logic on client side and server side
+	// class SystemLessJank
+	// 	: public anax::System<
+	// 	anax::Requires<
+	// 	tempo::ComponentStageTranslation,
+	// 	tempo::ComponentStagePosition,
+	// 	tempo::ComponentStage,
+	// 	tempo::ComponentPlayerLocal>
+	// 	>
+	// {
+	// public:
+	// 	void lessJank() {
+	// 		// uncomment this for more jank:
+	// 		//return;
+	//
+	// 		auto& entities = getEntities();
+	//
+	// 		for (auto& entity : entities) {
+	// 			tempo::ComponentStageTranslation& trans = entity.getComponent<tempo::ComponentStageTranslation>();
+	// 			tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
+	// 			glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
+	//
+	//
+	//
+	// 			glm::ivec2 dest = origin + trans.delta;
+	//
+	// 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5) {
+	// 				// consume the moment before the server rejects you
+	// 				// currently combos aren't server protected, so maybe this should move into lib-tempo?
+	// 				// this produces a lovely jumping against the wall animation!
+	// 				trans.delta = glm::ivec2(0, 0);
+	// 				//if (entity.hasComponent<tempo::ComponentCombo>()) {
+	// 				//	// what the heck this is a jank class anyway
+	// 				//	tempo::ComponentCombo& combo = entity.getComponent<tempo::ComponentCombo>();
+	// 				//	combo.advanceBeat();
+	// 				//}
+	// 			}
+	// 		}
+	// 	}
+	// };
 
 }  // namespace client
 
@@ -185,7 +186,7 @@ int main(int argc, const char **argv)
 	client::SystemRenderSpikes  	 system_render_spikes;
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
-	client::SystemLessJank system_less_jank;
+	// client::SystemLessJank system_less_jank;
 
 	// Add Systems
 	world.addSystem(system_attack);
@@ -206,7 +207,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_parse_key_input);
 	world.addSystem(system_movement);
 	world.addSystem(system_translation_animation);
-	world.addSystem(system_less_jank);
+	// world.addSystem(system_less_jank);
 
 	createEntityStage(world);
 	world.refresh();
@@ -249,7 +250,12 @@ int main(int argc, const char **argv)
 
 	tempo::ClientRole     role     = tempo::ClientRole::PLAYER;
 
-	tempo::ClientRoleData roleData = {"Bilbo Baggins", atoi(argv[2])};
+	int party_number = 0;
+	if(argc >= 3 ){
+		party_number = atoi(argv[2]);
+	}
+
+	tempo::ClientRoleData roleData = {"Bilbo Baggins", party_number};
 
 	// Connect to server and handshake information
 	if (!tempo::connectToAndSyncWithServer(role, roleData, world)) {
@@ -296,14 +302,14 @@ int main(int argc, const char **argv)
 
 	int fwidth = 150;
 	int fheight = 69 + emptySpace;
-	
+
 	int feeder_areas = 10;
 
 	for (int i=0; i < feeder_areas; i++){
 
-	client::createLasers(smgr, driver, { {4 + (i*fheight),12}, {4 + (i*fheight),52}, {4 + (i*fheight),92} }, startingPos);
+	client::createLasers(smgr, driver, { {40 + (i*fheight),12}, {40 + (i*fheight),52}, {40 + (i*fheight),92} }, startingPos);
 
-	client::createDiscoBalls(smgr, driver, { {4 + (i*fheight),6} }, startingPos);
+	client::createDiscoBalls(smgr, driver, { {40 + (i*fheight),6} }, startingPos);
 
 }
 
@@ -361,13 +367,13 @@ int main(int argc, const char **argv)
 			system_health.CheckHealth();
 			system_health.client_receiveHealth(world);
 
-			system_less_jank.lessJank();
+			// system_less_jank.lessJank();
 			// Update animations from translations received from server
 			system_translation_animation.updateAnimations();
 
 			// Graphics updates
 			system_render_scene_node.update(playerpos);
-			system_render_health_bars.update();
+			system_render_health_bars.update(playerpos);
 			system_render_healing.update();
 
 			// TODO: Make a system for updating camera position
