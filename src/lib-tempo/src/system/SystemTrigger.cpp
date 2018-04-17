@@ -9,7 +9,7 @@
 namespace tempo
 {
 
-SystemTrigger::SystemTrigger(anax::World &world)
+SystemTrigger::SystemTrigger(anax::World& world)
 {
 	subSystemPlayers = SubSystemGetPlayers();
 	subSystemSpikes = SubSystemUpdateSpikes();
@@ -18,7 +18,7 @@ SystemTrigger::SystemTrigger(anax::World &world)
 	world.refresh();
 }
 
-void SystemTrigger::updateButtons(anax::World &world)
+void SystemTrigger::updateButtons(anax::World& world)
 {
 	//Sets to keep track of which rhythm Button groups need resetting or blocking after each update
 	std::set<int> rhythmID_resets;
@@ -39,8 +39,8 @@ void SystemTrigger::updateButtons(anax::World &world)
 
 		auto &entity = entities[i];
 		// get deque of all buttons in the group
-		auto &button_group = entity.getComponent<tempo::ComponentButtonGroup>();
-		std::deque<button> &buttons = button_group.buttons;
+		auto& button_group = entity.getComponent<tempo::ComponentButtonGroup>();
+		std::deque<button>& buttons = button_group.buttons;
 
 		// RHYTHMLESS BUTTONS
 
@@ -288,9 +288,9 @@ std::vector<glm::ivec2> SubSystemGetPlayers::getPlayers()
 	auto entities = getEntities();
 
 	// Get all the players and save their locations
-	for (auto &entity : entities) {
-		if (entity.hasComponent<tempo::ComponentPlayerLocal>()
-		    || entity.hasComponent<tempo::ComponentPlayerRemote>()) {
+	for (auto& entity : entities) {
+		if (entity.hasComponent<tempo::ComponentPlayerLocal>() ||
+		    entity.hasComponent<tempo::ComponentPlayerRemote>()) {
 			glm::ivec2 tempPlayerPos =
 			  entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
 			currentPlayerPos.push_back(tempPlayerPos);
