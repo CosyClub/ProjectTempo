@@ -368,7 +368,7 @@ int main(int argc, const char **argv)
 
 			// Graphics updates
 			system_render_scene_node.update(playerpos);
-			system_render_health_bars.update();
+			system_render_health_bars.update(playerpos);
 			system_render_healing.update();
 
 			// TODO: Make a system for updating camera position
