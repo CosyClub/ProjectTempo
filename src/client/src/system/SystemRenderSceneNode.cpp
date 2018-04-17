@@ -68,10 +68,10 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 		}
 	}
 
-	update();
+	// update(playerpos);
 }
 
-void SystemRenderSceneNode::update()
+void SystemRenderSceneNode::update(glm::ivec2 playerpos)
 {
 	auto entities = getEntities();
 
@@ -83,6 +83,11 @@ void SystemRenderSceneNode::update()
 		  entity.getComponent<client::ComponentRenderSceneNode>();
 
 		glm::ivec2 pos = sp.getOrigin();
+
+		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
+		    || pos.y > playerpos.y + 33) {
+			continue;
+		}
 
 		if (sn.isMesh) continue;
 
