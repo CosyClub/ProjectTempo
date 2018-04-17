@@ -38,7 +38,7 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos);
 anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos);
 anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<glm::ivec2> path);
 anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos);
-anax::Entity createSpikes(anax::World &world, std::vector<glm::ivec2> spikes);
+void         createSpikes(anax::World &world, std::vector<glm::ivec2> spikes);
 anax::Entity createButtonGroup(anax::World &           world,
                                std::vector<glm::ivec2> positions,
                                std::vector<glm::ivec2> tiles,

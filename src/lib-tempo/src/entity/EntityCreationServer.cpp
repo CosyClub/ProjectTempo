@@ -155,11 +155,11 @@ anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
 anax::Entity createButtonGroup(anax::World &           world,
                                std::vector<glm::ivec2> positions,
                                std::vector<glm::ivec2> tiles,
-							   std::vector<glm::ivec2> spikes,
-							   glm::ivec2			   prev,
-							   glm::ivec2              next,
-							   bool					   triggerable,
-							   int					   ID)
+                               std::vector<glm::ivec2> spikes,
+                               glm::ivec2              prev,
+                               glm::ivec2              next,
+                               bool                    triggerable,
+                               int                     ID)
 {
 	anax::Entity entity_button = world.createEntity();
 	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles, spikes, prev, next, triggerable, ID);
@@ -169,15 +169,24 @@ anax::Entity createButtonGroup(anax::World &           world,
 	return entity_button;
 }
 
-anax::Entity createSpikes(anax::World & world, std::vector<glm::ivec2> positions) {
+void createSpikes(anax::World & world, std::vector<glm::ivec2> positions) {
 
+	for(glm::ivec2 pos : positions){
+		anax::Entity entity_spikes = world.createEntity();
+		entity_spikes.addComponent<tempo::ComponentAI>(MoveType::MOVE_NONE, false, false);
+		entity_spikes.addComponent<tempo::ComponentSpikes>(positions);
+		entity_spikes.addComponent<tempo::ComponentStagePosition>(pos);
+		entity_spikes.addComponent<tempo::ComponentStageTranslation>();
+		entity_spikes.addComponent<tempo::ComponentStageRotation>(SOUTH);
+		entity_spikes.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+		float arr[1] = {25};
+		Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 1));
+		entity_spikes.addComponent<tempo::ComponentAttack>();
+		entity_spikes.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
+		entity_spikes.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
+		entity_spikes.activate();
+	}
 
-	anax::Entity entity_spikes = world.createEntity();
-	entity_spikes.addComponent<tempo::ComponentSpikes>(positions);
-	entity_spikes.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	entity_spikes.activate();
-
-	return entity_spikes;
 }
 
 }  // namespace tempo
