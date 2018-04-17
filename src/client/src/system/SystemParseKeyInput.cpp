@@ -201,7 +201,7 @@ SystemParseKeyInput::SystemParseKeyInput(){
 
 	std::string filename = (std::string("client_input_" ) +
 	                        std::string(datetime_cstring) +
-	                        std::string(".dat"));
+	                        std::string(".csv"));
 
 	printf("SystemParseKeyInput is opening input dump file: '%s'\n", filename.c_str());
 
