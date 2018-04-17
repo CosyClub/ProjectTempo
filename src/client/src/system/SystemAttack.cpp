@@ -34,8 +34,6 @@ void SystemAttack::processServerResponses(anax::World &w)
 		if (id.isNull()) continue;
 		anax::Entity e(w, id);
 
-		printf("Processing server attack message\n");
-
 		switch (static_cast<tempo::MessageAttack>(code)) {
 		case tempo::MessageAttack::UPDATE_INTENT: {
 			if (!e.hasComponent<tempo::ComponentAttack>()) {
