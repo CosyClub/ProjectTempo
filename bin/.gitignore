@@ -12,3 +12,6 @@ UnitTests
 
 # Irrlicht examples and tools
 /irrlicht/
+
+# Client output
+client_input_*

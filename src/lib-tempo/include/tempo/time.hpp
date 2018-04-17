@@ -44,7 +44,7 @@ class Clock
 	sf::Time get_time();
 	void     set_time(sf::Time t);
 
-	// Checks to see if we have passed the beat as marked by "Beat Passed", 
+	// Checks to see if we have passed the beat as marked by "Beat Passed",
 	// "Midpoint of 2 beats", "Delta Start" and "Delta End" in Figure 1.
 	// Returns true if so. Will return false after returning true
 	// (i.e. a beat passing), until the next beat passes.
@@ -68,6 +68,12 @@ class Clock
 	// Returns time until the next delta start event as in Figure 1
 	sf::Time until_delta_start();
 
+	// Retrieves the size of the window to either side of the beat within which
+	// actions may be performed
+	// Note that it is this much time before AND after the beat within which
+	// actions can be performed
+	sf::Time get_beat_window_delta();
+
 	// Sets when the next beat should be. The time given is an
 	// absolute time. From this point on the beats will continue to
 	// progress with a time between beats of (next_beat - last_beat)
@@ -76,6 +82,9 @@ class Clock
 	// Checks if we are between the "Delta Start" and "Delta End"
 	// period as per Figure 1.
 	bool within_delta();
+
+	// Retrieves the number of beats passed since the creation of this clock
+	unsigned int get_beat_number();
 
    private:
 	// Cached time and our underlying clock
@@ -96,6 +105,9 @@ class Clock
 	bool passed_ab;
 	bool passed_ds;
 	bool passed_de;
+
+	// The number of beats that have passed so far since the creation of this clock
+	unsigned int beat_number;
 
 	// Caches the internal time
 	void cache_time();

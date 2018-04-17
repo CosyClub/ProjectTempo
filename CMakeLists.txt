@@ -1,3 +1,7 @@
+message ("START ==========================================================================")
+string(TIMESTAMP CMAKE_TIME)
+message ("TIME: ${CMAKE_TIME}")
+
 cmake_minimum_required(VERSION 2.8.12)
 project("ProjectTempo")
 set(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -10,20 +14,6 @@ set(CMAKE_MODULE_PATH
 
 #Support YCM completion for Raef and Anthony
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-# Force c++ 11 standard
-macro(use_cxx11)
-	if (CMAKE_VERSION VERSION_LESS "3.1")
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-      set (CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
- 		else ()
- 			message(FATAL_ERROR "Unable to enable c++11 support on this platform!")
-    endif ()
-  else ()
-    set (CMAKE_CXX_STANDARD 11)
-  endif ()
-endmacro(use_cxx11)
-use_cxx11()
 
 # :TODO: have some way of configuring this
 set(CMAKE_BUILD_TYPE Debug)
@@ -89,6 +79,26 @@ set(TEMPO_IRRLICHT_INCLUDE_DIR
 	"${TEMPO_IRRLICHT_DIR}/include"
 )
 
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	# irrlicht _requires_ gnu++11 instead of c++11 so there goes msvc compatibility
+	set(CMAKE_CXX_FLAGS "-std=gnu++11 -Wall -pipe -fstrict-aliasing") # reset polluted flags
+	set (CMAKE_CXX_STANDARD 11)
+elseif (MSVC)
+	# GR for rtti
+	# weXXX for warnings to errors
+	# woXXX for report first warning only
+	# Gm for mimimal rebuild
+	# MP for multi process build
+	# INCREMENTAL for enable incremental compilation
+	set(CMAKE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /GR /EHsc") # reset polluted flags
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /INCREMENTAL /ZI")
+endif ()
+message ("OPTIONS BEFORE EXTLIBS =========================================================")
+message ("CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
+message ("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+message ("EXTLIBS ========================================================================")
+string(TIMESTAMP CMAKE_TIME)
+message ("TIME: ${CMAKE_TIME}")
 set(TEMPO_CLIENT_DIR
 	"${CMAKE_CURRENT_LIST_DIR}/src/client"
 )
@@ -97,8 +107,23 @@ set(TEMPO_CLIENT_INCLUDE_DIR
 )
 
 add_subdirectory(${TEMPO_EXTLIBS_DIR})
+message ("OPTIONS BEFORE SRC =============================================================")
+message ("CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
+message ("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+message ("SRC ============================================================================")
+string(TIMESTAMP CMAKE_TIME)
+message ("TIME: ${CMAKE_TIME}")
 add_subdirectory(src)
 add_subdirectory(tests)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	# currently not enforcing flags, when turning this on fix the compiler errors
+	target_compile_options(lib_tempo PRIVATE -Werror -pedantic)
+	target_compile_options(server PRIVATE -Werror -pedantic)
+	target_compile_options(client PRIVATE -Werror -pedantic)
+	target_compile_options(unit-tests PRIVATE -Werror -pedantic)
+elseif (MSVC)
+endif ()
+
 
 if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)" OR CMAKE_CL_64)
 	file(COPY "${TEMPO_EXTLIBS_DIR}/SFML-2.4.2/extlibs/bin/x64/openal32.dll" DESTINATION "${TEMPO_BIN_DIR}")
@@ -112,3 +137,7 @@ add_custom_command(
 	COMMAND ${CMAKE_COMMAND} -E copy
 		${CMAKE_BINARY_DIR}/compile_commands.json
 		${CMAKE_CURRENT_LIST_DIR}/compile_commands.json)
+
+message ("END ============================================================================")
+string(TIMESTAMP CMAKE_TIME)
+message ("TIME: ${CMAKE_TIME}")

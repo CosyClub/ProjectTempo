@@ -18,6 +18,8 @@
 #include <glm/vec2.hpp>
 
 #include <iostream>
+#include <ctime>
+#include <string>
 
 namespace client
 {
@@ -182,6 +184,37 @@ void processKeyPressEvent(irr::EKEY_CODE key, anax::Entity &entity, bool withinD
 	}
 }
 
+
+SystemParseKeyInput::SystemParseKeyInput(){
+	#ifdef TEMPO_DATA_CAPTURE
+	char datetime_cstring[80];
+	time_t rawtime;
+	struct tm* timeinfo;
+
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	strftime(datetime_cstring, sizeof(datetime_cstring),
+	         "%Y-%m-%d_%I:%M:%S", timeinfo
+	        );
+
+	std::string filename = (std::string("client_input_" ) +
+	                        std::string(datetime_cstring) +
+	                        std::string(".csv"));
+
+	printf("SystemParseKeyInput is opening input dump file: '%s'\n", filename.c_str());
+
+	this->data_output.open(filename);
+	this->data_output << "BeatNumber, OnBeat, BeatDiff, Key" << std::endl;
+	#endif
+}
+
+SystemParseKeyInput::~SystemParseKeyInput(){
+	#ifdef TEMPO_DATA_CAPTURE
+	this->data_output.close();
+	#endif
+}
+
 void SystemParseKeyInput::parseInput(tempo::Clock &clock, irr::IrrlichtDevice* device)
 {
 	for (auto entity : getEntities()) {
@@ -193,6 +226,19 @@ void SystemParseKeyInput::parseInput(tempo::Clock &clock, irr::IrrlichtDevice* d
 
 		for (unsigned int i = 0; i < ke.keysPressed.size(); i++) {
 			if (ke.keysPressed[i].press) {
+				#ifdef TEMPO_DATA_CAPTURE
+
+				float since_beat = clock.since_beat().asSeconds();
+				float until_beat = clock.until_beat().asSeconds();
+
+				float delta = clock.beat_progress() < 0.5 ? since_beat : -until_beat;
+
+				this->data_output << clock.get_beat_number()        << ", "
+				                  << (withinDelta ? '1' : '0')      << ", "
+				                  << delta                          << ", "
+				                  << ke.keysPressed[i].key          << std::endl;
+				#endif
+
 				processKeyPressEvent(ke.keysPressed[i].key, entity, withinDelta, device);
 			}
 		}
