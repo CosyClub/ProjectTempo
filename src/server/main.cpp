@@ -129,7 +129,6 @@ int main(int argc, const char **argv)
 	//Needed so that the player cannot see other feeder areas
 	int emptySpace = 40;
 
-	int fwidth = 150;
 	int fheight = 69 + emptySpace;
 	int feeder_areas = 10;
 

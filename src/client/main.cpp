@@ -300,7 +300,6 @@ int main(int argc, const char** argv)
 
 	int emptySpace = 40;
 
-	int fwidth = 150;
 	int fheight = 69 + emptySpace;
 
 	int feeder_areas = 10;
