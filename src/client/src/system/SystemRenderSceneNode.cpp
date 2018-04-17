@@ -63,7 +63,7 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 			sn.billboard->setMaterialTexture( 0, spritesheet);
 			
 			sn.spriteDim = m.spriteDim;
-			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(1.f / sn.spriteDim.y, 1.f / sn.spriteDim.x);
+			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(1.f / sn.spriteDim.x, 1.f / sn.spriteDim.y);
 			sn.updateNeeded = true;
 		}
 	}

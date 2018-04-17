@@ -46,7 +46,7 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStageTranslation>();
 	int a = rand()%2;
 	std::string path = "resources/materials/textures/zombie-sheet-" + std::to_string(a) + ".png";
-	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 255, 255), false, glm::vec2(4,2));
+	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 255, 255), false, glm::vec2(2,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(1);
 	float arr[2] = {0, 1};
