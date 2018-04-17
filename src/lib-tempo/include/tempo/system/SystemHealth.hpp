@@ -18,15 +18,16 @@ struct SystemHealth : anax::System<anax::Requires<ComponentHealth>> {
 	//          none
 	// Returns:
 	//          void
-	void CheckHealth();
+	void check_health();
+	void regenerate();
 
 	void broadcastHealth();
-	void client_sendHealth(anax::Entity entity);
 	void client_receiveHealth(anax::World &world);
-	void server_sendHealth(anax::Entity entity);
-	void server_receiveHealth(anax::World &world);
 
-	void regenerate();
+	// Deprecated
+	// void client_sendHealth(anax::Entity entity);
+	// void server_sendHealth(anax::Entity entity);
+	// void server_receiveHealth(anax::World &world);
 };
 }
 

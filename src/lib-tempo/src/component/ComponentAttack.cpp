@@ -16,7 +16,7 @@ void ComponentAttack::updateAttack(Mask &damage, unsigned int beats_until_attack
 
 bool ComponentAttack::isAttacking()
 {
-	return beats_until_attack == -1;
+	return beats_until_attack != -1;
 }
 
 /////

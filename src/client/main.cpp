@@ -341,6 +341,7 @@ int main(int argc, const char** argv)
 			// Receive updates from the server
 			system_movement.processIntents(world);
 			system_movement.processCorrections(world);
+			system_attack.processServerResponses(world);
 			system_combo.checkForUpdates(world);
 
 			// Deal with local input
@@ -349,7 +350,7 @@ int main(int argc, const char** argv)
 			system_parse_key_input.parseInput(clock, device);
 
 			// Deprecated/To-be-worked-on
-			system_health.CheckHealth();
+			system_health.check_health();
 			system_health.client_receiveHealth(world);
 
 			system_less_jank.lessJank();

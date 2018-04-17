@@ -50,17 +50,17 @@ void SystemAttack::receiveAttacks(anax::World &w)
 				          << std::endl;
 				continue;
 			}
+			// Recieve attacks from client
 			tempo::ComponentAttack &c = e.getComponent<tempo::ComponentAttack>();
 			p >> c.damage;
 			p >> c.beats_until_attack;
+
+			// Broadcast that update to other clients
 			pb << c.damage;
 			pb << c.beats_until_attack;
 			tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, pb);
 			break;
 		}
-		case tempo::MessageAttack::ATTACK_CORRECTION:
-			// do nothing, server should not receive corrections
-			break;
 		default: std::cout << "ATTACK: Unhandled/erroneous message" << std::endl;
 		}
 	}
@@ -69,9 +69,7 @@ void SystemAttack::receiveAttacks(anax::World &w)
 void SystemAttack::processAttacks()
 {
 	for (auto &entity : getEntities()) {
-		// if (entity.getComponent<tempo::ComponentAttack>().isAttacking()) {
-			subSystem.Attack(entity);
-		// }
+		subSystem.Attack(entity);
 	}
 }
 
@@ -156,7 +154,10 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 	auto &     weapon      = attacker.getComponent<tempo::ComponentWeapon>();
 
 	// If a delayed attack, process and update clients
-	if (attack.beats_until_attack > 0) {
+	if (attack.beats_until_attack < 0) {
+		// Not attacking
+		return;
+	} else if (attack.beats_until_attack > 0) {
 		attack.beats_until_attack--;
 		sf::Packet p;
 		p << static_cast<uint32_t>(tempo::MessageAttack::UPDATE_INTENT);
@@ -165,19 +166,12 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 		p << attack.beats_until_attack;
 		tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);
 		return;
-	}
-	else if (attack.beats_until_attack < 0)
-	{
-		return;
-	} //Don't do anything
-	else
-	{
-		//decrement then do the attack
+	} else {
+		// Decrement then do the attack
 		attack.beats_until_attack--;
 	}
 
 	for (auto &entity : getEntities()) {
-
 		//No friendly fire except yourself
 		if (entity.getId().index == attacker.getId().index);
 		else if (entity.hasComponent<tempo::ComponentTeam>() && attacker.hasComponent<tempo::ComponentTeam>())
@@ -224,11 +218,10 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 				          << std::endl;
 				health.HealthUpdate(-1 * damage);
 
-				sf::Packet p;
-				p << entity.getId();
-				p << static_cast<uint32_t>(tempo::MessageAttack::ATTACK_CORRECTION);
-				p << health.current_health;
-				tempo::broadcastMessage(tempo::QueueID::SYSTEM_ATTACK, p);
+				// There used to be a correction sent here, but it
+				// only send the health update. And since someone
+				// decided to just force health updates to be updated
+				// all the time via another system, it was unecessary.
 
 				break;
 			}
@@ -236,7 +229,6 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 	}
 
 	// Clear attack intent and broadcast to clients
-	// TODO:
 	attack.damage             = tempo::Mask(glm::ivec2(0, 0), NULL, glm::ivec2(0, 0));
 	attack.beats_until_attack = -1;
 	sf::Packet p;

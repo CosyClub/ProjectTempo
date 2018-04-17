@@ -13,6 +13,7 @@ struct ComponentHealth
 	// Starting Health for entity
 	int32_t max_health;
 	int32_t current_health;
+	int32_t __prev_health; // Only used by networking code.
 
 	// ComponentHealth
 	// Initialisation of an entity's Health Component

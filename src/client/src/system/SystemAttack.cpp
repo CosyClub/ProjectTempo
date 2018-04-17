@@ -45,16 +45,6 @@ void SystemAttack::processServerResponses(anax::World &w)
 			p >> c.beats_until_attack;
 			break;
 		}
-		case tempo::MessageAttack::ATTACK_CORRECTION: {
-			if (!e.hasComponent<tempo::ComponentHealth>()) {
-				std::cout << "Received Attack Correction for entity without ComponentHealth"
-				          << std::endl;
-				continue;
-			}
-			tempo::ComponentHealth &h = e.getComponent<tempo::ComponentHealth>();
-			p >> h.current_health;
-			break;
-		}
 		default: std::cout << "ATTACK: Unhandled/erroneous message" << std::endl;
 		}
 	}
