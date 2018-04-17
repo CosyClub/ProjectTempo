@@ -155,7 +155,7 @@ int main(int argc, const char **argv)
 	}
 
 	irr::IrrlichtDevice *device = irr::createDevice(
-	  irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1920, 1080), 16, false, false, false);
+	  irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1920, 1080), 16, enable_hud, false, false);
 	if (!device) {
 		printf("Failed to create Irrlicht Device\n");
 		return 1;
@@ -223,6 +223,29 @@ int main(int argc, const char **argv)
 
 	// must be after system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);
+
+
+	if (enable_hud) {
+		device->getGUIEnvironment()->addImage(
+		    driver->getTexture("resources/materials/textures/splash-full.png"),
+		    irr::core::position2d<irr::s32>(0,0), true);
+		bool waiting = true;
+
+		while (device->run() && waiting) {
+			std::vector<client::KeyEvent> keys = system_update_key_input.getKeys();
+			for (unsigned int i = 0; i < keys.size(); i++) {
+				if (keys[i].press) waiting = false;
+			}
+
+			driver->beginScene(true, true);
+			smgr->drawAll();
+			gui_env->drawAll();
+			driver->endScene();
+		}
+
+		device->getGUIEnvironment()->clear();
+	}
+	system_render_gui.setup(device, driver, enable_hud);
 
 	// Set up remote address, local ports and remote handshake port
 	// Note, IF statement is to change ports for local development, bit
@@ -318,29 +341,6 @@ int main(int argc, const char **argv)
 	irr::video::SColor random_colour;
 	srand(clock.get_time().asMicroseconds());
 
-	if (enable_hud) {
-		device->getGUIEnvironment()->addImage(
-		    driver->getTexture("resources/materials/textures/splash-full.png"),
-		    irr::core::position2d<irr::s32>(0,0), true);
-		bool waiting = true;
-
-		while (device->run() && waiting) {
-			if (clock.passed_delta_start()) tempo::sendHeatbeat();
-
-			std::vector<client::KeyEvent> keys = system_update_key_input.getKeys();
-			for (unsigned int i = 0; i < keys.size(); i++) {
-				if (keys[i].press) waiting = false;
-			}
-
-			driver->beginScene(true, true);
-			smgr->drawAll();
-			gui_env->drawAll();
-			driver->endScene();
-		}
-
-		device->getGUIEnvironment()->clear();
-	}
-	system_render_gui.setup(device, driver, enable_hud);
 
 	printf("Entering main loop\n");
 	while (device->run()) {
