@@ -61,7 +61,7 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 			sn.billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 			sn.billboard->setMaterialType( irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL );
 			sn.billboard->setMaterialTexture( 0, spritesheet);
-			
+
 			sn.spriteDim = m.spriteDim;
 			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(1.f / sn.spriteDim.y, 1.f / sn.spriteDim.x);
 			sn.updateNeeded = true;
@@ -71,7 +71,7 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 	// update(playerpos);
 }
 
-void SystemRenderSceneNode::update(glm::ivec2 playerpos)
+void SystemRenderSceneNode::update(const glm::ivec2 playerpos)
 {
 	auto entities = getEntities();
 
@@ -85,7 +85,7 @@ void SystemRenderSceneNode::update(glm::ivec2 playerpos)
 		glm::ivec2 pos = sp.getOrigin();
 
 		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
-		    || pos.y > playerpos.y + 33) 
+		    || pos.y > playerpos.y + 33)
 		{
 			sn.billboard->setVisible(false);
 			continue;

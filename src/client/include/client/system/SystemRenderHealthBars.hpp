@@ -26,7 +26,7 @@ struct SystemRenderHealthBars
 	//          none
 	// Returns:
 	//          void
-	void update(glm::ivec2 playerpos);
+	void update(const glm::ivec2 playerpos);
 
 	irr::core::dimension2d<irr::f32> original_size;
 };

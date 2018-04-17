@@ -29,7 +29,7 @@ void SystemRenderHealthBars::setup(irr::scene::ISceneManager *smgr)
 	}
 }
 
-void SystemRenderHealthBars::update(glm::ivec2 playerpos)
+void SystemRenderHealthBars::update(const glm::ivec2 playerpos)
 {
 	irr::video::SColor colour_green(255, 0, 255, 0);
 	irr::video::SColor colour_red(255, 255, 0, 0);
