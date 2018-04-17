@@ -173,7 +173,7 @@ void createSpikes(anax::World & world, std::vector<glm::ivec2> positions) {
 		entity_spikes.addComponent<tempo::ComponentStageTranslation>();
 		entity_spikes.addComponent<tempo::ComponentStageRotation>(SOUTH);
 		entity_spikes.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-		float arr[1] = {50};
+		float arr[1] = {25};
 		Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 1));
 		entity_spikes.addComponent<tempo::ComponentAttack>();
 		entity_spikes.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
