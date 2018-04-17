@@ -83,9 +83,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	# irrlicht _requires_ gnu++11 instead of c++11 so there goes msvc compatibility
 	set(CMAKE_CXX_FLAGS "-std=gnu++11 -Wall -pipe -fstrict-aliasing") # reset polluted flags
 	set (CMAKE_CXX_STANDARD 11)
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-	set(CMAKE_CXX_FLAGS "-std=gnu++11 -Wall -pipe -fstrict-aliasing") # reset polluted flags
-	set (CMAKE_CXX_STANDARD 11)
 elseif (MSVC)
 	# GR for rtti
 	# weXXX for warnings to errors
@@ -119,11 +116,6 @@ message ("TIME: ${CMAKE_TIME}")
 add_subdirectory(src)
 add_subdirectory(tests)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-	target_compile_options(lib_tempo PRIVATE -Werror -pedantic)
-	target_compile_options(server PRIVATE -Werror -pedantic)
-	target_compile_options(client PRIVATE -Werror -pedantic)
-	target_compile_options(tests PRIVATE -Werror -pedantic)
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 	target_compile_options(lib_tempo PRIVATE -Werror -pedantic)
 	target_compile_options(server PRIVATE -Werror -pedantic)
 	target_compile_options(client PRIVATE -Werror -pedantic)
