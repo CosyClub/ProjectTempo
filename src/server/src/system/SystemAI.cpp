@@ -197,7 +197,6 @@ void SystemAI::update(server::SystemAttack s_attack)
 
 	for (auto &entity : entities) {
 
-		auto &s  = entity.getComponent<tempo::ComponentStage>();
 		auto &st = entity.getComponent<tempo::ComponentStageTranslation>();
 		auto &sp = entity.getComponent<tempo::ComponentStagePosition>();
 		auto &sr = entity.getComponent<tempo::ComponentStageRotation>();

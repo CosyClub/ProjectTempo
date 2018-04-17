@@ -117,6 +117,7 @@ bool ComponentStage::isNavigable(glm::ivec2 position)
 	{
 		return getHeight(position) < 5;
 	}
+	return false;
 }
 
 /////
