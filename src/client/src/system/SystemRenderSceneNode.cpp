@@ -13,12 +13,21 @@ namespace client
 {
 void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
 {
-	// irr::core::dimension2d<irr::f32> sizePlayer(1.2f, 1.7f);
-	// irr::core::dimension2d<irr::f32> sizeRogue(1.3f, 1.5f);
+	irr::core::dimension2d<irr::f32> sizePlayer(1.2f, 1.7f);
+	irr::core::dimension2d<irr::f32> sizeKnight(2.0f, 2.7f);
+	irr::core::dimension2d<irr::f32> sizeCreeper(1.3f, 1.7f);
+	irr::core::dimension2d<irr::f32> sizeAOE(1.2f, 2.0f);
+	irr::core::dimension2d<irr::f32> sizeStill(1.3f, 1.7f);
+
 	// irr::core::vector3df             posPlayer(0.0f, 0.0f + sizePlayer.Height / 2, 0.0f);
 	// irr::core::vector3df             posRogue(0.0f, 0.0f + sizeRogue.Height / 2, 0.0f);
 	irr::core::dimension2d<irr::f32> size(1.2f, 1.6f);
-	irr::core::vector3df             pos(0.0f, 0.0f + size.Height / 2, 0.0f);
+	irr::core::vector3df             pos(0.0f, 0.2f + size.Height / 2, 0.0f);
+	irr::core::vector3df						 posPlayer(0.0f, 0.2f + sizePlayer.Height / 2, 0.0f);
+	irr::core::vector3df 						 posKnight(0.0f, 0.2f + sizeKnight.Height / 2, 0.0f);
+	irr::core::vector3df						 posCreeper(0.0f, 0.2f + sizeCreeper.Height / 2, 0.0f);
+	irr::core::vector3df						 posAOE(0.0f, 0.2f + sizeAOE.Height / 2, 0.0f);
+	irr::core::vector3df 						 posStill(0.0f, 0.2f + sizeStill.Height / 2, 0.0f);
 
 	auto entities = getEntities();
 
@@ -50,6 +59,28 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 		} else {
 			std::cout << "Adding billboard" << std::endl;
 			sn.node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
+
+			if (m.path.find("knight") != std::string::npos) {
+				size = sizeKnight;
+				pos = posKnight;
+			}
+			else if (m.path.find("creeper") != std::string::npos) {
+				size = sizeCreeper;
+				pos = posCreeper;
+			}
+			else if (m.path.find("totem") != std::string::npos) {
+				size = sizeAOE;
+				pos = posAOE;
+			}
+			else if (m.path.find("zombie") != std::string::npos) {
+				size = sizeStill;
+				pos = posStill;
+			}
+			else if (m.path.find("player") != std::string::npos) {
+				size = sizePlayer;
+				pos = posPlayer;
+			}
+
 			sn.billboard = new irr::scene::YAlignedBillboardSceneNode(sn.node, smgr, -1, pos, size, color, color);
 
 			const std::string& path = m.path;
@@ -61,7 +92,7 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 			sn.billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 			sn.billboard->setMaterialType( irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL );
 			sn.billboard->setMaterialTexture( 0, spritesheet);
-			
+
 			sn.spriteDim = m.spriteDim;
 			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(1.f / sn.spriteDim.x, 1.f / sn.spriteDim.y);
 			sn.updateNeeded = true;
