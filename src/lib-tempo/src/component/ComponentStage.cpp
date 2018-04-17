@@ -21,8 +21,8 @@ void ComponentStage::loadLevel(const char *stage_file)
 	//Needed so that the player cannot see other feeder areas
 	int emptySpace = 40;
 
-	int fwidth = 60;
-	int fheight = 20;
+	int fwidth = 150;
+	int fheight = 69 + emptySpace;
 
 	if (_global_stage_loaded == std::string(stage_file)) {
 		tiles = &_global_stage;
