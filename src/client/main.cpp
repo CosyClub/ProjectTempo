@@ -223,7 +223,7 @@ int main(int argc, const char **argv)
 	// Note, IF statement is to change ports for local development, bit
 	// hacky and should be removed in due course!
 	tempo::addr_r = "127.0.0.1";
-	if (argc == 2)
+	if (argc >= 2)
 		tempo::addr_r = argv[1];
 	if (tempo::addr_r == "127.0.0.1") {
 		std::srand(time(NULL));
