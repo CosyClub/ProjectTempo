@@ -44,7 +44,9 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
-	e.addComponent<tempo::ComponentModel>("resources/materials/textures/totem.png", glm::vec3(255, 255, 255), false, glm::vec2(1,1));
+	int a = rand()%2;
+	std::string path = "resources/materials/textures/zombie-sheet-" + std::to_string(a) + ".png";
+	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 255, 255), false, glm::vec2(4,2));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(1);
 	float arr[2] = {0, 1};
@@ -52,7 +54,6 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m);
 	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
-
 	e.activate();
 	return e;
 }

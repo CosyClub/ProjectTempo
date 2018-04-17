@@ -178,7 +178,7 @@ int main(int argc, const char **argv)
 	client::SystemMovement         system_movement;
 	client::SystemStageRenderer    system_stage_renderer;
 	client::SystemParseKeyInput    system_parse_key_input;
-	client::SystemRenderAttack     system_render_attack;
+	// client::SystemRenderAttack     system_render_attack;
 	client::SystemRenderGUI        system_render_gui;
 	client::SystemRenderHealing    system_render_healing(driver, smgr);
 	client::SystemRenderHealthBars system_render_health_bars;
@@ -199,7 +199,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_button_renderer);
 	world.addSystem(system_stage_renderer);
 
-	world.addSystem(system_render_attack);
+	// world.addSystem(system_render_attack);
 	world.addSystem(system_render_healing);
 	world.addSystem(system_render_health_bars);
 	world.addSystem(system_render_scene_node);
@@ -220,7 +220,7 @@ int main(int argc, const char **argv)
 
 	// must be after system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);
-	system_render_attack.setup(smgr, driver, device);
+	// system_render_attack.setup(smgr, driver, device);
 
 	// Set up remote address, local ports and remote handshake port
 	// Note, IF statement is to change ports for local development, bit
@@ -334,7 +334,7 @@ int main(int argc, const char **argv)
 			system_gc.addEntities(driver, smgr, world);
 			system_render_scene_node.setup(smgr,driver);
 			system_render_health_bars.setup(smgr);
-			system_render_attack.setup(smgr, driver, device);
+			// system_render_attack.setup(smgr, driver, device);
 
 			// Receive updates from the server
 			system_movement.processIntents(world);
@@ -360,7 +360,7 @@ int main(int argc, const char **argv)
 			system_render_health_bars.update();
 			system_render_healing.update();
 
-			system_render_attack.update(device);
+			// system_render_attack.update(device);
 			// TODO: Make a system for updating camera position
 			irr::scene::ICameraSceneNode *camera_node;
 			camera_node = smgr->addCameraSceneNode();
