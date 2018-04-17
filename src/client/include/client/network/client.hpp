@@ -70,10 +70,12 @@ void listenForServerUpdates(std::atomic<bool> &running);
 //                    null inputs assume no role data requied.
 //         world    - Anax world to put entities from the server in.
 //         system_gm - The Level Manager System for the client for the
-//                    entities recieved from the server.
+//                    entities received from the server.
 // Returns:
 //         void - nothing is returned. Note side effects above.
 bool connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData, anax::World &world);
+
+void sendHeatbeat();
 
 void disconnectFromServer(anax::Entity &entity_player);
 

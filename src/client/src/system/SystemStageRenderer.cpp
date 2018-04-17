@@ -42,6 +42,7 @@ inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager 
 
   this->meshC2->getMeshBuffer(1)->getMaterial().setTexture(0, this->tile_texture);
 	this->meshC2->getMeshBuffer(1)->getMaterial().EmissiveColor.set(colour2[0], colour2[1], colour2[2], colour2[3]);
+  this->meshC2->getMeshBuffer(1)->getMaterial().DiffuseColor.set(0, 0, 0, 0);
 	this->meshC2->getMeshBuffer(0)->getMaterial().setTexture(0, wall_diffuse_map);
 	this->meshC2->getMeshBuffer(0)->getMaterial().setTexture(1, wall_normal_map);
 
@@ -83,8 +84,13 @@ void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVi
 void SystemStageRenderer::updateStage(irr::scene::ISceneManager *smgr,
                                       irr::video::IVideoDriver * driver,
                                       int                        j,
-                                      glm::ivec2                 playerpos)
+                                      glm::ivec2                 playerpos,
+                                      irr::video::SColor colour)
 {
+
+  this->meshC1->getMeshBuffer(1)->getMaterial().EmissiveColor = colour;//set(colour.a, colour.r, colour.g, colour.b);
+
+
 	irr::scene::ISceneNode *par = this->node->getParent();
 	par->removeChild(this->node);
 
@@ -114,9 +120,9 @@ void SystemStageRenderer::updateStage(irr::scene::ISceneManager *smgr,
 
 		float height = heights[i].height;
 
-		// qqii:: uncommented this block with no problems, is this legacy???
-		if (pos.y < playerpos.x - 30 || pos.y > playerpos.x + 13 || pos.x < playerpos.y - 30
-		    || pos.x > playerpos.y + 30) {
+		// Stop logic on tiles that are not visible to camera
+		if (pos.y < playerpos.x - 24 || pos.y > playerpos.x + 7 || pos.x < playerpos.y - 33
+		    || pos.x > playerpos.y + 33) {
 			continue;
 		}
 

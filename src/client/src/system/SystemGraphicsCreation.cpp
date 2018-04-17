@@ -2,11 +2,13 @@
 
 #include <client/component/ComponentHealthBar.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
+#include <client/component/ComponentRenderSpikes.hpp>
 #include <client/component/ComponentRenderButtonGroup.hpp>
 
 #include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentModel.hpp>
+#include <tempo/component/ComponentSpikes.hpp>
 #include <tempo/component/ComponentStage.hpp>
 
 #include <iostream>
@@ -39,6 +41,13 @@ void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver * driver,
 			touched = true;
 			std::cout << "Added Rendering to a Button" << std::endl;
 			entity.addComponent<ComponentRenderButtonGroup>();
+		}
+
+		if (entity.hasComponent<tempo::ComponentSpikes>() &&
+			!entity.hasComponent<ComponentRenderSpikes>()) {
+			touched = true;
+			std::cout << "Added Rendering to a Spike" << std::endl;
+			entity.addComponent<ComponentRenderSpikes>();
 		}
 			
 		if (touched) entity.activate();

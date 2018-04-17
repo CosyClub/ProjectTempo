@@ -3,6 +3,7 @@
 #include <server/system/SystemAI.hpp>
 #include <server/system/SystemAttack.hpp>
 #include <server/system/SystemCombo.hpp>
+#include <server/system/SystemHeartbeat.hpp>
 #include <server/system/SystemMovement.hpp>
 
 #include <tempo/time.hpp>
@@ -30,6 +31,58 @@
 #define PLAYER_DELTA 100       // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000.f / BPM  // Time between beats (microsecs)
 
+void RythmButton(anax::World &          world,
+				std::vector<std::vector<glm::ivec2>> positions,
+				std::vector<glm::ivec2> tiles,
+				std::vector<glm::ivec2> spikes,
+				int &ID) {
+
+	for (uint32_t i = 0; i < positions.size(); i++) {
+		
+		std::vector<glm::ivec2> group = positions[i];
+		glm::ivec2 prev;
+		glm::ivec2 next;
+
+		bool triggerable = true;
+
+		if (i == 0) {
+			prev = {-1,-1};
+		}
+		else {
+			prev = positions[i-1][0]; //first ivec2 in previous group
+			triggerable = false;
+		}
+
+		if (i == positions.size() - 1) {
+			next = {-1,-1};
+		}
+		else {
+			next = positions[i + 1][0]; //first ivec2 in next group
+		}
+
+		tempo::createButtonGroup(world, group, tiles, spikes, prev, next, triggerable, ID);
+
+		if (spikes.size() > 0) {
+			tempo::createSpikes(world, spikes);
+		}
+	}
+
+	ID++;
+}
+
+void newButton(anax::World &          world,
+	std::vector<glm::ivec2> positions,
+	std::vector<glm::ivec2> tiles,
+	std::vector<glm::ivec2> spikes) {
+
+	tempo::createButtonGroup(world, positions, tiles, spikes, { -1,-1 }, { -1,-1 }, true, 0);
+
+	if (spikes.size() > 0) {
+		tempo::createSpikes(world, spikes);
+	}
+
+}
+
 int main(int argc, const char **argv)
 {
 	tempo::Song mainsong("resources/sound/ravecave_loop.ogg");
@@ -50,27 +103,29 @@ int main(int argc, const char **argv)
 	anax::World world;
 
 	// Create Systems
-	server::SystemAI system_ai;
-	server::SystemAttack   system_attack(world);
-	server::SystemCombo  system_combo;
-	server::SystemMovement system_movement;
-	tempo::SystemHealth system_health;
-	tempo::SystemTrigger system_trigger(world);
+	server::SystemAI        system_ai;
+	server::SystemAttack    system_attack(world);
+	server::SystemCombo     system_combo;
+	server::SystemHeartbeat system_heatbeat;
+	server::SystemMovement  system_movement;
+	tempo::SystemHealth     system_health;
+	tempo::SystemTrigger    system_trigger(world);
 
 	world.addSystem(system_ai);
 	world.addSystem(system_attack);
 	world.addSystem(system_combo);
+	world.addSystem(system_heatbeat);
 	world.addSystem(system_movement);
 	world.addSystem(system_health);
 	world.addSystem(system_trigger);
 	world.refresh();
 
 	// Create some Test Entities
-	  
+
 	tempo::createMobStill(world, glm::ivec2(36, 42));
 	tempo::createMobStill(world, glm::ivec2(40, 42));
 	tempo::createMobStill(world, glm::ivec2(44, 42));
-	
+
 	tempo::createMobCreeper(world, glm::ivec2(40, 64));
 
 	std::deque<glm::ivec2> path {glm::ivec2(64, 68),
@@ -84,26 +139,52 @@ int main(int argc, const char **argv)
 	                              glm::ivec2(15, 73),
 	                              glm::ivec2(15, 67)};
 	tempo::createMobPatroller(world, path2[0], path2);
-	  
+
 	// tempo::createMobCreeper(world, glm::ivec2(12, 12));
 	// tempo::createMobCreeper(world, glm::ivec2(14, 14));
 	// tempo::createMobAntiSnail(world, glm::ivec2(4, 4));
 
+	int rhythmID = 1;
+
 	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
-	tempo::createButtonGroup(world, {{40, 12}}, wall);
+	RythmButton(world, { { { 40,12 }},{ { 40,13 } },{ { 41,13 } },{ { 41,12 } } }, wall, {}, rhythmID);
 
 	std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};
-	tempo::createButtonGroup(world, {{40, 43},{44,43},{36,43}}, wall1);
+	newButton(world, { { 40, 43 } }, wall1, {});
 
 	std::vector<glm::ivec2> wall2          = {{36,62},{36,63},{36,64},{36,65},{36,66},{36,67},{36,68},
 																						{50,62},{50,63},{50,64},{50,65},{50,66},{50,67},{50,68}};
-	tempo::createButtonGroup(world, {{40, 65}}, wall2);
+	newButton(world, { { 40, 65 } }, wall2, {});
 
 	std::vector<glm::ivec2> wall3          = {{37,69},{38,69},{39,69},{40,69},{41,69},{42,69},{43,69}};
-	tempo::createButtonGroup(world, {{66,70},{13,69}}, wall3);
+	newButton(world, { { 66,70 },{ 13,69 } }, wall3, { { 13,70 } });
 
 	std::vector<glm::ivec2> wall4          = {{40,132},{41,132},{42,132}};
-	tempo::createButtonGroup(world, {{41,110},{26,128},{57,128}}, wall4);
+	newButton(world, { { 41,110 },{ 26,128 },{ 57,128 } }, wall4, {});
+
+	std::vector<glm::ivec2> spikes		   = {{ 35,65 }};
+	newButton(world, { { 35,63 },{ 35,67 } }, {}, spikes);
+
+	spikes = {{ 34,65 }};
+	newButton(world, { { 34,63 },{ 34,67 } }, {}, spikes);
+
+	spikes = {{ 33,65 }};
+	newButton(world, { { 33,63 },{ 33,67 } }, {}, spikes);
+
+	spikes = {{ 32,65 }};
+	newButton(world, { { 32,63 },{ 32,67 } }, {}, spikes);
+
+	spikes = {{ 31,65 }};
+	newButton(world, { { 31,63 },{ 31,67 } }, {}, spikes);
+
+	spikes = {{ 30,65 }};
+	newButton(world, { { 30,63 },{ 30,67 } }, {}, spikes);
+
+	spikes = { { 29,65 } };
+	newButton(world, { { 29,63 },{ 29,67 } }, {}, spikes);
+
+	spikes = { { 28,65 } };
+	newButton(world, { { 28,63 },{ 28,67 } }, {}, spikes);
 
 	world.refresh();
 
@@ -135,10 +216,11 @@ int main(int argc, const char **argv)
 		////////////////
 		// Events all the time
 		{
-			system_movement.recieveTranslations(world);
-			system_attack.recieveAttacks(world);
+			system_movement.receiveTranslations(world);
+			system_attack.receiveAttacks(world);
 			system_combo.checkForUpdates(world);
 			system_health.CheckHealth();
+			//system_health.server_receiveHealth(world);
 			system_health.broadcastHealth();
 		}
 
@@ -156,21 +238,29 @@ int main(int argc, const char **argv)
 		// Events at "Beat Passed"
 		if (clock.passed_beat()) {
 			system_ai.update(system_attack);
-			system_combo.advanceBeat();
 			system_trigger.updateButtons(world);
 
 			if (tick++ % 20 == 0)
-				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()
-				          << "+++++++++++++++" << std::endl;
+				std::cout << "TICK (" << tick << ") " 
+				          << clock.get_time().asMilliseconds()
+				          << std::endl;
 		}
 
 		////////////////
 		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
 			// std::cout << "End" << std::endl;
+			system_heatbeat.checkForHeatbeats(world);
 			system_combo.advanceBeat();
 			system_attack.processAttacks();
+			system_health.regenerate();
 			system_movement.processTranslation();
+		}
+		
+		////////////////
+		// Events all the time
+		{
+			system_health.broadcastHealth();
 		}
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));

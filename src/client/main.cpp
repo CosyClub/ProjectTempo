@@ -1,23 +1,30 @@
 #include <client/component/ComponentKeyInput.hpp>
 #include <client/component/ComponentRenderButtonGroup.hpp>
+#include <client/component/ComponentRenderSpikes.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
+#include <client/misc/Lighting.hpp>
+#include <client/misc/RGBtoHSV.hpp>
 #include <client/network/client.hpp>
 #include <client/system/SystemAttack.hpp>
 #include <client/system/SystemButtonRenderer.hpp>
 #include <client/system/SystemCombo.hpp>
 #include <client/system/SystemEntity.hpp>
 #include <client/system/SystemGraphicsCreation.hpp>
+#include <client/system/SystemLighting.hpp>
 #include <client/system/SystemMovement.hpp>
 #include <client/system/SystemParseKeyInput.hpp>
 #include <client/system/SystemRenderGUI.hpp>
+#include <client/system/SystemRenderHealing.hpp>
 #include <client/system/SystemRenderHealthBars.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
+#include <client/system/SystemRenderSpikes.hpp>
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
 #include <client/system/SystemTranslationAnimation.hpp>
 
 #include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
+#include <tempo/component/ComponentSpikes.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/network/ID.hpp>
@@ -34,6 +41,7 @@
 #include <SFML/System/Time.hpp>
 
 #include <irrlicht.h>
+#include <vector3d.h>
 
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
@@ -151,7 +159,7 @@ int main(int argc, const char** argv)
 	irr::scene::ISceneManager* smgr = device->getSceneManager();
 	irr::gui::IGUIEnvironment* gui_env = device->getGUIEnvironment();
 	// Debug
-	smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
+	//smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
 
 	/////////////////////////////////////////////////
 	// Setup ECS
@@ -164,13 +172,16 @@ int main(int argc, const char** argv)
 	client::SystemCombo system_combo;
 	client::SystemEntity system_entity;
 	client::SystemGraphicsCreation system_gc;
-	client::SystemMovement system_movement;
-	client::SystemStageRenderer system_stage_renderer;
-	client::SystemParseKeyInput system_parse_key_input;
-	client::SystemRenderGUI system_render_gui;
+	client::SystemLighting		   system_lighting;
+	client::SystemMovement         system_movement;
+	client::SystemStageRenderer    system_stage_renderer;
+	client::SystemParseKeyInput    system_parse_key_input;
+	client::SystemRenderGUI        system_render_gui;
+	client::SystemRenderHealing    system_render_healing(driver, smgr);
 	client::SystemRenderHealthBars system_render_health_bars;
-	client::SystemRenderSceneNode system_render_scene_node;
-	client::SystemUpdateKeyInput system_update_key_input;
+	client::SystemRenderSceneNode  system_render_scene_node;
+	client::SystemRenderSpikes  	 system_render_spikes;
+	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
 	client::SystemLessJank system_less_jank;
 
@@ -180,19 +191,22 @@ int main(int argc, const char** argv)
 	world.addSystem(system_combo);
 	world.addSystem(system_health);
 	world.addSystem(system_gc);
+	world.addSystem(system_lighting);
 	world.addSystem(system_trigger);
 	world.addSystem(system_button_renderer);
 	world.addSystem(system_stage_renderer);
-	world.addSystem(system_render_scene_node);
+
+	world.addSystem(system_render_healing);
 	world.addSystem(system_render_health_bars);
+	world.addSystem(system_render_scene_node);
+	world.addSystem(system_render_spikes);
 	world.addSystem(system_update_key_input);
 	world.addSystem(system_parse_key_input);
 	world.addSystem(system_movement);
 	world.addSystem(system_translation_animation);
 	world.addSystem(system_less_jank);
 
-	// anax::Entity entity_stage = createEntityStage(world);
-	static_cast<void>(createEntityStage(world));
+	createEntityStage(world);
 	world.refresh();
 
 	// Initialise Systems
@@ -211,9 +225,9 @@ int main(int argc, const char** argv)
 		tempo::addr_r = argv[1];
 	if (tempo::addr_r == "127.0.0.1") {
 		std::srand(time(NULL));
-		int d = std::rand() % 10;
-		tempo::port_ci = DEFAULT_PORT_IN + 10 + d;
-		tempo::port_co = DEFAULT_PORT_OUT + 10 + d;
+		int d          = std::rand() % 1000;
+		tempo::port_ci = DEFAULT_PORT_IN + 1000 + d;
+		tempo::port_co = DEFAULT_PORT_OUT + 1000 + d;
 	} else {
 		tempo::port_ci = DEFAULT_PORT_IN;
 		tempo::port_co = DEFAULT_PORT_OUT;
@@ -235,13 +249,22 @@ int main(int argc, const char** argv)
 	tempo::ClientRoleData roleData = {"Bilbo Baggins"};
 
 	// Connect to server and handshake information
-	tempo::connectToAndSyncWithServer(role, roleData, world);
+	if (!tempo::connectToAndSyncWithServer(role, roleData, world)) {
+		std::cout << "Failed to connect/join server." << std::endl;
+		running.store(false);
+		listener.join();
+		world.clear();
+		device->drop();
+		return 1;
+	}
 
 	// Sort out graphics after handshake
 	system_gc.addEntities(driver, smgr, world);
 	system_render_scene_node.setup(smgr, driver);
 	system_render_health_bars.setup(smgr);
 	system_button_renderer.setup(smgr, driver);
+	system_render_spikes.setup(smgr, driver);
+	system_lighting.setup(smgr, driver);
 
 	// Start and Sync Song
 	sync_time(clock);
@@ -264,39 +287,11 @@ int main(int argc, const char** argv)
 	auto& combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
 	auto& comp_health = entity_player.getComponent<tempo::ComponentHealth>();
 
-	irr::scene::ICameraSceneNode* camera_node;
-	if (false) {
-		float rotateSpeed = 25.0f;
-		float moveSpeed = 0.1f;
-		camera_node = smgr->addCameraSceneNodeFPS(nullptr, rotateSpeed, moveSpeed);
-		device->getCursorControl()->setVisible(false);
-	} else {
-		// float rotate    = 0.0f;
-		// float translate = 0.0f;  //-100
-		// float zoom      = 0.0f;  // 100
-		// float distance  = 0.0f;
-		// camera_node = smgr->addCameraSceneNodeMaya(sn.node, rotate, translate,
-		// zoom, -1,
-		// distance); camera_node->setPosition(irr::core::vector3df(0.0f, 0.0f,
-		// 0.0f));
-		camera_node = smgr->addCameraSceneNode();
-		camera_node->setPosition(irr::core::vector3df(14, 9, 0));
-		camera_node->setTarget(sn.node->getPosition());
-		// camera_node->setRotation(irr::core::vector3df(0,0,90));
-		device->getCursorControl()->setVisible(true);
-	}
+	glm::ivec2 startingPos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-	// irr::scene::ISceneNode* camera_light;
-	// camera_light = smgr->addLightSceneNode(camera_node,
-	//                                        irr::core::vector3df(0.0f, 0.0f,
-	// 0.0f),
-	//                                        irr::video::SColorf(0.8f, 0.8f,
-	// 0.8f),
-	//                                        10.0f);
-	// debug static light
-	smgr->addLightSceneNode(
-	  0, irr::core::vector3df(10.0f, 10.0f, 10.0f), irr::video::SColorf(0.8f, 0.8f, 0.8f), 5.0f);
-	// irr::video::SLight& light_data = light_node->getLightData();
+	client::createLasers(smgr, driver, { {40,12}, {40,52}, {40,92} }, startingPos);
+
+	client::createDiscoBalls(smgr, driver, { {40,6} }, startingPos);
 
 	/////////////////////////////////////////////////
 	// Main loop
@@ -312,15 +307,20 @@ int main(int argc, const char** argv)
 	frame_clock.restart();
 	update_floor_clock.restart();
 
+	irr::video::SColor random_colour;
+	srand(clock.get_time().asMicroseconds());
+
 	printf("Entering main loop\n");
 	while (device->run()) {
-		// sf::Int64 tick1 = update_floor_clock.getElapsedTime().asMilliseconds();
-		// float dt = dt_timer.getElapsedTime().asSeconds();
-		// dt_timer.restart();
+
+		// Work out a frame delta time.
+		// const irr::u32 now = device->getTimer()->getTime();
+		// frameDeltaTime = (f32)(now - then)/1000.f; // Time in seconds
 
 		////////////////
 		// Events all the time
 		{
+
 			// Check for new entities from server
 			system_entity.creationCheck(world);
 			system_entity.deletionCheck(world);
@@ -329,9 +329,8 @@ int main(int argc, const char** argv)
 			system_gc.addEntities(driver, smgr, world);
 			system_render_scene_node.setup(smgr, driver);
 			system_render_health_bars.setup(smgr);
-			system_button_renderer.setup(smgr, driver);
 
-			// Recieve updates from the server
+			// Receive updates from the server
 			system_movement.processIntents(world);
 			system_movement.processCorrections(world);
 			system_combo.checkForUpdates(world);
@@ -343,23 +342,22 @@ int main(int argc, const char** argv)
 
 			// Deprecated/To-be-worked-on
 			system_health.CheckHealth();
-			system_health.recieveHealth(world);
+			system_health.client_receiveHealth(world);
 
 			system_less_jank.lessJank();
 			// Update animations from translations received from server
 			system_translation_animation.updateAnimations();
 
 			// Graphics updates
-			// std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl;
 			system_render_scene_node.update();
-			// std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED
-			// IT" <<
-			// std::endl;
 			system_render_health_bars.update();
+			system_render_healing.update();
 
 			// TODO: Make a system for updating camera position
+			irr::scene::ICameraSceneNode *camera_node;
+			camera_node = smgr->addCameraSceneNode();
 			irr::core::vector3df camera_target = sn.node->getAbsolutePosition();
-			camera_node->setPosition(camera_target + irr::core::vector3df(14, 9, 0));
+			camera_node->setPosition(camera_target + irr::core::vector3df(7, 9, 0));
 			camera_node->updateAbsolutePosition();
 			camera_node->setTarget(camera_target);
 		}
@@ -368,6 +366,7 @@ int main(int argc, const char** argv)
 		// Events at "Delta Start"
 		if (clock.passed_delta_start()) {
 			// std::cout << "Start" << std::endl;
+			tempo::sendHeatbeat();
 		}
 
 		////////////////
@@ -382,15 +381,20 @@ int main(int argc, const char** argv)
 			j = j % 22;
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
+
+			system_render_healing.endBeat();
+			system_render_spikes.updateSpikes(driver);
+
 			system_translation_animation.endBeat();
-			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
-			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
-			// << std::endl;
+
+			random_colour = client::randomHSV();
+
+			system_lighting.update(random_colour);
+
 		}
 		glm::ivec2 playerpos =
 		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-
-		system_stage_renderer.updateStage(smgr, driver, j, playerpos);
+		system_stage_renderer.updateStage(smgr, driver, j, playerpos, random_colour);
 
 		////////////////
 		// Events at "Delta End"
@@ -398,16 +402,6 @@ int main(int argc, const char** argv)
 			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 		}
-
-		// Rendering Code
-		// if (!device->isWindowActive()) {
-		//	device->yield();
-		//	continue;
-		//}
-
-		// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
-		// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
-		// << std::endl;
 
 		driver->beginScene(true, true);
 		smgr->drawAll();

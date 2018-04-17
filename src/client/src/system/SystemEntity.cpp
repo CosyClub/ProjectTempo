@@ -31,12 +31,24 @@ void SystemEntity::deletionCheck(anax::World &w)
 {
 	tempo::Queue<sf::Packet> *q = get_system_queue(tempo::QueueID::ENTITY_DELETION);
 	while (!q->empty()) {
-		std::cout << "DELETED AN ENTITY\n";
 		sf::Packet p = q->front();
 		q->pop();
-		anax::Entity::Id id;
+
+		anax::Entity::Id id, ids;
 		p >> id;
-		anax::Entity e(w, tempo::servertolocal[id]);
+
+		// Not using macro as this requires special case stuff
+		std::map<anax::Entity::Id, anax::Entity::Id>::iterator it = tempo::servertolocal.find(id);
+		if (it != tempo::servertolocal.end()) {
+			ids = tempo::servertolocal[id];
+		} else {
+			ids = anax::Entity::Id();
+		}
+		if (ids.isNull()) continue;
+
+		tempo::servertolocal.erase(id);
+		tempo::localtoserver.erase(ids);
+		anax::Entity e(w, ids);
 		w.killEntity(e);
 	}
 	w.refresh();

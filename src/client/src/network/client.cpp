@@ -7,6 +7,9 @@
 
 namespace tempo
 {
+// Refer to documentation in tempo/network/base.hpp
+bool allowUnknownIfHandshake = false;
+
 // Brutalised version of the NTP Time Sync Protocol (RFC5905)
 // http://www.ietf.org/rfc/rfc5905.txt (Page 27)
 sf::Int64 timeSyncClient(tempo::Clock *clock)
@@ -24,7 +27,7 @@ sf::Int64 timeSyncClient(tempo::Clock *clock)
 	sf::Int64 T3  = 0;  // PACKET: Current pakcet time of departure
 	sf::Int64 T4  = 0;  // PACKET: Current packet time of arrival
 	sf::Int64 org = 0;  // STATE:  Time when message departed from peer
-	// sf::Int64 rec    = 0; // STATE:  Time when we recieved from the peer
+	// sf::Int64 rec    = 0; // STATE:  Time when we received from the peer
 	sf::Int64 xmt    = 0;  // STATE:  Time when we transmitted to the peer
 	sf::Int64 offset = 0;  // Final Result
 
@@ -77,14 +80,23 @@ bool sendMessage(tempo::QueueID id, sf::Packet payload)
 	return sock_o.send(message, addr_r, port_si) == sf::Socket::Done;
 }
 
-sf::Packet receiveMessage(QueueID qid)
+std::pair<bool, sf::Packet> receiveMessage(QueueID qid)
 {
 	tempo::Queue<sf::Packet> *queue = get_system_queue(qid);
-	while (queue->empty())
+	uint32_t count = 0;
+
+	// 250 * 20ms = 5 seconds
+	while (queue->empty() && count++ < 250) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-	sf::Packet packet = queue->front();
-	queue->pop();
-	return packet;
+	}
+
+	if (!queue->empty()) {
+		sf::Packet packet = queue->front();
+		queue->pop();
+		return std::pair<bool, sf::Packet>(true, packet);
+	} else {
+		return std::pair<bool, sf::Packet>(false, sf::Packet());
+	}
 }
 
 void listenForServerUpdates(std::atomic<bool> &running)
@@ -100,6 +112,7 @@ void listenForServerUpdates(std::atomic<bool> &running)
 
 	sock_i.setBlocking(false);
 	sf::IpAddress  ip;
+	sf::IpAddress  local = sf::IpAddress::getLocalAddress();
 	unsigned short port;
 	sf::Packet     packet;
 
@@ -112,7 +125,10 @@ void listenForServerUpdates(std::atomic<bool> &running)
 
 		// Sort packet into respective system.
 		if (status == sf::Socket::Done) {
-			sortPacket(packet);
+			bool o = sortPacket(packet, (ip == tempo::addr_r) || (ip == local));
+			if (!o) std::cout << "Dropped invalid packet/message from unknown address ("
+
+				          << ip.toString() << ":" << port << ")." << std::endl;
 			packet = sf::Packet();
 		}
 	}
@@ -125,39 +141,57 @@ void listenForServerUpdates(std::atomic<bool> &running)
 uint32_t handshakeHello(anax::World &world)
 {
 	// Package up payload
-	sf::Packet packet;
-	packet << static_cast<uint32_t>(HandshakeID::HELLO);
-	packet << sf::IpAddress::getLocalAddress().toInteger();
-	packet << port_ci;
+	sf::Packet send, receive;
+	send << static_cast<uint32_t>(HandshakeID::HELLO);
+	send << sf::IpAddress::getLocalAddress().toInteger();
+	send << port_ci;
+	send << port_co;
 
-	std::cout << sf::IpAddress::getLocalAddress().toString() << std::endl;
+	std::cout << "Your address is: "
+	          << sf::IpAddress::getLocalAddress().toString() << ":"
+	          << tempo::port_co << std::endl;
 
-	// Send HELLO
-	sendMessage(QueueID::HANDSHAKE, packet);
+	bool     b     = false;
+	uint32_t count = 0;
+	while (!b && count++ < 12) {
+		// Send HELLO
+		std::cout << "Attempting to connect to the server..." << std::endl;
+		sendMessage(QueueID::HANDSHAKE, send);
 
-	// Receive HELLO_ROG
-	packet = receiveMessage(QueueID::HANDSHAKE);
+		// Receive HELLO_ROG
+		std::pair<bool, sf::Packet> o = receiveMessage(QueueID::HANDSHAKE);
+		b       = o.first;
+		receive = o.second;
+	}
+	if (!b) {
+		std::cout << "Failed to connect to server after 1 minute." << std::endl;
+		return NO_CLIENT_ID;
+	}
 
 	// Extract Data
 	uint32_t msg            = static_cast<uint32_t>(HandshakeID::DEFAULT);
 	uint32_t id             = NO_CLIENT_ID;
 	uint32_t componentCount = 0;
-	packet >> msg;
+	receive >> msg;
 	if (msg == static_cast<uint32_t>(HandshakeID::HELLO_ROG)) {
-		packet >> id;
-		packet >> port_si;
-		packet >> port_st;
-		packet >> componentCount;
+		receive >> id;
+		receive >> port_si;
+		receive >> port_st;
+		receive >> componentCount;
 
-		sf::Packet p2;
 		for (unsigned int i = 0; i < componentCount; i++) {
-			p2 = receiveMessage(QueueID::HANDSHAKE);
+			bool b = false;
+			while (!b) {
+				std::pair<bool, sf::Packet> o = receiveMessage(QueueID::HANDSHAKE);
+				b       = o.first;
+				receive = o.second;
+			}
 			std::cout << "Recieved " << i << "/" << componentCount << std::endl;
-			addComponent(world, p2);
+			addComponent(world, receive);
 		}
+		std::cout << "Connected to the server!" << std::endl;
 	} else {
-		std::cout << "We didn't get what we expected when connecting "
-		          << "to the server." << std::endl;
+		std::cout << "Failed to connect to server." << std::endl;
 	}
 
 	return id;
@@ -166,36 +200,50 @@ uint32_t handshakeHello(anax::World &world)
 bool handshakeRoleReq(uint32_t id, ClientRole roleID, ClientRoleData &roleData, anax::World &world)
 {
 	// Package up payload
-	sf::Packet packet;
-	packet << static_cast<uint32_t>(HandshakeID::ROLEREQ);
-	packet << id;
-	packet << roleID;
-	packet << roleData;
+	sf::Packet send, receive;
+	send << static_cast<uint32_t>(HandshakeID::ROLEREQ);
+	send << id;
+	send << roleID;
+	send << roleData;
 
-	// Send ROLEREQ
-	sendMessage(QueueID::HANDSHAKE, packet);
+	bool b = false;
+	uint32_t count = 0;
+	while (!b && count++ < 12) {
+		// Send ROLEREQ
+		std::cout << "Joining game..." << std::endl;
+		sendMessage(QueueID::HANDSHAKE, send);
 
-	// Wait until we recieve ROLEREQ_ROG
-	packet = receiveMessage(QueueID::HANDSHAKE);
+		// Recieve ROLEREQ_ROG
+		std::pair<bool, sf::Packet> o = receiveMessage(QueueID::HANDSHAKE);
+		b       = o.first;
+		receive = o.second;
+	}
+	if (!b) {
+		std::cout << "Failed to join game after 1 minute." << std::endl;
+		return false;
+	}
 
 	// Extract Data
 	uint32_t msg = static_cast<uint32_t>(HandshakeID::DEFAULT);
 	int      componentCount;
-	packet >> msg;
-	packet >> componentCount;
+	receive >> msg;
+	receive >> componentCount;
 	if (msg == static_cast<uint32_t>(HandshakeID::ROLEREQ_ROG)) {
 		// TODO Extract entity/response from ROLEREQ_ROG
-		sf::Packet   p2;
 		anax::Entity en;
 		for (int i = 0; i < componentCount; i++) {
-			p2 = receiveMessage(QueueID::HANDSHAKE);
-			en = addComponent(world, p2);
+			bool b = false;
+			while (!b) {
+				std::pair<bool, sf::Packet> o = receiveMessage(QueueID::HANDSHAKE);
+				b       = o.first;
+				receive = o.second;
+			}
+			en = addComponent(world, receive);
 		}
 		en.removeComponent<tempo::ComponentPlayerRemote>();
 		en.addComponent<tempo::ComponentPlayerLocal>();
 	} else {
-		std::cout << "The server was rude to us when we requested a "
-		          << "role. >:(" << std::endl;
+		std::cout << "Failed to join game." << std::endl;
 		return false;
 	}
 
@@ -222,28 +270,36 @@ bool connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData, ana
 		return false;
 	}
 
-	std::cout << "HELLO STARTING" << std::endl;
 	uint32_t id = handshakeHello(world);
-	std::cout << "HELLO COMPLETE" << std::endl;
-	if (id == NO_CLIENT_ID) {
-		std::cout << "Couldn't connect to the server." << std::endl;
-		return false;
-	}
+	if (id == NO_CLIENT_ID) return false;
 
-	std::cout << "ROLEREQ STARTING" << std::endl;
 	bool ret = handshakeRoleReq(id, roleID, roleData, world);
-	std::cout << "ROLEREQ COMPLETE" << std::endl;
 	world.refresh();
 	return ret;
+}
+
+void sendHeatbeat() {
+	sf::Packet p;
+	p << sf::IpAddress::getLocalAddress().toInteger();
+	p << tempo::port_ci;
+	tempo::sendMessage(tempo::QueueID::HEARTBEAT, p);
+
 }
 
 void disconnectFromServer(anax::Entity &entity_player)
 {
 	sf::Packet p;
-	tempo::operator<<(p, tempo::localtoserver[entity_player.getId()]);
-	p << (uint32_t) tempo::addr_r.toInteger();
-	p << (uint32_t) tempo::port_ci;
-	tempo::sendMessage(tempo::QueueID::ENTITY_DELETION, p);
+	anax::Entity::Id id = entity_player.getId();
+	LOCALTOSERVER(id);
+	if (id.isNull()) {
+		printf("Wat!?!? When trying to disconnect, we couldn't find the ID of ourself!\n");
+	} else {
+		tempo::operator<<(p, id);
+		p << sf::IpAddress::getLocalAddress().toInteger();
+		p << tempo::port_ci;
+		p << true;
+		tempo::sendMessage(tempo::QueueID::ENTITY_DELETION, p);
+	}
 }
 
 

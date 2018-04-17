@@ -30,9 +30,9 @@ struct SystemAttack : anax::System<anax::Requires<tempo::ComponentAttack>> {
 	// Sets up the SystemAttack along with it's necessary subsystem
 	SystemAttack(anax::World &world);
 
-	// Recieves all the attack intents and bounces them to all the clients.
+	// Receives all the attack intents and bounces them to all the clients.
 	// To be run all the time.
-	void recieveAttacks(anax::World &w);
+	void receiveAttacks(anax::World &w);
 
 	// Processes all of the attack intents. To be run at Delta End.
 	void processAttacks();

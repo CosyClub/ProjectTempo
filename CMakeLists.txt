@@ -102,13 +102,14 @@ message ("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 message ("EXTLIBS ========================================================================")
 string(TIMESTAMP CMAKE_TIME)
 message ("TIME: ${CMAKE_TIME}")
-add_subdirectory(${TEMPO_EXTLIBS_DIR})
+set(TEMPO_CLIENT_DIR
+	"${CMAKE_CURRENT_LIST_DIR}/src/client"
+)
+set(TEMPO_CLIENT_INCLUDE_DIR
+	"${TEMPO_CLIENT_DIR}/include"
+)
 
-if (MSVC)
-	string(REGEX REPLACE "/Wall" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-	string(REGEX REPLACE "/EHs-c-" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-	string(REGEX REPLACE "/GR-" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-endif ()
+add_subdirectory(${TEMPO_EXTLIBS_DIR})
 message ("OPTIONS BEFORE SRC =============================================================")
 message ("CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
 message ("CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
@@ -116,16 +117,20 @@ message ("SRC ==================================================================
 string(TIMESTAMP CMAKE_TIME)
 message ("TIME: ${CMAKE_TIME}")
 add_subdirectory(src)
+add_subdirectory(tests)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	target_compile_options(lib_tempo PRIVATE -Werror -pedantic)
 	target_compile_options(server PRIVATE -Werror -pedantic)
 	target_compile_options(client PRIVATE -Werror -pedantic)
+	target_compile_options(tests PRIVATE -Werror -pedantic)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 	target_compile_options(lib_tempo PRIVATE -Werror -pedantic)
 	target_compile_options(server PRIVATE -Werror -pedantic)
 	target_compile_options(client PRIVATE -Werror -pedantic)
+	target_compile_options(tests PRIVATE -Werror -pedantic)
 elseif (MSVC)
 endif ()
+
 
 if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)" OR CMAKE_CL_64)
 	file(COPY "${TEMPO_EXTLIBS_DIR}/SFML-2.4.2/extlibs/bin/x64/openal32.dll" DESTINATION "${TEMPO_BIN_DIR}")

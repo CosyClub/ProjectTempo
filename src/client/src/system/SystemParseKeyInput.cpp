@@ -4,6 +4,7 @@
 
 #include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentCombo.hpp>
+#include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
@@ -27,7 +28,13 @@ void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing, b
 {
 	// Send Movement Intent to Networking
 	sf::Packet p;
-	p << tempo::localtoserver[entity.getId()];
+	anax::Entity::Id id = entity.getId();
+	LOCALTOSERVER(id)
+	if (id.isNull()) {
+		printf("Failed to find ID (SystemParseKeyInput:%d)\n", __LINE__);
+		abort();
+	}
+	p << id;
 	// Always include change of facing direction
 	auto &sr = entity.getComponent<tempo::ComponentStageRotation>();
 
@@ -71,31 +78,66 @@ void addAttack(anax::Entity &entity, bool withinDelta)
 		a.damage                  = w.damage;
 		a.beats_until_attack      = w.beats_until_attack;
 
+		anax::Entity::Id id = entity.getId();
+		LOCALTOSERVER(id)
+		if (id.isNull()) {
+			printf("Failed to find ID (SystemParseKeyInput:%d)\n", __LINE__);
+			abort();
+		}
+
 		sf::Packet p;
 		p << static_cast<uint32_t>(tempo::MessageAttack::UPDATE_INTENT);
-		p << tempo::localtoserver[entity.getId()];
+		p << id;
 		p << a.damage;
 		p << a.beats_until_attack;
 		tempo::sendMessage(tempo::QueueID::SYSTEM_ATTACK, p);
 	}
 }
 
+void addHeal(anax::Entity &entity, bool withinDelta)
+{
+
+	if (entity.hasComponent<tempo::ComponentHealth>()
+	    && entity.hasComponent<tempo::ComponentCombo>()) {
+
+		tempo::ComponentHealth &h = entity.getComponent<tempo::ComponentHealth>();
+		tempo::ComponentCombo  &c = entity.getComponent<tempo::ComponentCombo>();
+
+		if(c.comboCounter > 3) { // 3 for testing purpose. It should be 10
+			c.comboCounter -= 3;
+			h.HealthUpdate(2);
+
+			sf::Packet p;
+			p << tempo::localtoserver[entity.getId()];
+			p << h.current_health;
+			sendMessage(tempo::QueueID::SYSTEM_HEALTH, p);
+
+		}
+	}
+}
+
 void updateCombo(anax::Entity &entity, bool withinDelta)
 {
 	if (entity.hasComponent<tempo::ComponentCombo>()) {
-		// tempo::ComponentCombo &c = entity.getComponent<tempo::ComponentCombo>();
+		anax::Entity::Id id = entity.getId();
+		LOCALTOSERVER(id)
+		if (id.isNull()) {
+			printf("Failed to find ID (SystemParseKeyInput:%d)\n", __LINE__);
+			abort();
+		}
+
 		if (withinDelta) {
 			// c.performAction();
 
 			sf::Packet p;
-			p << tempo::localtoserver[entity.getId()];
+			p << id;
 			p << static_cast<uint8_t>(tempo::MessageCombo::INCREMENT_COMBO);
 			tempo::sendMessage(tempo::QueueID::COMBO_UPDATES, p);
 		} else {
 			// c.breakCombo();
 
 			sf::Packet p;
-			p << tempo::localtoserver[entity.getId()];
+			p << id;
 			p << static_cast<uint8_t>(tempo::MessageCombo::BROKEN_COMBO);
 			tempo::sendMessage(tempo::QueueID::COMBO_UPDATES, p);
 		}

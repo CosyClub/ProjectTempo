@@ -20,14 +20,14 @@ namespace tempo
 ////////////////////////////////////////////////////////////////////////
 /// Constant #define's
 
-// Default Address
+// Default Address - Null - Should break things
 #define DEFAULT_ADDR "0.0.0.0"
 // Default Port for Incoming Socket
 #define DEFAULT_PORT_IN 1337
 // Default Port for the Outgoing Socket
 #define DEFAULT_PORT_OUT 1338
 // Default Port for Time Sync (TS) protocol
-#define DEFAULT_PORT_TS 1339
+#define DEFAULT_PORT_TS 1337
 
 // Wait time for time sync protocol (millisecs)
 #define TIMESYNC_DELTA 100
@@ -89,11 +89,18 @@ bool bindSocket(char socket, unsigned short port);
 // Takes a message packet, and then sorts it into the correct queue
 //
 // Arguments:
-// 	packet	- The packet that needs to be sent to the relevant queue
+// 	packet       - The packet that needs to be sent to the relevant queue
+// 	knownAddress - Whether or not the address which the packet was sent from
+// 	               is known.
 // Returns:
 // 	bool - true iff packet sorted correctly, false
 // 	otherwise.
-bool sortPacket(sf::Packet p);
+bool sortPacket(sf::Packet p, bool knownAddress);
+
+// Both client and server should define if they accept messages from unknown
+// parties. This flag should declare that. The only allowed messages from an
+// unknown party is a handshake message.
+extern bool allowUnknownIfHandshake; 
 
 
 ////////////////////////////////////////////////////////////////////////

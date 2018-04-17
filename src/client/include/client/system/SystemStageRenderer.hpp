@@ -47,7 +47,8 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 	void updateStage(irr::scene::ISceneManager *smgr,
 	                 irr::video::IVideoDriver * driver,
 	                 int                        j,
-	                 glm::ivec2                 playerpos);
+	                 glm::ivec2                 playerpos,
+                   irr::video::SColor colour);
 
    private:
 	inline void addFloorTilesToScene(irr::scene::ISceneManager *smgr,
