@@ -16,7 +16,7 @@ bool ai_attack(anax::Entity entity, server::SystemAttack s_attack)
 		tempo::ComponentStageRotation &r = entity.getComponent<tempo::ComponentStageRotation>();
 
 		//if we're already attacking then just keep going
-		if (a.beats_until_attack > -1) return true;
+		if (a.beats_until_attack > -1) return false;
 
 		glm::ivec2 direction;
 		if (s_attack.bestAttack(entity, direction))
