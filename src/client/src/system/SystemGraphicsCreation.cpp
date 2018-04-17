@@ -1,7 +1,6 @@
 #include <client/system/SystemGraphicsCreation.hpp>
 
 #include <client/component/ComponentHealthBar.hpp>
-#include <client/component/ComponentRenderAttack.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
 #include <client/component/ComponentRenderSpikes.hpp>
 #include <client/component/ComponentRenderButtonGroup.hpp>
@@ -34,10 +33,6 @@ void SystemGraphicsCreation::addEntities(irr::video::IVideoDriver * driver,
 
 			if (entity.hasComponent<tempo::ComponentHealth>()) {
 				entity.addComponent<ComponentHealthBar>(nullptr);
-			}
-
-			if(entity.hasComponent<tempo::ComponentAttack>()){
-				entity.addComponent<ComponentRenderAttack>(nullptr);
 			}
 		}
 

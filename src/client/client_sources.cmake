@@ -1,7 +1,6 @@
 set(TEMPO_CLIENT_SOURCES
 	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentHealthBar.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentKeyInput.hpp
-	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentRenderAttack.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentRenderButtonGroup.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentRenderSceneNode.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/component/ComponentRenderSpikes.hpp
@@ -14,7 +13,6 @@ set(TEMPO_CLIENT_SOURCES
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemLighting.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemMovement.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemParseKeyInput.hpp
-	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderAttack.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderGUI.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderHealing.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderHealthBars.hpp
@@ -26,7 +24,6 @@ set(TEMPO_CLIENT_SOURCES
 
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentHealthBar.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentKeyInput.cpp
-	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRenderAttack.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRenderButtonGroup.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRenderSceneNode.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRenderSpikes.cpp
@@ -39,7 +36,6 @@ set(TEMPO_CLIENT_SOURCES
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemLighting.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemMovement.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemParseKeyInput.cpp
-	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderAttack.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderGUI.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderHealing.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderHealthBars.cpp
