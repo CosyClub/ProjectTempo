@@ -68,7 +68,6 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 		}
 	}
 
-	// update(playerpos);
 }
 
 void SystemRenderSceneNode::update(const glm::ivec2 playerpos)

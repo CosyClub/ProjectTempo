@@ -76,7 +76,7 @@ enum ComponentID {
 	PICKUP,             // 10
 	PLAYER_LOCAL,       // 11
 	PLAYER_REMOTE,      // 12
-	SPIKES,				      // 13
+	SPIKES,             // 13
 	STAGE,              // 14
 	STAGE_POSITION,     // 15
 	STAGE_ROTATION,     // 16

@@ -145,20 +145,20 @@ int main(int argc, const char **argv)
 	}
 
 		std::deque<glm::ivec2> path {glm::ivec2(64 + (i* fheight), 68),
-																 glm::ivec2(64 + (i* fheight), 72),
-																 glm::ivec2(68 + (i* fheight), 72),
-																 glm::ivec2(68 + (i* fheight), 68)};
+		                             glm::ivec2(64 + (i* fheight), 72),
+		                             glm::ivec2(68 + (i* fheight), 72),
+		                             glm::ivec2(68 + (i* fheight), 68)};
 		tempo::createMobPatroller(world, path[0], path);
 
 		std::deque<glm::ivec2> path2 {glm::ivec2(11 + (i* fheight), 67),
-																	glm::ivec2(11 + (i* fheight), 73),
-																	glm::ivec2(15 + (i* fheight), 73),
-																	glm::ivec2(15 + (i* fheight), 67)};
+		                              glm::ivec2(11 + (i* fheight), 73),
+		                              glm::ivec2(15 + (i* fheight), 73),
+		                              glm::ivec2(15 + (i* fheight), 67)};
 		tempo::createMobPatroller(world, path2[0], path2);
 
 		std::vector<glm::ivec2> wall          = {{37 + (i* fheight),17},{38 + (i* fheight),17},{39 + (i* fheight),17},
-																						 {40 + (i* fheight),17},{41 + (i* fheight),17},{42 + (i* fheight),17},
-																						 {43 + (i* fheight),17},{44 + (i* fheight),17}, {45 + (i* fheight),17}};
+		                                         {40 + (i* fheight),17},{41 + (i* fheight),17},{42 + (i* fheight),17},
+		                                         {43 + (i* fheight),17},{44 + (i* fheight),17}, {45 + (i* fheight),17}};
 
 		RythmButton(world, { { { 40 + (i* fheight),12 }},{ { 40 + (i* fheight),13 } },{ { 41 + (i* fheight),13 } },{ { 41 + (i* fheight),12 } } }, wall, {}, rhythmID);
 	//
