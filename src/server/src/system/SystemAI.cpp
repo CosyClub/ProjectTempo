@@ -39,7 +39,7 @@ bool ai_attack(anax::Entity entity, server::SystemAttack s_attack)
 			
 			tempo::Queue<sf::Packet> *q = get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
 			q->push(p);
-			return true;
+			return false;
 		}
 	}
 	return false;
@@ -260,7 +260,22 @@ void SystemAI::update(server::SystemAttack s_attack)
 			}
 			case tempo::MoveType::MOVE_SNAKE:
 			{
-					
+				for (auto &parent : entities)
+				{
+					auto &p_ai = parent.getComponent<tempo::ComponentAI>();
+					auto &p_sp = parent.getComponent<tempo::ComponentStagePosition>();
+
+					if (p_ai.type == tempo::MoveType::MOVE_SNAKE &&
+					    p_ai.index == ai.index - 1)
+					{
+						glm::ivec2 delta = p_sp.getOrigin() - sp.getOrigin();
+						float len = glm::length((glm::vec2) delta);
+						if ( len > 1 ) break;
+						st.delta = delta;
+						break;
+					}
+				}
+				if(st.delta == glm::ivec2(0, 0)) st.delta = random_move();
 				break;
 			}
 		}

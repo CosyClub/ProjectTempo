@@ -174,4 +174,55 @@ anax::Entity createSpikes(anax::World & world, std::vector<glm::ivec2> positions
 	return entity_spikes;
 }
 
+anax::Entity createSnake(anax::World& world, glm::ivec2 pos, tempo::Facing f, int len)
+{
+	anax::Entity head = world.createEntity();
+
+	ai_index_top++;
+	head.addComponent<tempo::ComponentAI>(MoveType::MOVE_SNAKE, false, false);
+	head.addComponent<tempo::ComponentStagePosition>(pos);
+	head.addComponent<tempo::ComponentStageRotation>(f);
+	head.addComponent<tempo::ComponentStageTranslation>();
+	head.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 200, 200), false, glm::vec2(4,4));
+	head.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	head.addComponent<tempo::ComponentHealth>(5);
+	float arr[9] = {1, 1, 1,
+	                1, 0, 1,
+	                1, 1, 1};
+	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
+	head.addComponent<tempo::ComponentAttack>();
+	head.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
+	head.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
+
+	head.activate();
+
+	pos += -1 * f;
+	auto& cs = head.getComponent<ComponentStage>();
+
+	for (int I = 1; I < len && cs.isNavigable(pos) ; I++)
+	{
+
+		anax::Entity seg = world.createEntity();
+
+		seg.addComponent<tempo::ComponentAI>(MoveType::MOVE_SNAKE, false, false);
+		seg.addComponent<tempo::ComponentStagePosition>(pos);
+		seg.addComponent<tempo::ComponentStageRotation>(NORTH);
+		seg.addComponent<tempo::ComponentStageTranslation>();
+		seg.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 200, 200), false, glm::vec2(4,4));
+		seg.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+		seg.addComponent<tempo::ComponentHealth>(5);
+		seg.addComponent<tempo::ComponentAttack>();
+		seg.addComponent<tempo::ComponentWeapon>(m, (unsigned int)5);
+		seg.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
+
+		seg.activate();
+
+		pos += -1 * f;
+	}
+
+	ai_index_top++;
+
+	return head;
+}
+
 }  // namespace tempo

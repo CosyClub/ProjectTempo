@@ -8,6 +8,8 @@
 
 #include <glm/vec2.hpp>
 
+extern int ai_index_top;
+
 namespace tempo
 {
 
@@ -19,6 +21,7 @@ enum MoveType{
 	MOVE_WANDER,
 	MOVE_SNAKE,
 };
+
 
 struct ComponentAI : anax::Component, NetworkedComponent 
 {

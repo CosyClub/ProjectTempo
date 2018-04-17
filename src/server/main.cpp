@@ -121,7 +121,7 @@ int main(int argc, const char **argv)
 	world.refresh();
 
 	// Create some Test Entities
-
+	tempo::createSnake(world, glm::ivec2(41, 8), tempo::EAST, 8);
 	tempo::createMobStill(world, glm::ivec2(36, 42));
 	tempo::createMobStill(world, glm::ivec2(40, 42));
 	tempo::createMobStill(world, glm::ivec2(44, 42));
