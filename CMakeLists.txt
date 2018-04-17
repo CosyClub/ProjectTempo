@@ -119,7 +119,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	target_compile_options(lib_tempo PRIVATE -Werror -pedantic)
 	target_compile_options(server PRIVATE -Werror -pedantic)
 	target_compile_options(client PRIVATE -Werror -pedantic)
-	target_compile_options(tests PRIVATE -Werror -pedantic)
+	#target_compile_options(unit-tests PRIVATE -Werror -pedantic)
 elseif (MSVC)
 endif ()
 
