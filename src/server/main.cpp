@@ -38,7 +38,7 @@ void RythmButton(anax::World &          world,
 				int &ID) {
 
 	for (uint32_t i = 0; i < positions.size(); i++) {
-		
+
 		std::vector<glm::ivec2> group = positions[i];
 		glm::ivec2 prev;
 		glm::ivec2 next;
@@ -163,28 +163,28 @@ int main(int argc, const char **argv)
 	newButton(world, { { 41,110 },{ 26,128 },{ 57,128 } }, wall4, {});
 
 	std::vector<glm::ivec2> spikes		   = {{ 35,65 }};
-	newButton(world, { { 35,63 },{ 35,67 } }, {}, spikes);
+	newButton(world, { { 35,67 } }, {}, spikes);
 
 	spikes = {{ 34,65 }};
-	newButton(world, { { 34,63 },{ 34,67 } }, {}, spikes);
+	newButton(world, { { 34,67 } }, {}, spikes);
 
 	spikes = {{ 33,65 }};
-	newButton(world, { { 33,63 },{ 33,67 } }, {}, spikes);
+	newButton(world, { { 33,67 } }, {}, spikes);
 
 	spikes = {{ 32,65 }};
-	newButton(world, { { 32,63 },{ 32,67 } }, {}, spikes);
+	newButton(world, { { 32,67 } }, {}, spikes);
 
 	spikes = {{ 31,65 }};
-	newButton(world, { { 31,63 },{ 31,67 } }, {}, spikes);
+	newButton(world, { { 31,67 } }, {}, spikes);
 
 	spikes = {{ 30,65 }};
-	newButton(world, { { 30,63 },{ 30,67 } }, {}, spikes);
+	newButton(world, { { 30,67 } }, {}, spikes);
 
 	spikes = { { 29,65 } };
-	newButton(world, { { 29,63 },{ 29,67 } }, {}, spikes);
+	newButton(world, { { 29,67 } }, {}, spikes);
 
 	spikes = { { 28,65 } };
-	newButton(world, { { 28,63 },{ 28,67 } }, {}, spikes);
+	newButton(world, { { 28,67 } }, {}, spikes);
 
 	world.refresh();
 
@@ -241,7 +241,7 @@ int main(int argc, const char **argv)
 			system_trigger.updateButtons(world);
 
 			if (tick++ % 20 == 0)
-				std::cout << "TICK (" << tick << ") " 
+				std::cout << "TICK (" << tick << ") "
 				          << clock.get_time().asMilliseconds()
 				          << std::endl;
 		}
@@ -256,7 +256,7 @@ int main(int argc, const char **argv)
 			system_health.regenerate();
 			system_movement.processTranslation();
 		}
-		
+
 		////////////////
 		// Events all the time
 		{
