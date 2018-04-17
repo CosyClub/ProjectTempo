@@ -35,7 +35,7 @@ void ComponentStage::loadLevel(const char *stage_file)
 	uint8_t *pixel_data = (uint8_t *) stbi_load(stage_file, &width, &height, &components, 4);
 	if (pixel_data == NULL || width < 0 || height < 0 || components < 0) {
 		printf("Failed to load level '%s', pixels: %p, width: %i, height: %i, components: %i\n",
-		       stage_file, pixel_data, width, height, components);
+		       stage_file, (void *)pixel_data, width, height, components);
 		return;
 	}
 

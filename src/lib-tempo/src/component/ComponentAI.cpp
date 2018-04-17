@@ -29,7 +29,7 @@ ComponentAI::ComponentAI(sf::Packet p)
 	uint32_t tmp;
 	uint32_t path_size;
 	p >> tmp;
-	type = (MoveType) tmp;
+	type = (MoveType)tmp;
 	p >> hitTeleport;
 	p >> hitSlide;
 	p >> path_size;
@@ -50,7 +50,7 @@ sf::Packet ComponentAI::dumpComponent()
 {
 	sf::Packet p;
 
-	p << (uint32_t) type;
+	p << (uint32_t)type;
 	p << hitTeleport;
 	p << hitSlide;
 	p << (uint32_t) path.size();
@@ -60,7 +60,6 @@ sf::Packet ComponentAI::dumpComponent()
 		path.pop_front();
 		p << vec;
 		path.push_back(vec);
-
 	}
 	return p;  // does nothing
 }

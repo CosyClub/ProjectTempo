@@ -17,9 +17,22 @@ void SystemHealth::CheckHealth()
 		if ((h.current_health <= 0)) {
 			// printf("\nEntity ID: %ld has just been \"killed\". \n", id.index);
 			// This got too annoying
-			if (entity.hasComponent<ComponentStagePosition>()) {
-				entity.getComponent<ComponentStagePosition>().movePosition(
-				  glm::ivec2(1000, 1000));  // poof
+			if (entity.hasComponent<ComponentPlayerRemote>() ||
+			    entity.hasComponent<ComponentPlayerLocal>())
+			{
+				if (entity.hasComponent<ComponentStagePosition>()) {
+					entity.getComponent<ComponentStagePosition>().setPosition(
+					  glm::ivec2(40, 7));  // poof
+					h.current_health = h.max_health;
+				}
+			}
+			else
+			{
+				if (entity.hasComponent<ComponentStagePosition>()) {
+					entity.getComponent<ComponentStagePosition>().setPosition(
+					  glm::ivec2(1000, 1000));  // poof
+					h.current_health = h.max_health;
+				}
 			}
 			// entity.deactivate();
 		}
@@ -127,7 +140,7 @@ void SystemHealth::regenerate()
 		auto &c = entity.getComponent<tempo::ComponentCombo>();
 
 		if( c.comboCounter > 20) {
-			h.HealthUpdate(1);
+			h.HealthUpdate(2);
 		}
 	}
 }
