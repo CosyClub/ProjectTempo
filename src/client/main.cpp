@@ -281,8 +281,6 @@ int main(int argc, const char** argv)
 	}
 	entity_player.addComponent<client::ComponentKeyInput>();
 	entity_player.activate();
-	client::ComponentRenderSceneNode& sn =
-	  entity_player.getComponent<client::ComponentRenderSceneNode>();
 
 	auto& combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
 	auto& comp_health = entity_player.getComponent<tempo::ComponentHealth>();
@@ -356,6 +354,8 @@ int main(int argc, const char** argv)
 			// TODO: Make a system for updating camera position
 			irr::scene::ICameraSceneNode *camera_node;
 			camera_node = smgr->addCameraSceneNode();
+			client::ComponentRenderSceneNode& sn =
+				entity_player.getComponent<client::ComponentRenderSceneNode>();
 			irr::core::vector3df camera_target = sn.node->getAbsolutePosition();
 			camera_node->setPosition(camera_target + irr::core::vector3df(7, 9, 0));
 			camera_node->updateAbsolutePosition();
