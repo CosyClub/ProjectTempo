@@ -44,6 +44,8 @@ class SystemUpdateKeyInput : public anax::System<anax::Requires<client::Componen
 	void setup(irr::IrrlichtDevice *device);
 	// clears and updates the keys in each component
 	void addKeys();
+
+	std::vector<client::KeyEvent> getKeys();
 	// possibly not needed
 	void clear();
 };

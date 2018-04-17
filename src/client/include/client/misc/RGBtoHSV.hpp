@@ -18,7 +18,7 @@ namespace client{
   irr::video::SColor hueShift(irr::video::SColor col, irr::f32 shift);
 
 	// Returns a random vibrant colour interpolated between red and purple
-	irr::video::SColor randomHSV();
+	irr::video::SColor randomHSV(int index);
 }
 
 #endif

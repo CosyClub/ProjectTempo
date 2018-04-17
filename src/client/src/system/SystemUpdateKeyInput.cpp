@@ -75,6 +75,17 @@ void SystemUpdateKeyInput::addKeys()
 	receiver.clearChars();
 }
 
+std::vector<client::KeyEvent> SystemUpdateKeyInput::getKeys()
+{
+	std::vector<client::KeyEvent> keys_temp = receiver.getChars();
+	// clear the keys in the receiver
+	receiver.clearChars();
+
+	// std::cout << "reciever.size(): " << keys_temp.size() << std::endl;
+
+	return keys_temp;
+}
+
 void SystemUpdateKeyInput::clear()
 {
 	auto entities = getEntities();
