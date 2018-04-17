@@ -4,27 +4,37 @@
 namespace client
 {
 
+	void SystemRenderGUI::init(irr::IrrlichtDevice *device,
+		                         irr::video::IVideoDriver* driver,
+		                         bool enable_hud) {
+
+		if(enable_hud) {
+			texture_HUD = driver->getTexture("resources/materials/textures/hud/HUD.png");
+
+			irr::core::stringw active_path = L"resources/materials/textures/hud/HUD-Active-";
+			irr::core::stringw semi_path = L"resources/materials/textures/hud/HUD-SemiActive-";
+
+			char buffer[5];
+
+			irr::core::stringw str = L"";
+			str += buffer;
+			for(int i = 0; i < 10; i++)
+			{
+				sprintf(buffer, "%d", i);
+				texture_HUD_Active[i] = driver->getTexture(active_path + buffer + ".png");
+				texture_HUD_Semi_Active[i] = driver->getTexture(semi_path + buffer + ".png");
+			}
+
+		}
+
+	}
+
+
 void SystemRenderGUI::setup(irr::IrrlichtDevice *device,
 	                          irr::video::IVideoDriver* driver,
 	                          bool enable_hud) {
 
 	if(enable_hud) {
-		texture_HUD = driver->getTexture("resources/materials/textures/hud/HUD.png");
-
-		irr::core::stringw active_path = L"resources/materials/textures/hud/HUD-Active-";
-		irr::core::stringw semi_path = L"resources/materials/textures/hud/HUD-SemiActive-";
-
-		char buffer[5];
-
-		irr::core::stringw str = L"";
-		str += buffer;
-		for(int i = 0; i < 10; i++)
-		{
-			sprintf(buffer, "%d", i);
-			texture_HUD_Active[i] = driver->getTexture(active_path + buffer + ".png");
-			texture_HUD_Semi_Active[i] = driver->getTexture(semi_path + buffer + ".png");
-		}
-
 		HUD = device->getGUIEnvironment()->addImage(
 		                texture_HUD,
 		                irr::core::position2d<irr::s32>(0,0), true);

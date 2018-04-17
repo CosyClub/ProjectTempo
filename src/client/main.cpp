@@ -219,7 +219,7 @@ int main(int argc, const char **argv)
 	system_update_key_input.setup(device);
 	system_stage_renderer.setup(smgr, driver,{255, 175, 0, 0}, {255, 50, 50, 50});
 	system_render_scene_node.setup(smgr, driver);
-	system_render_gui.setup(device, driver, enable_hud);
+	system_render_gui.init(device, driver, enable_hud);
 
 	// must be after system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);
@@ -337,7 +337,7 @@ int main(int argc, const char **argv)
 			gui_env->drawAll();
 			driver->endScene();
 		}
-		
+
 		device->getGUIEnvironment()->clear();
 	}
 	system_render_gui.setup(device, driver, enable_hud);

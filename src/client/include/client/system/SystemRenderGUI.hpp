@@ -56,6 +56,10 @@ struct SystemRenderGUI {
 		                     const irr::core::dimension2du screenSize);
 
 	public:
+		void init(irr::IrrlichtDevice* device,
+		          irr::video::IVideoDriver* driver,
+		          bool enable_hud);
+
 		void setup(irr::IrrlichtDevice* device,
 		           irr::video::IVideoDriver* driver,
 		           bool enable_hud);
