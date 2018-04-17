@@ -52,26 +52,21 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 			sn.node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
 			sn.billboard = new irr::scene::YAlignedBillboardSceneNode(sn.node, smgr, -1, pos, size, color, color);
 
-			const std::string& path = m.path;
-			std::cout << path << std::endl;
-			irr::video::ITexture *spritesheet = driver->getTexture(path.c_str());
-
 			driver->setTextureCreationFlag(irr::video::ETCF_ALWAYS_32_BIT,true);
 			// sn.billboard->setColor(color);
 			sn.billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 			sn.billboard->setMaterialType( irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL );
-			sn.billboard->setMaterialTexture( 0, spritesheet);
-			
+
 			sn.spriteDim = m.spriteDim;
-			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(1.f / sn.spriteDim.y, 1.f / sn.spriteDim.x);
+
 			sn.updateNeeded = true;
 		}
 	}
 
-	update();
+	update(driver);
 }
 
-void SystemRenderSceneNode::update()
+void SystemRenderSceneNode::update(irr::video::IVideoDriver *driver)
 {
 	auto entities = getEntities();
 
@@ -94,11 +89,34 @@ void SystemRenderSceneNode::update()
 			}
 			sn.spritePos.y = (float) ((dirIndex + 3) % 4) / sn.spriteDim.y;
 			if (sr.previousFacing == sr.facing) {
-				sn.spritePos.x = sn.spritePos.x + 1.f / sn.spriteDim.x;
+				++sn.spritePos.x;
 			} else {
-				sn.spritePos.x = 1.f / sn.spriteDim.x;
+				sn.spritePos.x = 0;
 			}
-			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureTranslate(sn.spritePos.x, sn.spritePos.y);
+
+			tempo::ComponentModel &m = entity.getComponent<tempo::ComponentModel>();
+
+			char path_buffer     [512];
+			char extension_buffer[ 32];
+
+			strcpy(path_buffer, m.path.c_str());
+
+			char* last_dot = nullptr;
+			char* cur      = path_buffer;
+			while(*cur){
+				if(*cur == '.'){ last_dot = cur; }
+				++cur;
+			}
+
+			strcpy(extension_buffer, last_dot);
+			last_dot[0] = '_';
+			last_dot[1] = '0' + (dirIndex + 3) % 4;
+			last_dot[2] = '_';
+			last_dot[3] = '0' + ((int)sn.spritePos.x) % 4;
+			strcpy(&last_dot[4], extension_buffer);
+
+			irr::video::ITexture* sprite = driver->getTexture(path_buffer);
+			sn.billboard->setMaterialTexture(0, sprite);
 			sn.updateNeeded = false;
 		}
 

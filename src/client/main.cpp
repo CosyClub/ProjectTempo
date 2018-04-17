@@ -373,7 +373,7 @@ int main(int argc, const char **argv)
 
 			// Graphics updates
 			// std::cout << "START OF CRASH LINE 312 CLIENT MAIN.CPP" << std::endl;
-			system_render_scene_node.update();
+			system_render_scene_node.update(driver);
 			// std::cout << "IF YOU SEE THIS AFTER A SECOND CLIENT CONNECTS YOU FIXED IT" <<
 			// std::endl;
 			system_render_health_bars.update();
