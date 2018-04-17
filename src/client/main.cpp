@@ -66,26 +66,25 @@ namespace client
 	 	anax::Requires<
 	 	tempo::ComponentStageTranslation,
 	 	tempo::ComponentStagePosition,
-	 	tempo::ComponentStage,
-	 	tempo::ComponentPlayerLocal>
+	 	tempo::ComponentStage>
 	 	>
 	 {
 	 public:
 	 	void lessJank() {
 	 		// uncomment this for more jank:
 	 		//return;
-	
+
 	 		auto& entities = getEntities();
-	
+
 	 		for (auto& entity : entities) {
 	 			tempo::ComponentStageTranslation& trans = entity.getComponent<tempo::ComponentStageTranslation>();
 	 			tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
 	 			glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
-	
-	
-	
+
+
+
 	 			glm::ivec2 dest = origin + trans.delta;
-	
+
 	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5) {
 	 				// consume the moment before the server rejects you
 	 				// currently combos aren't server protected, so maybe this should move into lib-tempo?
@@ -367,7 +366,7 @@ int main(int argc, const char **argv)
 			system_health.CheckHealth();
 			system_health.client_receiveHealth(world);
 
-			// system_less_jank.lessJank();
+			system_less_jank.lessJank();
 			// Update animations from translations received from server
 			system_translation_animation.updateAnimations();
 
