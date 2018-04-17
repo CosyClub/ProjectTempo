@@ -13,22 +13,6 @@ namespace client
 {
 void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
 {
-	irr::core::dimension2d<irr::f32> sizePlayer(1.2f, 1.7f);
-	irr::core::dimension2d<irr::f32> sizeKnight(2.0f, 2.7f);
-	irr::core::dimension2d<irr::f32> sizeCreeper(1.3f, 1.7f);
-	irr::core::dimension2d<irr::f32> sizeAOE(1.2f, 2.0f);
-	irr::core::dimension2d<irr::f32> sizeStill(1.3f, 1.7f);
-
-	// irr::core::vector3df             posPlayer(0.0f, 0.0f + sizePlayer.Height / 2, 0.0f);
-	// irr::core::vector3df             posRogue(0.0f, 0.0f + sizeRogue.Height / 2, 0.0f);
-	irr::core::dimension2d<irr::f32> size(1.2f, 1.6f);
-	irr::core::vector3df             pos(0.0f, 0.2f + size.Height / 2, 0.0f);
-	irr::core::vector3df						 posPlayer(0.0f, 0.2f + sizePlayer.Height / 2, 0.0f);
-	irr::core::vector3df 						 posKnight(0.0f, 0.2f + sizeKnight.Height / 2, 0.0f);
-	irr::core::vector3df						 posCreeper(0.0f, 0.2f + sizeCreeper.Height / 2, 0.0f);
-	irr::core::vector3df						 posAOE(0.0f, 0.2f + sizeAOE.Height / 2, 0.0f);
-	irr::core::vector3df 						 posStill(0.0f, 0.2f + sizeStill.Height / 2, 0.0f);
-
 	auto entities = getEntities();
 
 	for (auto entity : entities) {
@@ -60,42 +44,31 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager *smgr, irr::video::I
 			std::cout << "Adding billboard" << std::endl;
 			sn.node->setPosition(irr::core::vector3df(0.0f, 0.0f, 0.0f));
 
-			if (m.path.find("knight") != std::string::npos) {
-				size = sizeKnight;
-				pos = posKnight;
-			}
-			else if (m.path.find("creeper") != std::string::npos) {
-				size = sizeCreeper;
-				pos = posCreeper;
-			}
-			else if (m.path.find("totem") != std::string::npos) {
-				size = sizeAOE;
-				pos = posAOE;
-			}
-			else if (m.path.find("zombie") != std::string::npos) {
-				size = sizeStill;
-				pos = posStill;
-			}
-			else if (m.path.find("player") != std::string::npos) {
-				size = sizePlayer;
-				pos = posPlayer;
-			}
-
-			sn.billboard = new irr::scene::YAlignedBillboardSceneNode(sn.node, smgr, -1, pos, size, color, color);
-
 			const std::string& path = m.path;
 			std::cout << path << std::endl;
 			irr::video::ITexture *spritesheet = driver->getTexture(path.c_str());
 
-			driver->setTextureCreationFlag(irr::video::ETCF_ALWAYS_32_BIT,true);
-			// sn.billboard->setColor(color);
-			sn.billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-			sn.billboard->setMaterialType( irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL );
-			sn.billboard->setMaterialTexture( 0, spritesheet);
+			irr::core::dimension2d<irr::u32> usize = spritesheet->getOriginalSize();
+			std::cout << "sn.spritePos = (" << sn.spritePos.x << ", " << sn.spritePos.y << ")" << std::endl;
+			std::cout << "sn.spriteDim = (" << sn.spriteDim.x << ", " << sn.spriteDim.y << ")" << std::endl;
+			std::cout << "usize = (" << usize.Height << ", " << usize.Width << ")" << std::endl;
 
-			sn.spriteDim = m.spriteDim;
-			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(1.f / sn.spriteDim.x, 1.f / sn.spriteDim.y);
-			sn.updateNeeded = true;
+			irr::core::dimension2d<irr::f32> size(1.0f, 1.0f);
+			irr::core::vector3df pos(0.0f, size.Height / 2.0f, 0.0f);
+
+			std::cout << "size = (" << size.Height << ", " << size.Width << ")" << std::endl;
+			std::cout << "pos = (" << pos.X << ", " << pos.Y << ", " << pos.Z << ")" << std::endl;
+			sn.billboard = new irr::scene::YAlignedBillboardSceneNode(sn.node, smgr, -1, pos, size, color, color);
+
+			driver->setTextureCreationFlag(irr::video::ETCF_ALWAYS_32_BIT,true);
+			sn.billboard->setColor(color);
+			// sn.billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+			// sn.billboard->setMaterialType( irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL );
+			// sn.billboard->setMaterialTexture( 0, spritesheet);
+			//
+			// sn.spriteDim = m.spriteDim;
+			// //sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(1.f / sn.spriteDim.x, 1.f / sn.spriteDim.y);
+			// sn.updateNeeded = true;
 		}
 	}
 
@@ -117,33 +90,32 @@ void SystemRenderSceneNode::update()
 
 		if (sn.isMesh) continue;
 
-		// Change Sprite based on Facing
-		if (sn.updateNeeded) {
-			int dirIndex = 0;
-			for (int I = 0; I < 4; I++) {
-				if( tempo::DIRECTIONS[I] == sr.facing ) dirIndex = I;
-			}
-			sn.spritePos.y = (float) ((dirIndex + 3) % 4) / sn.spriteDim.y;
-			if (sr.previousFacing == sr.facing) {
-				sn.spritePos.x = sn.spritePos.x + 1.f / sn.spriteDim.x;
-			} else {
-				sn.spritePos.x = 1.f / sn.spriteDim.x;
-			}
-			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureTranslate(sn.spritePos.x, sn.spritePos.y);
-			sn.updateNeeded = false;
-		}
+		// // Change Sprite based on Facing
+		// if (sn.updateNeeded) {
+		// 	int dirIndex = 0;
+		// 	for (int I = 0; I < 4; I++) {
+		// 		if( tempo::DIRECTIONS[I] == sr.facing ) dirIndex = I;
+		// 	}
+		// 	sn.spritePos.y = (float) ((dirIndex + 3) % 4) / sn.spriteDim.y;
+		// 	if (sr.previousFacing == sr.facing) {
+		// 		sn.spritePos.x = sn.spritePos.x + 1.f / sn.spriteDim.x;
+		// 	} else {
+		// 		sn.spritePos.x = 1.f / sn.spriteDim.x;
+		// 	}
+		// 	sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureTranslate(sn.spritePos.x, sn.spritePos.y);
+		// 	sn.updateNeeded = false;
+		// }
 
-		if (entity.hasComponent<tempo::ComponentCombo>())
-		{
-			tempo::ComponentCombo& c = entity.getComponent<tempo::ComponentCombo>();
-			float scale = c.comboCounter / 20.f;
-			scale = fmin(scale, 0.5);
-			irr::core::dimension2d<irr::f32> size(1.2f + 1.2f * scale, 1.6f +  1.6f * scale);
-			irr::core::vector3df             pos(0.0f + 0.2 * scale, 0.0f + size.Height / 2, 0.0f);
-			sn.billboard->setSize(size);
-			sn.billboard->setPosition(pos);
-
-		}
+		// if (false && entity.hasComponent<tempo::ComponentCombo>())
+		// {
+		// 	tempo::ComponentCombo& c = entity.getComponent<tempo::ComponentCombo>();
+		// 	float scale = c.comboCounter / 20.f;
+		// 	scale = fmin(scale, 0.5);
+		// 	irr::core::dimension2d<irr::f32> size(1.2f + 1.2f * scale, 1.6f +  1.6f * scale);
+		// 	irr::core::vector3df             pos(0.0f + 0.2 * scale, 0.0f + size.Height / 2, 0.0f);
+		// 	sn.billboard->setSize(size);
+		// 	sn.billboard->setPosition(pos);
+		// }
 
 		sr.previousFacing = sr.facing;
 		sn.node->setPosition(irr::core::vector3df(pos.x, s.getHeight(pos), pos.y));
