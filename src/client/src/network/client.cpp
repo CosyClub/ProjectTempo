@@ -24,7 +24,7 @@ sf::Int64 timeSyncClient(tempo::Clock *clock)
 	// Initialise time sync protocol variables
 	sf::Int64 T1  = 0;  // PACKET: Previous packet time of departure
 	sf::Int64 T2  = 0;  // PACKET: Previous packet time of arrival
-	sf::Int64 T3  = 0;  // PACKET: Current pakcet time of departure
+	sf::Int64 T3  = 0;  // PACKET: Current packet time of departure
 	sf::Int64 T4  = 0;  // PACKET: Current packet time of arrival
 	sf::Int64 org = 0;  // STATE:  Time when message departed from peer
 	// sf::Int64 rec    = 0; // STATE:  Time when we received from the peer
