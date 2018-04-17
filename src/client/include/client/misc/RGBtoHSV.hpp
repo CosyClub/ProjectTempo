@@ -1,8 +1,8 @@
 #ifndef CLIENT_MISC_RGBtoHSV
 #define CLIENT_MISC_RGBtoHSV
 
-#include <irrlicht.h>
-#include <algorithm>
+#include <vector3d.h>
+#include <SColor.h>
 
 namespace client{
 	irr::core::vector3df RGBftoHSV(irr::video::SColorf rgb);
@@ -16,6 +16,9 @@ namespace client{
   irr::video::SColorf hueShift(irr::video::SColorf col, irr::f32 shift);
 
   irr::video::SColor hueShift(irr::video::SColor col, irr::f32 shift);
+
+	// Returns a random vibrant colour interpolated between red and purple
+	irr::video::SColor randomHSV();
 }
 
 #endif

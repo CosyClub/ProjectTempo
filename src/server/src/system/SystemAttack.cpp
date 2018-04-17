@@ -25,7 +25,7 @@ SystemAttack::SystemAttack(anax::World &world)
 	world.refresh();
 }
 
-void SystemAttack::recieveAttacks(anax::World &w)
+void SystemAttack::receiveAttacks(anax::World &w)
 {
 	tempo::Queue<sf::Packet> *q = tempo::get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
 
@@ -46,7 +46,7 @@ void SystemAttack::recieveAttacks(anax::World &w)
 		switch (static_cast<tempo::MessageAttack>(code)) {
 		case tempo::MessageAttack::UPDATE_INTENT: {
 			if (!e.hasComponent<tempo::ComponentAttack>()) {
-				std::cout << "Recieved Attack Intent Update from entity without ComponentAttack"
+				std::cout << "Received Attack Intent Update from entity without ComponentAttack"
 				          << std::endl;
 				continue;
 			}
@@ -59,7 +59,7 @@ void SystemAttack::recieveAttacks(anax::World &w)
 			break;
 		}
 		case tempo::MessageAttack::ATTACK_CORRECTION:
-			// do nothing, server should not recieve corrections
+			// do nothing, server should not receive corrections
 			break;
 		default: std::cout << "ATTACK: Unhandled/erroneous message" << std::endl;
 		}
@@ -85,7 +85,7 @@ bool SubSystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
 	glm::ivec2  attackerpos = attacker.getComponent<tempo::ComponentStagePosition>().getOrigin();
 	glm::ivec2  rot         = attacker.getComponent<tempo::ComponentStageRotation>().facing;
 	auto &      weapon      = attacker.getComponent<tempo::ComponentWeapon>();
-	
+
 	glm::ivec2 bestDirection;
 	float bestDamage = 0;
 
@@ -108,7 +108,7 @@ bool SubSystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
 
 			// Add positions after stage translation (if any) to ps vector
 			// TODO: This doesn't take into account if the movement system
-			//       doesn't accept a stage translation. Work out if 
+			//       doesn't accept a stage translation. Work out if
 			//       that matters?
 			if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
 				glm::ivec2 d = entity.getComponent<tempo::ComponentStageTranslation>().delta;
@@ -136,14 +136,14 @@ bool SubSystemAttack::bestAttack(anax::Entity attacker, glm::ivec2 &direction)
 			}
 		}
 
-		if ( currentDamage >= bestDamage ) 
+		if ( currentDamage >= bestDamage )
 		{
 			bestDamage = currentDamage;
 			bestDirection = rot;
 		}
 	}
 
-	direction = bestDirection;	
+	direction = bestDirection;
 	return bestDamage;
 }
 

@@ -7,6 +7,7 @@
 build/
 CMakeFiles/
 CMakeCache\.txt
+CMakeLists.txt.user
 Ogre\.log
 cmake_install\.cmake
 Makefile

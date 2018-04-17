@@ -34,7 +34,9 @@ void SystemCombo::checkForUpdates(anax::World &world)
 		uint8_t          message;
 		update >> id >> message;
 
-		anax::Entity e(world, tempo::servertolocal[id]);
+		SERVERTOLOCAL(id)
+		if (id.isNull()) continue;
+		anax::Entity e(world, id);
 
 		switch (static_cast<tempo::MessageCombo>(message)) {
 		case tempo::MessageCombo::BROKEN_COMBO:

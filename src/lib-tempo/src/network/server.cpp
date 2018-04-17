@@ -34,6 +34,9 @@ namespace tempo
 std::map<uint32_t, tempo::clientConnection> clients;
 std::mutex                                  cmtx;
 
+// Refer to documentation in tempo/network/base.hpp
+bool allowUnknownIfHandshake = true;
+
 // For use in a separate thread by server to deal with a client so the main time
 // sync thread can continue listening for more clients whilst dealing with this.
 // This function acts as peer B in our brutalised version of NTP (RFC5905)
@@ -46,7 +49,7 @@ void timeSyncHandler(tempo::Clock *clock, sf::TcpSocket *client)
 	sf::Int64 T3  = 0;  // PACKET: Current pakcet time of departure
 	sf::Int64 T4  = 0;  // PACKET: Current packet time of arrival
 	sf::Int64 org = 0;  // STATE:  Time when message departed from peer
-	sf::Int64 rec = 0;  // STATE:  Time when we recieved from the peer
+	sf::Int64 rec = 0;  // STATE:  Time when we received from the peer
 	sf::Int64 xmt = 0;  // STATE:  Time when we transmitted to the peer
 
 	for (int i = 0; i < TIMESYNC_ITERS; i++) {
@@ -141,9 +144,10 @@ void timeSyncServer(tempo::Clock *clock)
 // Will not check if client already exists, just add the information as a new
 // client, so it is recommended to use `if (!findClientID(ip, port)) first!
 static uint32_t idCounter = NO_CLIENT_ID + 1;
-uint32_t        addClient(sf::Uint32 ip, unsigned short port, ClientRole role = ClientRole::NO_ROLE)
+
+uint32_t addClient(sf::Uint32 ip, unsigned short iport, unsigned short oport, ClientRole role = ClientRole::NO_ROLE)
 {
-	clientConnection newClient = {ip, port, role};
+	clientConnection newClient = {ip, iport, oport, role, anax::Entity::Id(), 0};
 	cmtx.lock();
 	clients.insert(std::make_pair(idCounter, newClient));
 	cmtx.unlock();
@@ -152,10 +156,15 @@ uint32_t        addClient(sf::Uint32 ip, unsigned short port, ClientRole role = 
 
 uint32_t findClientID(sf::Uint32 ip, unsigned short port)
 {
+	sf::Uint32 search = ip;
+	if (search == sf::IpAddress("127.0.0.1").toInteger()) {
+		search = sf::IpAddress::getLocalAddress().toInteger();
+	}
+
 	// Loop through clients
 	cmtx.lock();
 	for (clientpair element : clients) {
-		if (element.second.ip == ip && element.second.port == port) {
+		if (element.second.ip == search && (element.second.iport == port || element.second.oport == port)) {
 			cmtx.unlock();
 			return element.first;
 		}
@@ -169,7 +178,7 @@ void removeClientId(sf::Uint32 ip, unsigned short port)
 	// Loop through clients
 	cmtx.lock();
 	for (clientpair element : clients) {
-		if (element.second.ip == ip && element.second.port == port) {
+		if (element.second.ip == ip && (element.second.iport == port || element.second.oport == port)) {
 			clients.erase(element.first);
 			cmtx.unlock();
 			return;
@@ -231,22 +240,24 @@ void handshakeHello(sf::Packet &packet, anax::World *world)
 {
 	// Extract information from packet
 	sf::Uint32     ip;
-	unsigned short updatePort = 0;
+	unsigned short iPort = 0;
+	unsigned short oPort = 0;
 	packet >> ip;
-	packet >> updatePort;
+	packet >> iPort;
+	packet >> oPort;
 	sf::IpAddress sender(ip);
-	std::cout << "New client (" << sender.toString() << ":" << updatePort << ") Connecting!"
+	std::cout << "New client (" << sender.toString() << ":" << oPort << ") Connecting!"
 	          << std::endl;
 
 	// Register Client Internally
 	uint32_t id = NO_CLIENT_ID;
-	if (findClientID(ip, updatePort) == NO_CLIENT_ID) {
-		id = addClient(ip, updatePort);
+	if (findClientID(ip, iPort) == NO_CLIENT_ID) {
+		id = addClient(ip, iPort, oPort);
 	} else {
-		id = findClientID(ip, updatePort);
+		id = findClientID(ip, iPort);
 		// TODO: Time out old client and make a new one
 		std::cout << "WARNING: Connected client tried to reconnect (" << id << ", " << sender << ":"
-		          << updatePort << ")" << std::endl;
+		          << oPort << ")" << std::endl;
 	}
 
 	// Work out how many components there are in the world
@@ -292,6 +303,7 @@ void handshakeRoleReq(sf::Packet &packet, anax::World *world)
 	// Register Role
 	cmtx.lock();
 	clients[id].role = static_cast<ClientRole>(role);
+	clients[id].id   = newEntity.getId();
 	cmtx.unlock();
 
 	// Construct ROLEREQ_ROG response
@@ -330,7 +342,7 @@ void checkForClientCreation(anax::World *world)
 		case HandshakeID::ROLEREQ: handshakeRoleReq(packet, world); break;
 		default:
 			std::cout << "WARNING: an invalid handshake message was "
-			          << "recieved ... ignoring" << std::endl;
+			          << "received ... ignoring" << std::endl;
 			break;
 		}
 	}
@@ -350,19 +362,24 @@ void checkForClientDeletion(anax::World &world)
 		sf::Packet       broadcast;
 		anax::Entity::Id id;
 		uint32_t         ip_d;
-		uint32_t         port;
-		packet >> id >> ip_d >> port;
+		unsigned short   port;
+		bool             intentional;
+		packet >> id >> ip_d >> port >> intentional;
 		broadcast << id;
 		sf::IpAddress ip(ip_d);
 
-		std::cout << "Client (" << ip.toString() << ":" << port << ") Disconnected." << std::endl;
-		try {
+		if (intentional) {
+			std::cout << "Client (" << ip.toString() << ":" << port << ") Disconnected." << std::endl;
+		} else {
+			std::cout << "Client (" << ip.toString() << ":" << port << ") Timed Out." << std::endl;
+		}
+		
+		if (!id.isNull()) {
 			anax::Entity e(world, id);
 			world.killEntity(e);
-			removeClientId(ip.toInteger(), port);
-		} catch (...) {
-			std::cout << "Something went very wrong!!!" << std::endl;
 		}
+		removeClientId(ip.toInteger(), port);
+		
 		broadcastMessage(tempo::QueueID::ENTITY_DELETION, broadcast);
 	}
 	world.refresh();
@@ -390,10 +407,10 @@ void listenForClientUpdates()
 			continue;
 		}
 
-		if (ip == "0.0.0.0") continue;
-
 		// Sort packet into respective system.
-		sortPacket(packet);
+		bool o = sortPacket(packet, findClientID(ip.toInteger(), port));
+		if (!o) std::cout << "Dropped invalid packet/message from unknown address ("
+			          << ip.toString() << ":" << port << ")." << std::endl;
 	}
 
 	return;
@@ -426,7 +443,7 @@ bool sendMessage(tempo::QueueID id, sf::Packet payload, uint32_t client_id)
 	message << id;
 	message << payload;
 
-	return sock_o.send(message, sf::IpAddress(clients[client_id].ip), clients[client_id].port)
+	return sock_o.send(message, sf::IpAddress(clients[client_id].ip), clients[client_id].iport)
 	       == sf::Socket::Done;
 }
 
