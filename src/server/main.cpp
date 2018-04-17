@@ -126,6 +126,10 @@ int main(int argc, const char **argv)
 	tempo::createMobStill(world, glm::ivec2(40, 42));
 	tempo::createMobStill(world, glm::ivec2(44, 42));
 
+	tempo::createMobStill(world, glm::ivec2(36, 12));
+	tempo::createMobStill(world, glm::ivec2(40, 12));
+	tempo::createMobStill(world, glm::ivec2(44, 12));
+
 for(int j = 0; j <10; j++){
 	tempo::createMobCreeper(world, glm::ivec2(40, 64));
 }

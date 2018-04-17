@@ -57,18 +57,18 @@ void SystemRenderHealthBars::update()
 		healthbar->setColor(colour_health);
 
 
-		if (entity.hasComponent<tempo::ComponentCombo>())
-		{
-			tempo::ComponentCombo& c = entity.getComponent<tempo::ComponentCombo>();
-			float scale = c.comboCounter / 20.f;
-			scale = fmin(scale, 0.5);
-			newSize += newSize * scale;
-			irr::core::vector3df          pos(-0.3f, 1.6f + newSize.Height / 2, 0.0f);
-			pos += pos * scale;
-			healthbar->setSize(newSize);
-			healthbar->setPosition(pos);
+		//if (entity.hasComponent<tempo::ComponentCombo>())
+		//{
+		//	tempo::ComponentCombo& c = entity.getComponent<tempo::ComponentCombo>();
+		//	float scale = c.comboCounter / 20.f;
+		//	scale = fmin(scale, 0.5);
+		//	newSize += newSize * scale;
+		//	irr::core::vector3df          pos(-0.3f, 1.6f + newSize.Height / 2, 0.0f);
+		//	pos += pos * scale;
+		//	healthbar->setSize(newSize);
+		//	healthbar->setPosition(pos);
 
-		}
+		//}
 	}
 }
 }

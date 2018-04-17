@@ -314,7 +314,7 @@ int main(int argc, const char** argv)
 		sn.node, 
 		smgr, 
 		-1, 
-		irr::core::vector3df(7, 9, 0), 
+		irr::core::vector3df(7, 2, 0), 
 		irr::core::vector3df(0, 0, 0));
 	smgr->setActiveCamera(camera_node);
 
