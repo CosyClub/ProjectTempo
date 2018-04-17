@@ -85,7 +85,7 @@ void SystemStageRenderer::setTileColor(glm::ivec2 pos, irr::video::SColor color)
 
 void SystemStageRenderer::colorStage(int                        step,
                                      irr::video::SColor         C1,
-				     irr::video::SColor         C2)
+                                     irr::video::SColor         C2)
 {
 	auto  entities = getEntities();
 	auto  entity   = std::begin(entities);

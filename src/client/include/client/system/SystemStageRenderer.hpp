@@ -58,12 +58,12 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 
 
 	void Update(irr::scene::ISceneManager *smgr,
-                    irr::video::IVideoDriver * driver,
-                    glm::ivec2                 playerpos);
+	            irr::video::IVideoDriver  *driver,
+	            glm::ivec2                 playerpos);
 
 	void colorStage(int                        j,
-                        irr::video::SColor         C1,
-			irr::video::SColor         C2);
+	                irr::video::SColor         C1,
+	                irr::video::SColor         C2);
 
 	void AnimateTiles(float dt);
 
