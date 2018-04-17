@@ -11,6 +11,7 @@ Clock::Clock(sf::Time first_beat, sf::Time delta)
 	passed_de   = false;
 	next_beat   = first_beat;
 	last_beat   = sf::Time::Zero;
+	beat_number = 0;
 	this->delta = delta;
 }
 
@@ -66,6 +67,10 @@ bool Clock::passed_delta_end()
 	return false;
 }
 
+sf::Time Clock::get_beat_window_delta(){
+	return this->delta;
+}
+
 float Clock::beat_progress()
 {
 	return since_beat() / (since_beat() + until_beat());
@@ -113,6 +118,7 @@ void Clock::update_beat()
 {
 	cache_time();
 	while (next_beat < time) {
+		++this->beat_number;
 		sf::Time beat_length = next_beat - last_beat;
 		last_beat            = next_beat;
 		next_beat            = last_beat + beat_length;
@@ -120,5 +126,9 @@ void Clock::update_beat()
 	passed_ds = false;
 	passed_de = false;
 	passed_ab = false;
+}
+
+unsigned int Clock::get_beat_number(){
+	return this->beat_number;
 }
 }
