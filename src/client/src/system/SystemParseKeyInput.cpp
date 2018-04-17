@@ -31,7 +31,7 @@ void addMovement(anax::Entity &entity, glm::ivec2 delta, tempo::Facing facing, b
 	anax::Entity::Id id = entity.getId();
 	LOCALTOSERVER(id)
 	if (id.isNull()) {
-		printf("Failed to find ID (%s:%s)", __FILE__, __LINE__);
+		printf("Failed to find ID (SystemParseKeyInput:%d)\n", __LINE__);
 		abort();
 	}
 	p << id;
@@ -81,7 +81,7 @@ void addAttack(anax::Entity &entity, bool withinDelta)
 		anax::Entity::Id id = entity.getId();
 		LOCALTOSERVER(id)
 		if (id.isNull()) {
-			printf("Failed to find ID (%s:%s)", __FILE__, __LINE__);
+			printf("Failed to find ID (SystemParseKeyInput:%d)\n", __LINE__);
 			abort();
 		}
 
@@ -119,11 +119,10 @@ void addHeal(anax::Entity &entity, bool withinDelta)
 void updateCombo(anax::Entity &entity, bool withinDelta)
 {
 	if (entity.hasComponent<tempo::ComponentCombo>()) {
-		tempo::ComponentCombo &c = entity.getComponent<tempo::ComponentCombo>();
 		anax::Entity::Id id = entity.getId();
 		LOCALTOSERVER(id)
 		if (id.isNull()) {
-			printf("Failed to find ID (%s:%s)", __FILE__, __LINE__);
+			printf("Failed to find ID (SystemParseKeyInput:%d)\n", __LINE__);
 			abort();
 		}
 
