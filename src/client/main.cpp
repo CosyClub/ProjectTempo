@@ -21,6 +21,7 @@
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
 #include <client/system/SystemTranslationAnimation.hpp>
+#include <client/misc/Camera.hpp>
 
 #include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
@@ -308,6 +309,15 @@ int main(int argc, const char** argv)
 	irr::video::SColor random_colour;
 	srand(clock.get_time().asMicroseconds());
 
+	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
+	irr::scene::ICameraSceneNode *camera_node = new irr::scene::Camera(
+		sn.node, 
+		smgr, 
+		-1, 
+		irr::core::vector3df(7, 9, 0), 
+		irr::core::vector3df(0, 0, 0));
+	smgr->setActiveCamera(camera_node);
+
 	printf("Entering main loop\n");
 	while (device->run()) {
 
@@ -352,14 +362,8 @@ int main(int argc, const char** argv)
 			system_render_healing.update();
 
 			// TODO: Make a system for updating camera position
-			irr::scene::ICameraSceneNode *camera_node;
-			camera_node = smgr->addCameraSceneNode();
-			client::ComponentRenderSceneNode& sn =
-				entity_player.getComponent<client::ComponentRenderSceneNode>();
-			irr::core::vector3df camera_target = sn.node->getAbsolutePosition();
-			camera_node->setPosition(camera_target + irr::core::vector3df(7, 9, 0));
-			camera_node->updateAbsolutePosition();
-			camera_node->setTarget(camera_target);
+			//camera_node->setPosition(sn.node->getAbsolutePosition() + irr::core::vector3df(7, 9, 0));
+			//camera_node->setTarget(sn.node->getAbsolutePosition());
 		}
 
 		////////////////
