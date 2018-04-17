@@ -292,7 +292,7 @@ void disconnectFromServer(anax::Entity &entity_player)
 	anax::Entity::Id id = entity_player.getId();
 	LOCALTOSERVER(id);
 	if (id.isNull()) {
-		printf("Wat!??! When trying to disconnect, we couldn't find the ID of ourself!\n");
+		printf("Wat!?!? When trying to disconnect, we couldn't find the ID of ourself!\n");
 	} else {
 		tempo::operator<<(p, id);
 		p << sf::IpAddress::getLocalAddress().toInteger();
