@@ -125,7 +125,9 @@ int main(int argc, const char **argv)
 	tempo::createMobStill(world, glm::ivec2(40, 42));
 	tempo::createMobStill(world, glm::ivec2(44, 42));
 
+for(int j = 0; j <10; j++){
 	tempo::createMobCreeper(world, glm::ivec2(40, 64));
+}
 
 	std::deque<glm::ivec2> path {glm::ivec2(64, 68),
 	                             glm::ivec2(64, 72),
