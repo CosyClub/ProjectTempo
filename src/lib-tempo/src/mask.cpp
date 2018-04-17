@@ -2,10 +2,10 @@
 
 namespace tempo
 {
-Mask::Mask(glm::ivec2 centre, float *data, glm::ivec2 size)
+Mask::Mask(glm::ivec2 centre, float* data, glm::ivec2 size)
 {
 	ctr = centre;
-	sz  = size;
+	sz = size;
 
 	for (int I = 0; I < sz.x * sz.y; I++) {
 		mask.push_back(data[I]);
@@ -16,8 +16,8 @@ Mask::Mask(glm::ivec2 centre, float *data, glm::ivec2 size)
 
 Mask::Mask()
 {
-	ctr  = glm::ivec2(0, 0);
-	sz   = glm::ivec2(0, 0);
+	ctr = glm::ivec2(0, 0);
+	sz = glm::ivec2(0, 0);
 	mask = std::vector<float>();
 }
 
@@ -38,7 +38,7 @@ float Mask::get_value(int x, int y)
 	}
 }
 
-sf::Packet &operator<<(sf::Packet &packet, const tempo::Mask &m)
+sf::Packet& operator<<(sf::Packet& packet, const tempo::Mask& m)
 {
 	packet << m.ctr;
 	packet << m.sz;
@@ -57,7 +57,7 @@ sf::Packet &operator<<(sf::Packet &packet, const tempo::Mask &m)
 	return packet;
 }
 
-sf::Packet &operator>>(sf::Packet &packet, tempo::Mask &m)
+sf::Packet& operator>>(sf::Packet& packet, tempo::Mask& m)
 {
 	packet >> m.ctr;
 	packet >> m.sz;
@@ -76,7 +76,7 @@ sf::Packet &operator>>(sf::Packet &packet, tempo::Mask &m)
 	m.positions = std::vector<glm::ivec2>();
 
 	for (uint32_t I = 0; I < size; I++) {
-		glm::ivec2 tmp_vec;
+			glm::ivec2 tmp_vec;
 		packet >> tmp_vec;
 		m.positions.push_back(tmp_vec);
 	}

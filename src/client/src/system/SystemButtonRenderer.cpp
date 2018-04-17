@@ -15,7 +15,7 @@ namespace
 }
 namespace client
 {
-void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
+void SystemButtonRenderer::setup(irr::scene::ISceneManager* smgr, irr::video::IVideoDriver* driver)
 {
 	this->buttonBlocked = driver->getTexture("resources/materials/buttonBlocked.png");
 	this->buttonArrow = driver->getTexture("resources/materials/buttonArrow.png");
@@ -31,8 +31,8 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IV
 		auto &group = entity.getComponent<tempo::ComponentButtonGroup>();
 		auto &rend  = entity.getComponent<client::ComponentRenderButtonGroup>();
 
-		if (rend.setup) continue;
-
+		if (rend.setup)
+			continue;
 
 		if (group.rhythmID == 0) { // Rhythm-less buttons
 			// button data
@@ -163,7 +163,7 @@ void SystemButtonRenderer::setRotation(std::vector<anax::Entity> entities, uint3
 
 }
 
-void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
+void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 {
 	auto entities = getEntities();
 	for (int i = entities.size() - 1; i >= 0; i--) {
@@ -172,9 +172,9 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver *driver)
 		auto &rend = entity.getComponent<client::ComponentRenderButtonGroup>();
 
 		// button data
-		auto &buttons = group.buttons;
+		auto& buttons = group.buttons;
 		// button render data
-		auto &buttonRend = rend.buttonsRender;
+		auto& buttonRend = rend.buttonsRender;
 
 		if (group.rhythmID == 0) { //Rhythm-less buttons
 
