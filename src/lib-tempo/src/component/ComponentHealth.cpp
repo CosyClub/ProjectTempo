@@ -28,10 +28,10 @@ void ComponentHealth::HealthUpdate(int delta_health)
 		this->current_health += delta_health;
 	}
 
-	// Stop health from going less than 0
-	if ((this->current_health < 0)) {
-		this->current_health = 0;
-	}
+	// // Stop health from going less than 0
+	// if ((this->current_health < 0)) {
+	// 	this->current_health = 0;
+	// }
 }
 
 /////
