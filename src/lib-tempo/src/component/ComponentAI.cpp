@@ -1,12 +1,16 @@
 #include <tempo/component/ComponentAI.hpp>
 
+int ai_index_top = 0;
+
 namespace tempo
 {
+
 ComponentAI::ComponentAI(MoveType m, bool teleport, bool slide)
 {
 	type = m;
 	hitTeleport = teleport;
 	hitSlide = slide;
+	index =  ai_index_top++;
 }
 ComponentAI::ComponentAI(MoveType m, bool teleport, bool slide, std::deque<glm::ivec2> p)
 {
@@ -14,6 +18,7 @@ ComponentAI::ComponentAI(MoveType m, bool teleport, bool slide, std::deque<glm::
 	hitTeleport = teleport;
 	hitSlide = slide;
 	path = p;
+	index =  ai_index_top++;
 }
 
 /////
