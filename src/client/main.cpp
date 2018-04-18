@@ -387,7 +387,6 @@ int main(int argc, const char** argv)
 		// const irr::u32 now = device->getTimer()->getTime();
 		dt = frame_clock.restart().asSeconds();
 		/// frameDeltaTime = (f32)(now - then)/1000.f; // Time in seconds
-		glm::ivec2 playerpos;
 		////////////////
 		// Events all the time
 		{
@@ -424,6 +423,8 @@ int main(int argc, const char** argv)
 			// Update animations from translations received from server
 			system_translation_animation.updateAnimations();
 
+			glm::ivec2 playerpos =
+				entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 			// Graphics updates
 			system_render_scene_node.update(playerpos);
 			system_render_health_bars.update(playerpos);
@@ -477,9 +478,6 @@ int main(int argc, const char** argv)
 			// system_lighting.update();
 
 		}
-
-		playerpos =
-		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
 
 		////////////////
