@@ -247,19 +247,15 @@ int main(int argc, const char** argv)
 		irr::gui::IGUIImage* splashScreen = device->getGUIEnvironment()->addImage(
 		                                  splash_texture[1],
 		                                  irr::core::position2d<irr::s32>(0,0), true);
-		printf("\n\n\n******************* About to start splash screen wait...\n\n\n");
 		bool waiting = true;
 		int i = 0;
 		sf::Clock splash_timer;
 		splash_timer.restart();
 		while (device->run() && waiting) {
-			printf("Waiting on splash screen...\n");
 			std::vector<client::KeyEvent> keys = system_update_key_input.getKeys();
 			for (unsigned int i = 0; i < keys.size(); i++) {
 				if (keys[i].press) waiting = false;
 			}
-
-			printf("i is: %i\n", i);
 
 			if(splash_timer.getElapsedTime().asSeconds() > 1.0f) {
 				splash_timer.restart();
@@ -274,7 +270,6 @@ int main(int argc, const char** argv)
 
 		device->getGUIEnvironment()->clear();
 	}
-	printf("\n\n\n******************* Ended spalsh screen wait...\n\n\n");
 	system_render_gui.setup(device, driver, enable_hud);
 
 	// Set up remote address, local ports and remote handshake port
