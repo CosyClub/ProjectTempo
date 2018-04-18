@@ -102,7 +102,7 @@ namespace client {
 		irr::scene::IAnimatedMesh *disco_ball_mesh = smgr->getMesh("resources/meshes/disco_ball.obj");
 		irr::video::ITexture* disco_ball_texture = driver->getTexture("resources/materials/disco_ball.jpg");
 		irr::video::ITexture* reflexes_texture = driver->getTexture("resources/materials/reflexes.jpg");
-		//irr::video::ITexture* estrela_texture = driver->getTexture("resources/materials/estrela_squared.png");
+		irr::video::ITexture* estrela_texture = driver->getTexture("resources/materials/estrela_squared.png");
 
 		for (glm::ivec2 pos : positions) {
 
@@ -152,7 +152,7 @@ namespace client {
 			nodeDiscoBall1->addAnimator(anim11);
 			anim11->drop();
 
-			/ Create particle system: (DISCO BALL N1 - reflexed lights)
+			// Create particle system: (DISCO BALL N1 - reflexed lights)
 			irr::scene::IParticleSystemSceneNode* ps60 = smgr->addParticleSystemSceneNode(false);
 
 			irr::scene::IParticleEmitter* em60 = ps60->createSphereEmitter( /// SPHERE Emitter (Same geometry as the mesh is)
