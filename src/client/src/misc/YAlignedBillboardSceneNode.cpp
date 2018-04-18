@@ -67,7 +67,7 @@ void YAlignedBillboardSceneNode::render()
 	core::vector3df pos = getAbsolutePosition();
 
 	core::vector3df campos = camera->getAbsolutePosition();
-	core::vector3df target = camera->getTarget();
+	core::vector3df target = camera->getTarget() + camera->getParent()->getAbsolutePosition();
 	core::vector3df up     = camera->getUpVector();
 	core::vector3df view   = target - campos;
 	view.normalize();
@@ -83,7 +83,7 @@ void YAlignedBillboardSceneNode::render()
 	// pointing down!
 	core::vector3df vertical = horizontal.crossProduct(view);
 	vertical.X               = 0;  // no x
-	vertical.Z               = 0;  // no z
+	//vertical.Z               = 0;  // no z
 	vertical.normalize();          // just y
 	vertical *= 0.5f * Size.Height;
 
