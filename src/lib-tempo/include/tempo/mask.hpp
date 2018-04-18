@@ -13,9 +13,16 @@ namespace tempo
 class Mask
 {
    public:
+	///< \brief The center of the mask
 	glm::ivec2              ctr;
+
+	///< \brief The size of the mask
 	glm::ivec2              sz;
+
+	///< \brief Floating point value associated with each tile of the mask
 	std::vector<float>      mask;
+
+	///< \brief List of positions covered by the mask
 	std::vector<glm::ivec2> positions;
 
 	Mask();
