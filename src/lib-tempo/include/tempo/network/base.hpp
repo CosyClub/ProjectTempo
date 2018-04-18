@@ -48,6 +48,7 @@ enum ClientRole { NO_ROLE, PLAYER, SPECTATOR };
 // requesting a new role.
 typedef struct {
 	std::string name;
+	int32_t party_number;
 } ClientRoleData;
 
 ////////////////////////////////////////////////////////////////////////
@@ -100,7 +101,7 @@ bool sortPacket(sf::Packet p, bool knownAddress);
 // Both client and server should define if they accept messages from unknown
 // parties. This flag should declare that. The only allowed messages from an
 // unknown party is a handshake message.
-extern bool allowUnknownIfHandshake; 
+extern bool allowUnknownIfHandshake;
 
 
 ////////////////////////////////////////////////////////////////////////

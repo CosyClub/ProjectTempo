@@ -34,7 +34,7 @@ namespace client {
 
 	}
 
-	void SystemLighting::update(irr::video::SColor colour) {
+	void SystemLighting::update(const irr::video::SColor colour) {
 
 		this->data_ML1.AmbientColor = colour;//irr::video::SColorf(red, green, blue, 0.0);
 		//this->data_ML1.SpecularColor = colour;//irr::video::SColorf(red, green, blue, 0.0);

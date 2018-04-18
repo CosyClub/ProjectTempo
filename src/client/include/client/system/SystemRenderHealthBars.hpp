@@ -8,6 +8,7 @@
 #include <client/component/ComponentRenderSceneNode.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentCombo.hpp>
+#include <tempo/component/ComponentStagePosition.hpp>
 
 #include <ISceneManager.h>
 
@@ -25,7 +26,7 @@ struct SystemRenderHealthBars
 	//          none
 	// Returns:
 	//          void
-	void update();
+	void update(const glm::ivec2 playerpos);
 
 	irr::core::dimension2d<irr::f32> original_size;
 };

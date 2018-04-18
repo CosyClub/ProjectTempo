@@ -7,6 +7,7 @@ ComponentHealth::ComponentHealth(int entity_health)
 	// Assign Health to Entity
 	this->max_health     = entity_health;
 	this->current_health = entity_health;
+	this->__prev_health  = entity_health;
 }
 
 ComponentHealth::ComponentHealth(int current_health, int max_health)
@@ -14,6 +15,7 @@ ComponentHealth::ComponentHealth(int current_health, int max_health)
 	// Assign Health to Entity
 	this->max_health     = max_health;
 	this->current_health = current_health;
+	this->__prev_health  = current_health;
 }
 
 void ComponentHealth::HealthUpdate(int delta_health)
@@ -41,6 +43,7 @@ ComponentHealth::ComponentHealth(sf::Packet p)
 {
 	p >> max_health;
 	p >> current_health;
+	p >> __prev_health;
 }
 
 sf::Packet ComponentHealth::dumpComponent()
@@ -48,6 +51,7 @@ sf::Packet ComponentHealth::dumpComponent()
 	sf::Packet p;
 	p << max_health;
 	p << current_health;
+	p << __prev_health;
 
 	return p;
 }
