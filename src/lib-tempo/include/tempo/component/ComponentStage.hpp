@@ -83,6 +83,8 @@ struct ComponentStage
 	// Returns true if there is a tile at position
 	bool existstTile(glm::ivec2 position);
 
+	bool isNavigable(glm::ivec2 position);
+
 	/////
 	// Required for networking
 	/////
