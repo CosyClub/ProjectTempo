@@ -7,6 +7,7 @@
 #include <tempo/component/ComponentAI.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentModel.hpp>
+#include <tempo/component/ComponentParty.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/component/ComponentSpikes.hpp>
@@ -80,6 +81,7 @@ anax::Entity addComponent(anax::World &w, sf::Packet p)
 			CASE(ComponentAI, AI)
 			CASE(ComponentHealth, HEALTH)
 			CASE(ComponentModel, MODEL)
+			CASE(ComponentParty, PARTY)
 			CASE(ComponentPlayerLocal, PLAYER_LOCAL)
 			CASE(ComponentPlayerRemote, PLAYER_REMOTE)
 			CASE(ComponentSpikes, SPIKES)

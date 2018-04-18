@@ -2,7 +2,7 @@
 
 namespace tempo
 {
-anax::Entity newPlayer(anax::World &world)
+anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 {
 	// TODO:: Add Entity to Specific Tile
 
@@ -23,7 +23,12 @@ anax::Entity newPlayer(anax::World &world)
 	std::string path = "resources/materials/textures/player-" + std::to_string(randNum) + ".png";
 	// refactored
 	entity_player.addComponent<tempo::ComponentCombo>();
-	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(40, 7));
+
+	int emptySpace = 40;
+
+	int fheight = 69 + emptySpace;
+
+	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(40 + (party_number * fheight), 7));
 	entity_player.addComponent<tempo::ComponentStageRotation>(NORTH);
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
@@ -34,6 +39,7 @@ anax::Entity newPlayer(anax::World &world)
 	entity_player.addComponent<tempo::ComponentAOEIndicator>();
 	entity_player.addComponent<tempo::ComponentHealth>(100);
 	entity_player.addComponent<tempo::ComponentTeam>(Team::BADGUYS);
+	entity_player.addComponent<tempo::ComponentParty>(party_number);
 
 	entity_player.activate();
 
