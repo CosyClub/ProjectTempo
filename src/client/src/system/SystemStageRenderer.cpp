@@ -11,6 +11,9 @@
 #include <glm/vec4.hpp>
 #include <iostream>
 #include <vector>
+#include <ctime>
+#include <iostream>
+
 
 namespace client
 {
@@ -139,10 +142,15 @@ void SystemStageRenderer::colorStage(int                step,
 
 void SystemStageRenderer::AnimateTiles(float dt)
 {
-	auto  entities = getEntities();
+	//std::clock_t    start;
+
+
+
+	auto &entities = getEntities();
 	auto  entity   = std::begin(entities);
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
-	auto tiles = stage.getHeights();
+
+	//	start = std::clock();
 
 	for (auto& it : tileMap)
 	{
@@ -169,6 +177,8 @@ void SystemStageRenderer::AnimateTiles(float dt)
 			tileMap[pos].height += delta;
 		}
 	}
+	//std::cout << "Time: " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
+
 }
 
 void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,

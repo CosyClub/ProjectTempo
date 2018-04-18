@@ -390,13 +390,13 @@ int main(int argc, const char** argv)
 
 	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
 	irr::scene::ICameraSceneNode *camera_node = new irr::scene::Camera(
-		sn.node, 
-		smgr, 
-		-1, 
-		irr::core::vector3df(7, 7, 0), 
+		sn.node,
+		smgr,
+		-1,
+		irr::core::vector3df(7, 7, 0),
 		irr::core::vector3df(0, 0, 0));
 	//irr::core::matrix4 cpm = camera_node->getProjectionMatrix();
-	
+
 	//camera_node->setFOV(1.0f);
 
 	smgr->setActiveCamera(camera_node);
@@ -405,6 +405,7 @@ int main(int argc, const char** argv)
 
 	printf("Entering main loop\n");
 	while (device->run()) {
+
 
 		// Work out a frame delta time.
 		// const irr::u32 now = device->getTimer()->getTime();
@@ -513,8 +514,17 @@ int main(int argc, const char** argv)
 			system_combo.advanceBeat();
 		}
 
+
+		// std::clock_t    start;
+		//
+		// 				start = std::clock();
 		system_stage_renderer.AnimateTiles(dt);
+		// std::cout << "Time: " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
+
+
+
 		system_stage_renderer.Update(smgr, driver, playerpos);
+
 
 		driver->beginScene(true, true);
 		smgr->drawAll();
