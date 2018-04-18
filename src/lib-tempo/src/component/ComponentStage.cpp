@@ -113,7 +113,6 @@ void ComponentStage::setHeight(glm::ivec2 position, int height)
 {
 	if ((*tiles).find(position) != (*tiles).end()) (*tiles)[position].height = height;
 	(*heightDelta).emplace(position, true);
-	printf("%d, %d\n", position.x, position.y);
 }
 
 void ComponentStage::setHeight(std::vector<glm::ivec2> positions, int height)
