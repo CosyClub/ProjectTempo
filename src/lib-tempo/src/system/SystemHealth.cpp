@@ -2,10 +2,12 @@
 
 #include <tempo/component/ComponentStagePosition.hpp>  //Just temporary
 #include <tempo/component/ComponentCombo.hpp>
+#include <tempo/component/ComponentParty.hpp>
 
 namespace tempo
 {
-void SystemHealth::CheckHealth()
+
+void SystemHealth::check_health()
 {
 	auto entities = getEntities();
 
@@ -20,9 +22,20 @@ void SystemHealth::CheckHealth()
 			if (entity.hasComponent<ComponentPlayerRemote>() ||
 			    entity.hasComponent<ComponentPlayerLocal>())
 			{
+
+				int party_number = 0;
+
+				int emptySpace = 40;
+
+				int fheight = 69 + emptySpace;
+
+				if (entity.hasComponent<ComponentParty>()) {
+					party_number = entity.getComponent<ComponentParty>().party_number;
+				}
+
 				if (entity.hasComponent<ComponentStagePosition>()) {
 					entity.getComponent<ComponentStagePosition>().setPosition(
-					  glm::ivec2(40, 7));  // poof
+					  glm::ivec2(40 + + (party_number* fheight), 7));  // poof
 					h.current_health = h.max_health;
 				}
 			}
@@ -46,6 +59,14 @@ void SystemHealth::broadcastHealth()
 	for (auto &entity : entities)
 	{
 		auto &h = entity.getComponent<ComponentHealth>();
+
+		// Lets try not to send health all the time please
+		if (h.current_health != h.__prev_health) {
+			h.__prev_health = h.current_health;
+		} else {
+			continue;
+		}
+
 		anax::Entity::Id id = entity.getId();
 
 		sf::Packet p;
@@ -53,16 +74,6 @@ void SystemHealth::broadcastHealth()
 		p << h.current_health;
 		broadcastMessage(tempo::QueueID::SYSTEM_HEALTH, p);
 	}
-}
-
-void SystemHealth::client_sendHealth(anax::Entity entity)
-{
-	auto &h = entity.getComponent<ComponentHealth>();
-
-	sf::Packet p;
-	p << tempo::localtoserver[entity.getId()];
-	p << h.current_health;
-	sendMessage(tempo::QueueID::SYSTEM_HEALTH, p);
 }
 
 void SystemHealth::client_receiveHealth(anax::World &world)
@@ -77,50 +88,10 @@ void SystemHealth::client_receiveHealth(anax::World &world)
 		p >> id;
 		SERVERTOLOCAL(id)
 		if (id.isNull()) continue;
-
-		int health;
-		p >> health;
-
 		anax::Entity e = anax::Entity(world, id);
 		ComponentHealth &h = e.getComponent<ComponentHealth>();
-		h.current_health = health;
-	}
-}
 
-void SystemHealth::server_sendHealth(anax::Entity entity)
-{
-	auto &h = entity.getComponent<ComponentHealth>();
-	anax::Entity::Id id = entity.getId();
-
-	sf::Packet p;
-	p << id;
-	p << h.current_health;
-	sendMessage(tempo::QueueID::SYSTEM_HEALTH, p);
-}
-
-void SystemHealth::server_receiveHealth(anax::World &world)
-{
-	tempo::Queue<sf::Packet> *q = get_system_queue(QueueID::SYSTEM_HEALTH);
-	while (!q->empty())
-	{
-		sf::Packet p = q->front();
-		q->pop();
-
-		anax::Entity::Id id;
-		p >> id;
-
-		int health;
-		p >> health;
-
-		//id = localtoserver[id];
-		anax::Entity e(world, id);
-		if (!e.hasComponent<tempo::ComponentHealth>()) {
-			std::cout << "Received Health  from entity without ComponentHealth"
-								<< std::endl;
-		} else {
-		ComponentHealth &h = e.getComponent<ComponentHealth>();
-		h.current_health = health;
-		}
+		p >> h.current_health;
 	}
 }
 

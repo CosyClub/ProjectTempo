@@ -23,8 +23,10 @@
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
 #include <client/system/SystemTranslationAnimation.hpp>
+#include <client/misc/Camera.hpp>
 
 #include <tempo/component/ComponentButtonGroup.hpp>
+#include <tempo/component/ComponentParty.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentSpikes.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
@@ -62,43 +64,45 @@
 #include <tempo/component/ComponentStage.hpp>
 namespace client
 {
-// TLDR: enforce the game logic on client side and server side
-class SystemLessJank : public anax::System<anax::Requires<tempo::ComponentStageTranslation,
-                                                          tempo::ComponentStagePosition,
-                                                          tempo::ComponentStage>>
-{
-   public:
-	void lessJank()
-	{
-		// uncomment this for more jank:
-		// return;
+	 // TLDR: enforce the game logic on client side and server side
+	 class SystemLessJank
+	 	: public anax::System<
+	 	anax::Requires<
+	 	tempo::ComponentStageTranslation,
+	 	tempo::ComponentStagePosition,
+	 	tempo::ComponentStage>
+	 	>
+	 {
+	 public:
+	 	void lessJank() {
+	 		// uncomment this for more jank:
+	 		//return;
 
-		auto& entities = getEntities();
+	 		auto& entities = getEntities();
 
-		for (auto& entity : entities) {
-			tempo::ComponentStageTranslation& trans =
-			  entity.getComponent<tempo::ComponentStageTranslation>();
-			tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
-			glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
+	 		for (auto& entity : entities) {
+	 			tempo::ComponentStageTranslation& trans = entity.getComponent<tempo::ComponentStageTranslation>();
+	 			tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
+	 			glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-			glm::ivec2 dest = origin + trans.delta;
 
-			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5) {
-				// consume the moment before the server rejects you
-				// currently combos aren't server protected, so maybe this should move
-				// into lib-tempo?
-				// this produces a lovely jumping against the wall animation!
-				trans.delta = glm::ivec2(0, 0);
-				// if (entity.hasComponent<tempo::ComponentCombo>()) {
-				//	// what the heck this is a jank class anyway
-				//	tempo::ComponentCombo& combo =
-				// entity.getComponent<tempo::ComponentCombo>();
-				//	combo.advanceBeat();
-				//}
-			}
-		}
-	}
-};
+
+	 			glm::ivec2 dest = origin + trans.delta;
+
+	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5) {
+	 				// consume the moment before the server rejects you
+	 				// currently combos aren't server protected, so maybe this should move into lib-tempo?
+	 				// this produces a lovely jumping against the wall animation!
+	 				trans.delta = glm::ivec2(0, 0);
+	 				//if (entity.hasComponent<tempo::ComponentCombo>()) {
+	 				//	// what the heck this is a jank class anyway
+	 				//	tempo::ComponentCombo& combo = entity.getComponent<tempo::ComponentCombo>();
+	 				//	combo.advanceBeat();
+	 				//}
+	 			}
+	 		}
+	 	}
+	 };
 
 }  // namespace client
 
@@ -261,7 +265,7 @@ int main(int argc, const char** argv)
 	// Note, IF statement is to change ports for local development, bit
 	// hacky and should be removed in due course!
 	tempo::addr_r = "127.0.0.1";
-	if (argc == 2)
+	if (argc >= 2)
 		tempo::addr_r = argv[1];
 	if (tempo::addr_r == "127.0.0.1") {
 		std::srand(time(NULL));
@@ -285,8 +289,14 @@ int main(int argc, const char** argv)
 	// Hack to allow printouts to line up a bit nicer :)
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
-	tempo::ClientRole role = tempo::ClientRole::PLAYER;
-	tempo::ClientRoleData roleData = {"Bilbo Baggins"};
+	tempo::ClientRole     role     = tempo::ClientRole::PLAYER;
+
+	int party_number = 0;
+	if(argc >= 3 ){
+		party_number = atoi(argv[2]);
+	}
+
+	tempo::ClientRoleData roleData = {"Bilbo Baggins", party_number};
 
 	// Connect to server and handshake information
 	if (!tempo::connectToAndSyncWithServer(role, roleData, world)) {
@@ -321,17 +331,25 @@ int main(int argc, const char** argv)
 	}
 	entity_player.addComponent<client::ComponentKeyInput>();
 	entity_player.activate();
-	client::ComponentRenderSceneNode& sn =
-	  entity_player.getComponent<client::ComponentRenderSceneNode>();
 
 	auto& combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
 	auto& comp_health = entity_player.getComponent<tempo::ComponentHealth>();
 
 	glm::ivec2 startingPos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-	client::createLasers(smgr, driver, { {40,12}, {40,52}, {40,92} }, startingPos);
+	int emptySpace = 40;
 
-	client::createDiscoBalls(smgr, driver, { {40,6} }, startingPos);
+	int fheight = 69 + emptySpace;
+
+	int feeder_areas = 10;
+
+	for (int i=0; i < feeder_areas; i++){
+
+	client::createLasers(smgr, driver, { {40 + (i*fheight),12}, {40 + (i*fheight),52}, {40 + (i*fheight),92} }, startingPos);
+
+	client::createDiscoBalls(smgr, driver, { {40 + (i*fheight),6} }, startingPos);
+
+}
 
 	/////////////////////////////////////////////////
 	// Main loop
@@ -349,6 +367,18 @@ int main(int argc, const char** argv)
 
 	srand(clock.get_time().asMicroseconds());
 
+	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
+	irr::scene::ICameraSceneNode *camera_node = new irr::scene::Camera(
+		sn.node, 
+		smgr, 
+		-1, 
+		irr::core::vector3df(7, 7, 0), 
+		irr::core::vector3df(0, 0, 0));
+	//irr::core::matrix4 cpm = camera_node->getProjectionMatrix();
+	
+	//camera_node->setFOV(1.0f);
+
+	smgr->setActiveCamera(camera_node);
 	float dt;
 
 
@@ -360,12 +390,17 @@ int main(int argc, const char** argv)
 		dt = frame_clock.restart().asSeconds();
 		/// frameDeltaTime = (f32)(now - then)/1000.f; // Time in seconds
 
+		glm::ivec2 playerpos;
+
 		////////////////
 		// Events all the time
 		{
-			system_stage_renderer.colorStage(stage_counter, 
+			playerpos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
+			system_stage_renderer.colorStage(stage_counter,
+			                                 playerpos,
 					                 client::curr_pallette.floor1, 
 					                 client::curr_pallette.floor2);
+
 			// Check for new entities from server
 			system_entity.creationCheck(world);
 			system_entity.deletionCheck(world);
@@ -379,6 +414,7 @@ int main(int argc, const char** argv)
 			// Receive updates from the server
 			system_movement.processIntents(world);
 			system_movement.processCorrections(world);
+			system_attack.processServerResponses(world);
 			system_combo.checkForUpdates(world);
 			system_attack.processServerResponses(world);
 
@@ -388,7 +424,7 @@ int main(int argc, const char** argv)
 			system_parse_key_input.parseInput(clock, device);
 
 			// Deprecated/To-be-worked-on
-			system_health.CheckHealth();
+			system_health.check_health();
 			system_health.client_receiveHealth(world);
 
 			system_less_jank.lessJank();
@@ -397,17 +433,13 @@ int main(int argc, const char** argv)
 
 			// Graphics updates
 			system_render_attack.update(system_stage_renderer, client::curr_pallette.attack);
-			system_render_scene_node.update();
-			system_render_health_bars.update();
+			system_render_scene_node.update(playerpos);
+			system_render_health_bars.update(playerpos);
 			system_render_healing.update();
 
 			// TODO: Make a system for updating camera position
-			irr::scene::ICameraSceneNode *camera_node;
-			camera_node = smgr->addCameraSceneNode();
-			irr::core::vector3df camera_target = sn.node->getAbsolutePosition();
-			camera_node->setPosition(camera_target + irr::core::vector3df(7, 9, 0));
-			camera_node->updateAbsolutePosition();
-			camera_node->setTarget(camera_target);
+			//camera_node->setPosition(sn.node->getAbsolutePosition() + irr::core::vector3df(7, 9, 0));
+			//camera_node->setTarget(sn.node->getAbsolutePosition());
 		}
 
 		////////////////
@@ -447,8 +479,9 @@ int main(int argc, const char** argv)
 
 		}
 
-		glm::ivec2 playerpos =
+		playerpos =
 		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
+
 
 		////////////////
 		// Events at "Delta End"
