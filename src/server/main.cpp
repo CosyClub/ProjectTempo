@@ -209,7 +209,16 @@ int main(int argc, const char **argv)
 	tempo::createMobStill(world, glm::ivec2(28,84));
 	tempo::createMobStill(world, glm::ivec2(28,87));
 
+	std::vector<glm::ivec2> spikes2		   = {{ 37,83 },{ 38,83 },{ 39,83 },{ 40,83 },{ 41,83 },{ 42,83 }};
+	newButton(world, { { 42,77 }, {46,77} }, {}, spikes2);
 
+	std::vector<glm::ivec2> spikes3		   = {{ 47,93 },{ 48,93 },{ 49,93 },{ 50,93 },{ 51,93 },{ 52,93 }};
+	newButton(world, { { 39,98 } }, {}, spikes3);
+
+
+	std::vector<glm::ivec2> wall6          = {{37,102},{38,102},{39,102},{40,102},{41,102},{42,102},
+																						{41,122},{42,122},{43,122},{44,122},{45,122}, {46,122}, {47,122}};
+	RythmButton(world, { { { 41,116 }, { 45,116 }},{ { 41,117 }, { 45,117 } },{ { 42,117 }, { 46,117 } },{ { 42,116 }, { 46,116 } } }, wall6, {}, rhythmID);
 	//
 	// std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};
 	// newButton(world, { { 40, 43 } }, wall1, {});
