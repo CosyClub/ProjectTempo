@@ -23,7 +23,7 @@ void SystemRenderHealthBars::setup(irr::scene::ISceneManager *smgr)
 			continue;
 
 		irr::core::dimension2d<float> bbsize = sn.billboard->getSize();
-		irr::core::vector3df pos(-0.3f, bbsize.Height / 2, 0.0f);
+		irr::core::vector3df pos(0.0f, bbsize.Height / 2 + original_size.Height, 0.0f);
 
 		healthbar.node = new irr::scene::YAlignedBillboardSceneNode(sn.billboard, smgr, -1, pos, size, color, color);
 		healthbar.node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
@@ -55,20 +55,6 @@ void SystemRenderHealthBars::update()
 		c1.X = c1.X * scale + c2.X * (1.f - scale);
 		irr::video::SColor colour_health = HSVtoRGB(c1);
 		healthbar->setColor(colour_health);
-
-
-		//if (entity.hasComponent<tempo::ComponentCombo>())
-		//{
-		//	tempo::ComponentCombo& c = entity.getComponent<tempo::ComponentCombo>();
-		//	float scale = c.comboCounter / 20.f;
-		//	scale = fmin(scale, 0.5);
-		//	newSize += newSize * scale;
-		//	irr::core::vector3df          pos(-0.3f, 1.6f + newSize.Height / 2, 0.0f);
-		//	pos += pos * scale;
-		//	healthbar->setSize(newSize);
-		//	healthbar->setPosition(pos);
-
-		//}
 	}
 }
 }

@@ -49,26 +49,21 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager* smgr, irr::video::I
 			irr::video::ITexture* spritesheet = driver->getTexture(path.c_str());
 
 			irr::core::dimension2d<irr::u32> usize = spritesheet->getOriginalSize();
-			std::cout << "usize = (" << usize.Height << ", " << usize.Width << ")" << std::endl;
-
 			irr::core::dimension2d<irr::f32> size(usize.Width / (40.0f * m.spriteDim.x), usize.Height / (40.0f * m.spriteDim.y));
 			irr::core::vector3df pos(0.0f, size.Height / 2.0f, 0.0f);
-
-			std::cout << "size = (" << size.Height << ", " << size.Width << ")" << std::endl;
-			std::cout << "pos = (" << pos.X << ", " << pos.Y << ", " << pos.Z << ")" << std::endl;
 			sn.billboard = new irr::scene::YAlignedBillboardSceneNode(sn.node, smgr, -1, pos, size,
 			                                                          color, color);
 
 			driver->setTextureCreationFlag(irr::video::ETCF_ALWAYS_32_BIT, true);
-			sn.billboard->setColor(color);
-			//sn.billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-			//sn.billboard->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
-			//sn.billboard->setMaterialTexture(0, spritesheet);
+			//sn.billboard->setColor(color);
+			sn.billboard->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+			sn.billboard->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+			sn.billboard->setMaterialTexture(0, spritesheet);
 
-			//sn.spriteDim = m.spriteDim;
-			//sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(1.f / sn.spriteDim.x,
-			//                                                                 1.f / sn.spriteDim.y);
-			//sn.updateNeeded = true;
+			sn.spriteDim = m.spriteDim;
+			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureScale(1.f / sn.spriteDim.x,
+			                                                                 1.f / sn.spriteDim.y);
+			sn.updateNeeded = true;
 		}
 	}
 
@@ -91,33 +86,34 @@ void SystemRenderSceneNode::update()
 		if (sn.isMesh)
 			continue;
 
-		//// Change Sprite based on Facing
-		//if (sn.updateNeeded) {
-		//	int dirIndex = 0;
-		//	for (int I = 0; I < 4; I++) {
-		//		if (tempo::DIRECTIONS[I] == sr.facing)
-		//			dirIndex = I;
-		//	}
-		//	sn.spritePos.y = (float)((dirIndex + 3) % 4) / sn.spriteDim.y;
-		//	if (sr.previousFacing == sr.facing) {
-		//		sn.spritePos.x = sn.spritePos.x + 1.f / sn.spriteDim.x;
-		//	} else {
-		//		sn.spritePos.x = 1.f / sn.spriteDim.x;
-		//	}
-		//	sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureTranslate(sn.spritePos.x,
-		//	                                                                     sn.spritePos.y);
-		//	sn.updateNeeded = false;
-		//}
+		// Change Sprite based on Facing
+		if (sn.updateNeeded) {
+			int dirIndex = 0;
+			for (int I = 0; I < 4; I++) {
+				if (tempo::DIRECTIONS[I] == sr.facing)
+					dirIndex = I;
+			}
+			sn.spritePos.y = (float)((dirIndex + 3) % 4) / sn.spriteDim.y;
+			if (sr.previousFacing == sr.facing) {
+				sn.spritePos.x = sn.spritePos.x + 1.f / sn.spriteDim.x;
+			} else {
+				sn.spritePos.x = 1.f / sn.spriteDim.x;
+			}
+			sn.billboard->getMaterial(0).getTextureMatrix(0).setTextureTranslate(sn.spritePos.x,
+			                                                                     sn.spritePos.y);
+			sn.updateNeeded = false;
+		}
 
-		//if (entity.hasComponent<tempo::ComponentCombo>()) {
-		//	tempo::ComponentCombo& c = entity.getComponent<tempo::ComponentCombo>();
-		//	float scale = c.comboCounter / 20.f;
-		//	scale = fmin(scale, 0.5);
-		//	irr::core::dimension2d<irr::f32> size(1.2f + 1.2f * scale, 1.6f + 1.6f * scale);
-		//	irr::core::vector3df pos(0.0f + 0.2 * scale, 0.0f + size.Height / 2, 0.0f);
-		//	sn.billboard->setSize(size);
-		//	sn.billboard->setPosition(pos);
-		//}
+		// TODO: remove this jank
+		if (entity.hasComponent<tempo::ComponentCombo>()) {
+			tempo::ComponentCombo& c = entity.getComponent<tempo::ComponentCombo>();
+			float scale = c.comboCounter / 20.f;
+			scale = fmin(scale, 0.5);
+			irr::core::dimension2d<irr::f32> size(1.2f + 1.2f * scale, 1.2f + 1.2f * scale);
+			irr::core::vector3df pos(0.0f + 0.2 * scale, 0.0f + size.Height / 2, 0.0f);
+			sn.billboard->setSize(size);
+			sn.billboard->setPosition(pos);
+		}
 
 		sr.previousFacing = sr.facing;
 		sn.node->setPosition(irr::core::vector3df(pos.x, s.getHeight(pos), pos.y));
