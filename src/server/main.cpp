@@ -127,10 +127,10 @@ int main(int argc, const char **argv)
 	int rhythmID = 1;
 
 	//Needed so that the player cannot see other feeder areas
-	int emptySpace = 40;
-
-	int fheight = 69 + emptySpace;
-	int feeder_areas = 2;
+	// int emptySpace = 40;
+	//
+	// int fheight = 69 + emptySpace;
+	int feeder_areas = 1;
 
 	for(int i = 0; i < feeder_areas; i++){
 
