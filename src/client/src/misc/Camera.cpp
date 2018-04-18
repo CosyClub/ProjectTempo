@@ -224,6 +224,7 @@ void Camera::recalculateProjectionMatrix()
 {
 	ViewArea.getTransform(video::ETS_PROJECTION)
 	  .buildProjectionMatrixPerspectiveFovLH(Fovy, Aspect, ZNear, ZFar);
+	//ViewArea.getTransform(video::ETS_PROJECTION).buildProjectionMatrixOrthoLH(1280.0f/50.0f, 720.0f/50.0f, ZNear, ZFar);
 }
 
 

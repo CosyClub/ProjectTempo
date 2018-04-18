@@ -314,8 +314,12 @@ int main(int argc, const char** argv)
 		sn.node, 
 		smgr, 
 		-1, 
-		irr::core::vector3df(7, 9, 0), 
+		irr::core::vector3df(7, 7, 0), 
 		irr::core::vector3df(0, 0, 0));
+	//irr::core::matrix4 cpm = camera_node->getProjectionMatrix();
+	
+	//camera_node->setFOV(1.0f);
+
 	smgr->setActiveCamera(camera_node);
 
 	printf("Entering main loop\n");

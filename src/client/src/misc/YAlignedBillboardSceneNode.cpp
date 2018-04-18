@@ -83,7 +83,7 @@ void YAlignedBillboardSceneNode::render()
 	// pointing down!
 	core::vector3df vertical = horizontal.crossProduct(view);
 	vertical.X               = 0;  // no x
-	vertical.Z               = 0;  // no z
+	//vertical.Z               = 0;  // no z
 	vertical.normalize();          // just y
 	vertical *= 0.5f * Size.Height;
 
