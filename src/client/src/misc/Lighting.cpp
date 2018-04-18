@@ -102,7 +102,7 @@ namespace client {
 		irr::scene::IAnimatedMesh *disco_ball_mesh = smgr->getMesh("resources/meshes/disco_ball.obj");
 		irr::video::ITexture* disco_ball_texture = driver->getTexture("resources/materials/disco_ball.jpg");
 		irr::video::ITexture* reflexes_texture = driver->getTexture("resources/materials/reflexes.jpg");
-		irr::video::ITexture* estrela_texture = driver->getTexture("resources/materials/estrela_squared.png");
+		//irr::video::ITexture* estrela_texture = driver->getTexture("resources/materials/estrela_squared.png");
 
 		for (glm::ivec2 pos : positions) {
 
@@ -153,34 +153,34 @@ namespace client {
 			anim11->drop();
 
 			/// Create particle system: (DISCO BALL N1 - reflexed lights)
-			irr::scene::IParticleSystemSceneNode* ps60 = smgr->addParticleSystemSceneNode(false);
-
-			irr::scene::IParticleEmitter* em60 = ps60->createSphereEmitter( /// SPHERE Emitter (Same geometry as the mesh is)
-				irr::core::vector3df(0.0f, 0.0f, 0.0f),  // emitter position
-				0.282f,                           // f32 radius
-				irr::core::vector3df(0.0f, 0.0f, 0.0f),  // initial direction & speed (all set to 0.0f == particles stopped)
-				0, 0,                              // minParticlesPerSecond / maxParticlesPerSecond (Will change in main loop)
-												   // video::SColor(0,0,0,255),      // darkest color
-				irr::video::SColor(0, 0, 0, 0),           // darkest color
-				irr::video::SColor(255, 255, 255, 255),   // brightest color
-				90, 200, 0,                         // min age, max age, angle
-				irr::core::dimension2df(1.0f, 1.0f),  // min size
-				irr::core::dimension2df(1.5f, 1.5f)); // max size
-
-			ps60->setEmitter(em60); // Grabs the emitter
-			em60->drop(); // We can drop it here, without deleting it
-
-			ps60->setParent(nodeDiscoBall1); /// Attach these reflexed lights to the Disco Ball N1 (Match to the same position & rotation)
-			ps60->setScale(irr::core::vector3df(41, 41, 41));
-			ps60->setMaterialFlag(irr::video::EMF_ZWRITE_ENABLE, false);
-			ps60->setMaterialTexture(0, estrela_texture);
-			ps60->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL); // Transparent texture.
-			ps60->setMaterialFlag(irr::video::EMF_LIGHTING, true); // Node is affected by LIGHT?
-			ps60->setMaterialFlag(irr::video::EMF_NORMALIZE_NORMALS, true);
-
-			/// Disabled:
-			em60->setMinParticlesPerSecond(90);
-			em60->setMaxParticlesPerSecond(100);
+			// irr::scene::IParticleSystemSceneNode* ps60 = smgr->addParticleSystemSceneNode(false);
+			//
+			// irr::scene::IParticleEmitter* em60 = ps60->createSphereEmitter( /// SPHERE Emitter (Same geometry as the mesh is)
+			// 	irr::core::vector3df(0.0f, 0.0f, 0.0f),  // emitter position
+			// 	0.282f,                           // f32 radius
+			// 	irr::core::vector3df(0.0f, 0.0f, 0.0f),  // initial direction & speed (all set to 0.0f == particles stopped)
+			// 	0, 0,                              // minParticlesPerSecond / maxParticlesPerSecond (Will change in main loop)
+			// 									   // video::SColor(0,0,0,255),      // darkest color
+			// 	irr::video::SColor(0, 0, 0, 0),           // darkest color
+			// 	irr::video::SColor(255, 255, 255, 255),   // brightest color
+			// 	90, 200, 0,                         // min age, max age, angle
+			// 	irr::core::dimension2df(1.0f, 1.0f),  // min size
+			// 	irr::core::dimension2df(1.5f, 1.5f)); // max size
+			//
+			// ps60->setEmitter(em60); // Grabs the emitter
+			// em60->drop(); // We can drop it here, without deleting it
+			//
+			// ps60->setParent(nodeDiscoBall1); /// Attach these reflexed lights to the Disco Ball N1 (Match to the same position & rotation)
+			// ps60->setScale(irr::core::vector3df(41, 41, 41));
+			// ps60->setMaterialFlag(irr::video::EMF_ZWRITE_ENABLE, false);
+			// ps60->setMaterialTexture(0, estrela_texture);
+			// ps60->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL); // Transparent texture.
+			// ps60->setMaterialFlag(irr::video::EMF_LIGHTING, true); // Node is affected by LIGHT?
+			// ps60->setMaterialFlag(irr::video::EMF_NORMALIZE_NORMALS, true);
+			//
+			// /// Disabled:
+			// em60->setMinParticlesPerSecond(90);
+			// em60->setMaxParticlesPerSecond(100);
 		}
 
 	}

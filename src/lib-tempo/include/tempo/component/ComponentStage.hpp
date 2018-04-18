@@ -8,7 +8,7 @@
 #include <glm/fwd.hpp>
 #include <glm/vec2.hpp>
 #include <vector>
-
+#include <unordered_map>
 #include <tuple>
 
 namespace tempo
@@ -35,20 +35,36 @@ struct vec2less
 	}
 };
 
+struct vec2eq
+{
+    size_t operator()(const glm::ivec2& k)const
+    {
+        return std::hash<int>()(k.x) ^ std::hash<int>()(k.y);
+    }
+
+    bool operator()(const glm::ivec2& a, const glm::ivec2& b)const
+    {
+            return a.x == b.x && a.y == b.y;
+    }
+};
+
+
 template< typename tPair >
 struct second_t {
 	typename tPair::second_type operator()( const tPair& p ) const { return p.second; }
 };
 
-typedef std::map<glm::ivec2,
-                stage_tile,
-                vec2less,
-                std::allocator<std::pair<const glm::ivec2, stage_tile>>> tileMap;
+typedef std::unordered_map<glm::ivec2,
+                           stage_tile,
+                           vec2eq,
+                           vec2eq,
+                           std::allocator<std::pair<const glm::ivec2, stage_tile>>> tileMap;
 
-typedef std::map<glm::ivec2,
-                bool,
-                vec2less,
-                std::allocator<std::pair<const glm::ivec2, stage_tile>>> heightDeltaMap;
+typedef std::unordered_map<glm::ivec2,
+                          bool,
+                          vec2eq,
+                          vec2eq,
+                          std::allocator<std::pair<const glm::ivec2, stage_tile>>> heightDeltaMap;
 
 extern tileMap _global_stage;
 extern heightDeltaMap _global_heightDelta;
