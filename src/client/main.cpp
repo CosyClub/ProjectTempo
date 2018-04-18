@@ -420,7 +420,7 @@ int main(int argc, const char** argv)
 			playerpos =
 				entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-			system_stage_renderer.colorStage(j, playerpos, random_colour, colour_grey);
+			//system_stage_renderer.colorStage(j, playerpos, random_colour, colour_grey);
 
 			// Check for new entities from server
 			system_entity.creationCheck(world);
@@ -518,12 +518,13 @@ int main(int argc, const char** argv)
 		// std::clock_t    start;
 		//
 		// 				start = std::clock();
-		system_stage_renderer.AnimateTiles(dt, playerpos);
+		//system_stage_renderer.AnimateTiles(dt, playerpos);
 		// std::cout << "Time: " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
 
+		system_stage_renderer.Update(smgr, driver, playerpos, random_colour, colour_grey, j, dt);
 
 
-		system_stage_renderer.Update(smgr, driver, playerpos);
+		//system_stage_renderer.Update(smgr, driver, playerpos);
 
 
 		driver->beginScene(true, true);
