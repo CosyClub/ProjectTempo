@@ -85,7 +85,7 @@ void newButton(anax::World &          world,
 
 int main(int argc, const char **argv)
 {
-	tempo::Song mainsong("resources/sound/ravecave_loop.ogg");
+	tempo::Song mainsong("resources/sound/ravecave_loop_clicktrack.ogg");
 	mainsong.set_volume(0.f);
 	mainsong.skip(sf::microseconds(PHASE));
 	mainsong.set_volume(20.f);
