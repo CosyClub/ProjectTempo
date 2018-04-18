@@ -23,6 +23,7 @@
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
 #include <client/system/SystemTranslationAnimation.hpp>
+#include <client/misc/Camera.hpp>
 
 #include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
@@ -324,8 +325,6 @@ int main(int argc, const char** argv)
 	}
 	entity_player.addComponent<client::ComponentKeyInput>();
 	entity_player.activate();
-	client::ComponentRenderSceneNode& sn =
-	  entity_player.getComponent<client::ComponentRenderSceneNode>();
 
 	auto& combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
 	auto& comp_health = entity_player.getComponent<tempo::ComponentHealth>();
@@ -358,6 +357,18 @@ int main(int argc, const char** argv)
 	irr::video::SColor random_colour;
 	srand(clock.get_time().asMicroseconds());
 
+	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
+	irr::scene::ICameraSceneNode *camera_node = new irr::scene::Camera(
+		sn.node, 
+		smgr, 
+		-1, 
+		irr::core::vector3df(7, 7, 0), 
+		irr::core::vector3df(0, 0, 0));
+	//irr::core::matrix4 cpm = camera_node->getProjectionMatrix();
+	
+	//camera_node->setFOV(1.0f);
+
+	smgr->setActiveCamera(camera_node);
 	float dt;
 
 
@@ -387,6 +398,7 @@ int main(int argc, const char** argv)
 			// Receive updates from the server
 			system_movement.processIntents(world);
 			system_movement.processCorrections(world);
+			system_attack.processServerResponses(world);
 			system_combo.checkForUpdates(world);
 			system_attack.processServerResponses(world);
 
@@ -396,7 +408,7 @@ int main(int argc, const char** argv)
 			system_parse_key_input.parseInput(clock, device);
 
 			// Deprecated/To-be-worked-on
-			system_health.CheckHealth();
+			system_health.check_health();
 			system_health.client_receiveHealth(world);
 
 			system_less_jank.lessJank();
@@ -409,12 +421,8 @@ int main(int argc, const char** argv)
 			system_render_healing.update();
 
 			// TODO: Make a system for updating camera position
-			irr::scene::ICameraSceneNode *camera_node;
-			camera_node = smgr->addCameraSceneNode();
-			irr::core::vector3df camera_target = sn.node->getAbsolutePosition();
-			camera_node->setPosition(camera_target + irr::core::vector3df(7, 9, 0));
-			camera_node->updateAbsolutePosition();
-			camera_node->setTarget(camera_target);
+			//camera_node->setPosition(sn.node->getAbsolutePosition() + irr::core::vector3df(7, 9, 0));
+			//camera_node->setTarget(sn.node->getAbsolutePosition());
 		}
 
 		////////////////
