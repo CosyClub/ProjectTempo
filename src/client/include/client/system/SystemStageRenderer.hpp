@@ -11,6 +11,7 @@
 #include <ISceneManager.h>
 #include <IVideoDriver.h>
 #include <vector>
+#include <unordered_map>
 
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
@@ -27,6 +28,19 @@ struct vec2less
 	{
 		return (a.x < b.x) || ((a.x == b.x) && (a.y < b.y));
 	}
+};
+
+struct vec2eq
+{
+    size_t operator()(const glm::ivec2& k)const
+    {
+        return std::hash<int>()(k.x) ^ std::hash<int>()(k.y);
+    }
+
+    bool operator()(const glm::ivec2& a, const glm::ivec2& b)const
+    {
+            return a.x == b.x && a.y == b.y;
+    }
 };
 
 typedef struct {
@@ -48,8 +62,8 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 	irr::scene::IMesh *         walls;
 	irr::scene::CBatchingMesh * batchMesh;
 
-	std::map<glm::ivec2, tile_t, 
-	         vec2less, std::allocator<std::pair<const glm::ivec2, tile_t>>> tileMap;
+	std::unordered_map<glm::ivec2, tile_t,
+	         vec2eq, vec2eq, std::allocator<std::pair<const glm::ivec2, tile_t>>> tileMap;
 
 	std::map<irr::video::SColor, irr::scene::IMesh*> meshMap;
 
