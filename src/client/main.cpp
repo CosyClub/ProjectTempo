@@ -308,7 +308,6 @@ int main(int argc, const char** argv)
 	system_render_health_bars.setup(smgr);
 	system_button_renderer.setup(smgr, driver);
 	system_render_spikes.setup(smgr, driver);
-	system_lighting.setup(smgr, driver);
 
 	// Start and Sync Song
 	sync_time(clock);
@@ -325,6 +324,7 @@ int main(int argc, const char** argv)
 	}
 	entity_player.addComponent<client::ComponentKeyInput>();
 	entity_player.activate();
+	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
 
 	auto& combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
 	auto& comp_health = entity_player.getComponent<tempo::ComponentHealth>();
@@ -335,6 +335,8 @@ int main(int argc, const char** argv)
 
 	client::createDiscoBalls(smgr, driver, { {40,6} }, startingPos);
 
+	system_lighting.setup(smgr, sn.node);
+
 	/////////////////////////////////////////////////
 	// Main loop
 	int frame_counter = 0;
@@ -342,7 +344,7 @@ int main(int argc, const char** argv)
 	// sf::Clock dt_timer;
 
 	int j = 0;
-	int colour_index;
+	int colour_index = 0;
 
 	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	sf::Clock frame_clock = sf::Clock();
@@ -357,7 +359,6 @@ int main(int argc, const char** argv)
 	irr::video::SColor random_colour;
 	srand(clock.get_time().asMicroseconds());
 
-	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
 	irr::scene::ICameraSceneNode *camera_node = new irr::scene::Camera(
 		sn.node, 
 		smgr, 
