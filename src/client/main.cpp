@@ -393,8 +393,10 @@ int main(int argc, const char** argv)
 		////////////////
 		// Events all the time
 		{
+			playerpos =
+				entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-			system_stage_renderer.colorStage(j, random_colour, colour_grey);
+			system_stage_renderer.colorStage(j, playerpos, random_colour, colour_grey);
 
 			// Check for new entities from server
 			system_entity.creationCheck(world);
@@ -425,9 +427,6 @@ int main(int argc, const char** argv)
 			system_less_jank.lessJank();
 			// Update animations from translations received from server
 			system_translation_animation.updateAnimations();
-
-			playerpos =
-				entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
 			// Graphics updates
 			system_render_scene_node.update(playerpos);

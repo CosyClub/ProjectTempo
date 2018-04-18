@@ -13,6 +13,7 @@ namespace tempo
 {
 
 tileMap _global_stage;
+heightDeltaMap _global_heightDelta;
 std::string             _global_stage_loaded("None");
 
 void ComponentStage::loadLevel(const char *stage_file)
@@ -28,6 +29,7 @@ void ComponentStage::loadLevel(const char *stage_file)
 
 	if (_global_stage_loaded == std::string(stage_file)) {
 		tiles = &_global_stage;
+		heightDelta = & _global_heightDelta;
 		return;
 	}
 
@@ -78,6 +80,7 @@ void ComponentStage::loadLevel(const char *stage_file)
 		}
 	}
 	tiles = &_global_stage;
+	heightDelta = & _global_heightDelta;
 	_global_stage_loaded = std::string(stage_file);
 
 	stbi_image_free(pixel_data);
@@ -109,12 +112,16 @@ float ComponentStage::getHeight(glm::ivec2 position)
 void ComponentStage::setHeight(glm::ivec2 position, int height)
 {
 	if ((*tiles).find(position) != (*tiles).end()) (*tiles)[position].height = height;
+	(*heightDelta).emplace(position, true);
+	printf("%d, %d\n", position.x, position.y);
 }
 
 void ComponentStage::setHeight(std::vector<glm::ivec2> positions, int height)
 {
 	for (auto &position : positions)
+	{
 		setHeight(position, height);
+	}
 }
 
 bool ComponentStage::existstTile(glm::ivec2 position)

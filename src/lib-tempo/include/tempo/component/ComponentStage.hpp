@@ -45,7 +45,13 @@ typedef std::map<glm::ivec2,
                 vec2less,
                 std::allocator<std::pair<const glm::ivec2, stage_tile>>> tileMap;
 
+typedef std::map<glm::ivec2,
+                bool,
+                vec2less,
+                std::allocator<std::pair<const glm::ivec2, stage_tile>>> heightDeltaMap;
+
 extern tileMap _global_stage;
+extern heightDeltaMap _global_heightDelta;
 extern std::string             _global_stage_loaded;
 
 // An entity that is bound by the world stage
@@ -53,15 +59,14 @@ struct ComponentStage
     : anax::Component
     , NetworkedComponent {
    private:
-	std::map<glm::ivec2,
-                stage_tile,
-                vec2less,
-                std::allocator<std::pair<const glm::ivec2, stage_tile>>> *tiles;
+	tileMap *tiles;
 	std::string              stage_file;
 
 	void loadLevel(const char *stage_file);
 
    public:
+	heightDeltaMap *heightDelta;
+
 	// Constructor requires stage file
 	ComponentStage(const char *stage_file);
 
