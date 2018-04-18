@@ -10,17 +10,19 @@
 #include <ISceneManager.h>
 #include <IVideoDriver.h>
 
-typedef struct{
-	irr::video::SColor floor;
+typedef struct {
+	irr::video::SColor floor1;
 	irr::video::SColor floor2;
+	irr::video::SColor attack;
 	irr::video::SColor light;
 } palette;
 
 namespace client {
-	extern palette curr_pallette;
-	extern std::queue<palette> palettes;
 
-	void init_palettes();
+	extern palette curr_pallette;
+	extern const std::vector<palette> palettes;
+
+	int next_palette(int old_colour);
 }
 
 #endif
