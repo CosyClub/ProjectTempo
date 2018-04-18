@@ -486,7 +486,7 @@ int main(int argc, const char** argv)
 			system_button_renderer.updateButtons(driver);
 
 			system_render_healing.endBeat();
-			system_render_spikes.updateSpikes(driver);
+			system_render_spikes.updateSpikes(driver, playerpos);
 
 			system_translation_animation.endBeat();
 

@@ -40,12 +40,24 @@ void SystemRenderSpikes::setup(irr::scene::ISceneManager *smgr, irr::video::IVid
 	}
 }
 
-void SystemRenderSpikes::updateSpikes(irr::video::IVideoDriver *driver)
+void SystemRenderSpikes::updateSpikes(irr::video::IVideoDriver *driver, const glm::ivec2 playerpos)
 {
 	auto entities = getEntities();
 	for (auto entity : entities) {
 		auto &comp = entity.getComponent<tempo::ComponentSpikes>();
 		auto &rend  = entity.getComponent<client::ComponentRenderSpikes>();
+
+		for (uint32_t i = 0; i<comp.spike_positions.size(); i++) {
+			glm::ivec2 pos = comp.spike_positions[i];
+
+			if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 ||
+			    pos.y < playerpos.y - 33 || pos.y > playerpos.y + 33)
+			{
+				rend.spikes[i].spikeNode->setVisible(false);
+				continue;
+			}
+			rend.spikes[i].spikeNode->setVisible(true);
+		}
 
 		if (comp.isTriggered) {
 			for (uint32_t i = 0; i<comp.spike_positions.size(); i++) {

@@ -20,7 +20,7 @@ class SystemRenderSpikes
    public:
 	void setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver);
 
-	void updateSpikes(irr::video::IVideoDriver *driver);
+	void updateSpikes(irr::video::IVideoDriver *driver, const glm::ivec2 playerpos);
 };
 }  // namespace client
 
