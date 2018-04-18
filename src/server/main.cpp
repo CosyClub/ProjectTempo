@@ -85,7 +85,7 @@ void newButton(anax::World &    world,
 
 int main(int argc, const char **argv)
 {
-	tempo::Song mainsong("resources/sound/ravecave_loop.ogg");
+	tempo::Song mainsong("resources/sound/ravecave_loop_clicktrack.ogg");
 	mainsong.set_volume(0.f);
 	mainsong.skip(sf::microseconds(PHASE));
 	mainsong.set_volume(20.f);
@@ -120,78 +120,86 @@ int main(int argc, const char **argv)
 	world.addSystem(system_trigger);
 	world.refresh();
 
-	// Create some Test Entities
-
-	tempo::createMobStill(world, glm::ivec2(36, 42));
-	tempo::createMobStill(world, glm::ivec2(40, 42));
-	tempo::createMobStill(world, glm::ivec2(44, 42));
-
-	tempo::createMobStill(world, glm::ivec2(36, 12));
-	tempo::createMobStill(world, glm::ivec2(40, 12));
-	tempo::createMobStill(world, glm::ivec2(44, 12));
-
-for(int j = 0; j <10; j++){
-	tempo::createMobCreeper(world, glm::ivec2(40, 64));
-}
-
-	std::deque<glm::ivec2> path {glm::ivec2(64, 68),
-	                             glm::ivec2(64, 72),
-	                             glm::ivec2(68, 72),
-	                             glm::ivec2(68, 68)};
-	tempo::createMobPatroller(world, path[0], path);
-
-	std::deque<glm::ivec2> path2 {glm::ivec2(11, 67),
-	                              glm::ivec2(11, 73),
-	                              glm::ivec2(15, 73),
-	                              glm::ivec2(15, 67)};
-	tempo::createMobPatroller(world, path2[0], path2);
-
 	// tempo::createMobCreeper(world, glm::ivec2(12, 12));
 	// tempo::createMobCreeper(world, glm::ivec2(14, 14));
 	// tempo::createMobAntiSnail(world, glm::ivec2(4, 4));
 
 	int rhythmID = 1;
 
-	std::vector<glm::ivec2> wall          = {{37,17},{38,17},{39,17},{40,17},{41,17},{42,17},{43,17},{44,17}, {45,17}};
-	RythmButton(world, { { { 40,12 }},{ { 40,13 } },{ { 41,13 } },{ { 41,12 } } }, wall, {}, rhythmID);
+	//Needed so that the player cannot see other feeder areas
+	int emptySpace = 40;
 
-	std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};
-	newButton(world, { { 40, 43 } }, wall1, {});
+	int fheight = 69 + emptySpace;
+	int feeder_areas = 10;
 
-	std::vector<glm::ivec2> wall2          = {{36,62},{36,63},{36,64},{36,65},{36,66},{36,67},{36,68},
-																						{50,62},{50,63},{50,64},{50,65},{50,66},{50,67},{50,68}};
-	newButton(world, { { 40, 65 } }, wall2, {});
 
-	std::vector<glm::ivec2> wall3          = {{37,69},{38,69},{39,69},{40,69},{41,69},{42,69},{43,69}};
-	newButton(world, { { 66,70 },{ 13,69 } }, wall3, { { 13,70 } });
+	std::vector<glm::ivec2> spikes = {{ 40 + (2 * fheight), 3 }};
+	newButton(world, { { 40 + (2 * fheight), 2 } }, {}, spikes);
 
-	std::vector<glm::ivec2> wall4          = {{40,132},{41,132},{42,132}};
-	newButton(world, { { 41,110 },{ 26,128 },{ 57,128 } }, wall4, {});
+	for(int i = 0; i < feeder_areas; i++){
 
-	std::vector<glm::ivec2> spikes		   = {{ 35,65 }};
-	newButton(world, { { 35,67 } }, {}, spikes);
+		// Create some Test Entities
 
-	spikes = {{ 34,65 }};
-	newButton(world, { { 34,67 } }, {}, spikes);
+		for(int j = 0; j < 10; j++){
+		tempo::createMobCreeper(world, glm::ivec2(40 + (i* fheight), 40));
+	}
 
-	spikes = {{ 33,65 }};
-	newButton(world, { { 33,67 } }, {}, spikes);
+		std::deque<glm::ivec2> path {glm::ivec2(64 + (i* fheight), 68),
+		                             glm::ivec2(64 + (i* fheight), 72),
+		                             glm::ivec2(68 + (i* fheight), 72),
+		                             glm::ivec2(68 + (i* fheight), 68)};
+		tempo::createMobPatroller(world, path[0], path);
 
-	spikes = {{ 32,65 }};
-	newButton(world, { { 32,67 } }, {}, spikes);
+		std::deque<glm::ivec2> path2 {glm::ivec2(11 + (i* fheight), 67),
+		                              glm::ivec2(11 + (i* fheight), 73),
+		                              glm::ivec2(15 + (i* fheight), 73),
+		                              glm::ivec2(15 + (i* fheight), 67)};
+		tempo::createMobPatroller(world, path2[0], path2);
 
-	spikes = {{ 31,65 }};
-	newButton(world, { { 31,67 } }, {}, spikes);
+		std::vector<glm::ivec2> wall          = {{37 + (i* fheight),17},{38 + (i* fheight),17},{39 + (i* fheight),17},
+		                                         {40 + (i* fheight),17},{41 + (i* fheight),17},{42 + (i* fheight),17},
+		                                         {43 + (i* fheight),17},{44 + (i* fheight),17}, {45 + (i* fheight),17}};
 
-	spikes = {{ 30,65 }};
-	newButton(world, { { 30,67 } }, {}, spikes);
+		RythmButton(world, { { { 40 + (i* fheight),12 }},{ { 40 + (i* fheight),13 } },{ { 41 + (i* fheight),13 } },{ { 41 + (i* fheight),12 } } }, wall, {}, rhythmID);
+	//
+	// std::vector<glm::ivec2> wall1          = {{37,48},{38,48},{39,48},{40,48},{41,48},{42,48},{43,48},{44,48},};
+	// newButton(world, { { 40, 43 } }, wall1, {});
+	//
+	// std::vector<glm::ivec2> wall2          = {{36,62},{36,63},{36,64},{36,65},{36,66},{36,67},{36,68},
+	// 																					{50,62},{50,63},{50,64},{50,65},{50,66},{50,67},{50,68}};
+	// newButton(world, { { 40, 65 } }, wall2, {});
+	//
+	// std::vector<glm::ivec2> wall3          = {{37,69},{38,69},{39,69},{40,69},{41,69},{42,69},{43,69}};
+	// newButton(world, { { 66,70 },{ 13,69 } }, wall3, { { 13,70 } });
+	//
+	// std::vector<glm::ivec2> wall4          = {{40,132},{41,132},{42,132}};
+	// newButton(world, { { 41,110 },{ 26,128 },{ 57,128 } }, wall4, {});
+	//
+	// std::vector<glm::ivec2> spikes		   = {{ 35,65 }};
+	// newButton(world, { { 35,63 },{ 35,67 } }, {}, spikes);
+	//
+	// spikes = {{ 34,65 }};
+	// newButton(world, { { 34,63 },{ 34,67 } }, {}, spikes);
+	//
+	// spikes = {{ 33,65 }};
+	// newButton(world, { { 33,63 },{ 33,67 } }, {}, spikes);
+	//
+	// spikes = {{ 32,65 }};
+	// newButton(world, { { 32,63 },{ 32,67 } }, {}, spikes);
+	//
+	// spikes = {{ 31,65 }};
+	// newButton(world, { { 31,63 },{ 31,67 } }, {}, spikes);
+	//
+	// spikes = {{ 30,65 }};
+	// newButton(world, { { 30,63 },{ 30,67 } }, {}, spikes);
+	//
+	// spikes = { { 29,65 } };
+	// newButton(world, { { 29,63 },{ 29,67 } }, {}, spikes);
+	//
+	// spikes = { { 28,65 } };
+	// newButton(world, { { 28,63 },{ 28,67 } }, {}, spikes);
 
-	spikes = { { 29,65 } };
-	newButton(world, { { 29,67 } }, {}, spikes);
-
-	spikes = { { 28,65 } };
-	newButton(world, { { 28,67 } }, {}, spikes);
-
+}
 	world.refresh();
 
 	//////////////////////////////////

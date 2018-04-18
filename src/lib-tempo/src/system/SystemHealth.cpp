@@ -2,6 +2,7 @@
 
 #include <tempo/component/ComponentStagePosition.hpp>  //Just temporary
 #include <tempo/component/ComponentCombo.hpp>
+#include <tempo/component/ComponentParty.hpp>
 
 namespace tempo
 {
@@ -21,9 +22,20 @@ void SystemHealth::check_health()
 			if (entity.hasComponent<ComponentPlayerRemote>() ||
 			    entity.hasComponent<ComponentPlayerLocal>())
 			{
+
+				int party_number = 0;
+
+				int emptySpace = 40;
+
+				int fheight = 69 + emptySpace;
+
+				if (entity.hasComponent<ComponentParty>()) {
+					party_number = entity.getComponent<ComponentParty>().party_number;
+				}
+
 				if (entity.hasComponent<ComponentStagePosition>()) {
 					entity.getComponent<ComponentStagePosition>().setPosition(
-					  glm::ivec2(40, 7));  // poof
+					  glm::ivec2(40 + + (party_number* fheight), 7));  // poof
 					h.current_health = h.max_health;
 				}
 			}
