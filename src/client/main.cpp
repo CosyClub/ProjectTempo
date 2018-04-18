@@ -387,7 +387,7 @@ int main(int argc, const char** argv)
 		// const irr::u32 now = device->getTimer()->getTime();
 		dt = frame_clock.restart().asSeconds();
 		/// frameDeltaTime = (f32)(now - then)/1000.f; // Time in seconds
-
+		glm::ivec2 playerpos;
 		////////////////
 		// Events all the time
 		{
@@ -478,7 +478,7 @@ int main(int argc, const char** argv)
 
 		}
 
-		glm::ivec2 playerpos =
+		playerpos =
 		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
 
