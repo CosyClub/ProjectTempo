@@ -239,10 +239,16 @@ int main(int argc, const char** argv)
 
 
 	if (enable_hud) {
+
+		irr::video::ITexture* splash_texture[2];
+		splash_texture[0] = driver->getTexture("resources/materials/textures/splash-full.png");
+		splash_texture[1] = driver->getTexture("resources/materials/textures/splash-minimal.png");
+
 		device->getGUIEnvironment()->addImage(
-		    driver->getTexture("resources/materials/textures/splash-full.png"),
+		    splash_texture[1],
 		    irr::core::position2d<irr::s32>(0,0), true);
 		bool waiting = true;
+		//std::clock_t timer_splash  = std::clock();
 
 		while (device->run() && waiting) {
 			std::vector<client::KeyEvent> keys = system_update_key_input.getKeys();
