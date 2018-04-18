@@ -244,11 +244,13 @@ int main(int argc, const char** argv)
 		splash_texture[0] = driver->getTexture("resources/materials/textures/splash-full.png");
 		splash_texture[1] = driver->getTexture("resources/materials/textures/splash-minimal.png");
 
-		device->getGUIEnvironment()->addImage(
-		    splash_texture[1],
-		    irr::core::position2d<irr::s32>(0,0), true);
+		irr::gui::IGUIImage* splashScreen = device->getGUIEnvironment()->addImage(
+		                                  splash_texture[1],
+		                                  irr::core::position2d<irr::s32>(0,0), true);
 		bool waiting = true;
-		//std::clock_t timer_splash  = std::clock();
+		std::clock_t timer_splash  = std::clock();
+		int i = 0;
+		std::clock_t time_now;
 
 		while (device->run() && waiting) {
 			std::vector<client::KeyEvent> keys = system_update_key_input.getKeys();
@@ -256,6 +258,12 @@ int main(int argc, const char** argv)
 				if (keys[i].press) waiting = false;
 			}
 
+			time_now = std::clock();
+			if((time_now - timer_splash ) / (double) CLOCKS_PER_SEC > 1 ) {
+				i = (i+1) % 2;
+				timer_splash = time_now;
+				splashScreen->setImage(splash_texture[i]);
+			}
 			driver->beginScene(true, true);
 			smgr->drawAll();
 			gui_env->drawAll();
