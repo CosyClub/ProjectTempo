@@ -152,8 +152,8 @@ void SystemStageRenderer::AnimateTiles(float dt, glm::ivec2 playerpos)
 		tile_t tile = it.second;
 		const glm::ivec2 pos = tile.pos;
 
-		if (pos.x < playerpos.x - 30 || pos.x > playerpos.x + 13 ||
-		    pos.y < playerpos.y - 30 || pos.y > playerpos.y + 30) {
+		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 ||
+		    pos.y < playerpos.y - 33 || pos.y > playerpos.y + 33) {
 				continue;
 		}
 
@@ -169,7 +169,7 @@ void SystemStageRenderer::AnimateTiles(float dt, glm::ivec2 playerpos)
 		if (tile.height != tile.height_target)
 		{
 			float gap = tile.height_target - tile.height;
-			float delta = 5 * (gap / fabs(gap)) * dt / 1.5f; //1.5 seconds to collapse
+			float delta = 5.f * (gap / fabs(gap)) * dt / 1.5f; //1.5 seconds to collapse
 			if (fabs(delta) > fabs(gap))
 			{
 				delta = gap;
