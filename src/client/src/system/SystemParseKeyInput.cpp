@@ -127,7 +127,6 @@ void updateCombo(anax::Entity &entity, bool withinDelta)
 			printf("Failed to find ID (SystemParseKeyInput:%d)\n", __LINE__);
 			abort();
 		}
-
 		if (withinDelta) {
 			// c.performAction();
 

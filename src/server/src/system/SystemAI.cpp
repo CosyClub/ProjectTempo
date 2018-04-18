@@ -13,7 +13,8 @@ bool ai_attack(anax::Entity entity, server::SystemAttack s_attack)
 	{
 		tempo::ComponentAttack &a = entity.getComponent<tempo::ComponentAttack>();
 		tempo::ComponentWeapon &w = entity.getComponent<tempo::ComponentWeapon>();
-		tempo::ComponentStageRotation &r = entity.getComponent<tempo::ComponentStageRotation>();
+		tempo::ComponentStageRotation &sr = entity.getComponent<tempo::ComponentStageRotation>();
+		tempo::ComponentStageTranslation &st = entity.getComponent<tempo::ComponentStageTranslation>();
 
 		//if we're already attacking then just keep going
 		if (a.beats_until_attack > -1) return false;
@@ -21,10 +22,16 @@ bool ai_attack(anax::Entity entity, server::SystemAttack s_attack)
 		glm::ivec2 direction;
 		if (s_attack.bestAttack(entity, direction))
 		{
-			if (r.facing != direction)
+			if (sr.facing != direction)
 			{
 				//face the player, no cheating here
-				r.facing = direction;
+				sr.facing = direction;
+				sf::Packet update_broadcast;
+				update_broadcast << entity.getId() << sr.facing.x << sr.facing.y
+				                 << st.delta.x << st.delta.y << true;
+
+				tempo::broadcastMessage(tempo::QueueID::MOVEMENT_INTENT_UPDATES,
+		                         update_broadcast);
 				return true;
 			}
 
