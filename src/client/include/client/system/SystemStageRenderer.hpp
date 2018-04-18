@@ -62,6 +62,7 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 	            glm::ivec2                 playerpos);
 
 	void colorStage(int                        j,
+                        glm::ivec2                 playerpos,
 	                irr::video::SColor         C1,
 	                irr::video::SColor         C2);
 

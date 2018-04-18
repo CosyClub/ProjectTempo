@@ -2,8 +2,6 @@
 
 #include <client/component/ComponentRenderSceneNode.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
-#include <tempo/component/ComponentStageRotation.hpp>
-#include <tempo/component/ComponentStageTranslation.hpp>
 
 #include <client/network/client.hpp>
 #include <tempo/network/ID.hpp>

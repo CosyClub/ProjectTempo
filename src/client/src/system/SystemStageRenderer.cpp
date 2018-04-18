@@ -84,19 +84,21 @@ void SystemStageRenderer::setTileColor(glm::ivec2 pos, irr::video::SColor color)
 }
 
 void SystemStageRenderer::colorStage(int                step,
+                                     glm::ivec2 playerpos,
                                      irr::video::SColor C1,
                                      irr::video::SColor C2)
 {
 	auto  entities = getEntities();
-	auto  entity   = std::begin(entities);
-	auto &stage    = entity->getComponent<tempo::ComponentStage>();
-
-	auto heights = stage.getHeights();
 
 	for (auto& it : tileMap)
 	{
 		tile_t tile = it.second;
 		glm::ivec2 pos = tile.pos;
+
+		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
+		    || pos.y > playerpos.y + 33) {
+			continue;
+		}
 
 		bool render;
 		switch (step) {
@@ -141,35 +143,29 @@ void SystemStageRenderer::AnimateTiles(float dt)
 	auto  entity   = std::begin(entities);
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 	auto tiles = stage.getHeights();
-	for (auto tile : tiles)
-	{
-		glm::ivec2 pos = tile.position;
 
-		if (tileMap.find(pos) != tileMap.end())
-		{
-			tileMap[pos].height_target = tile.height;
-		}
-		else
-		{
-			tile_t t;
-			t.pos = pos;
-			t.height = tile.height;
-			t.height_target = tile.height;
-
-			tileMap.emplace(pos, t);
-		}
-	}
-	
 	for (auto& it : tileMap)
 	{
 		tile_t tile = it.second;
 		glm::ivec2 pos = tile.pos;
 
+		if ((*stage.heightDelta).find(pos) != (*stage.heightDelta).end())
+		{
+			if ((*stage.heightDelta)[pos])
+			{
+				tileMap[pos].height_target = stage.getHeight(pos);
+				(*stage.heightDelta)[pos] = false;
+			}
+		}
+
 		if (tile.height != tile.height_target)
 		{
 			float gap = tile.height_target - tile.height;
 			float delta = 5 * (gap / fabs(gap)) * dt / 1.5f; //1.5 seconds to collapse
-			if (fabs(delta) > fabs(gap)) delta = gap;
+			if (fabs(delta) > fabs(gap))
+			{
+				delta = gap;
+			}
 			tileMap[pos].height += delta;
 		}
 	}
