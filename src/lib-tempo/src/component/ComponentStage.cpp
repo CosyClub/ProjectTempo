@@ -24,6 +24,8 @@ void ComponentStage::loadLevel(const char *stage_file)
 	int fwidth = 150;
 	int fheight = 69 + emptySpace;
 
+	int feeder_areas = 10;
+
 	if (_global_stage_loaded == std::string(stage_file)) {
 		tiles = &_global_stage;
 		return;
@@ -48,8 +50,12 @@ void ComponentStage::loadLevel(const char *stage_file)
 
 	// Load the new tiles
 	for (int y = 0; y < height; y++) {
+		if(y > fheight * feeder_areas){
+			break;
+		}
 		int base = width * y * 4;
 		for (int x = 0; x < width; x++) {
+
 			uint8_t *pixel = &pixel_data[base + x * 4];
 
 			if (pixel[0] > 0) {
@@ -84,7 +90,7 @@ ComponentStage::ComponentStage(const char *stage_file)
 }
 
 std::vector<stage_tile> ComponentStage::getHeights()
-{    	
+{
 	std::vector<stage_tile> vec;
 	for (auto a : (*tiles))
 	{
