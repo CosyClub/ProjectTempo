@@ -15,6 +15,7 @@ namespace client
 void SystemRenderSpikes::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
 {
 	auto entities = getEntities();
+	irr::scene::IMesh *spike_mesh = smgr->getMesh("resources/meshes/spikes.obj");
 
 	for (auto &entity : entities) {
 		auto &spikes = entity.getComponent<tempo::ComponentSpikes>();
@@ -23,8 +24,6 @@ void SystemRenderSpikes::setup(irr::scene::ISceneManager *smgr, irr::video::IVid
 		auto &positions = spikes.spike_positions;
 
 		for (uint32_t i=0; i<positions.size(); i++) {
-
-			irr::scene::IMesh *spike_mesh = smgr->getMesh("resources/meshes/spikes.obj");
 
 			SpikeNode spikeNode;
 			spikeNode.spikeNode = smgr->addMeshSceneNode(spike_mesh, 0);

@@ -99,6 +99,10 @@ namespace client {
 		irr::scene::IAnimatedMeshSceneNode* nodeDiscoBall1;
 
 		bool created = false;
+		irr::scene::IAnimatedMesh *disco_ball_mesh = smgr->getMesh("resources/meshes/disco_ball.obj");
+		irr::video::ITexture* disco_ball_texture = driver->getTexture("resources/materials/disco_ball.jpg");
+		irr::video::ITexture* reflexes_texture = driver->getTexture("resources/materials/reflexes.jpg");
+		irr::video::ITexture* estrela_texture = driver->getTexture("resources/materials/estrela_squared.png");
 
 		for (glm::ivec2 pos : positions) {
 
@@ -107,7 +111,7 @@ namespace client {
 			}
 
 			if (!created) {
-				nodeDiscoBall1 = smgr->addAnimatedMeshSceneNode(smgr->getMesh("resources/meshes/disco_ball.obj"), parent);
+				nodeDiscoBall1 = smgr->addAnimatedMeshSceneNode(disco_ball_mesh, parent);
 				created = true;
 			}
 
@@ -122,9 +126,9 @@ namespace client {
 			nodeDiscoBall1->setMaterialType(irr::video::EMT_REFLECTION_2_LAYER);       // EMT_REFLECTION_2_LAYER
 
 			for (irr::u32 i = 0; i<nodeDiscoBall1->getMaterialCount(); i++) {
-				nodeDiscoBall1->getMaterial(i).setTexture(0, driver->getTexture("resources/materials/disco_ball.jpg")); // Apply texture to my specified material
+				nodeDiscoBall1->getMaterial(i).setTexture(0, disco_ball_texture); // Apply texture to my specified material
 				nodeDiscoBall1->getMaterial(i).getTextureMatrix(0).setTextureScale(3.0f, 1.0f);   /// Repeat (tile) the texture
-				nodeDiscoBall1->getMaterial(i).setTexture(1, driver->getTexture("resources/materials/reflexes.jpg"));
+				nodeDiscoBall1->getMaterial(i).setTexture(1, reflexes_texture);
 				nodeDiscoBall1->getMaterial(i).getTextureMatrix(1).setTextureScale(0.015f, 0.015f); /// Repeat (tile) the texture
 
 				nodeDiscoBall1->getMaterial(i).Lighting = true;
@@ -169,7 +173,7 @@ namespace client {
 			ps60->setParent(nodeDiscoBall1); /// Attach these reflexed lights to the Disco Ball N1 (Match to the same position & rotation)
 			ps60->setScale(irr::core::vector3df(41, 41, 41));
 			ps60->setMaterialFlag(irr::video::EMF_ZWRITE_ENABLE, false);
-			ps60->setMaterialTexture(0, driver->getTexture("resources/materials/estrela_squared.png"));
+			ps60->setMaterialTexture(0, estrela_texture);
 			ps60->setMaterialType(irr::video::EMT_TRANSPARENT_ALPHA_CHANNEL); // Transparent texture.
 			ps60->setMaterialFlag(irr::video::EMF_LIGHTING, true); // Node is affected by LIGHT?
 			ps60->setMaterialFlag(irr::video::EMF_NORMALIZE_NORMALS, true);
