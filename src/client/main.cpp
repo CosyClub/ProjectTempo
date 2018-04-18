@@ -518,7 +518,7 @@ int main(int argc, const char** argv)
 		// std::clock_t    start;
 		//
 		// 				start = std::clock();
-		system_stage_renderer.AnimateTiles(dt);
+		system_stage_renderer.AnimateTiles(dt, playerpos);
 		// std::cout << "Time: " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
 
 

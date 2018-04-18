@@ -140,22 +140,22 @@ void SystemStageRenderer::colorStage(int                step,
 	}
 }
 
-void SystemStageRenderer::AnimateTiles(float dt)
+void SystemStageRenderer::AnimateTiles(float dt, glm::ivec2 playerpos)
 {
-	//std::clock_t    start;
-
-
 
 	auto &entities = getEntities();
 	auto  entity   = std::begin(entities);
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 
-	//	start = std::clock();
-
 	for (auto& it : tileMap)
 	{
 		tile_t tile = it.second;
-		glm::ivec2 pos = tile.pos;
+		const glm::ivec2 pos = tile.pos;
+
+		if (pos.x < playerpos.x - 30 || pos.x > playerpos.x + 13 ||
+		    pos.y < playerpos.y - 30 || pos.y > playerpos.y + 30) {
+				continue;
+		}
 
 		if ((*stage.heightDelta).find(pos) != (*stage.heightDelta).end())
 		{
@@ -177,7 +177,6 @@ void SystemStageRenderer::AnimateTiles(float dt)
 			tileMap[pos].height += delta;
 		}
 	}
-	//std::cout << "Time: " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
 
 }
 

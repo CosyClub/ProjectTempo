@@ -80,7 +80,7 @@ class SystemStageRenderer : public anax::System<anax::Requires<tempo::ComponentS
 	                irr::video::SColor         C1,
 	                irr::video::SColor         C2);
 
-	void AnimateTiles(float dt);
+	void AnimateTiles(float dt, glm::ivec2 playerpos);
 
 	void setTileColor(glm::ivec2 pos, irr::video::SColor color);
 
