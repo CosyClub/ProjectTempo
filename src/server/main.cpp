@@ -226,7 +226,7 @@ int main(int argc, const char **argv)
 
 }
 
-	tempo::createSnake(world, {32,173}, tempo::SOUTH, 30);
+	// tempo::createSnake(world, {32,173}, tempo::SOUTH, 30);
 	world.refresh();
 
 	//////////////////////////////////
