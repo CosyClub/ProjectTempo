@@ -52,9 +52,11 @@ set(TEMPO_CLIENT_SOURCES
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/Lighting.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/RGBtoHSV.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/YAlignedBillboardSceneNode.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/Camera.hpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/CBatchingMesh.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/Color.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/Lighting.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/RGBtoHSV.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/YAlignedBillboardSceneNode.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/misc/Camera.cpp
 )

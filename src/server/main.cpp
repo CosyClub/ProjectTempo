@@ -70,11 +70,11 @@ void RythmButton(anax::World &          world,
 	ID++;
 }
 
-void newButton(anax::World &          world,
+void newButton(anax::World &    world,
 	std::vector<glm::ivec2> positions,
 	std::vector<glm::ivec2> tiles,
-	std::vector<glm::ivec2> spikes) {
-
+	std::vector<glm::ivec2> spikes)
+{
 	tempo::createButtonGroup(world, positions, tiles, spikes, { -1,-1 }, { -1,-1 }, true, 0);
 
 	if (spikes.size() > 0) {
@@ -126,7 +126,13 @@ int main(int argc, const char **argv)
 	tempo::createMobStill(world, glm::ivec2(40, 42));
 	tempo::createMobStill(world, glm::ivec2(44, 42));
 
+	tempo::createMobStill(world, glm::ivec2(36, 12));
+	tempo::createMobStill(world, glm::ivec2(40, 12));
+	tempo::createMobStill(world, glm::ivec2(44, 12));
+
+for(int j = 0; j <10; j++){
 	tempo::createMobCreeper(world, glm::ivec2(40, 64));
+}
 
 	std::deque<glm::ivec2> path {glm::ivec2(64, 68),
 	                             glm::ivec2(64, 72),
@@ -194,17 +200,23 @@ int main(int argc, const char **argv)
 	// Hack to allow printouts to line up a bit nicer :)
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	std::thread clientUpdatesThread(tempo::listenForClientUpdates);
+	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
 	tempo::bindSocket('o', tempo::port_so);
 
-	// sf::Clock dt_timer;
-	// float last_dt_time = dt_timer.getElapsedTime().asSeconds();
+	std::cout << "Server now runnning on: "
+	          << sf::IpAddress::getLocalAddress().toString() << ":"
+	          << tempo::port_si << std::endl;
 
 	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	tick++;
+	sf::Int64 tick_time_s = clock.get_time().asMicroseconds();
+	sf::Int64 tick_time_e = 0;
 
 	// Main loop, with beat printouts
 	while (true) {
+		tick_time_s = clock.get_time().asMicroseconds();
+
 		// Handshake call, DO NOT REMOVE
 		tempo::checkForClientCreation(&world);
 		tempo::checkForClientDeletion(world);
@@ -219,9 +231,7 @@ int main(int argc, const char **argv)
 			system_movement.receiveTranslations(world);
 			system_attack.receiveAttacks(world);
 			system_combo.checkForUpdates(world);
-			system_health.CheckHealth();
-			//system_health.server_receiveHealth(world);
-			system_health.broadcastHealth();
+			system_health.check_health();
 		}
 
 		if (clock.passed_antibeat())
@@ -263,7 +273,11 @@ int main(int argc, const char **argv)
 			system_health.broadcastHealth();
 		}
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		// Sleep for for some time, making the game loop take 20ms
+		// Time spend doing things (in microseconds) is:
+		// tick_time_e - tick_time_s
+		tick_time_e = clock.get_time().asMicroseconds();
+		std::this_thread::sleep_for(std::chrono::microseconds(20000 - (tick_time_e - tick_time_s)));
 	}
 	return 0;
 }
