@@ -81,12 +81,16 @@ sf::Packet &operator<<(sf::Packet &p1, sf::Packet &p2)
 
 sf::Packet &operator<<(sf::Packet &p, const ClientRoleData &c)
 {
-	return p << c.name;
+	p << c.name;
+	p << c.party_number;
+	return p;
 }
 
 sf::Packet &operator>>(sf::Packet &p, ClientRoleData &c)
 {
-	return p >> c.name;
+	p >> c.name;
+	p >> c.party_number;
+	return p;
 }
 
 sf::Packet &operator<<(sf::Packet &packet, const anax::Entity::Id id)

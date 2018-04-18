@@ -67,10 +67,9 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager* smgr, irr::video::I
 		}
 	}
 
-	update();
 }
 
-void SystemRenderSceneNode::update()
+void SystemRenderSceneNode::update(const glm::ivec2 playerpos)
 {
 	auto entities = getEntities();
 
@@ -83,8 +82,15 @@ void SystemRenderSceneNode::update()
 
 		glm::ivec2 pos = sp.getOrigin();
 
-		if (sn.isMesh)
+		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
+		    || pos.y > playerpos.y + 33)
+		{
+			sn.billboard->setVisible(false);
 			continue;
+		}
+		sn.billboard->setVisible(true);
+
+		if (sn.isMesh) continue;
 
 		// Change Sprite based on Facing
 		if (sn.updateNeeded) {

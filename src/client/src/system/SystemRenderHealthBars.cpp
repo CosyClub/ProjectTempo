@@ -2,6 +2,7 @@
 #include <client/misc/YAlignedBillboardSceneNode.hpp>
 #include <client/misc/RGBtoHSV.hpp>
 
+
 namespace client
 {
 void SystemRenderHealthBars::setup(irr::scene::ISceneManager *smgr)
@@ -31,7 +32,7 @@ void SystemRenderHealthBars::setup(irr::scene::ISceneManager *smgr)
 	}
 }
 
-void SystemRenderHealthBars::update()
+void SystemRenderHealthBars::update(const glm::ivec2 playerpos)
 {
 	irr::video::SColor colour_green(255, 0, 255, 0);
 	irr::video::SColor colour_red(255, 255, 0, 0);
@@ -42,7 +43,21 @@ void SystemRenderHealthBars::update()
 	for (auto &entity : entities) {
 		auto &health    = entity.getComponent<tempo::ComponentHealth>();
 		auto &healthbar = entity.getComponent<client::ComponentHealthBar>().node;
-		auto &sn = entity.getComponent<client::ComponentRenderSceneNode>();
+		auto &sp        = entity.getComponent<tempo::ComponentStagePosition>();
+		auto &sn        = entity.getComponent<client::ComponentRenderSceneNode>();
+
+		glm::ivec2 pos = sp.getOrigin();
+
+		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
+		    || pos.y > playerpos.y + 33)
+		{
+			healthbar->setVisible(false);
+			continue;
+		}
+		healthbar->setVisible(true);
+
+
+
 
 		// Fraction of health left
 		scale = (double) health.current_health / health.max_health;
@@ -50,11 +65,11 @@ void SystemRenderHealthBars::update()
 		float new_width = original_size.Width * scale;
 		irr::core::dimension2d<irr::f32> newSize(new_width, original_size.Height);
 		healthbar->setSize(newSize);
-		
+
 		// TODO: remove this when player growth is handeled better
 		irr::core::dimension2d<float> bbsize = sn.billboard->getSize();
-		irr::core::vector3df pos(0.0f, bbsize.Height / 2.0f + original_size.Height, 0.0f);
-		healthbar->setPosition(pos);
+		irr::core::vector3df posb(0.0f, bbsize.Height / 2.0f + original_size.Height, 0.0f);
+		healthbar->setPosition(posb);
 
 		irr::core::vector3df c1 = RGBtoHSV(colour_green);
 		irr::core::vector3df c2 = RGBtoHSV(colour_red);

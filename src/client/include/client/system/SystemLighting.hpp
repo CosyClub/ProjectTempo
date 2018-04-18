@@ -26,9 +26,9 @@ namespace client
 
 	public:
 		void setup(irr::scene::ISceneManager *smgr,
-				   irr::video::IVideoDriver * driver);
+		           irr::video::IVideoDriver * driver);
 
-		void update(irr::video::SColor colour);
+		void update(const irr::video::SColor colour);
 	};
 }
 

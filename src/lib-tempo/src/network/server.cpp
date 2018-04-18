@@ -7,6 +7,7 @@
 #include <tempo/component/ComponentAI.hpp>
 #include <tempo/component/ComponentHealth.hpp>
 #include <tempo/component/ComponentModel.hpp>
+#include <tempo/component/ComponentParty.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/component/ComponentStage.hpp>
@@ -214,6 +215,7 @@ sf::Packet packageComponents(anax::Entity entity)
 	ADD_COMPONENT(entity, c, packet, ComponentAI)
 	ADD_COMPONENT(entity, c, packet, ComponentHealth)
 	ADD_COMPONENT(entity, c, packet, ComponentModel)
+	ADD_COMPONENT(entity, c, packet, ComponentParty)
 	ADD_COMPONENT(entity, c, packet, ComponentPlayerLocal)
 	ADD_COMPONENT(entity, c, packet, ComponentPlayerRemote)
 	ADD_COMPONENT(entity, c, packet, ComponentStage)
@@ -297,7 +299,7 @@ void handshakeRoleReq(sf::Packet &packet, anax::World *world)
 
 	// Create Entity for selected role from client
 	// Only creating players for now (spectators are not a thing)
-	anax::Entity newEntity = newPlayer(*world);
+	anax::Entity newEntity = newPlayer(*world, roleData.party_number);
 	sf::Packet   newPlayer = packageComponents(newEntity);
 
 	// Register Role
@@ -373,13 +375,13 @@ void checkForClientDeletion(anax::World &world)
 		} else {
 			std::cout << "Client (" << ip.toString() << ":" << port << ") Timed Out." << std::endl;
 		}
-		
+
 		if (!id.isNull()) {
 			anax::Entity e(world, id);
 			world.killEntity(e);
 		}
 		removeClientId(ip.toInteger(), port);
-		
+
 		broadcastMessage(tempo::QueueID::ENTITY_DELETION, broadcast);
 	}
 	world.refresh();
