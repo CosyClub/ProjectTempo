@@ -12,13 +12,24 @@
 namespace tempo
 {
 
-std::vector<stage_tile> _global_stage;
+tileMap _global_stage;
+heightDeltaMap _global_heightDelta;
 std::string             _global_stage_loaded("None");
 
 void ComponentStage::loadLevel(const char *stage_file)
 {
+
+	//Needed so that the player cannot see other feeder areas
+	int emptySpace = 40;
+
+	int fwidth = 150;
+	int fheight = 69 + emptySpace;
+
+	int feeder_areas = 10;
+
 	if (_global_stage_loaded == std::string(stage_file)) {
 		tiles = &_global_stage;
+		heightDelta = & _global_heightDelta;
 		return;
 	}
 
@@ -41,17 +52,35 @@ void ComponentStage::loadLevel(const char *stage_file)
 
 	// Load the new tiles
 	for (int y = 0; y < height; y++) {
+		if(y > fheight * feeder_areas){
+			break;
+		}
 		int base = width * y * 4;
 		for (int x = 0; x < width; x++) {
+
 			uint8_t *pixel = &pixel_data[base + x * 4];
 
 			if (pixel[0] > 0) {
 				int height = (int) (pixel[0] - 127) / 25.6;
-				_global_stage.push_back(stage_tile(glm::ivec2(y, x), (float) height));
+					_global_stage.emplace(glm::ivec2(y, x),
+					                      (stage_tile(glm::ivec2(y, x), (float) height)));
+			}
+
+			// Repeat tiles for feeder areas
+			else if (x < fwidth){
+				int modBase = width * (y%fheight) * 4;
+				uint8_t *modPixel = &pixel_data[modBase + x * 4];
+
+				if (modPixel[0] > 0) {
+					int modHeight = (int) (modPixel[0] - 127) / 25.6;
+					_global_stage.emplace(glm::ivec2(y, x),
+					                      (stage_tile(glm::ivec2(y, x), (float) modHeight)));
+				}
 			}
 		}
 	}
 	tiles = &_global_stage;
+	heightDelta = & _global_heightDelta;
 	_global_stage_loaded = std::string(stage_file);
 
 	stbi_image_free(pixel_data);
@@ -63,52 +92,40 @@ ComponentStage::ComponentStage(const char *stage_file)
 	loadLevel(stage_file);
 }
 
-inline int ComponentStage::findIndex(glm::ivec2 position)
+std::vector<stage_tile> ComponentStage::getHeights()
 {
-	for (unsigned int i = 0; i < tiles->size(); i++) {
-		auto &pos = (*tiles)[i].position;
-		if (pos == position) {
-			return i;
-		}
+	std::vector<stage_tile> vec;
+	for (auto a : (*tiles))
+	{
+		vec.push_back(a.second);
 	}
-
-	return -1;
-}
-
-std::vector<tempo::stage_tile> ComponentStage::getHeights()
-{
-	return *tiles;
+	return vec;
 }
 
 float ComponentStage::getHeight(glm::ivec2 position)
 {
-	int index = findIndex(position);
-	if (index >= 0)
-		return (*tiles)[index].height;
-	else
-		return -10.0f;
+	auto itr = (*tiles).find(position);
+	if (itr == (*tiles).end()) return -10.f;
+	return itr->second.height;
 }
 
 void ComponentStage::setHeight(glm::ivec2 position, int height)
 {
-	int index = findIndex(position);
-	if (index >= 0)
-		(*tiles)[index].height = height;
+	if ((*tiles).find(position) != (*tiles).end()) (*tiles)[position].height = height;
+	(*heightDelta).emplace(position, true);
 }
 
 void ComponentStage::setHeight(std::vector<glm::ivec2> positions, int height)
 {
 	for (auto &position : positions)
+	{
 		setHeight(position, height);
+	}
 }
 
 bool ComponentStage::existstTile(glm::ivec2 position)
 {
-	int index = findIndex(position);
-	if (index >= 0)
-		return true;
-	else
-		return false;
+	return (*tiles).find(position) != (*tiles).end();
 }
 
 bool ComponentStage::isNavigable(glm::ivec2 position)
