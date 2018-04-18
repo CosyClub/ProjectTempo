@@ -215,6 +215,11 @@ int main(int argc, const char **argv)
 	std::vector<glm::ivec2> spikes3		   = {{ 47,93 },{ 48,93 },{ 49,93 },{ 50,93 },{ 51,93 },{ 52,93 }};
 	newButton(world, { { 39,98 } }, {}, spikes3);
 
+	tempo::createMobCreeper(world, glm::ivec2(45, 130));
+	tempo::createMobCreeper(world, glm::ivec2(45, 130));
+	tempo::createMobCreeper(world, glm::ivec2(45, 130));
+	tempo::createMobCreeper(world, glm::ivec2(45, 130));
+	tempo::createMobCreeper(world, glm::ivec2(45, 130));
 
 	std::vector<glm::ivec2> wall6          = {{37,102},{38,102},{39,102},{40,102},{41,102},{42,102},
 																						{41,122},{42,122},{43,122},{44,122},{45,122}, {46,122}, {47,122}};
