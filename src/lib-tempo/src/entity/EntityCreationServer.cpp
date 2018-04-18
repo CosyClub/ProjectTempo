@@ -17,6 +17,10 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 	                 10, 10, 10};
 	Mask  m(glm::ivec2(1, 0), arr, glm::ivec2(3, 4));
 
+	int min = 0;
+	int max = 5;
+	int randNum = rand()%(max-min + 1) + min;
+	std::string path = "resources/materials/textures/player-" + std::to_string(randNum) + ".png";
 	// refactored
 	entity_player.addComponent<tempo::ComponentCombo>();
 
@@ -28,7 +32,7 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 	entity_player.addComponent<tempo::ComponentStageRotation>(NORTH);
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
-	entity_player.addComponent<tempo::ComponentModel>("resources/materials/textures/rogue.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
+	entity_player.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 255, 255), false, glm::vec2(4,4));
 	entity_player.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	entity_player.addComponent<tempo::ComponentAttack>();
 	entity_player.addComponent<tempo::ComponentWeapon>(m);
@@ -50,7 +54,9 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
-	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
+	int a = rand()%2;
+	std::string path = "resources/materials/textures/zombie-sheet-" + std::to_string(a) + ".png";
+	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 255, 255), false, glm::vec2(2,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(10);
 	float arr[2] = {0, 10};
@@ -58,7 +64,6 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m);
 	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
-
 	e.activate();
 	return e;
 }
@@ -71,7 +76,7 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
-	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentModel>("resources/materials/textures/totem.png", glm::vec3(255, 255, 255), false, glm::vec2(1,1));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(20);
 	float arr[9] = {10, 10, 10,
@@ -89,12 +94,14 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 {
 	anax::Entity e = world.createEntity();
+	
+	std::string path = "resources/materials/textures/creeper.png";
 
 	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_WANDER, false, false);
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
-	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 200, 200), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 200, 200), false, glm::vec2(2,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(50);
 	float arr[9] = {50, 50, 50,
@@ -112,11 +119,16 @@ anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<g
 {
 	anax::Entity e = world.createEntity();
 
+	int min = 0;
+	int max = 2;
+	int randNum = rand()%(max-min + 1) + min;
+	std::string path1 = "resources/materials/textures/knight-" + std::to_string(randNum) + ".png";
+
 	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_PATROL, false, false, path);
 	e.addComponent<tempo::ComponentStagePosition>(pos);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
-	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
+	e.addComponent<tempo::ComponentModel>(path1, glm::vec3(255, 255, 255), false, glm::vec2(5,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(50);
 	float arr[2] = {0, 10};
