@@ -264,6 +264,11 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 			tileMap[pos].height += delta;
 		}
 
+		if (tile.height >= 5) {
+			batchMesh->addMesh(walls, irr::core::vector3df(pos.x, tile.height, pos.y));
+			continue;
+		}
+
 		bool render;
 		switch (step) {
 		case 0:
@@ -297,11 +302,6 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 		else{
 			setTileColor(pos, C2);
 			//continue;
-		}
-
-		if (tile.height >= 5) {
-			batchMesh->addMesh(walls, irr::core::vector3df(pos.x, tile.height, pos.y));
-			continue;
 		}
 
 		if (meshMap.find(tile.color) == meshMap.end())
