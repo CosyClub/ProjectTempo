@@ -2,6 +2,7 @@
 #include <client/component/ComponentRenderButtonGroup.hpp>
 #include <client/component/ComponentRenderSpikes.hpp>
 #include <client/component/ComponentRenderSceneNode.hpp>
+#include <client/misc/Color.hpp>
 #include <client/misc/Lighting.hpp>
 #include <client/misc/RGBtoHSV.hpp>
 #include <client/network/client.hpp>
@@ -17,6 +18,7 @@
 #include <client/system/SystemRenderHealing.hpp>
 #include <client/system/SystemRenderHealthBars.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
+#include <client/system/SystemRenderAttack.hpp>
 #include <client/system/SystemRenderSpikes.hpp>
 #include <client/system/SystemStageRenderer.hpp>
 #include <client/system/SystemUpdateKeyInput.hpp>
@@ -28,6 +30,7 @@
 #include <tempo/component/ComponentSpikes.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
+#include <tempo/component/ComponentAttack.hpp>
 #include <tempo/network/ID.hpp>
 #include <tempo/song.hpp>
 #include <tempo/system/SystemHealth.hpp>
@@ -149,8 +152,16 @@ int main(int argc, const char** argv)
 	// irr::IrrlichtDevice *device = irr::createDevice(
 	//   irr::video::EDT_OPENGL, deskres, 16, true, false, false);
 
-	irr::IrrlichtDevice* device = irr::createDevice(
-	  irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1280, 720), 16, false, false, false);
+
+	bool enable_hud = false;
+	if (argc == 4) {
+		std::string HUD = argv[3];
+		enable_hud = (HUD == "HUD" || HUD == "hud");
+	}
+
+	irr::IrrlichtDevice *device = irr::createDevice(
+	  irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1920, 1080), 16, enable_hud, false, false);
+
 	if (!device) {
 		printf("Failed to create Irrlicht Device\n");
 		return 1;
@@ -166,14 +177,18 @@ int main(int argc, const char** argv)
 	// Setup ECS
 	anax::World world;
 	// tempo::SystemRender           system_render(app);
-	tempo::SystemHealth system_health;
-	tempo::SystemTrigger system_trigger(world);
-	client::SystemAttack system_attack;
-	client::SystemButtonRenderer system_button_renderer;
-	client::SystemCombo system_combo;
-	client::SystemEntity system_entity;
+
+
+	tempo::SystemHealth            system_health;
+	tempo::SystemTrigger           system_trigger(world);
+	client::SystemAttack           system_attack;
+	client::SystemButtonRenderer   system_button_renderer;
+	client::SystemCombo            system_combo;
+	client::SystemEntity           system_entity;
+
+
 	client::SystemGraphicsCreation system_gc;
-	client::SystemLighting		   system_lighting;
+	client::SystemLighting         system_lighting;
 	client::SystemMovement         system_movement;
 	client::SystemStageRenderer    system_stage_renderer;
 	client::SystemParseKeyInput    system_parse_key_input;
@@ -181,7 +196,10 @@ int main(int argc, const char** argv)
 	client::SystemRenderHealing    system_render_healing(driver, smgr);
 	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
+
+	client::SystemRenderAttack     system_render_attack;
 	client::SystemRenderSpikes  	 system_render_spikes;
+
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
 	client::SystemLessJank system_less_jank;
@@ -199,6 +217,7 @@ int main(int argc, const char** argv)
 
 	world.addSystem(system_render_healing);
 	world.addSystem(system_render_health_bars);
+	world.addSystem(system_render_attack);
 	world.addSystem(system_render_scene_node);
 	world.addSystem(system_render_spikes);
 	world.addSystem(system_update_key_input);
@@ -212,11 +231,35 @@ int main(int argc, const char** argv)
 
 	// Initialise Systems
 	system_update_key_input.setup(device);
-	system_stage_renderer.setup(smgr, driver, {255, 175, 0, 0}, {255, 50, 50, 50});
+	system_stage_renderer.setup(smgr, driver);
 	system_render_scene_node.setup(smgr, driver);
+	system_render_gui.init(device, driver, enable_hud);
 
 	// must be after system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);
+
+
+	if (enable_hud) {
+		device->getGUIEnvironment()->addImage(
+		    driver->getTexture("resources/materials/textures/splash-full.png"),
+		    irr::core::position2d<irr::s32>(0,0), true);
+		bool waiting = true;
+
+		while (device->run() && waiting) {
+			std::vector<client::KeyEvent> keys = system_update_key_input.getKeys();
+			for (unsigned int i = 0; i < keys.size(); i++) {
+				if (keys[i].press) waiting = false;
+			}
+
+			driver->beginScene(true, true);
+			smgr->drawAll();
+			gui_env->drawAll();
+			driver->endScene();
+		}
+
+		device->getGUIEnvironment()->clear();
+	}
+	system_render_gui.setup(device, driver, enable_hud);
 
 	// Set up remote address, local ports and remote handshake port
 	// Note, IF statement is to change ports for local development, bit
@@ -299,13 +342,18 @@ int main(int argc, const char** argv)
 	// sf::Clock dt_timer;
 
 	int j = 0;
+	int colour_index;
 
 	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	sf::Clock frame_clock = sf::Clock();
 	sf::Clock update_floor_clock = sf::Clock();
-	frame_clock.restart();
 	update_floor_clock.restart();
 
+	client::init_palettes();
+	irr::video::SColor colour;
+	irr::video::SColor colour_red(255, 255, 0, 0);
+	irr::video::SColor colour_purple(255, 255, 0, 255);
+	irr::video::SColor colour_grey(255, 50, 50, 50);
 	irr::video::SColor random_colour;
 	srand(clock.get_time().asMicroseconds());
 
@@ -321,18 +369,21 @@ int main(int argc, const char** argv)
 	//camera_node->setFOV(1.0f);
 
 	smgr->setActiveCamera(camera_node);
+	float dt;
+
 
 	printf("Entering main loop\n");
 	while (device->run()) {
 
 		// Work out a frame delta time.
 		// const irr::u32 now = device->getTimer()->getTime();
-		// frameDeltaTime = (f32)(now - then)/1000.f; // Time in seconds
+		dt = frame_clock.restart().asSeconds();
+		/// frameDeltaTime = (f32)(now - then)/1000.f; // Time in seconds
 
 		////////////////
 		// Events all the time
 		{
-
+			system_stage_renderer.colorStage(j, random_colour, colour_grey);
 			// Check for new entities from server
 			system_entity.creationCheck(world);
 			system_entity.deletionCheck(world);
@@ -341,12 +392,15 @@ int main(int argc, const char** argv)
 			system_gc.addEntities(driver, smgr, world);
 			system_render_scene_node.setup(smgr, driver);
 			system_render_health_bars.setup(smgr);
+			system_render_attack.update(system_stage_renderer);
+			system_button_renderer.setup(smgr, driver);
 
 			// Receive updates from the server
 			system_movement.processIntents(world);
 			system_movement.processCorrections(world);
 			system_attack.processServerResponses(world);
 			system_combo.checkForUpdates(world);
+			system_attack.processServerResponses(world);
 
 			// Deal with local input
 			system_update_key_input.clear();
@@ -380,6 +434,8 @@ int main(int argc, const char** argv)
 
 		////////////////
 		// Events at "Beat Passed"
+		glm::vec4 c1;
+		glm::vec4 c2;
 		if (clock.passed_beat()) {
 			// click.play();
 			if (tick++ % 20 == 0)
@@ -396,14 +452,21 @@ int main(int argc, const char** argv)
 
 			system_translation_animation.endBeat();
 
-			random_colour = client::randomHSV();
+
+			colour_index = rand() % 10;
+			random_colour = client::randomHSV(colour_index);
+
 
 			system_lighting.update(random_colour);
+			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
+			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
+			// << std::endl;
+			// system_lighting.update();
 
 		}
+
 		glm::ivec2 playerpos =
 		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-		system_stage_renderer.updateStage(smgr, driver, j, playerpos, random_colour);
 
 		////////////////
 		// Events at "Delta End"
@@ -412,11 +475,14 @@ int main(int argc, const char** argv)
 			system_combo.advanceBeat();
 		}
 
+		system_stage_renderer.AnimateTiles(dt);
+		system_stage_renderer.Update(smgr, driver, playerpos);
+
 		driver->beginScene(true, true);
 		smgr->drawAll();
 		gui_env->drawAll();
 
-		system_render_gui.update(driver, gui_env, clock, combo, comp_health);
+		system_render_gui.update(driver, gui_env, clock, combo, comp_health, colour_index, enable_hud);
 		driver->endScene();
 
 		++frame_counter;

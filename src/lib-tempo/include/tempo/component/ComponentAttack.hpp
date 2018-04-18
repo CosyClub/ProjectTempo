@@ -5,6 +5,7 @@
 
 #include <tempo/mask.hpp>
 
+#include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/NetworkedComponent.hpp>
 
 namespace tempo
@@ -28,6 +29,9 @@ struct ComponentAttack
 
 	// Returns whether or not there is an intent to attack
 	bool isAttacking();
+
+	// Returns the absolute positions for the attack wrt the given pos
+	std::vector<glm::ivec2> getAbsolutePositions(glm::ivec2 pos, Facing rot);
 
 	/////
 	// Required for networking

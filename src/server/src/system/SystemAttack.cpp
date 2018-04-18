@@ -153,6 +153,13 @@ void SubSystemAttack::Attack(anax::Entity attacker)
 	auto &     attack      = attacker.getComponent<tempo::ComponentAttack>();
 	auto &     weapon      = attacker.getComponent<tempo::ComponentWeapon>();
 
+	if(attacker.hasComponent<tempo::ComponentSpikes>()){
+		auto &spikes = attacker.getComponent<tempo::ComponentSpikes>();
+		if(!spikes.isTriggered){
+			return;
+		}
+	}
+
 	// If a delayed attack, process and update clients
 	if (attack.beats_until_attack < 0) {
 		// Not attacking

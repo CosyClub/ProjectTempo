@@ -2,6 +2,7 @@
 
 #include <tempo/component/ComponentAttack.hpp>
 #include <tempo/component/ComponentHealth.hpp>
+#include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
 
 #include <client/network/client.hpp>

@@ -4,6 +4,8 @@
 #include <anax/System.hpp>
 
 #include <tempo/component/ComponentHealth.hpp>
+#include <tempo/component/ComponentPlayerRemote.hpp>
+#include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/network/base.hpp>
 #include <tempo/network/ID.hpp>
 #include <tempo/network/queue.hpp>

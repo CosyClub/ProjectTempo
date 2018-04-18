@@ -17,6 +17,7 @@ set(TEMPO_CLIENT_SOURCES
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderHealing.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderHealthBars.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderSceneNode.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderAttack.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemRenderSpikes.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemStageRenderer.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/system/SystemTranslationAnimation.hpp
@@ -40,17 +41,20 @@ set(TEMPO_CLIENT_SOURCES
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderHealing.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderHealthBars.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderSceneNode.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderAttack.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemRenderSpikes.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemStageRenderer.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTranslationAnimation.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/system/SystemUpdateKeyInput.cpp
 
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/CBatchingMesh.hpp
+	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/Color.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/Lighting.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/RGBtoHSV.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/YAlignedBillboardSceneNode.hpp
 	${CMAKE_CURRENT_LIST_DIR}/include/client/misc/Camera.hpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/CBatchingMesh.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/misc/Color.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/Lighting.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/RGBtoHSV.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/misc/YAlignedBillboardSceneNode.cpp
