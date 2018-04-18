@@ -56,21 +56,14 @@ void SystemRenderSpikes::updateSpikes(irr::video::IVideoDriver *driver, const gl
 				rend.spikes[i].spikeNode->setVisible(false);
 				continue;
 			}
-			rend.spikes[i].spikeNode->setVisible(true);
+
+			if (comp.isTriggered) {
+				rend.spikes[i].spikeNode->setVisible(true);
+			} else {
+				rend.spikes[i].spikeNode->setVisible(false);
+			}
 		}
 
-		if (comp.isTriggered) {
-			for (uint32_t i = 0; i<comp.spike_positions.size(); i++) {
-				rend.spikes[i].spikeNode->setPosition(irr::core::vector3df(
-					comp.spike_positions[i].x, 0.0, comp.spike_positions[i].y));
-			}
-		}
-		else {
-			for (uint32_t i = 0; i<comp.spike_positions.size(); i++) {
-				rend.spikes[i].spikeNode->setPosition(irr::core::vector3df(
-					comp.spike_positions[i].x, -2.0f, comp.spike_positions[i].y));
-			}
-		}
 	}
 }
 }  // namespace client
