@@ -215,16 +215,12 @@ int main(int argc, const char **argv)
 	std::vector<glm::ivec2> spikes3		   = {{ 47,93 },{ 48,93 },{ 49,93 },{ 50,93 },{ 51,93 },{ 52,93 }};
 	newButton(world, { { 39,98 } }, {}, spikes3);
 
-	// tempo::createMobCreeper(world, glm::ivec2(45, 130));
-	// tempo::createMobCreeper(world, glm::ivec2(45, 130));
-	// tempo::createMobCreeper(world, glm::ivec2(45, 130));
-	// tempo::createMobCreeper(world, glm::ivec2(45, 130));
-	// tempo::createMobCreeper(world, glm::ivec2(45, 130));
-	// tempo::createMobCreeper(world, glm::ivec2(45, 130));
-	// tempo::createMobCreeper(world, glm::ivec2(45, 130));
-	// tempo::createMobCreeper(world, glm::ivec2(45, 130));
-	// tempo::createMobCreeper(world, glm::ivec2(45, 130));
-	// tempo::createMobCreeper(world, glm::ivec2(45, 130));
+	tempo::createMobCreeper(world, glm::ivec2(45, 130));
+	tempo::createMobCreeper(world, glm::ivec2(45, 130));
+	tempo::createMobCreeper(world, glm::ivec2(45, 130));
+	tempo::createMobCreeper(world, glm::ivec2(45, 130));
+	tempo::createMobCreeper(world, glm::ivec2(45, 130));
+	tempo::createMobCreeper(world, glm::ivec2(45, 130));
 
 	std::vector<glm::ivec2> wall6          = {{37,102},{38,102},{39,102},{40,102},{41,102},{42,102},
 	                                          {41,122},{42,122},{43,122},{44,122},{45,122}, {46,122}, {47,122}};
@@ -233,8 +229,9 @@ int main(int argc, const char **argv)
 	std::vector<glm::ivec2> wall7          = {{26,138},{27,138},{28,138},{29,138},{30,138},{31,138},{32,138}};
 	newButton(world, { { 26,27 }, { 31, 27 } }, wall7, {});
 
-	std::vector<glm::ivec2> wall8          = {{37,102},{38,102},{39,102},{40,102},{41,102},{42,102},
-	                                          {41,122},{42,122},{43,122},{44,122},{45,122}, {46,122}, {47,122}};
+	std::vector<glm::ivec2> wall8          = {{24,93},{25,93},{26,93},{27,93},{24,122},{25,122},{26,122},{27,122},
+	                                          {32,138},{33,138},{34,138},{35,138},{36,138},{37,138},{38,138},{39,138},
+	                                          {40,138},{41,138},{42,138}};
 	RythmButton(world, {{{45,125}},{{45,126}},{{46,126}},{{46,127}},{{47,127}},{{48,127}},{{48,128}}}, wall8, {}, rhythmID);
 
 
