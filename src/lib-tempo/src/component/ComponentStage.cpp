@@ -23,9 +23,9 @@ void ComponentStage::loadLevel(const char *stage_file)
 	int emptySpace = 40;
 
 	int fwidth = 150;
-	int fheight = 69 + emptySpace;
+	int fheight = 53 + emptySpace;
 
-	int feeder_areas = 10;
+	int feeder_areas = 2;
 
 	if (_global_stage_loaded == std::string(stage_file)) {
 		tiles = &_global_stage;
