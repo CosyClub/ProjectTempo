@@ -25,6 +25,8 @@ void SystemRenderAttack::update(SystemStageRenderer& sr, irr::video::SColor colo
 
 		for (auto& target : targets)
 		{
+			// Colour the attack with increasing saturation dependant
+			// on how many beats until the attack
 			irr::video::SColor color(255,
 					         colour.getRed()   / (attack.beats_until_attack + 1), 
 					         colour.getGreen() / (attack.beats_until_attack + 1), 
