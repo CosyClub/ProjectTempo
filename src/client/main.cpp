@@ -89,7 +89,7 @@ namespace client
 
 	 			glm::ivec2 dest = origin + trans.delta;
 
-	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5) {
+	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5 || stage.getHeight(dest) <= -3) {
 	 				// consume the moment before the server rejects you
 	 				// currently combos aren't server protected, so maybe this should move into lib-tempo?
 	 				// this produces a lovely jumping against the wall animation!
@@ -390,13 +390,13 @@ int main(int argc, const char** argv)
 
 	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
 	irr::scene::ICameraSceneNode *camera_node = new irr::scene::Camera(
-		sn.node, 
-		smgr, 
-		-1, 
-		irr::core::vector3df(7, 7, 0), 
+		sn.node,
+		smgr,
+		-1,
+		irr::core::vector3df(7, 7, 0),
 		irr::core::vector3df(0, 0, 0));
 	//irr::core::matrix4 cpm = camera_node->getProjectionMatrix();
-	
+
 	//camera_node->setFOV(1.0f);
 
 	smgr->setActiveCamera(camera_node);
