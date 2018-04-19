@@ -338,18 +338,13 @@ int main(int argc, const char** argv)
 	glm::ivec2 startingPos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
 	int emptySpace = 40;
-
 	int fheight = 69 + emptySpace;
-
 	int feeder_areas = 10;
 
-	for (int i=0; i < feeder_areas; i++){
-
-	client::createLasers(smgr, driver, { {40 + (i*fheight),12}, {40 + (i*fheight),52}, {40 + (i*fheight),92} }, startingPos);
-
-	client::createDiscoBalls(smgr, driver, { {40 + (i*fheight),6} }, startingPos);
-
-}
+	for (int i=0; i < feeder_areas; i++) {
+		client::createLasers(smgr, driver, { {40 + (i*fheight),12}, {40 + (i*fheight),52}, {40 + (i*fheight),92} }, startingPos);
+		client::createDiscoBalls(smgr, driver, { {40 + (i*fheight),6} }, startingPos);
+	}
 
 	/////////////////////////////////////////////////
 	// Main loop
@@ -357,13 +352,11 @@ int main(int argc, const char** argv)
 	sf::Clock fps_timer;
 	// sf::Clock dt_timer;
 
-	int stage_counter = 0;
-	int colour_index  = 0;
-
-	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	sf::Int64 synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	sf::Clock frame_clock = sf::Clock();
 	sf::Clock update_floor_clock = sf::Clock();
 	update_floor_clock.restart();
+	client::next_palette(synced_tick % client::palettes.size());
 
 	srand(clock.get_time().asMicroseconds());
 
@@ -396,7 +389,7 @@ int main(int argc, const char** argv)
 		// Events all the time
 		{
 			playerpos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-			system_stage_renderer.colorStage(stage_counter,
+			system_stage_renderer.colorStage(synced_tick,
 			                                 playerpos,
 					                 client::curr_pallette.floor1, 
 					                 client::curr_pallette.floor2);
@@ -455,12 +448,10 @@ int main(int argc, const char** argv)
 		glm::vec4 c2;
 		if (clock.passed_beat()) {
 			// click.play();
-			if (tick++ % 20 == 0)
-				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()
+			if (synced_tick++ % 20 == 0)
+				std::cout << "SYNCED_TICK (" << synced_tick << ") " 
+				          << clock.get_time().asMilliseconds()
 				          << "+++++++++++++++" << std::endl;
-
-			stage_counter++;
-			stage_counter = stage_counter % 22;
 
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
@@ -470,7 +461,7 @@ int main(int argc, const char** argv)
 
 			system_translation_animation.endBeat();
 
-			colour_index = client::next_palette(colour_index);
+			client::next_palette(synced_tick % client::palettes.size());
 			system_lighting.update(client::curr_pallette.light);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
@@ -497,7 +488,8 @@ int main(int argc, const char** argv)
 		smgr->drawAll();
 		gui_env->drawAll();
 
-		system_render_gui.update(driver, gui_env, clock, combo, comp_health, colour_index, enable_hud);
+		system_render_gui.update(driver, gui_env, clock, combo, comp_health,
+		                         synced_tick % client::palettes.size(), enable_hud);
 		driver->endScene();
 
 		++frame_counter;

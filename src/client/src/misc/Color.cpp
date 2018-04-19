@@ -67,13 +67,10 @@ const std::vector<palette> palettes =
 	};
 palette curr_pallette = palettes[0];
 
-int next_palette(int old_colour)
+void next_palette(int64_t tick)
 {
-	int colour_index = rand() % 10;
-	while (colour_index == old_colour)
-		colour_index = rand() % 10;
-	curr_pallette = palettes[colour_index];
-	return colour_index;
+	// printf("%ld %ld\n", tick % palettes.size(), palettes.size());
+	curr_pallette = palettes[tick % palettes.size()];
 }
 
 } // namespace client

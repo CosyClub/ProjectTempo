@@ -22,7 +22,7 @@ namespace client {
 	extern palette curr_pallette;
 	extern const std::vector<palette> palettes;
 
-	int next_palette(int old_colour);
+	void next_palette(int64_t tick);
 }
 
 #endif
