@@ -73,7 +73,7 @@ void SystemStageRenderer::setup(irr::scene::ISceneManager *smgr, irr::video::IVi
 {
 	printf("SystemStageRenderer initializing\n");
 
-	auto  entities = getEntities();
+	auto&  entities = getEntities();
 	auto  entity   = std::begin(entities);
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 

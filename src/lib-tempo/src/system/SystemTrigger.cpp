@@ -33,7 +33,7 @@ void SystemTrigger::updateButtons(anax::World& world)
 	untriggerPos.clear();
 
 	// get all the button groups
-	auto entities = getEntities();
+	auto& entities = getEntities();
 
 	for (uint32_t i = 0; i < entities.size(); i++) {
 
@@ -177,7 +177,7 @@ void SystemTrigger::updateButtons(anax::World& world)
 				button_group.action_happened = true;
 
 				for (auto& entity : entities) {
-					
+
 					auto &tempGroup = entity.getComponent<tempo::ComponentButtonGroup>();
 					int rhythmID = tempGroup.rhythmID;
 
@@ -221,7 +221,7 @@ void SystemTrigger::updateButtons(anax::World& world)
 
 void SystemTrigger::resetButtons(int rhythmID) {
 
-	auto entities = getEntities();
+	auto& entities = getEntities();
 
 	for (uint32_t i = 0; i < entities.size(); i++) {
 		auto &entity = entities[i];
@@ -256,7 +256,7 @@ void SystemTrigger::resetButtons(int rhythmID) {
 
 void SystemTrigger::blockButtons(int rhythmID) {
 
-	auto entities = getEntities();
+	auto& entities = getEntities();
 
 	for (uint32_t i = 0; i < entities.size(); i++) {
 		auto &entity = entities[i];
@@ -284,8 +284,8 @@ void SystemTrigger::blockButtons(int rhythmID) {
 std::vector<glm::ivec2> SubSystemGetPlayers::getPlayers()
 {
 	std::vector<glm::ivec2> currentPlayerPos;
-	
-	auto entities = getEntities();
+
+	auto& entities = getEntities();
 
 	// Get all the players and save their locations
 	for (auto& entity : entities) {
@@ -302,7 +302,7 @@ std::vector<glm::ivec2> SubSystemGetPlayers::getPlayers()
 
 void SubSystemUpdateSpikes::updateSpikes(std::vector<glm::ivec2> untriggerPos)
 {
-	auto entities = getEntities();
+	auto& entities = getEntities();
 
 	for (auto &entity : entities) {
 

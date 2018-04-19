@@ -9,7 +9,7 @@ namespace tempo
 
 void SystemHealth::check_health()
 {
-	auto entities = getEntities();
+	auto& entities = getEntities();
 
 	for (auto &entity : entities) {
 		auto &h = entity.getComponent<ComponentHealth>();
@@ -54,7 +54,7 @@ void SystemHealth::check_health()
 
 void SystemHealth::broadcastHealth()
 {
-	auto entities = getEntities();
+	auto& entities = getEntities();
 
 	for (auto &entity : entities)
 	{
@@ -97,7 +97,7 @@ void SystemHealth::client_receiveHealth(anax::World &world)
 
 void SystemHealth::regenerate()
 {
-	auto entities = getEntities();
+	auto& entities = getEntities();
 
 	for (auto &entity : entities)
 	{
