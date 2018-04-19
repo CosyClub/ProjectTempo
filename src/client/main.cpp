@@ -74,7 +74,7 @@ namespace client
 	 	>
 	 {
 	 public:
-	 	void lessJank() {
+	 	void lessJank(const glm::ivec2 playerpos) {
 	 		// uncomment this for more jank:
 	 		//return;
 
@@ -85,7 +85,11 @@ namespace client
 	 			tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
 	 			glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-
+				if (origin.x < playerpos.x - 24 || origin.x > playerpos.x + 7 ||
+				    origin.y < playerpos.y - 33 || origin.y > playerpos.y + 33)
+				{
+					continue;
+				}
 
 	 			glm::ivec2 dest = origin + trans.delta;
 
@@ -449,7 +453,7 @@ int main(int argc, const char** argv)
 			system_health.check_health();
 			system_health.client_receiveHealth(world);
 
-			system_less_jank.lessJank();
+			system_less_jank.lessJank(playerpos);
 			// Update animations from translations received from server
 			system_translation_animation.updateAnimations();
 
