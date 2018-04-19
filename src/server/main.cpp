@@ -218,16 +218,25 @@ int main(int argc, const char **argv)
 		// newButton(world, { { 26,27 }, { 31, 27 } }, wall7, {});
 
 	//Starter areas
-
+{
 	std::vector<glm::ivec2> wall          = {{10,5}};
-	RythmButton(world, { { { 10,2 }},{ { 10,3 } },{ {10,4} } }, wall, {}, rhythmID);
+	RythmButton(world, { { { 10,1 }},{ { 10,2 } },{ {10,3} } }, wall, {}, rhythmID);
 
 	std::vector<glm::ivec2> wall1          = {{8,5}};
-	RythmButton(world, { { { 8,2 }},{ { 8,3 } },{ {8,4} } }, wall1, {}, rhythmID);
+	RythmButton(world, { { { 8,1 }},{ { 8,2 } },{ {8,3} } }, wall1, {}, rhythmID);
 
 	std::vector<glm::ivec2> wall2          = {{10,5}};
-	RythmButton(world, { { { 6,2 }},{ { 6,3 } },{ { 6 , 4} } }, wall2, {}, rhythmID);
+	RythmButton(world, { { { 6,1 }},{ { 6,2 } },{ { 6 , 3} } }, wall2, {}, rhythmID);
 
+	std::vector<glm::ivec2> wall3          = {{5,6}};
+	RythmButton(world, { { { 1,6 }},{ { 2,6 } },{ { 3 , 6} } }, wall3, {}, rhythmID);
+
+	std::vector<glm::ivec2> wall4          = {{5,8}};
+	RythmButton(world, { { { 1,8 }},{ { 2,8 } },{ { 3 , 8} } }, wall4, {}, rhythmID);
+
+	std::vector<glm::ivec2> wall5          = {{5,10}};
+	RythmButton(world, { { { 1,10 }},{ { 2,10 } },{ { 3 , 10} } }, wall5, {}, rhythmID);
+}
 	//Room 1
 	std::vector<glm::ivec2> wall3		   = {{ 7,11 },{ 8,11 },{ 9,11 }};
 	newButton(world, { { 8,9 }, }, wall3, {});
@@ -235,8 +244,8 @@ int main(int argc, const char **argv)
 	//Room 2
 
 	//Room 3
-	std::vector<glm::ivec2> wall4		   = {{ 24,11 },{ 25,11 },{ 26,11 }};
-	newButton(world, { { 24,7 },{26,7} }, wall4, {});
+	std::vector<glm::ivec2> wall4		   = {{ 11,24 },{ 11,25 },{ 11,26 }};
+	newButton(world, { { 7,24 },{7,26} }, wall4, {});
 
 	//Room 4
 	std::vector<glm::ivec2> spikes		   = {{14,22},{14,23},{14,24},{14,25},{15,22},{15,26},{15,27},{16,22},{16,24},{17,22},{17,25},{17,26},{17,27},{17,28},{18,22},{18,23}};
@@ -281,8 +290,14 @@ int main(int argc, const char **argv)
 	newButton(world, { {1,45} }, {}, {spike1});
 	newButton(world, { {7,43} }, {}, {spike7,spike3});
 	newButton(world, { {9,39} }, {}, {spike4});
-	newButton(world, { {9,45} }, {}, {{3,42}, spike6});
+	newButton(world, { {9,44} }, {}, {{3,42}, spike6});
 	newButton(world, { {9,48} }, {}, {spike5 ,{8,45},{8,46}, {8,47}});
+}
+
+//Room 8
+{
+	std::vector<glm::ivec2> wall          = {{12,44},{12,43},{12,42},{13,44},{13,43},{13,42}};
+	RythmButton(world, { { { 12,47 },{12,49}},{ {13,49},{ 13,47 } },{ {13,46},{13,50} },{{12,46},{12,50}} }, wall, {}, rhythmID);
 }
 
 }
