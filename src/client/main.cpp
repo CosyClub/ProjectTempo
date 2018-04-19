@@ -240,17 +240,29 @@ int main(int argc, const char** argv)
 
 
 	if (enable_hud) {
-		device->getGUIEnvironment()->addImage(
-		    driver->getTexture("resources/materials/textures/splash-full.png"),
-		    irr::core::position2d<irr::s32>(0,0), true);
-		bool waiting = true;
 
+		irr::video::ITexture* splash_texture[2];
+		splash_texture[0] = driver->getTexture("resources/materials/textures/splash-full.png");
+		splash_texture[1] = driver->getTexture("resources/materials/textures/splash-minimal.png");
+
+		irr::gui::IGUIImage* splashScreen = device->getGUIEnvironment()->addImage(
+		                                  splash_texture[1],
+		                                  irr::core::position2d<irr::s32>(0,0), true);
+		bool waiting = true;
+		int i = 0;
+		sf::Clock splash_timer;
+		splash_timer.restart();
 		while (device->run() && waiting) {
 			std::vector<client::KeyEvent> keys = system_update_key_input.getKeys();
 			for (unsigned int i = 0; i < keys.size(); i++) {
 				if (keys[i].press) waiting = false;
 			}
 
+			if(splash_timer.getElapsedTime().asSeconds() > 1.0f) {
+				splash_timer.restart();
+				i = (i+1) % 2;
+				splashScreen->setImage(splash_texture[i]);
+			}
 			driver->beginScene(true, true);
 			smgr->drawAll();
 			gui_env->drawAll();

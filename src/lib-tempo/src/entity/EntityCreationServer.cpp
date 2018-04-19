@@ -94,7 +94,7 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 {
 	anax::Entity e = world.createEntity();
-	
+
 	std::string path = "resources/materials/textures/creeper.png";
 
 	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_WANDER, false, false);
