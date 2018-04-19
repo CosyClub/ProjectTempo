@@ -246,7 +246,44 @@ int main(int argc, const char **argv)
 	newButton(world, { { 13,25 }, }, {}, spikes2);
 	newButton(world, { { 18,29 }, }, {}, spikes2);
 
+	// Room 5 (Prongs)
+	newButton(world, { {17,30} }, {}, {{17,32}});
+	newButton(world, { {16,34} }, {}, {{16,32}});
+	newButton(world, { {15,34},{15,30} }, {}, {{15,32}});
+	newButton(world, { {13,34},{13,30} }, {}, {{13,32}});
+	newButton(world, { {11,34},{11,30} }, {}, {{11,32}});
+	newButton(world, { {10,34},{10,30} }, {}, {{10,32}});
+	newButton(world, { {9,34},{9,30} }, {}, {{9,32}});
 
+	newButton(world, { {7,32} }, {{7,31},{7,33}}, {});
+
+	// Room 6
+	std::vector<glm::ivec2> wall5          = {{2,37},{3,37},{4,37}};
+	RythmButton(world, { { {4,31}},{ { 3,31 } },{ { 2,31} },{{2,32}},{{3,32}} }, wall5, {}, rhythmID);
+
+	std::vector<glm::ivec2> wall6          = {{2,38},{3,38},{4,38}};
+	RythmButton(world, { { {2,35}},{ { 3,35 } },{ { 4,35 }},{{4,34}},{{3,34}} }, wall6, {}, rhythmID);
+
+	// Room 7 (Maze)
+	{
+	std::vector<glm::ivec2> spikes		   = {{1,40},{2,40},{3,40},{4,40},{5,40},{8,39},{8,40},{2,42},{2,43},{2,44},{2,45},{4,44},{5,43},{5,44},{5,42},{6,42},{7,42},{8,42},{7,44},{7,45},{8,44}};
+	tempo::createSpikes(world, spikes);
+
+	glm::ivec2 spike1		   = {4,42};
+	glm::ivec2 spike7		   = {6,40};
+	glm::ivec2 spike2		   = {7,40};
+	glm::ivec2 spike3		   = {8,41};
+	glm::ivec2 spike4		   = {8,43};
+	glm::ivec2 spike5		   = {9,42};
+	glm::ivec2 spike6		   = {9,47};
+
+	newButton(world, { {1,39} }, {}, {spike2});
+	newButton(world, { {1,45} }, {}, {spike1});
+	newButton(world, { {7,43} }, {}, {spike7,spike3});
+	newButton(world, { {9,39} }, {}, {spike4});
+	newButton(world, { {9,45} }, {}, {{3,42}, spike6});
+	newButton(world, { {9,48} }, {}, {spike5 ,{8,45},{8,46}, {8,47}});
+}
 
 }
 	world.refresh();
