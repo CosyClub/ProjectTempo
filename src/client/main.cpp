@@ -155,7 +155,6 @@ int main(int argc, const char** argv)
 	// irr::IrrlichtDevice *device = irr::createDevice(
 	//   irr::video::EDT_OPENGL, deskres, 16, true, false, false);
 
-
 	bool enable_hud = false;
 	if (argc == 4) {
 		std::string HUD = argv[3];
@@ -181,14 +180,12 @@ int main(int argc, const char** argv)
 	anax::World world;
 	// tempo::SystemRender           system_render(app);
 
-
 	tempo::SystemHealth            system_health;
 	tempo::SystemTrigger           system_trigger(world);
 	client::SystemAttack           system_attack;
 	client::SystemButtonRenderer   system_button_renderer;
 	client::SystemCombo            system_combo;
 	client::SystemEntity           system_entity;
-
 
 	client::SystemGraphicsCreation system_gc;
 	client::SystemLighting         system_lighting;
@@ -201,7 +198,7 @@ int main(int argc, const char** argv)
 	client::SystemRenderSceneNode  system_render_scene_node;
 
 	client::SystemRenderAttack     system_render_attack;
-	client::SystemRenderSpikes  	 system_render_spikes;
+	client::SystemRenderSpikes     system_render_spikes;
 
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
@@ -353,18 +350,13 @@ int main(int argc, const char** argv)
 	glm::ivec2 startingPos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
 	int emptySpace = 40;
-
 	int fheight = 69 + emptySpace;
-
 	int feeder_areas = 10;
 
-	for (int i=0; i < feeder_areas; i++){
-
-	client::createLasers(smgr, driver, { {40 + (i*fheight),12}, {40 + (i*fheight),52}, {40 + (i*fheight),92} }, startingPos);
-
-	client::createDiscoBalls(smgr, driver, { {40 + (i*fheight),6} }, startingPos);
-
-}
+	for (int i=0; i < feeder_areas; i++) {
+		client::createLasers(smgr, driver, { {40 + (i*fheight),12}, {40 + (i*fheight),52}, {40 + (i*fheight),92} }, startingPos);
+		client::createDiscoBalls(smgr, driver, { {40 + (i*fheight),6} }, startingPos);
+	}
 
 	/////////////////////////////////////////////////
 	// Main loop
@@ -372,20 +364,12 @@ int main(int argc, const char** argv)
 	sf::Clock fps_timer;
 	// sf::Clock dt_timer;
 
-	int j = 0;
-	int colour_index;
-
-	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	sf::Int64 synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	sf::Clock frame_clock = sf::Clock();
 	sf::Clock update_floor_clock = sf::Clock();
 	update_floor_clock.restart();
+	client::next_palette(synced_tick % client::palettes.size());
 
-	client::init_palettes();
-	irr::video::SColor colour;
-	irr::video::SColor colour_red(255, 255, 0, 0);
-	irr::video::SColor colour_purple(255, 255, 0, 255);
-	irr::video::SColor colour_grey(255, 50, 50, 50);
-	irr::video::SColor random_colour;
 	srand(clock.get_time().asMicroseconds());
 
 	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
@@ -416,10 +400,11 @@ int main(int argc, const char** argv)
 		////////////////
 		// Events all the time
 		{
-			playerpos =
-				entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-
-			system_stage_renderer.colorStage(j, playerpos, random_colour, colour_grey);
+			playerpos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
+			system_stage_renderer.colorStage(synced_tick,
+			                                 playerpos,
+					                 client::curr_pallette.floor1, 
+					                 client::curr_pallette.floor2);
 
 			// Check for new entities from server
 			system_entity.creationCheck(world);
@@ -429,7 +414,6 @@ int main(int argc, const char** argv)
 			system_gc.addEntities(driver, smgr, world);
 			system_render_scene_node.setup(smgr, driver);
 			system_render_health_bars.setup(smgr);
-			system_render_attack.update(system_stage_renderer);
 			system_button_renderer.setup(smgr, driver);
 
 			// Receive updates from the server
@@ -453,6 +437,7 @@ int main(int argc, const char** argv)
 			system_translation_animation.updateAnimations();
 
 			// Graphics updates
+			system_render_attack.update(system_stage_renderer, client::curr_pallette.attack);
 			system_render_scene_node.update(playerpos);
 			system_render_health_bars.update(playerpos);
 			system_render_healing.update();
@@ -475,12 +460,11 @@ int main(int argc, const char** argv)
 		glm::vec4 c2;
 		if (clock.passed_beat()) {
 			// click.play();
-			if (tick++ % 20 == 0)
-				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()
+			if (synced_tick++ % 20 == 0)
+				std::cout << "SYNCED_TICK (" << synced_tick << ") " 
+				          << clock.get_time().asMilliseconds()
 				          << "+++++++++++++++" << std::endl;
 
-			j++;
-			j = j % 22;
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
 
@@ -489,12 +473,8 @@ int main(int argc, const char** argv)
 
 			system_translation_animation.endBeat();
 
-
-			colour_index = rand() % 10;
-			random_colour = client::randomHSV(colour_index);
-
-
-			system_lighting.update(random_colour);
+			client::next_palette(synced_tick % client::palettes.size());
+			system_lighting.update(client::curr_pallette.light);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
 			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
 			// << std::endl;
@@ -520,7 +500,8 @@ int main(int argc, const char** argv)
 		smgr->drawAll();
 		gui_env->drawAll();
 
-		system_render_gui.update(driver, gui_env, clock, combo, comp_health, colour_index, enable_hud);
+		system_render_gui.update(driver, gui_env, clock, combo, comp_health,
+		                         synced_tick % client::palettes.size(), enable_hud);
 		driver->endScene();
 
 		++frame_counter;

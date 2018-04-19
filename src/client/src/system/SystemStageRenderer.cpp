@@ -83,54 +83,43 @@ void SystemStageRenderer::setTileColor(glm::ivec2 pos, irr::video::SColor color)
 	tileMap[pos].color = color;
 }
 
-void SystemStageRenderer::colorStage(int                step,
+void SystemStageRenderer::colorStage(int64_t step,
                                      glm::ivec2 playerpos,
                                      irr::video::SColor C1,
                                      irr::video::SColor C2)
 {
 	auto  entities = getEntities();
 
-	for (auto& it : tileMap)
-	{
+	for (auto& it : tileMap) {
 		tile_t tile = it.second;
 		glm::ivec2 pos = tile.pos;
 
-		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
+		if (pos.x < playerpos.x - 24 
+		    || pos.x > playerpos.x + 7 
+		    || pos.y < playerpos.y - 33
 		    || pos.y > playerpos.y + 33) {
 			continue;
 		}
 
+		int64_t local_step = step % 22;
 		bool render;
-		switch (step) {
-		case 0:
-		case 1:
-		case 2:
-		case 3:
-		case 9:
-		case 10:
-		case 11:
-		case 12: render = checkerBoardPattern(pos, step); break;
-		case 4:
-		case 5:
-		case 6:
-		case 7:
-		case 8: render = linePattern(0, 5, pos, step - 4); break;
-		case 13:
-		case 14:
-		case 15:
-		case 16:
-		case 17: render = linePattern(1, 5, pos, step - 13); break;
-		case 18:
-		case 19:
-		case 20:
-		case 21: render = squarePattern(1, 12, pos, step); break;
+
+		if (local_step <=  3) {
+			render = checkerBoardPattern(pos, local_step);
+		} else if (local_step <=  8) {
+			render = linePattern(0, 5, pos, local_step - 4);
+		} else if (local_step <= 12) {
+			render = checkerBoardPattern(pos, local_step);
+		} else if (local_step <= 17) {
+			render = linePattern(1, 5, pos, local_step - 13);
+		} else {
+			render = squarePattern(1, 12, pos, local_step);
 		}
 
 		if (render) {
 			setTileColor(pos, C1);
 			continue;
-		}
-		else{
+		} else {
 			setTileColor(pos, C2);
 			continue;
 		}
