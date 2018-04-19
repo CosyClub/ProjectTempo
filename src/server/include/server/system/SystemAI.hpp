@@ -1,6 +1,7 @@
 #ifndef SERVER_SYSTEM_AI_HPP
 #define SERVER_SYSTEM_AI_HPP
 #include <tempo/component/ComponentAI.hpp>
+#include <tempo/component/ComponentStage.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentWeapon.hpp>
