@@ -74,7 +74,7 @@ namespace client
 	 	>
 	 {
 	 public:
-	 	void lessJank() {
+	 	void lessJank(const glm::ivec2 playerpos) {
 	 		// uncomment this for more jank:
 	 		//return;
 
@@ -85,7 +85,11 @@ namespace client
 	 			tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
 	 			glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-
+				if (origin.x < playerpos.x - 24 || origin.x > playerpos.x + 7 ||
+				    origin.y < playerpos.y - 33 || origin.y > playerpos.y + 33)
+				{
+					continue;
+				}
 
 	 			glm::ivec2 dest = origin + trans.delta;
 
@@ -390,13 +394,13 @@ int main(int argc, const char** argv)
 
 	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
 	irr::scene::ICameraSceneNode *camera_node = new irr::scene::Camera(
-		sn.node, 
-		smgr, 
-		-1, 
-		irr::core::vector3df(7, 7, 0), 
+		sn.node,
+		smgr,
+		-1,
+		irr::core::vector3df(7, 7, 0),
 		irr::core::vector3df(0, 0, 0));
 	//irr::core::matrix4 cpm = camera_node->getProjectionMatrix();
-	
+
 	//camera_node->setFOV(1.0f);
 
 	smgr->setActiveCamera(camera_node);
@@ -405,6 +409,7 @@ int main(int argc, const char** argv)
 
 	printf("Entering main loop\n");
 	while (device->run()) {
+
 
 		// Work out a frame delta time.
 		// const irr::u32 now = device->getTimer()->getTime();
@@ -419,7 +424,7 @@ int main(int argc, const char** argv)
 			playerpos =
 				entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-			system_stage_renderer.colorStage(j, playerpos, random_colour, colour_grey);
+			//system_stage_renderer.colorStage(j, playerpos, random_colour, colour_grey);
 
 			// Check for new entities from server
 			system_entity.creationCheck(world);
@@ -448,7 +453,7 @@ int main(int argc, const char** argv)
 			system_health.check_health();
 			system_health.client_receiveHealth(world);
 
-			system_less_jank.lessJank();
+			system_less_jank.lessJank(playerpos);
 			// Update animations from translations received from server
 			system_translation_animation.updateAnimations();
 
@@ -485,7 +490,7 @@ int main(int argc, const char** argv)
 			system_button_renderer.updateButtons(driver);
 
 			system_render_healing.endBeat();
-			system_render_spikes.updateSpikes(driver);
+			system_render_spikes.updateSpikes(driver, playerpos);
 
 			system_translation_animation.endBeat();
 
@@ -513,8 +518,18 @@ int main(int argc, const char** argv)
 			system_combo.advanceBeat();
 		}
 
-		system_stage_renderer.AnimateTiles(dt);
-		system_stage_renderer.Update(smgr, driver, playerpos);
+
+		// std::clock_t    start;
+		//
+		// 				start = std::clock();
+		//system_stage_renderer.AnimateTiles(dt, playerpos);
+		// std::cout << "Time: " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
+
+		system_stage_renderer.Update(smgr, driver, playerpos, random_colour, colour_grey, j, dt);
+
+
+		//system_stage_renderer.Update(smgr, driver, playerpos);
+
 
 		driver->beginScene(true, true);
 		smgr->drawAll();

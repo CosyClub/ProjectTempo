@@ -14,7 +14,8 @@ namespace client
 {
 void SystemRenderSpikes::setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver)
 {
-	auto entities = getEntities();
+	auto& entities = getEntities();
+	irr::scene::IMesh *spike_mesh = smgr->getMesh("resources/meshes/spikes.obj");
 
 	for (auto &entity : entities) {
 		auto &spikes = entity.getComponent<tempo::ComponentSpikes>();
@@ -23,8 +24,6 @@ void SystemRenderSpikes::setup(irr::scene::ISceneManager *smgr, irr::video::IVid
 		auto &positions = spikes.spike_positions;
 
 		for (uint32_t i=0; i<positions.size(); i++) {
-
-			irr::scene::IMesh *spike_mesh = smgr->getMesh("resources/meshes/spikes.obj");
 
 			SpikeNode spikeNode;
 			spikeNode.spikeNode = smgr->addMeshSceneNode(spike_mesh, 0);
@@ -41,25 +40,30 @@ void SystemRenderSpikes::setup(irr::scene::ISceneManager *smgr, irr::video::IVid
 	}
 }
 
-void SystemRenderSpikes::updateSpikes(irr::video::IVideoDriver *driver)
+void SystemRenderSpikes::updateSpikes(irr::video::IVideoDriver *driver, const glm::ivec2 playerpos)
 {
-	auto entities = getEntities();
+	auto& entities = getEntities();
 	for (auto entity : entities) {
 		auto &comp = entity.getComponent<tempo::ComponentSpikes>();
 		auto &rend  = entity.getComponent<client::ComponentRenderSpikes>();
 
-		if (comp.isTriggered) {
-			for (uint32_t i = 0; i<comp.spike_positions.size(); i++) {
-				rend.spikes[i].spikeNode->setPosition(irr::core::vector3df(
-					comp.spike_positions[i].x, 0.0, comp.spike_positions[i].y));
+		for (uint32_t i = 0; i<comp.spike_positions.size(); i++) {
+			glm::ivec2 pos = comp.spike_positions[i];
+
+			if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 ||
+			    pos.y < playerpos.y - 33 || pos.y > playerpos.y + 33)
+			{
+				rend.spikes[i].spikeNode->setVisible(false);
+				continue;
+			}
+
+			if (comp.isTriggered) {
+				rend.spikes[i].spikeNode->setVisible(true);
+			} else {
+				rend.spikes[i].spikeNode->setVisible(false);
 			}
 		}
-		else {
-			for (uint32_t i = 0; i<comp.spike_positions.size(); i++) {
-				rend.spikes[i].spikeNode->setPosition(irr::core::vector3df(
-					comp.spike_positions[i].x, -2.0f, comp.spike_positions[i].y));
-			}
-		}
+
 	}
 }
 }  // namespace client

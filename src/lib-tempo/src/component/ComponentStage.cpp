@@ -50,6 +50,8 @@ void ComponentStage::loadLevel(const char *stage_file)
 		return;
 	}
 
+	_global_stage.reserve(height*width);
+
 	// Load the new tiles
 	for (int y = 0; y < height; y++) {
 		if(y > fheight * feeder_areas){
@@ -130,9 +132,10 @@ bool ComponentStage::existstTile(glm::ivec2 position)
 
 bool ComponentStage::isNavigable(glm::ivec2 position)
 {
-	if (existstTile(position))
+	auto itr = (*tiles).find(position);
+	if (itr == (*tiles).end())
 	{
-		return getHeight(position) < 5;
+		return itr->second.height < 5;
 	}
 	return false;
 }

@@ -13,7 +13,7 @@ namespace client
 {
 void SystemRenderSceneNode::setup(irr::scene::ISceneManager* smgr, irr::video::IVideoDriver* driver)
 {
-	auto entities = getEntities();
+	auto& entities = getEntities();
 
 	for (auto entity : entities) {
 		client::ComponentRenderSceneNode& sn =
@@ -71,7 +71,7 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager* smgr, irr::video::I
 
 void SystemRenderSceneNode::update(const glm::ivec2 playerpos)
 {
-	auto entities = getEntities();
+	auto& entities = getEntities();
 
 	for (auto entity : entities) {
 		tempo::ComponentStage& s = entity.getComponent<tempo::ComponentStage>();
