@@ -228,15 +228,26 @@ void SystemParseKeyInput::parseInput(tempo::Clock &clock, irr::IrrlichtDevice* d
 			if (ke.keysPressed[i].press) {
 				#ifdef TEMPO_DATA_CAPTURE
 
-				float since_beat = clock.since_beat().asSeconds();
-				float until_beat = clock.until_beat().asSeconds();
+				float since_beat    = clock.since_beat().asSeconds();
+				float until_beat    = clock.until_beat().asSeconds();
+				float beat_progress = clock.beat_progress();
+				int   beat_number   = clock.get_beat_number();
 
-				float delta = clock.beat_progress() < 0.5 ? since_beat : -until_beat;
+				float delta;
+				if(beat_progress < 0.5){
+					delta = since_beat;
+				} else {
+					// Then we're past the midway point, IE, closer to the next beat
+					// record this delta as a time before (IE: negative) for the next
+					// beat, rather than time since last beat
+					delta = -until_beat;
+					++beat_number;
+				}
 
-				this->data_output << clock.get_beat_number()        << ", "
-				                  << (withinDelta ? '1' : '0')      << ", "
-				                  << delta                          << ", "
-				                  << ke.keysPressed[i].key          << std::endl;
+				this->data_output << beat_number               << ", "
+				                  << (withinDelta ? '1' : '0') << ", "
+				                  << delta                     << ", "
+				                  << ke.keysPressed[i].key     << std::endl;
 				#endif
 
 				processKeyPressEvent(ke.keysPressed[i].key, entity, withinDelta, device);
