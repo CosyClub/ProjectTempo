@@ -20,7 +20,7 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager* smgr, irr::video::IV
 	this->buttonBlocked = driver->getTexture("resources/materials/buttonBlocked.png");
 	this->buttonArrow = driver->getTexture("resources/materials/buttonArrow.png");
 
-	auto entities = getEntities();
+	auto& entities = getEntities();
 
 	if (entities.size() == 0) {
 		printf("\nThere does not seem to be any buttons\n");
@@ -68,7 +68,7 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager* smgr, irr::video::IV
 		}
 
 		else { // Rhythm Based buttons
-			
+
 			// button data
 			auto &buttons = group.buttons;
 
@@ -88,7 +88,7 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager* smgr, irr::video::IV
 				buttonRend.button->setPosition(
 					irr::core::vector3df(buttons[i].pos.x, 0.0, buttons[i].pos.y));
 
-			
+
 				irr::video::SMaterial &material_button_housing =
 						buttonRend.button_housing->getMaterial(0);
 				material_button_housing.Shininess = 0.5f;
@@ -122,7 +122,7 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager* smgr, irr::video::IV
 }
 
 void SystemButtonRenderer::setRotation(std::vector<anax::Entity> entities, uint32_t j, uint32_t i, irr::scene::IMeshSceneNode *button, glm::ivec2 pos) {
-	
+
 	//Last button group in level
 	if (j == entities.size() - 1) {
 		return;
@@ -165,7 +165,7 @@ void SystemButtonRenderer::setRotation(std::vector<anax::Entity> entities, uint3
 
 void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 {
-	auto entities = getEntities();
+	auto& entities = getEntities();
 	for (int i = entities.size() - 1; i >= 0; i--) {
 		auto &entity = entities[i];
 		auto &group = entity.getComponent<tempo::ComponentButtonGroup>();

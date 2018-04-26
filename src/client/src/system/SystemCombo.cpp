@@ -12,7 +12,7 @@ using tempo::operator>>;
 
 void SystemCombo::advanceBeat()
 {
-	auto entities = getEntities();
+	auto& entities = getEntities();
 
 	for (auto &entity : entities) {
 		auto &combo = entity.getComponent<tempo::ComponentCombo>();

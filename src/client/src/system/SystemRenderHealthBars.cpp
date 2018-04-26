@@ -13,7 +13,7 @@ void SystemRenderHealthBars::setup(irr::scene::ISceneManager *smgr)
 	irr::core::dimension2d<irr::f32> size(0.7f, 0.15f);
 	irr::video::SColor               color(255, 0, 255, 0);
 
-	auto entities = getEntities();
+	auto& entities = getEntities();
 
 	for (auto &entity : entities) {
 		// auto &health    = entity.getComponent<tempo::ComponentHealth>();
@@ -37,7 +37,7 @@ void SystemRenderHealthBars::update(const glm::ivec2 playerpos)
 	irr::video::SColor colour_green(255, 0, 255, 0);
 	irr::video::SColor colour_red(255, 255, 0, 0);
 
-	auto   entities = getEntities();
+	auto&   entities = getEntities();
 	double scale;
 
 	for (auto &entity : entities) {
