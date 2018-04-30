@@ -217,33 +217,46 @@ SystemParseKeyInput::~SystemParseKeyInput(){
 
 void SystemParseKeyInput::parseInput(tempo::Clock &clock, irr::IrrlichtDevice* device)
 {
-	for (auto entity : getEntities()) {
-		ComponentKeyInput ke = entity.getComponent<ComponentKeyInput>();
 
-		bool withinDelta = false;
-		if (clock.within_delta())
-			withinDelta = true;
+	bool withinDelta = false;
+	if (clock.within_delta())
+		withinDelta = true;
+
+	float        since_beat    = clock.since_beat().asSeconds();
+	float        until_beat    = clock.until_beat().asSeconds();
+	float        beat_progress = clock.beat_progress();
+	unsigned int beat_number   = clock.get_beat_number();
+
+	float delta;
+	if(beat_progress < 0.5){
+		delta = since_beat;
+	} else {
+		// Then we're past the midway point, IE, closer to the next beat
+		// record this delta as a time before (IE: negative) for the next
+		// beat, rather than time since last beat
+		delta = -until_beat;
+		++beat_number;
+	}
+
+	for (auto entity : getEntities()) {
+		ComponentKeyInput& ke = entity.getComponent<ComponentKeyInput>();
+
+		if(ke.keysPressed.size() == 0){ continue; }
+
+		// Remove any old actions
+		while(ke.actions.front().beat <
+		      (beat_number - ComponentKeyInput::ACTION_AGE_LIMIT)
+		     ){
+			ke.actions.pop_front();
+		}
 
 		for (unsigned int i = 0; i < ke.keysPressed.size(); i++) {
 			if (ke.keysPressed[i].press) {
+
+				// Add as action to the component
+				ke.actions.emplace_back(beat_number, delta);
+
 				#ifdef TEMPO_DATA_CAPTURE
-
-				float since_beat    = clock.since_beat().asSeconds();
-				float until_beat    = clock.until_beat().asSeconds();
-				float beat_progress = clock.beat_progress();
-				int   beat_number   = clock.get_beat_number();
-
-				float delta;
-				if(beat_progress < 0.5){
-					delta = since_beat;
-				} else {
-					// Then we're past the midway point, IE, closer to the next beat
-					// record this delta as a time before (IE: negative) for the next
-					// beat, rather than time since last beat
-					delta = -until_beat;
-					++beat_number;
-				}
-
 				this->data_output << beat_number               << ", "
 				                  << (withinDelta ? '1' : '0') << ", "
 				                  << delta                     << ", "
