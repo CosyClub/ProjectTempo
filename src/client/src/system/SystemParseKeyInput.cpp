@@ -241,10 +241,8 @@ void SystemParseKeyInput::parseInput(tempo::Clock &clock, irr::IrrlichtDevice* d
 	for (auto entity : getEntities()) {
 		ComponentKeyInput& ke = entity.getComponent<ComponentKeyInput>();
 
-		if(ke.keysPressed.size() == 0){ continue; }
-
 		// Remove any old actions
-		while(ke.actions.front().beat <
+		while(ke.actions.size() > 0 && ke.actions.front().beat <
 		      (beat_number - ComponentKeyInput::ACTION_AGE_LIMIT)
 		     ){
 			ke.actions.pop_front();
