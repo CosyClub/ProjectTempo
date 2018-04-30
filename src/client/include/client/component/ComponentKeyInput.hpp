@@ -42,6 +42,8 @@ struct ComponentKeyInput : anax::Component {
 
 	/// \brief Historic actions made by this component key input
 	std::deque<Action> actions;
+
+	ComponentKeyInput();
 };
 }
 
