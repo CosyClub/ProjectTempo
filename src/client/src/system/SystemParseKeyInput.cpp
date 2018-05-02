@@ -248,6 +248,11 @@ void SystemParseKeyInput::parseInput(tempo::Clock &clock, irr::IrrlichtDevice* d
 			ke.actions.pop_front();
 		}
 
+		bool duplicate_key = false;
+		if(ke.actions.size() > 0 && ke.actions.back().beat == beat_number){
+			duplicate_key = true;
+		}
+
 		for (unsigned int i = 0; i < ke.keysPressed.size(); i++) {
 			if (ke.keysPressed[i].press) {
 
@@ -261,7 +266,9 @@ void SystemParseKeyInput::parseInput(tempo::Clock &clock, irr::IrrlichtDevice* d
 				                  << ke.keysPressed[i].key     << std::endl;
 				#endif
 
-				processKeyPressEvent(ke.keysPressed[i].key, entity, withinDelta, device);
+				if(!duplicate_key){
+					processKeyPressEvent(ke.keysPressed[i].key, entity, withinDelta, device);
+				}
 			}
 		}
 	}
