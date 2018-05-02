@@ -134,33 +134,64 @@ void SystemRenderGUI::updateNudge(irr::gui::IGUIFont *font,
 	////////////////////////////////////////////////////////////////////////////
 	// Compute some stats about the history of keypresses
 
-	float window_delta = clock.get_beat_window_delta().asSeconds();
-	printf("window delta is: %f\n", window_delta);
+	float window_size = clock.get_beat_window_delta().asSeconds();
+	float beat_length = clock.get_beat_length().asSeconds();
 
 	// Out of those beats represented in the history, on how many...
 	int   beats_hit      = 0; // did the first key press occur within  the window
 	int   beats_missed   = 0; // did the first key press occur outside the window
 	int   beats_repeated = 0; // did multiple key presses occur
 
-	float avg_delta      = 0; // average delta to the beat for each key press
+	float avg_beat_delta      = 0; // average delta to the beat for each key press
 
 	for(unsigned int i = 1; i < comp_input.actions.size(); ++i){
-		avg_delta += comp_input.actions[i].delta;
+		avg_beat_delta += comp_input.actions[i].delta;
+
 		if(comp_input.actions[i].beat == comp_input.actions[i-1].beat){
 			++beats_repeated;
 		} else {
-			if(abs(comp_input.actions[i].delta) < window_delta){
+			if(abs(comp_input.actions[i].delta) < window_size){
 				++beats_hit;
 			} else {
 				++beats_missed;
 			}
 		}
 	}
-	avg_delta /= (float)comp_input.actions.size();
+	avg_beat_delta /= (float)comp_input.actions.size()-1;
 
-	printf("Avg delta: %8f, hit: %2i, missed %2i, repeated: %2i\n",
-	       avg_delta, beats_hit, beats_missed, beats_repeated);
+	float avg_key_delta = 0; // average delta between key presses
+	for(unsigned int i = 1; i < comp_input.actions.size(); ++i){
+		float delta = beat_length * (comp_input.actions[i].beat - comp_input.actions[i-1].beat);
+		delta -= comp_input.actions[i-1].delta;
+		delta += comp_input.actions[i+0].delta;
+		avg_key_delta += delta;
+	}
+	avg_key_delta /= (float)comp_input.actions.size()-1;
 
+	printf("Avg delta: %8f, hit: %2i, missed %2i, repeated: %2i, avg_key_delta: %8f\n",
+	       avg_beat_delta, beats_hit, beats_missed, beats_repeated, avg_key_delta);
+
+	const char* msg = nullptr;
+
+
+	// This is how much we expect the user's keypresses to change
+	// by in relation to the beat per beat
+	float drift = beat_length - avg_key_delta;
+
+	if(drift > 0 && avg_beat_delta + drift * 5 > window_size){
+		msg = "Slow down!";
+	}
+	if(drift < 0 && avg_beat_delta + drift * 5 < -window_size){
+		msg = "Speed up!";
+	}
+
+	if(msg != nullptr){
+		font->draw(msg,
+		           irr::core::rect<irr::s32>( 0.2 * screenSize.Width,
+		                                      0.70 * screenSize.Height,
+		                                      0.2 * screenSize.Width, 300),
+		           irr::video::SColor(200, 255, 127, 127));
+	}
 }
 
 void SystemRenderGUI::updateHUD(std::clock_t time_now, int combo, int colour_index)

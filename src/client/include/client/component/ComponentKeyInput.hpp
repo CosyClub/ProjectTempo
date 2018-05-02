@@ -22,7 +22,7 @@ struct KeyEvent {
 struct ComponentKeyInput : anax::Component {
 	/// \brief The maximum age of actions to keep in the actions deque
 	/// counted in beats
-	static const constexpr int ACTION_AGE_LIMIT = 10;
+	static const constexpr int ACTION_AGE_LIMIT = 5;
 
 	/// \brief Queue of keys to be processed by the system
 	std::vector<client::KeyEvent> keysPressed;
