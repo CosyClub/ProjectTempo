@@ -51,6 +51,7 @@ struct SystemRenderGUI {
 		void updateComboBar(irr::video::IVideoDriver * driver,
 		                    tempo::Clock &             clock,
 		                    int                        combo,
+		                    client::ComponentKeyInput  comp_input,
 		                    const irr::core::dimension2du screenSize);
 
 		void updateHealthBar(irr::video::IVideoDriver * driver,

@@ -86,7 +86,7 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
 	}
 
 	// Display combo bar
-	updateComboBar(driver, clock, combo, screenSize);
+	updateComboBar(driver, clock, combo, comp_player_input, screenSize);
 	// Display health bar
 	updateHealthBar(driver, comp_health, screenSize);
 }
@@ -224,6 +224,7 @@ void SystemRenderGUI::updateHUD(std::clock_t time_now, int combo, int colour_ind
 void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
 	                                   tempo::Clock &             clock,
 	                                   int                        combo,
+                                     client::ComponentKeyInput  comp_input,
 	                                   const irr::core::dimension2du screenSize)
 {
 	float combo_scale = clock.beat_progress_desc();
@@ -240,6 +241,13 @@ void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
 	} else {
 		colour_combo_bar = colour_blue;
 	}
+
+	if(comp_input.actions.size() > 0 &&
+	   comp_input.actions.back().beat == clock.get_beat_number() &&
+	   comp_input.actions.back().outside_window){
+		colour_combo_bar = irr::video::SColor(255, 255, 0, 0);
+	}
+
 
 	driver->draw2DRectangle(
 		colour_combo_bar,

@@ -29,7 +29,7 @@ struct ComponentKeyInput : anax::Component {
 
 	/// \brief Represents a historic keypress for this ComponentKeyInput
 	struct Action {
-		Action(unsigned int beat, float delta);
+		Action(unsigned int beat, float delta, bool outside_window);
 
 		/// \brief The beat upon which the action was made
 		unsigned int beat;
@@ -38,6 +38,9 @@ struct ComponentKeyInput : anax::Component {
 		/// Will be negative if the keypress was before the beat, and positive
 		/// otherwise
 		float        delta;
+
+		/// \brief Set to true if the action occured outside the window
+		bool outside_window;
 	};
 
 	/// \brief Historic actions made by this component key input

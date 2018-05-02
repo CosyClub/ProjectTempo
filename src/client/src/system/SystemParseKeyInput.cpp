@@ -257,7 +257,7 @@ void SystemParseKeyInput::parseInput(tempo::Clock &clock, irr::IrrlichtDevice* d
 			if (ke.keysPressed[i].press) {
 
 				// Add as action to the component
-				ke.actions.emplace_back(beat_number, delta);
+				ke.actions.emplace_back(beat_number, delta, !withinDelta);
 
 				#ifdef TEMPO_DATA_CAPTURE
 				this->data_output << beat_number               << ", "
