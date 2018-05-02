@@ -42,6 +42,7 @@ struct SystemRenderGUI {
 
 		void updateNudge(irr::gui::IGUIFont *font,
 		                 std::clock_t time_now,
+		                 tempo::Clock& clock,
 		                 const irr::core::dimension2du screenSize,
 		                 client::ComponentKeyInput      comp_input);
 

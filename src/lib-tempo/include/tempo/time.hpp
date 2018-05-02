@@ -70,8 +70,9 @@ class Clock
 
 	// Retrieves the size of the window to either side of the beat within which
 	// actions may be performed
-	// Note that it is this much time before AND after the beat within which
-	// actions can be performed
+	// Note that it is this much time both before AND after the beat within which
+	// actions can be performed, hence the total window for actions is two times
+	// this value!
 	sf::Time get_beat_window_delta();
 
 	// Sets when the next beat should be. The time given is an

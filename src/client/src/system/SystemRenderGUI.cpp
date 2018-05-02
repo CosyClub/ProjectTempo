@@ -82,7 +82,7 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
 
 	irr::gui::IGUIFont *font = gui_env->getFont("resources/fonts/joystix72/myfont.xml");
 	if (font) {
-		updateNudge(font, time_now, screenSize, comp_player_input);
+		updateNudge(font, time_now, clock, screenSize, comp_player_input);
 	}
 
 	// Display combo bar
@@ -109,6 +109,7 @@ void SystemRenderGUI::updateComboCounter(irr::gui::IGUIFont *font,
 
 void SystemRenderGUI::updateNudge(irr::gui::IGUIFont *font,
 	                                std::clock_t time_now,
+                                  tempo::Clock& clock,
                                   const irr::core::dimension2du screenSize,
                                   client::ComponentKeyInput comp_input) {
 
@@ -126,7 +127,39 @@ void SystemRenderGUI::updateNudge(irr::gui::IGUIFont *font,
 		                                      0.2 * screenSize.Width, 300),
 		           irr::video::SColor(255, 255, 255, 255));
 
+		return;
 	}
+	// If still running then we have 2 or more data points in the history
+
+	////////////////////////////////////////////////////////////////////////////
+	// Compute some stats about the history of keypresses
+
+	float window_delta = clock.get_beat_window_delta().asSeconds();
+	printf("window delta is: %f\n", window_delta);
+
+	// Out of those beats represented in the history, on how many...
+	int   beats_hit      = 0; // did the first key press occur within  the window
+	int   beats_missed   = 0; // did the first key press occur outside the window
+	int   beats_repeated = 0; // did multiple key presses occur
+
+	float avg_delta      = 0; // average delta to the beat for each key press
+
+	for(unsigned int i = 1; i < comp_input.actions.size(); ++i){
+		avg_delta += comp_input.actions[i].delta;
+		if(comp_input.actions[i].beat == comp_input.actions[i-1].beat){
+			++beats_repeated;
+		} else {
+			if(abs(comp_input.actions[i].delta) < window_delta){
+				++beats_hit;
+			} else {
+				++beats_missed;
+			}
+		}
+	}
+	avg_delta /= (float)comp_input.actions.size();
+
+	printf("Avg delta: %8f, hit: %2i, missed %2i, repeated: %2i\n",
+	       avg_delta, beats_hit, beats_missed, beats_repeated);
 
 }
 
