@@ -75,6 +75,10 @@ class Clock
 	// this value!
 	sf::Time get_beat_window_delta();
 
+	// Gets the total length of a beat, IE: time between one beat of the music
+	// until the next
+	sf::Time get_beat_length();
+
 	// Sets when the next beat should be. The time given is an
 	// absolute time. From this point on the beats will continue to
 	// progress with a time between beats of (next_beat - last_beat)

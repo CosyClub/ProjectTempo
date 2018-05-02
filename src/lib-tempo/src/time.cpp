@@ -71,6 +71,10 @@ sf::Time Clock::get_beat_window_delta(){
 	return this->delta;
 }
 
+sf::Time Clock::get_beat_length(){
+	return next_beat - last_beat;
+}
+
 float Clock::beat_progress()
 {
 	return since_beat() / (since_beat() + until_beat());
