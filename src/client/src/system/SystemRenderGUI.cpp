@@ -168,8 +168,8 @@ void SystemRenderGUI::updateNudge(irr::gui::IGUIFont *font,
 	}
 	avg_key_delta /= (float)comp_input.actions.size()-1;
 
-	printf("Avg delta: %8f, hit: %2i, missed %2i, repeated: %2i, avg_key_delta: %8f\n",
-	       avg_beat_delta, beats_hit, beats_missed, beats_repeated, avg_key_delta);
+	//printf("Avg delta: %8f, hit: %2i, missed %2i, repeated: %2i, avg_key_delta: %8f\n",
+	//       avg_beat_delta, beats_hit, beats_missed, beats_repeated, avg_key_delta);
 
 	const char* msg = nullptr;
 
@@ -187,9 +187,9 @@ void SystemRenderGUI::updateNudge(irr::gui::IGUIFont *font,
 
 	if(msg != nullptr){
 		font->draw(msg,
-		           irr::core::rect<irr::s32>( 0.2 * screenSize.Width,
+		           irr::core::rect<irr::s32>( 0.35 * screenSize.Width,
 		                                      0.70 * screenSize.Height,
-		                                      0.2 * screenSize.Width, 300),
+		                                      0.20 * screenSize.Width, 300),
 		           irr::video::SColor(200, 255, 127, 127));
 	}
 }
