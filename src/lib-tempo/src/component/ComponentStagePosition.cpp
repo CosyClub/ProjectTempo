@@ -9,12 +9,21 @@ ComponentStagePosition::ComponentStagePosition(glm::ivec2 bottom_left, glm::ivec
     : occupied(0)
 {
 	setPosition(bottom_left, top_right);
+	isPhased = true;
+}
+
+ComponentStagePosition::ComponentStagePosition(glm::ivec2 position, bool phased)
+    : occupied(0)
+{
+	setPosition(position);
+	isPhased = phased;
 }
 
 ComponentStagePosition::ComponentStagePosition(glm::ivec2 position)
     : occupied(0)
 {
 	setPosition(position);
+	isPhased = true;
 }
 
 void ComponentStagePosition::movePosition(glm::ivec2 delta)
