@@ -219,6 +219,22 @@ void SystemTrigger::updateButtons(anax::World& world)
 	subSystemSpikes.updateSpikes(untriggerPos);
 }
 
+void SystemTrigger::syncFloorWithButtons() {
+
+	auto& entities = getEntities();
+	auto &stage = entities[0].getComponent<tempo::ComponentStage>();
+
+	for (uint32_t i = 0; i < entities.size(); i++) {
+		auto &entity = entities[i];
+		// get deque of all buttons in the group
+		auto &button_group = entity.getComponent<tempo::ComponentButtonGroup>();
+		if (button_group.groupTriggered) {
+			for (glm::ivec2 pos : button_group.wall_positions) 
+				stage.setHeight(pos, 0);
+		}
+	}
+
+}
 void SystemTrigger::resetButtons(int rhythmID) {
 
 	auto& entities = getEntities();
