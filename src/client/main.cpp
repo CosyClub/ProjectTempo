@@ -285,11 +285,9 @@ int main(int argc, const char** argv)
 
 	// Initialise Systems
 	system_update_key_input.setup(device);
-	system_stage_renderer.setup(smgr, driver);
 	system_render_scene_node.setup(smgr, driver);
 	system_render_gui.init(device, driver, enable_hud);
-
-	// must be after system_render_scene_node.setup(smgr);
+	// WARNING: Must be after system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);
 
 
@@ -375,12 +373,14 @@ int main(int argc, const char** argv)
 	}
 
 	// Sort out graphics after handshake
+	system_stage_renderer.setup(smgr, driver);
 	system_gc.addEntities(driver, smgr, world);
 	system_render_scene_node.setup(smgr, driver);
 	system_render_health_bars.setup(smgr);
 	system_button_renderer.setup(smgr, driver);
 	system_render_spikes.setup(smgr, driver);
 	system_lighting.setup(smgr, driver);
+	system_trigger.syncFloorWithButtons();
 
 	// Start and Sync Song
 	sync_time(clock);
@@ -398,21 +398,19 @@ int main(int argc, const char** argv)
 	entity_player.addComponent<client::ComponentKeyInput>();
 	entity_player.activate();
 
-	auto& combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
-	auto& comp_health = entity_player.getComponent<tempo::ComponentHealth>();
+	auto& combo             = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
+	auto& comp_health       = entity_player.getComponent<tempo::ComponentHealth>();
+	auto& comp_player_input = entity_player.getComponent<client::ComponentKeyInput>();
 
 	glm::ivec2 startingPos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
 	int emptySpace = 40;
-
 	int fheight = 69 + emptySpace;
-
 	int feeder_areas = 10;
 
 	for (int i=0; i < feeder_areas; i++){
 
 	client::createLasers(smgr, driver, { {40 + (i*fheight),12}, {40 + (i*fheight),52}, {40 + (i*fheight),92} }, startingPos);
-
 	client::createDiscoBalls(smgr, driver, { {40 + (i*fheight),6} }, startingPos);
 
 }
@@ -582,7 +580,10 @@ int main(int argc, const char** argv)
 		smgr->drawAll();
 		gui_env->drawAll();
 
-		system_render_gui.update(driver, gui_env, clock, combo, comp_health, colour_index, enable_hud);
+		system_render_gui.update(driver, gui_env, clock, combo,
+		                         comp_health, comp_player_input,
+		                         colour_index, enable_hud
+		                        );
 		driver->endScene();
 
 		++frame_counter;
