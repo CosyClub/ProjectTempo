@@ -83,6 +83,7 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
 	irr::gui::IGUIFont *font = gui_env->getFont("resources/fonts/joystix72/myfont.xml");
 	if (font) {
 		updateNudge(font, time_now, clock, screenSize, comp_player_input);
+		updateComboCounter(font, combo, screenSize);
 	}
 
 	// Display combo bar
