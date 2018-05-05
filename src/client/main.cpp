@@ -74,6 +74,14 @@ namespace client
 	 	>
 	 {
 	 public:
+		typedef std::unordered_map<glm::ivec2,
+		                           bool,
+		                           vec2eq,
+		                           vec2eq,
+		                           std::allocator<std::pair<const glm::ivec2, bool>>> collMap;
+		std::map<unsigned long int, glm::ivec2> posMap;
+
+		collMap collisionMap;
 	 	void lessJank(const glm::ivec2 playerpos) {
 	 		// uncomment this for more jank:
 	 		//return;
@@ -81,9 +89,39 @@ namespace client
 	 		auto& entities = getEntities();
 
 	 		for (auto& entity : entities) {
-	 			tempo::ComponentStageTranslation& trans = entity.getComponent<tempo::ComponentStageTranslation>();
-	 			tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
 	 			glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
+
+				if(posMap.find(entity.getId().index) == posMap.end())
+				{
+					posMap[entity.getId().index] = origin;
+				}
+				if(posMap[entity.getId().index] == origin)
+				{
+					if (!entity.getComponent<tempo::ComponentStagePosition>().isPhased)
+					{
+						collisionMap[posMap[entity.getId().index]] = false;
+						posMap[entity.getId().index] = origin;
+						collisionMap[posMap[entity.getId().index]] = true;
+					}
+				}
+
+				tempo::ComponentStage &stage = entity.getComponent<tempo::ComponentStage>();
+
+				auto &positions = entity.getComponent<tempo::ComponentStagePosition>().occupied;
+				if (entity.hasComponent<tempo::ComponentHealth>())
+				{
+					if (entity.getComponent<tempo::ComponentHealth>().current_health <= 0)
+					{
+						for (auto &position : positions) {
+							if (!entity.getComponent<tempo::ComponentStagePosition>().isPhased)
+							{
+								collisionMap[position] = false;
+							}
+						}
+						continue;
+					}
+				}
+	 			tempo::ComponentStageTranslation& trans = entity.getComponent<tempo::ComponentStageTranslation>();
 
 				if (origin.x < playerpos.x - 24 || origin.x > playerpos.x + 7 ||
 				    origin.y < playerpos.y - 33 || origin.y > playerpos.y + 33)
@@ -91,17 +129,14 @@ namespace client
 					continue;
 				}
 
+				if (trans.delta == glm::ivec2(0, 0)) continue;
+
 	 			glm::ivec2 dest = origin + trans.delta;
 
 				bool can_move = true;
-				for (auto& coll : getEntities())
-				{
-					if (coll.hasComponent<tempo::ComponentStagePosition>())
-					{
-						if(coll.getId().index == entity.getId().index) continue;
-						can_move &= coll.getComponent<tempo::ComponentStagePosition>().getOrigin() != dest;
-					}
-				}
+				if (collisionMap.find(dest) == collisionMap.end())
+					collisionMap[dest] = false;
+				can_move &= !collisionMap[dest];
 	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5 || !can_move) {
 	 				// consume the moment before the server rejects you
 	 				// currently combos aren't server protected, so maybe this should move into lib-tempo?
@@ -113,6 +148,9 @@ namespace client
 	 				//	combo.advanceBeat();
 	 				//}
 	 			}
+				else
+				{
+				}
 	 		}
 	 	}
 	 };

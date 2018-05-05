@@ -69,7 +69,6 @@ void SystemMovement::processTranslation()
 					if (!entity.getComponent<tempo::ComponentStagePosition>().isPhased)
 					{
 						collisionMap[position] = false;
-						printf("found dead enemy\n");
 					}
 				}
 				continue;
