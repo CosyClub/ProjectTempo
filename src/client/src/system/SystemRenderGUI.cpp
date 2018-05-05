@@ -83,6 +83,7 @@ void SystemRenderGUI::update(irr::video::IVideoDriver * driver,
 	irr::gui::IGUIFont *font = gui_env->getFont("resources/fonts/joystix72/myfont.xml");
 	if (font) {
 		updateNudge(font, time_now, clock, screenSize, comp_player_input);
+		updateComboCounter(font, combo, screenSize);
 	}
 
 	// Display combo bar
@@ -179,10 +180,10 @@ void SystemRenderGUI::updateNudge(irr::gui::IGUIFont *font,
 	float drift = beat_length - avg_key_delta;
 
 	if(drift > 0 && avg_beat_delta + drift * 5 > window_size){
-		msg = "Slow down!";
+		msg = "Too fast!";
 	}
 	if(drift < 0 && avg_beat_delta + drift * 5 < -window_size){
-		msg = "Speed up!";
+		msg = "Too slow!";
 	}
 
 	if(msg != nullptr){
