@@ -351,8 +351,9 @@ int main(int argc, const char** argv)
 	entity_player.addComponent<client::ComponentKeyInput>();
 	entity_player.activate();
 
-	auto& combo = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
-	auto& comp_health = entity_player.getComponent<tempo::ComponentHealth>();
+	auto& combo             = entity_player.getComponent<tempo::ComponentCombo>().comboCounter;
+	auto& comp_health       = entity_player.getComponent<tempo::ComponentHealth>();
+	auto& comp_player_input = entity_player.getComponent<client::ComponentKeyInput>();
 
 	glm::ivec2 startingPos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
@@ -535,7 +536,10 @@ int main(int argc, const char** argv)
 		smgr->drawAll();
 		gui_env->drawAll();
 
-		system_render_gui.update(driver, gui_env, clock, combo, comp_health, colour_index, enable_hud);
+		system_render_gui.update(driver, gui_env, clock, combo,
+		                         comp_health, comp_player_input,
+		                         colour_index, enable_hud
+		                        );
 		driver->endScene();
 
 		++frame_counter;
