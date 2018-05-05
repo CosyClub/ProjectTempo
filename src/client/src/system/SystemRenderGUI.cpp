@@ -244,7 +244,9 @@ void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
 	int window_left   = combo_width_center - (int)(combo_width * window_proportion);
 	int window_right  = combo_width_center + (int)(combo_width * window_proportion);
 
-	int indicator_center = combo_width_left + (int)(combo_width * clock.beat_progress());
+	int indicator_center = combo_width_left + (int)(combo_width * (clock.beat_progress() > 0.5 ? 
+	                                                               clock.beat_progress() - 0.5 :
+	                                                               clock.beat_progress() + 0.5));
 	int indicator_left   = indicator_center - 3;
 	int indicator_right  = indicator_center + 3;
 	if(indicator_left  < combo_width_left ){ indicator_left  = combo_width_left;  }
