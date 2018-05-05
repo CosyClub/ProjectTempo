@@ -66,6 +66,14 @@ void SystemMovement::processTranslation()
 		for (auto &position : positions) {
 			can_move &= stage.existstTile(position + st.delta);
 			can_move &= stage.getHeight(position + st.delta) < 5;
+			for (auto& coll : getEntities())
+			{
+				if (coll.hasComponent<tempo::ComponentStagePosition>())
+				{
+					if(coll.getId().index == entity.getId().index) continue;
+					can_move &= coll.getComponent<tempo::ComponentStagePosition>().getOrigin() != position + st.delta;
+				}
+			}
 		}
 
 		if (can_move) {

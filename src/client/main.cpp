@@ -93,7 +93,16 @@ namespace client
 
 	 			glm::ivec2 dest = origin + trans.delta;
 
-	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5) {
+				bool can_move = true;
+				for (auto& coll : getEntities())
+				{
+					if (coll.hasComponent<tempo::ComponentStagePosition>())
+					{
+						if(coll.getId().index == entity.getId().index) continue;
+						can_move &= coll.getComponent<tempo::ComponentStagePosition>().getOrigin() != dest;
+					}
+				}
+	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5 || !can_move) {
 	 				// consume the moment before the server rejects you
 	 				// currently combos aren't server protected, so maybe this should move into lib-tempo?
 	 				// this produces a lovely jumping against the wall animation!
