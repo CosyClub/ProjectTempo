@@ -122,22 +122,28 @@ anax::Entity createEntityStage(anax::World& world)
 	anax::Entity entity_stage = world.createEntity();
 	entity_stage.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	entity_stage.activate();
+	world.refresh();
 
 	return entity_stage;
 }
 
-// anax::Entity createEntityPlayer(anax::World& world) {
-// 	printf("Creating entity player\n");
-// 	anax::Entity entity_player = world.createEntity();
-// 	entity_player.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-// 	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(5,
-// 5));
-// 	entity_player.addComponent<client::ComponentRenderSceneNode>(nullptr);
-// 	entity_player.addComponent<client::ComponentKeyInput>();
-// 	entity_player.activate();
+void the_end(uint32_t             code,
+             std::string          message,
+             anax::World         &world,
+             std::atomic<bool>   &running,
+             std::thread         &listener,
+             irr::IrrlichtDevice *device)
+{
+	std::cout << message << std::endl;
+	running.store(false);
 
-// 	return entity_player;
-// }
+	// Close server listener and destroy the game
+	listener.join();
+	world.clear();
+	device->drop();
+
+	exit(code);
+}
 
 int main(int argc, const char** argv)
 {
@@ -167,7 +173,7 @@ int main(int argc, const char** argv)
 	}
 
 	irr::IrrlichtDevice *device = irr::createDevice(
-	  irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1920, 1080), 16, enable_hud, false, false);
+	irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1920, 1080), 16, enable_hud, false, false);
 
 	if (!device) {
 		printf("Failed to create Irrlicht Device\n");
@@ -177,14 +183,25 @@ int main(int argc, const char** argv)
 	irr::video::IVideoDriver* driver = device->getVideoDriver();
 	irr::scene::ISceneManager* smgr = device->getSceneManager();
 	irr::gui::IGUIEnvironment* gui_env = device->getGUIEnvironment();
-	// Debug
-	//smgr->setAmbientLight(irr::video::SColorf(0.3f, 0.3f, 0.3f));
+	
+	// Put up the intial splash image
+	irr::video::ITexture* splash_texture[3];
+	splash_texture[0] = driver->getTexture("resources/materials/textures/splash-full.png");
+	splash_texture[1] = driver->getTexture("resources/materials/textures/splash-minimal.png");
+	splash_texture[2] = driver->getTexture("resources/materials/textures/splash-loading.png");
+
+	irr::gui::IGUIImage* splashScreen = device->getGUIEnvironment()->addImage(
+	                                  splash_texture[2],
+	                                  irr::core::position2d<irr::s32>(0,0), true);
+	driver->beginScene(true, true);
+	smgr->drawAll();
+	gui_env->drawAll();
+	driver->endScene();
 
 	/////////////////////////////////////////////////
 	// Setup ECS
 	anax::World world;
 	// tempo::SystemRender           system_render(app);
-
 
 	tempo::SystemHealth            system_health;
 	tempo::SystemTrigger           system_trigger(world);
@@ -192,8 +209,6 @@ int main(int argc, const char** argv)
 	client::SystemButtonRenderer   system_button_renderer;
 	client::SystemCombo            system_combo;
 	client::SystemEntity           system_entity;
-
-
 	client::SystemGraphicsCreation system_gc;
 	client::SystemLighting         system_lighting;
 	client::SystemMovement         system_movement;
@@ -203,10 +218,8 @@ int main(int argc, const char** argv)
 	client::SystemRenderHealing    system_render_healing(driver, smgr);
 	client::SystemRenderHealthBars system_render_health_bars;
 	client::SystemRenderSceneNode  system_render_scene_node;
-
 	client::SystemRenderAttack     system_render_attack;
-	client::SystemRenderSpikes  	 system_render_spikes;
-
+	client::SystemRenderSpikes     system_render_spikes;
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
 	client::SystemLessJank system_less_jank;
@@ -221,7 +234,6 @@ int main(int argc, const char** argv)
 	world.addSystem(system_trigger);
 	world.addSystem(system_button_renderer);
 	world.addSystem(system_stage_renderer);
-
 	world.addSystem(system_render_healing);
 	world.addSystem(system_render_health_bars);
 	world.addSystem(system_render_attack);
@@ -232,53 +244,17 @@ int main(int argc, const char** argv)
 	world.addSystem(system_movement);
 	world.addSystem(system_translation_animation);
 	world.addSystem(system_less_jank);
+	world.refresh();
 
 	createEntityStage(world);
-	world.refresh();
 
 	// Initialise Systems
 	system_update_key_input.setup(device);
 	system_stage_renderer.setup(smgr, driver);
 	system_render_scene_node.setup(smgr, driver);
 	system_render_gui.init(device, driver, enable_hud);
-
-	// must be after system_render_scene_node.setup(smgr);
+	// Warning: Must be after system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);
-
-
-	if (enable_hud) {
-
-		irr::video::ITexture* splash_texture[2];
-		splash_texture[0] = driver->getTexture("resources/materials/textures/splash-full.png");
-		splash_texture[1] = driver->getTexture("resources/materials/textures/splash-minimal.png");
-
-		irr::gui::IGUIImage* splashScreen = device->getGUIEnvironment()->addImage(
-		                                  splash_texture[1],
-		                                  irr::core::position2d<irr::s32>(0,0), true);
-		bool waiting = true;
-		int i = 0;
-		sf::Clock splash_timer;
-		splash_timer.restart();
-		while (device->run() && waiting) {
-			std::vector<client::KeyEvent> keys = system_update_key_input.getKeys();
-			for (unsigned int i = 0; i < keys.size(); i++) {
-				if (keys[i].press) waiting = false;
-			}
-
-			if(splash_timer.getElapsedTime().asSeconds() > 1.0f) {
-				splash_timer.restart();
-				i = (i+1) % 2;
-				splashScreen->setImage(splash_texture[i]);
-			}
-			driver->beginScene(true, true);
-			smgr->drawAll();
-			gui_env->drawAll();
-			driver->endScene();
-		}
-
-		device->getGUIEnvironment()->clear();
-	}
-	system_render_gui.setup(device, driver, enable_hud);
 
 	// Set up remote address, local ports and remote handshake port
 	// Note, IF statement is to change ports for local development, bit
@@ -295,10 +271,10 @@ int main(int argc, const char** argv)
 		tempo::port_ci = DEFAULT_PORT_IN;
 		tempo::port_co = DEFAULT_PORT_OUT;
 	}
-	// Other server ports aquired dynamically on handshake
-	tempo::port_si = DEFAULT_PORT_IN;
-
+	
 	// Bind sockets
+	// Note: other server ports aquired dynamically on handshake
+	tempo::port_si = DEFAULT_PORT_IN;
 	tempo::bindSocket('i', tempo::port_ci);
 	tempo::bindSocket('o', tempo::port_co);
 
@@ -307,37 +283,65 @@ int main(int argc, const char** argv)
 	std::thread listener(tempo::listenForServerUpdates, std::ref(running));
 	// Hack to allow printouts to line up a bit nicer :)
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
+	
+	// Start and Sync Song
+	sync_time(clock);
 
-	tempo::ClientRole     role     = tempo::ClientRole::PLAYER;
+	// Display HUD
+	bool connected = false;
+	if (enable_hud) {
+		// Connect and sync with server
+		if (!connected) {
+			connected = tempo::connectToAndSyncWithServer(world);
+			if (!connected) 
+				the_end(1, "Failed to connect/sync with server.", world, running, listener, device);
+		}
+		
+		bool waiting = true;
+		int  flash = 0;
+		sf::Clock splash_timer;
+		splash_timer.restart();
+		while (device->run() && waiting) {
+			std::vector<client::KeyEvent> keys = system_update_key_input.getKeys();
+			for (unsigned int i = 0; i < keys.size(); i++) {
+				if (keys[i].press) waiting = false;
+			}
 
-	int party_number = 0;
-	if(argc >= 3 ){
-		party_number = atoi(argv[2]);
+			if (clock.passed_beat()) tempo::sendHeatbeat();
+
+			if (splash_timer.getElapsedTime().asSeconds() > 1.0f) {
+				splash_timer.restart();
+				splashScreen->setImage(splash_texture[flash++ % 2]);
+			}
+			
+			driver->beginScene(true, true);
+			smgr->drawAll();
+			gui_env->drawAll();
+			driver->endScene();
+		}
+
+		device->getGUIEnvironment()->clear();
 	}
 
-	tempo::ClientRoleData roleData = {"Bilbo Baggins", party_number};
+	// Join the game as a player
+	int party_number = 0;
+	if (argc >= 3)
+		party_number = atoi(argv[2]);
 
-	// Connect to server and handshake information
-	if (!tempo::connectToAndSyncWithServer(role, roleData, world)) {
-		std::cout << "Failed to connect/join server." << std::endl;
-		running.store(false);
-		listener.join();
-		world.clear();
-		device->drop();
-		return 1;
+	tempo::ClientRole     role     = tempo::ClientRole::PLAYER;
+	tempo::ClientRoleData roleData = {"Bilbo Baggins", party_number};
+	if (!tempo::joinGame(role, roleData, world)) {
+		the_end(1, "Failed to connect/sync with server.", world, running, listener, device);
 	}
 
 	// Sort out graphics after handshake
 	system_gc.addEntities(driver, smgr, world);
 	system_render_scene_node.setup(smgr, driver);
 	system_render_health_bars.setup(smgr);
+	system_render_gui.setup(device, driver, enable_hud);
 	system_button_renderer.setup(smgr, driver);
 	system_render_spikes.setup(smgr, driver);
 	system_lighting.setup(smgr, driver);
-
-	// Start and Sync Song
-	sync_time(clock);
-	// long offset = 0;
 
 	// Player
 	// TODO: use better way to find out player, for now this is a search
@@ -357,24 +361,18 @@ int main(int argc, const char** argv)
 	glm::ivec2 startingPos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
 	int emptySpace = 40;
-
 	int fheight = 69 + emptySpace;
-
 	int feeder_areas = 10;
 
-	for (int i=0; i < feeder_areas; i++){
-
-	client::createLasers(smgr, driver, { {40 + (i*fheight),12}, {40 + (i*fheight),52}, {40 + (i*fheight),92} }, startingPos);
-
-	client::createDiscoBalls(smgr, driver, { {40 + (i*fheight),6} }, startingPos);
-
-}
+	for (int i=0; i < feeder_areas; i++) {
+		client::createLasers(smgr, driver, { {40 + (i*fheight),12}, {40 + (i*fheight),52}, {40 + (i*fheight),92} }, startingPos);
+		client::createDiscoBalls(smgr, driver, { {40 + (i*fheight),6} }, startingPos);
+	}
 
 	/////////////////////////////////////////////////
 	// Main loop
 	int frame_counter = 0;
 	sf::Clock fps_timer;
-	// sf::Clock dt_timer;
 
 	int j = 0;
 	int colour_index;
@@ -547,16 +545,7 @@ int main(int argc, const char** argv)
 		}
 
 	}  // main loop
-	running.store(false);
-	printf("Left main loop\n");
-
-	// Tell server we are gone
+	
 	tempo::disconnectFromServer(entity_player);
-
-	// Close server listener and destroy the game
-	listener.join();
-	world.clear();
-	device->drop();
-
-	return 0;
+	the_end(0, "Goodbye!.", world, running, listener, device);
 }
