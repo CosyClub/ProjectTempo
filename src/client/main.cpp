@@ -184,19 +184,22 @@ int main(int argc, const char** argv)
 	irr::scene::ISceneManager* smgr = device->getSceneManager();
 	irr::gui::IGUIEnvironment* gui_env = device->getGUIEnvironment();
 	
-	// Put up the intial splash image
 	irr::video::ITexture* splash_texture[3];
 	splash_texture[0] = driver->getTexture("resources/materials/textures/splash-full.png");
 	splash_texture[1] = driver->getTexture("resources/materials/textures/splash-minimal.png");
 	splash_texture[2] = driver->getTexture("resources/materials/textures/splash-loading.png");
 
-	irr::gui::IGUIImage* splashScreen = device->getGUIEnvironment()->addImage(
-	                                  splash_texture[2],
-	                                  irr::core::position2d<irr::s32>(0,0), true);
-	driver->beginScene(true, true);
-	smgr->drawAll();
-	gui_env->drawAll();
-	driver->endScene();
+	// Put up the intial splash image
+	irr::gui::IGUIImage* splashScreen;
+	if (enable_hud) {
+		splashScreen = device->getGUIEnvironment()->addImage(
+		                                  splash_texture[2],
+		                                  irr::core::position2d<irr::s32>(0,0), true);
+		driver->beginScene(true, true);
+		smgr->drawAll();
+		gui_env->drawAll();
+		driver->endScene();
+	}
 
 	/////////////////////////////////////////////////
 	// Setup ECS
@@ -284,19 +287,14 @@ int main(int argc, const char** argv)
 	// Hack to allow printouts to line up a bit nicer :)
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	
-	// Start and Sync Song
+
+	// Connect to server and sync level/time  
+	if (!tempo::connectToAndSyncWithServer(world))
+		the_end(1, "Failed to connect/sync with server.", world, running, listener, device);
 	sync_time(clock);
 
 	// Display HUD
-	bool connected = false;
 	if (enable_hud) {
-		// Connect and sync with server
-		if (!connected) {
-			connected = tempo::connectToAndSyncWithServer(world);
-			if (!connected) 
-				the_end(1, "Failed to connect/sync with server.", world, running, listener, device);
-		}
-		
 		bool waiting = true;
 		int  flash = 0;
 		sf::Clock splash_timer;
@@ -319,9 +317,8 @@ int main(int argc, const char** argv)
 			gui_env->drawAll();
 			driver->endScene();
 		}
-
-		device->getGUIEnvironment()->clear();
 	}
+	device->getGUIEnvironment()->clear();
 
 	// Join the game as a player
 	int party_number = 0;
@@ -331,7 +328,7 @@ int main(int argc, const char** argv)
 	tempo::ClientRole     role     = tempo::ClientRole::PLAYER;
 	tempo::ClientRoleData roleData = {"Bilbo Baggins", party_number};
 	if (!tempo::joinGame(role, roleData, world)) {
-		the_end(1, "Failed to connect/sync with server.", world, running, listener, device);
+		the_end(1, "Failed to join game.", world, running, listener, device);
 	}
 
 	// Sort out graphics after handshake

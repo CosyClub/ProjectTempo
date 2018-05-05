@@ -91,12 +91,10 @@ std::pair<bool, sf::Packet> receiveMessage(QueueID qid)
 bool check_sockets()
 {
 	// Bind outgoing port if not bound
-	if (sock_o.getLocalPort() == 0) {
-		if (!bindSocket('o', port_co)) {
-			std::cout << "Could not bind socket on port " << port_co
-			          << " to connect to and sync with server." << std::endl;
-			return false;
-		}
+	if (!bindSocket('o', port_co)) {
+		std::cout << "Could not bind socket on port " << port_co
+		          << " to connect to and sync with server." << std::endl;
+		return false;
 	}
 
 	// Ensure server update lisener has started - i.e. it's socket is open
