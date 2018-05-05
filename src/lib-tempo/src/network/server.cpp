@@ -340,7 +340,7 @@ void checkForClientCreation(anax::World *world)
 		packet >> receiveID;
 
 		switch (static_cast<HandshakeID>(receiveID)) {
-		case HandshakeID::HELLO: handshakeHello(packet, world); break;
+		case HandshakeID::HELLO:   handshakeHello(packet, world); break;
 		case HandshakeID::ROLEREQ: handshakeRoleReq(packet, world); break;
 		default:
 			std::cout << "WARNING: an invalid handshake message was "

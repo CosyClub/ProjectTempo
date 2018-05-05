@@ -7,6 +7,7 @@
 
 namespace tempo
 {
+
 // Refer to documentation in tempo/network/base.hpp
 bool allowUnknownIfHandshake = false;
 
@@ -68,18 +69,6 @@ sf::Int64 timeSyncClient(tempo::Clock *clock)
 	return offset / TIMESYNC_ITERS;
 }
 
-bool sendMessage(tempo::QueueID id, sf::Packet payload)
-{
-	sf::Packet message;
-
-	// Construct message
-	message << id;
-	message << payload;
-
-	// Send message
-	return sock_o.send(message, addr_r, port_si) == sf::Socket::Done;
-}
-
 std::pair<bool, sf::Packet> receiveMessage(QueueID qid)
 {
 	tempo::Queue<sf::Packet> *queue = get_system_queue(qid);
@@ -99,43 +88,25 @@ std::pair<bool, sf::Packet> receiveMessage(QueueID qid)
 	}
 }
 
-void listenForServerUpdates(std::atomic<bool> &running)
+bool check_sockets()
 {
-	// Bind to port
-	if (!bindSocket('i', port_ci)) {
-		std::cout << "Could not bind port " << port_ci << ", used to "
-		          << "listen for server updates." << std::endl;
-		return;
+	// Bind outgoing port if not bound
+	if (!bindSocket('o', port_co)) {
+		std::cout << "Could not bind socket on port " << port_co
+		          << " to connect to and sync with server." << std::endl;
+		return false;
 	}
 
-	std::cout << "Server Update Listener Started..." << std::endl;
-
-	sock_i.setBlocking(false);
-	sf::IpAddress  ip;
-	sf::IpAddress  local = sf::IpAddress::getLocalAddress();
-	unsigned short port;
-	sf::Packet     packet;
-
-	while (running.load()) {
-		sf::Socket::Status status = sock_i.receive(packet, ip, port);
-		if (status == sf::Socket::Error || status == sf::Socket::Disconnected) {
-			std::cout << "Error recieving server update. Ignoring." << std::endl;
-			continue;
-		}
-
-		// Sort packet into respective system.
-		if (status == sf::Socket::Done) {
-			bool o = sortPacket(packet, (ip == tempo::addr_r) || (ip == local));
-			if (!o) std::cout << "Dropped invalid packet/message from unknown address ("
-
-				          << ip.toString() << ":" << port << ")." << std::endl;
-			packet = sf::Packet();
-		}
+	// Ensure server update lisener has started - i.e. it's socket is open
+	if (sock_i.getLocalPort() == 0) {
+		std::cout << "Looks like the listener thread hasn't started, "
+		          << "or didn't bind it's socket correctly. Will not "
+		          << "connect to server without this or we won't hear "
+		          << "anything from the server!" << std::endl;
+		return false;
 	}
 
-	std::cout << "Server Update Listener Closed." << std::endl;
-
-	return;
+	return true;
 }
 
 uint32_t handshakeHello(anax::World &world)
@@ -189,9 +160,9 @@ uint32_t handshakeHello(anax::World &world)
 			std::cout << "Recieved " << i << "/" << componentCount << std::endl;
 			addComponent(world, receive);
 		}
-		std::cout << "Connected to the server!" << std::endl;
+		std::cout << "Synced with server!" << std::endl;
 	} else {
-		std::cout << "Failed to connect to server." << std::endl;
+		std::cout << "Failed to sync with server." << std::endl;
 	}
 
 	return id;
@@ -247,43 +218,74 @@ bool handshakeRoleReq(uint32_t id, ClientRole roleID, ClientRoleData &roleData, 
 		return false;
 	}
 
+	world.refresh();
+	std::cout << "Joined game!" << std::endl;
 	return true;
 }
 
-bool connectToAndSyncWithServer(ClientRole roleID, ClientRoleData &roleData, anax::World &world)
+////////////////////////////////////////////////////////////////////////////////
+// Server Listener (To be run on a separate thread)
+void listenForServerUpdates(std::atomic<bool> &running)
 {
-	// Bind outgoing port if not bound
-	if (sock_o.getLocalPort() == 0) {
-		if (!bindSocket('o', port_co)) {
-			std::cout << "Could not bind socket on port " << port_co
-			          << " to connect to and sync with server." << std::endl;
-			return false;
+	// Bind to port
+	if (!bindSocket('i', port_ci)) {
+		std::cout << "Could not bind port " << port_ci << ", used to "
+		          << "listen for server updates." << std::endl;
+		return;
+	}
+
+	std::cout << "Server Update Listener Started..." << std::endl;
+
+	sock_i.setBlocking(false);
+	sf::IpAddress  ip;
+	sf::IpAddress  local = sf::IpAddress::getLocalAddress();
+	unsigned short port;
+	sf::Packet     packet;
+
+	while (running.load()) {
+		sf::Socket::Status status = sock_i.receive(packet, ip, port);
+		if (status == sf::Socket::Error || status == sf::Socket::Disconnected) {
+			std::cout << "Error recieving server update. Ignoring." << std::endl;
+			continue;
+		}
+
+		// Sort packet into respective system.
+		if (status == sf::Socket::Done) {
+			bool o = sortPacket(packet, (ip == tempo::addr_r) || (ip == local));
+			if (!o) std::cout << "Dropped invalid packet/message from unknown address ("
+
+				          << ip.toString() << ":" << port << ")." << std::endl;
+			packet = sf::Packet();
 		}
 	}
 
-	// Ensure server update lisener has started - i.e. it's socket is open
-	if (sock_i.getLocalPort() == 0) {
-		std::cout << "Looks like the listener thread hasn't started, "
-		          << "or didn't bind it's socket correctly. Will not "
-		          << "connect to server without this or we won't hear "
-		          << "anything from the server!" << std::endl;
-		return false;
-	}
+	std::cout << "Server Update Listener Closed." << std::endl;
 
-	uint32_t id = handshakeHello(world);
-	if (id == NO_CLIENT_ID) return false;
-
-	bool ret = handshakeRoleReq(id, roleID, roleData, world);
-	world.refresh();
-	return ret;
+	return;
 }
 
-void sendHeatbeat() {
-	sf::Packet p;
-	p << sf::IpAddress::getLocalAddress().toInteger();
-	p << tempo::port_ci;
-	tempo::sendMessage(tempo::QueueID::HEARTBEAT, p);
 
+////////////////////////////////////////////////////////////////////////////////
+// Functions for connnection, syncing and disconnection
+
+static bool     _synced      = false;
+static uint32_t _handshakeid = NO_CLIENT_ID;
+
+bool connectToAndSyncWithServer(anax::World &world)
+{
+	if (check_sockets()) {
+		_handshakeid = handshakeHello(world);
+		_synced      = _handshakeid != NO_CLIENT_ID;
+	}
+	return _synced;
+}
+
+bool joinGame(ClientRole roleID, ClientRoleData &roleData, anax::World &world)
+{
+	if (check_sockets() && _synced) {
+		return handshakeRoleReq(_handshakeid, roleID, roleData, world);
+	}
+	return false;
 }
 
 void disconnectFromServer(anax::Entity &entity_player)
@@ -302,6 +304,28 @@ void disconnectFromServer(anax::Entity &entity_player)
 	}
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Functions for message sending
+
+void sendHeatbeat() {
+	sf::Packet p;
+	p << sf::IpAddress::getLocalAddress().toInteger();
+	p << tempo::port_ci;
+	tempo::sendMessage(tempo::QueueID::HEARTBEAT, p);
+
+}
+
+bool sendMessage(tempo::QueueID id, sf::Packet payload)
+{
+	sf::Packet message;
+
+	// Construct message
+	message << id;
+	message << payload;
+
+	// Send message
+	return sock_o.send(message, addr_r, port_si) == sf::Socket::Done;
+}
 
 bool broadcastMessage(QueueID id, sf::Packet p)
 {
