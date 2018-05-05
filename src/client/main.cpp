@@ -250,9 +250,9 @@ int main(int argc, const char** argv)
 
 	// Initialise Systems
 	system_update_key_input.setup(device);
-	system_stage_renderer.setup(smgr, driver);
 	system_render_scene_node.setup(smgr, driver);
 	system_render_gui.init(device, driver, enable_hud);
+
 	// Warning: Must be after system_render_scene_node.setup(smgr);
 	system_render_health_bars.setup(smgr);
 
@@ -335,6 +335,7 @@ int main(int argc, const char** argv)
 	}
 
 	// Sort out graphics after handshake
+	system_stage_renderer.setup(smgr, driver);
 	system_gc.addEntities(driver, smgr, world);
 	system_render_scene_node.setup(smgr, driver);
 	system_render_health_bars.setup(smgr);
@@ -342,6 +343,7 @@ int main(int argc, const char** argv)
 	system_button_renderer.setup(smgr, driver);
 	system_render_spikes.setup(smgr, driver);
 	system_lighting.setup(smgr, driver);
+	system_trigger.syncFloorWithButtons();
 
 	// Player
 	// TODO: use better way to find out player, for now this is a search
@@ -369,6 +371,7 @@ int main(int argc, const char** argv)
 		client::createLasers(smgr, driver, { {40 + (i*fheight),12}, {40 + (i*fheight),52}, {40 + (i*fheight),92} }, startingPos);
 		client::createDiscoBalls(smgr, driver, { {40 + (i*fheight),6} }, startingPos);
 	}
+
 
 	/////////////////////////////////////////////////
 	// Main loop
