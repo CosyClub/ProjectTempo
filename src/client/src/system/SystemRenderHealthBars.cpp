@@ -1,5 +1,5 @@
 #include <client/system/SystemRenderHealthBars.hpp>
-#include <client/misc/YAlignedBillboardSceneNode.hpp>
+#include <client/misc/XZAlignedBillboardSceneNode.hpp>
 #include <client/misc/RGBtoHSV.hpp>
 
 
@@ -26,7 +26,7 @@ void SystemRenderHealthBars::setup(irr::scene::ISceneManager *smgr)
 		irr::core::dimension2d<float> bbsize = sn.billboard->getSize();
 		irr::core::vector3df pos(0.0f, bbsize.Height / 1.5, 0.0f);
 
-		healthbar.node = new irr::scene::YAlignedBillboardSceneNode(sn.billboard, smgr, -1, pos, size, color, color);
+		healthbar.node = new irr::scene::XZAlignedBillboardSceneNode(sn.billboard, smgr, -1, pos, size, color, color);
 		healthbar.node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 		healthbar.node->grab();
 	}

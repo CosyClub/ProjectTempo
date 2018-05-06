@@ -24,6 +24,7 @@
 #include <client/system/SystemUpdateKeyInput.hpp>
 #include <client/system/SystemTranslationAnimation.hpp>
 #include <client/misc/Camera.hpp>
+#include <client/misc/XZAlignedBillboardSceneNode.hpp>
 
 #include <tempo/component/ComponentButtonGroup.hpp>
 #include <tempo/component/ComponentParty.hpp>
@@ -220,7 +221,7 @@ int main(int argc, const char** argv)
 	}
 
 	irr::IrrlichtDevice *device = irr::createDevice(
-	irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1920, 1080), 16, enable_hud, false, false);
+	irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1920/2, 1080/2), 16, enable_hud, false, false);
 
 	if (!device) {
 		printf("Failed to create Irrlicht Device\n");
@@ -448,11 +449,9 @@ int main(int argc, const char** argv)
 	//irr::core::matrix4 cpm = camera_node->getProjectionMatrix();
 
 	//camera_node->setFOV(1.0f);
-
 	smgr->setActiveCamera(camera_node);
+
 	float dt;
-
-
 	printf("Entering main loop\n");
 	while (device->run()) {
 

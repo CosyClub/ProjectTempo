@@ -1,4 +1,4 @@
-#include <client/misc/YAlignedBillboardSceneNode.hpp>
+#include <client/misc/XZAlignedBillboardSceneNode.hpp>
 #include <client/system/SystemRenderSceneNode.hpp>
 
 #include <tempo/component/ComponentStageRotation.hpp>
@@ -51,7 +51,7 @@ void SystemRenderSceneNode::setup(irr::scene::ISceneManager* smgr, irr::video::I
 			irr::core::dimension2d<irr::u32> usize = spritesheet->getOriginalSize();
 			irr::core::dimension2d<irr::f32> size(usize.Width / (40.0f * m.spriteDim.x), usize.Height / (40.0f * m.spriteDim.y));
 			irr::core::vector3df pos(0.0f, size.Height / 2.0f, 0.0f);
-			sn.billboard = new irr::scene::YAlignedBillboardSceneNode(sn.node, smgr, -1, pos, size,
+			sn.billboard = new irr::scene::XZAlignedBillboardSceneNode(sn.node, smgr, -1, pos, size,
 			                                                          color, color);
 
 			driver->setTextureCreationFlag(irr::video::ETCF_ALWAYS_32_BIT, true);
