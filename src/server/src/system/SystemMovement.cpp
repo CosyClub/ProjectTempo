@@ -57,42 +57,19 @@ void SystemMovement::processTranslation()
 	for (auto &entity : getEntities()) {
 		tempo::ComponentStageTranslation &st =
 		  entity.getComponent<tempo::ComponentStageTranslation>();
-
 		tempo::ComponentStage &stage = entity.getComponent<tempo::ComponentStage>();
-
-		auto &positions = entity.getComponent<tempo::ComponentStagePosition>().occupied;
-		if (entity.hasComponent<tempo::ComponentHealth>())
-		{
-			if (entity.getComponent<tempo::ComponentHealth>().current_health <= 0)
-			{
-				for (auto &position : positions) {
-					if (!entity.getComponent<tempo::ComponentStagePosition>().isPhased)
-					{
-						collisionMap[position] = false;
-					}
-				}
-				continue;
-			}
-		}
 		if (!st.moved) continue;
 
 		bool  can_move  = true;
+		auto &positions = entity.getComponent<tempo::ComponentStagePosition>().occupied;
 
 		for (auto &position : positions) {
 			can_move &= stage.existstTile(position + st.delta);
 			can_move &= stage.getHeight(position + st.delta) < 5;
-			if (collisionMap.find(position + st.delta) == collisionMap.end())
-				collisionMap[position + st.delta] = false;
-			can_move &= !collisionMap[position + st.delta];
 		}
 
 		if (can_move) {
 			for (auto &position : positions) {
-				if (!entity.getComponent<tempo::ComponentStagePosition>().isPhased)
-				{
-					collisionMap[position] = false;
-					collisionMap[position + st.delta] = true;
-				}
 				position += st.delta;
 			}
 		}
