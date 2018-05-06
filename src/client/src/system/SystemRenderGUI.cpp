@@ -245,17 +245,33 @@ void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
 	int window_left   = combo_width_center - (int)(combo_width * window_proportion);
 	int window_right  = combo_width_center + (int)(combo_width * window_proportion);
 
-	int indicator_center = combo_width_left + (int)(combo_width * (clock.beat_progress() > 0.5 ? 
+	int indicator_center = combo_width_left + (int)(combo_width * (clock.beat_progress() > 0.5 ?
 	                                                               clock.beat_progress() - 0.5 :
 	                                                               clock.beat_progress() + 0.5));
-	int indicator_left   = indicator_center - 3;
-	int indicator_right  = indicator_center + 3;
+	int indicator_left   = indicator_center - 6;
+	int indicator_right  = indicator_center + 6;
 	if(indicator_left  < combo_width_left ){ indicator_left  = combo_width_left;  }
 	if(indicator_right > combo_width_right){ indicator_right = combo_width_right; }
 
-	driver->draw2DRectangle(irr::video::SColor(150, 50, 150, 50),
+	driver->draw2DRectangle(irr::video::SColor(150, 00, 255, 0),
 	                        irr::core::rect<irr::s32>(window_left,  combo_height_top,
 	                                                  window_right, combo_height_bottom));
+
+
+	irr::video::SColor colour_combo_bar = irr::video::SColor(255, 50, 50, 50);
+
+	if(comp_input.actions.size() > 0 &&
+	   comp_input.actions.back().beat == clock.get_beat_number() &&
+	   comp_input.actions.back().outside_window){
+	  colour_combo_bar = irr::video::SColor(255, 255, 0, 0);
+		driver->draw2DRectangle(colour_combo_bar,
+														irr::core::rect<irr::s32>(combo_width_left,  combo_height_top,
+																											window_left, combo_height_bottom));
+
+		driver->draw2DRectangle(colour_combo_bar,
+														irr::core::rect<irr::s32>(window_right,  combo_height_top,
+																											combo_width_right, combo_height_bottom));
+	}
 
 	if(comp_input.actions.size() > 0 &&
 	   comp_input.actions.back().beat >= clock.get_beat_number() - 1){
@@ -271,8 +287,8 @@ void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
 		//	if(comp_input.actions.size > 1)
 
 		driver->draw2DRectangle(irr::video::SColor(255, 50, 50, 50),
-	                        irr::core::rect<irr::s32>(last_indicator_center-3, combo_height_center-6,
-	                                                  last_indicator_center+3, combo_height_center+6));
+	                        irr::core::rect<irr::s32>(last_indicator_center-7, combo_height_center-12,
+	                                                  last_indicator_center+7, combo_height_center+12));
 
 
 	}
