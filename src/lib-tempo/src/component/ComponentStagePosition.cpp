@@ -9,12 +9,21 @@ ComponentStagePosition::ComponentStagePosition(glm::ivec2 bottom_left, glm::ivec
     : occupied(0)
 {
 	setPosition(bottom_left, top_right);
+	isPhased = true;
+}
+
+ComponentStagePosition::ComponentStagePosition(glm::ivec2 position, bool phased)
+    : occupied(0)
+{
+	setPosition(position);
+	isPhased = phased;
 }
 
 ComponentStagePosition::ComponentStagePosition(glm::ivec2 position)
     : occupied(0)
 {
 	setPosition(position);
+	isPhased = true;
 }
 
 void ComponentStagePosition::movePosition(glm::ivec2 delta)
@@ -65,6 +74,7 @@ ComponentStagePosition::ComponentStagePosition(sf::Packet p)
 		p >> x >> y;
 		occupied.push_back(glm::ivec2(x, y));
 	}
+	p >> isPhased;
 }
 
 sf::Packet ComponentStagePosition::dumpComponent()
@@ -76,6 +86,7 @@ sf::Packet ComponentStagePosition::dumpComponent()
 	for (unsigned int i = 0; i < size; i++) {
 		p << occupied[i].x << occupied[i].y;
 	}
+	p << isPhased;
 
 	return p;
 }

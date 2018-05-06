@@ -51,7 +51,7 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	anax::Entity e = world.createEntity();
 
 	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_NONE, false, false);
-	e.addComponent<tempo::ComponentStagePosition>(pos);
+	e.addComponent<tempo::ComponentStagePosition>(pos, false);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
 	int a = rand()%2;
@@ -73,7 +73,7 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 	anax::Entity e = world.createEntity();
 
 	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_NONE, false, false);
-	e.addComponent<tempo::ComponentStagePosition>(pos);
+	e.addComponent<tempo::ComponentStagePosition>(pos, false);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>("resources/materials/textures/totem.png", glm::vec3(255, 255, 255), false, glm::vec2(1,1));
@@ -98,7 +98,7 @@ anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 	std::string path = "resources/materials/textures/creeper.png";
 
 	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_WANDER, false, false);
-	e.addComponent<tempo::ComponentStagePosition>(pos);
+	e.addComponent<tempo::ComponentStagePosition>(pos, false);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 200, 200), false, glm::vec2(2,4));
@@ -125,7 +125,7 @@ anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<g
 	std::string path1 = "resources/materials/textures/knight-" + std::to_string(randNum) + ".png";
 
 	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_PATROL, false, false, path);
-	e.addComponent<tempo::ComponentStagePosition>(pos);
+	e.addComponent<tempo::ComponentStagePosition>(pos, false);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>(path1, glm::vec3(255, 255, 255), false, glm::vec2(5,4));
@@ -147,7 +147,7 @@ anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
 	std::deque<glm::ivec2> path;
 	path.push_back(pos);
 	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_PATH, false, false, path);
-	e.addComponent<tempo::ComponentStagePosition>(pos);
+	e.addComponent<tempo::ComponentStagePosition>(pos, false);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
@@ -207,7 +207,7 @@ anax::Entity createSnake(anax::World& world, glm::ivec2 pos, tempo::Facing f, in
 
 	ai_index_top++;
 	head.addComponent<tempo::ComponentAI>(MoveType::MOVE_SNAKE, false, false);
-	head.addComponent<tempo::ComponentStagePosition>(pos);
+	head.addComponent<tempo::ComponentStagePosition>(pos, false);
 	head.addComponent<tempo::ComponentStageRotation>(f);
 	head.addComponent<tempo::ComponentStageTranslation>();
 	head.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 200, 200), false, glm::vec2(4,4));

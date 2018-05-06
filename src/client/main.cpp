@@ -74,16 +74,37 @@ namespace client
 	 	>
 	 {
 	 public:
+		typedef std::unordered_map<glm::ivec2,
+		                           bool,
+		                           vec2eq,
+		                           vec2eq,
+		                           std::allocator<std::pair<const glm::ivec2, bool>>> collMap;
+		std::map<unsigned long int, glm::ivec2> posMap;
+
+		collMap collisionMap;
 	 	void lessJank(const glm::ivec2 playerpos) {
 	 		// uncomment this for more jank:
 	 		//return;
 
 	 		auto& entities = getEntities();
+			collisionMap.clear();
+	 		for (auto& entity : entities) {
+				auto& sp = entity.getComponent<tempo::ComponentStagePosition>();
+	 			glm::ivec2 origin = sp.getOrigin();
+				if (!sp.isPhased)
+				if (entity.hasComponent<tempo::ComponentHealth>())
+				if (entity.getComponent<tempo::ComponentHealth>().current_health > 0)
+				{
+					collisionMap[origin] = true;
+				}
+			}
 
 	 		for (auto& entity : entities) {
-	 			tempo::ComponentStageTranslation& trans = entity.getComponent<tempo::ComponentStageTranslation>();
-	 			tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
 	 			glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
+
+				tempo::ComponentStage &stage = entity.getComponent<tempo::ComponentStage>();
+
+	 			tempo::ComponentStageTranslation& trans = entity.getComponent<tempo::ComponentStageTranslation>();
 
 				if (origin.x < playerpos.x - 24 || origin.x > playerpos.x + 7 ||
 				    origin.y < playerpos.y - 33 || origin.y > playerpos.y + 33)
@@ -91,9 +112,15 @@ namespace client
 					continue;
 				}
 
+				if (trans.delta == glm::ivec2(0, 0)) continue;
+
 	 			glm::ivec2 dest = origin + trans.delta;
 
-	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5) {
+				bool can_move = true;
+				if (collisionMap.find(dest) == collisionMap.end())
+					collisionMap[dest] = false;
+				can_move &= !collisionMap[dest];
+	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5 || stage.getHeight(dest) <= -3 || !can_move) {
 	 				// consume the moment before the server rejects you
 	 				// currently combos aren't server protected, so maybe this should move into lib-tempo?
 	 				// this produces a lovely jumping against the wall animation!
