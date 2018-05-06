@@ -28,7 +28,7 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 
 	int fheight = 69 + emptySpace;
 
-	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(40 + (party_number * fheight), 7));
+	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(10 + (party_number * fheight), 0));
 	entity_player.addComponent<tempo::ComponentStageRotation>(NORTH);
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();

@@ -38,7 +38,7 @@ void SystemMovement::receiveTranslations(anax::World &w)
 
 			if (entity.hasComponent<tempo::ComponentStageTranslation>()) {
 				entity.getComponent<tempo::ComponentStageTranslation>().delta = delta;
-				entity.getComponent<tempo::ComponentStageTranslation>().moved = moved; 
+				entity.getComponent<tempo::ComponentStageTranslation>().moved = moved;
 			}
 
 			// Send update to all clients
@@ -80,6 +80,7 @@ void SystemMovement::processTranslation()
 
 		for (auto &position : positions) {
 			can_move &= stage.existstTile(position + st.delta);
+			can_move &= -3 < stage.getHeight(position + st.delta);
 			can_move &= stage.getHeight(position + st.delta) < 5;
 			if (collisionMap.find(position + st.delta) == collisionMap.end())
 				collisionMap[position + st.delta] = false;
