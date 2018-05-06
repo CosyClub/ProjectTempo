@@ -122,15 +122,18 @@ void SystemTranslationAnimation::updateAnimations()
 			continue;
 		}
 
+		client::ComponentRenderSceneNode& node =
+			entity.getComponent<client::ComponentRenderSceneNode>();
+
 		if (animators.count(entity_id) > 0) {
 			// Then we've already added an animator to this entity
-			continue;
+			node.node->removeAnimators();
+			node.billboard->removeAnimators();
 		}
 
 		tempo::ComponentStagePosition& pos = entity.getComponent<tempo::ComponentStagePosition>();
 		tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
-		client::ComponentRenderSceneNode& node =
-		  entity.getComponent<client::ComponentRenderSceneNode>();
+
 
 		irr::core::vector3df bp = node.billboard->getPosition();
 		irr::scene::ISceneNodeAnimator* hop =
@@ -148,7 +151,7 @@ void SystemTranslationAnimation::updateAnimations()
 				glm::fvec3(target.x, stage.getHeight(target), target.y));
 		node.node->addAnimator(move);
 
-		animators[entity_id] = std::make_pair(hop, move);
+		animators[entity_id] = true;
 	}
 }
 
