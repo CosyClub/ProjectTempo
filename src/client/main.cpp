@@ -195,7 +195,7 @@ int main(int argc, const char** argv)
 	bool enable_hud = false;
 	if (argc == 4) {
 		std::string HUD = argv[3];
-		enable_hud = (HUD == "HUD" || HUD == "hud");
+		enable_hud = (HUD == "HUD" || HUD == "hud" || HUD == "42");
 	}
 
 	irr::IrrlichtDevice *device = irr::createDevice(
@@ -210,16 +210,19 @@ int main(int argc, const char** argv)
 	irr::scene::ISceneManager* smgr = device->getSceneManager();
 	irr::gui::IGUIEnvironment* gui_env = device->getGUIEnvironment();
 	
-	irr::video::ITexture* splash_texture[3];
+	irr::video::ITexture* splash_texture[4];
 	splash_texture[0] = driver->getTexture("resources/materials/textures/splash-full.png");
 	splash_texture[1] = driver->getTexture("resources/materials/textures/splash-minimal.png");
 	splash_texture[2] = driver->getTexture("resources/materials/textures/splash-loading.png");
+	splash_texture[3] = driver->getTexture("resources/materials/textures/splash-loading-alt.png");
 
 	// Put up the intial splash image
 	irr::gui::IGUIImage* splashScreen;
 	if (enable_hud) {
+		std::string HUD = argv[3];
+		int loading_texture = std::rand() % 1000 == 42 || HUD == "42" ? 3 : 2;
 		splashScreen = device->getGUIEnvironment()->addImage(
-		                                  splash_texture[2],
+		                                  splash_texture[loading_texture],
 		                                  irr::core::position2d<irr::s32>(0,0), true);
 		driver->beginScene(true, true);
 		smgr->drawAll();
