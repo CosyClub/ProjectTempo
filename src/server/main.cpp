@@ -150,25 +150,24 @@ int main(int argc, const char **argv)
 		RythmButton(world, { { { 28,37 }},{ { 28,38 } },{ { 29,38 } },{ { 29,37 } } }, wall3, {}, rhythmID);
 
 		std::deque<glm::ivec2> path {glm::ivec2(26, 37),
-																 glm::ivec2(26, 38),
-																 glm::ivec2(26, 39),
-																 glm::ivec2(26, 40),
-																 glm::ivec2(27, 40),
-																 glm::ivec2(28, 40),
-																 glm::ivec2(29, 40),
-																 glm::ivec2(30, 40),
-																 glm::ivec2(31, 40),
-																 glm::ivec2(31, 39),
-																 glm::ivec2(31, 38),
-																 glm::ivec2(31, 37),
-																 glm::ivec2(31, 36),
-																 glm::ivec2(31, 35),
-																 glm::ivec2(30, 35),
-																 glm::ivec2(29, 35),
-																 glm::ivec2(28, 35),
-																 glm::ivec2(27, 35),
-																 glm::ivec2(26, 36)
-															 };
+		                             glm::ivec2(26, 38),
+		                             glm::ivec2(26, 39),
+		                             glm::ivec2(26, 40),
+		                             glm::ivec2(27, 40),
+		                             glm::ivec2(28, 40),
+		                             glm::ivec2(29, 40),
+		                             glm::ivec2(30, 40),
+		                             glm::ivec2(31, 40),
+		                             glm::ivec2(31, 39),
+		                             glm::ivec2(31, 38),
+		                             glm::ivec2(31, 37),
+		                             glm::ivec2(31, 36),
+		                             glm::ivec2(31, 35),
+		                             glm::ivec2(30, 35),
+		                             glm::ivec2(29, 35),
+		                             glm::ivec2(28, 35),
+		                             glm::ivec2(27, 35),
+		                             glm::ivec2(26, 36)};
 		tempo::createMobPatroller(world, path[0], path);
 
 		std::vector<glm::ivec2> spikes		   = {{ 23,59 },{ 24,59 },{ 25,59 },{ 26,59 },{ 27,59 }};

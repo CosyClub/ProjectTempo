@@ -9,7 +9,7 @@ SystemRenderAttack::SystemRenderAttack()
 	// no-op
 }
 
-void SystemRenderAttack::update(SystemStageRenderer& sr)
+void SystemRenderAttack::update(SystemStageRenderer& sr, irr::video::SColor colour)
 {
 
 	auto& entities = this->getEntities();
@@ -24,7 +24,12 @@ void SystemRenderAttack::update(SystemStageRenderer& sr)
 
 		for (auto& target : targets)
 		{
-			irr::video::SColor color(255, 0, 0, 255 / (attack.beats_until_attack + 1));
+			// Colour the attack with increasing saturation dependant
+			// on how many beats until the attack
+			irr::video::SColor color(255,
+					         colour.getRed()   / (attack.beats_until_attack + 1), 
+					         colour.getGreen() / (attack.beats_until_attack + 1), 
+					         colour.getBlue()  / (attack.beats_until_attack + 1));
 			sr.setTileColor(target, color);
 		}
 	}
