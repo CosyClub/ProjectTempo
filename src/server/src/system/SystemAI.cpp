@@ -112,6 +112,7 @@ struct node {
 	int G;
 	int H;
 	int F;
+	glm::ivec2 parent;
 	
 	node()
 	{
@@ -119,8 +120,9 @@ struct node {
 		G = 0;
 		H = 0;
 		F = 0;
+		parent = glm::ivec2(0, 0);
 	}
-	node(glm::ivec2 p, int g, glm::ivec2 tgt)
+	node(glm::ivec2 p, int g, glm::ivec2 tgt, glm::ivec2 P)
 	{
 		pos = p;
 		G = g;
@@ -129,6 +131,7 @@ struct node {
 		H = abs(diff.x) + abs(diff.y);
 
 		F = G + H;
+		parent = P;
 	}
 };
 
@@ -156,6 +159,7 @@ node pop_min(std::vector<node>& list)
 
 bool contains (std::vector<node>& list, node m)
 {
+	if (list.size() <= 0) return false;
 	for (node n : list)
 	{
 		if (n.pos == m.pos) return true;
@@ -164,41 +168,63 @@ bool contains (std::vector<node>& list, node m)
 	return false;
 }
 
-bool update (std::vector<node>& list, node m)
+node getParent (std::vector<node>& list, glm::ivec2 parent)
 {
-	for (node& n : list)
+	for (node n : list)
 	{
-		if (n.pos == m.pos && n.F > m.F)
-		{
-			// n.
-		}
+		if (n.pos == parent) return n;
 	}
 
-	return false;
+	return node();
 }
 
-void Astar_pathfind(glm::ivec2 pos, glm::vec2 tgt, std::deque<glm::ivec2> &path,
-                    tempo::ComponentStage &s)
+glm::ivec2 Astar_pathfind(glm::ivec2 pos, glm::ivec2 tgt, tempo::ComponentStage &s)
 {
 	std::vector<node> open;
 	std::vector<node> closed;
 
-	node n(pos, 0, tgt);
+	node n(pos, 0, tgt, pos);
 	open.push_back(n);
 
-	node S = pop_min(open);
-	closed.push_back(S);
+	bool done = false;
 
-	std::vector<glm::ivec2> moves = gen_moves(S.pos, s);
-	for (glm::ivec2 T : moves)
+	while (!done)
 	{
-		node N(T, S.G + 1, tgt);
-		if (  contains(closed, N)) continue;
-		if (! contains(open,   N)) open.push_back(N);
+		if (open.size() == 0) return pos;
+		node S = pop_min(open);
+		std::cout << "Exploring " << S.pos.x << " " << S.pos.y << std::endl; 
+		closed.push_back(S);
+
+		std::vector<glm::ivec2> moves = gen_moves(S.pos, s);
+		std::cout << open.size() << std::endl;
+		for (glm::ivec2 T : moves)
+		{
+			node N(T, S.G + 1, tgt, S.pos);
+			if (T == tgt)
+			{
+				std::cout << "FOUND SOLUTION AT " << T.x << " " << T.y << std::endl;
+				done = true;
+				closed.push_back(N);
+			}
+			if (  contains(closed, N)) continue;
+			if (! contains(open,   N)) open.push_back(N);
+		}
 	}
+
+	node N = closed.back();
+	glm::ivec2 c_pos = N.parent;
+	while (c_pos != pos)
+	{
+		N = getParent(closed, c_pos);
+		c_pos = N.parent;
+	}
+
+	std::cout << "Chosing move to " << N.pos.x << " " << N.pos.x << std::endl;
+
+	return N.pos;
 }
 
-void SystemAI::update(server::SystemAttack s_attack)
+void SystemAI::update(anax::World& world, server::SystemAttack s_attack)
 {
 	auto entities = getEntities();
 
@@ -208,6 +234,13 @@ void SystemAI::update(server::SystemAttack s_attack)
 		auto &sp = entity.getComponent<tempo::ComponentStagePosition>();
 		auto &sr = entity.getComponent<tempo::ComponentStageRotation>();
 		auto &ai = entity.getComponent<tempo::ComponentAI>();
+		auto &cs = entity.getComponent<tempo::ComponentStage>();
+
+		if(entity.hasComponent<tempo::ComponentHealth>())
+		{
+			auto &ch = entity.getComponent<tempo::ComponentHealth>();
+			if (ch.current_health <= 0) continue;
+		}
 
 		if (ai_attack(entity, s_attack)) continue;
 
@@ -263,6 +296,40 @@ void SystemAI::update(server::SystemAttack s_attack)
 			{
 				st.delta = random_move();
 				break;
+			}
+			case tempo::MoveType::MOVE_AGGRO:
+			{
+				float dist = 999999;
+				glm::ivec2 nearest(0, 0);
+				for (auto& en : world.getEntities())
+				{
+					if (en.hasComponent<tempo::ComponentPlayerRemote>())
+					{
+						glm::ivec2 pos = en.getComponent<tempo::ComponentStagePosition>().getOrigin();
+						glm::ivec2 ai = sp.getOrigin();
+						int len = length(glm::vec2(pos - ai));
+						if (len < dist)
+						{
+							dist = len;
+							nearest = pos;
+						}
+					}
+				}
+
+				if(nearest == glm::ivec2(0, 0) || dist > 10)
+				{
+					std::cout  << "Skipping" << std::endl;
+					st.delta = glm::ivec2(0, 0);
+				}
+				else if(nearest == sp.getOrigin())
+					break;
+				else
+				{
+					glm::ivec2 newpos = Astar_pathfind(sp.getOrigin(), nearest, cs);
+					st.delta = newpos - sp.getOrigin();
+				}
+				break;
+
 			}
 			case tempo::MoveType::MOVE_SNAKE:
 			{

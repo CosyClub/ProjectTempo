@@ -1,6 +1,7 @@
 #ifndef SERVER_SYSTEM_AI_HPP
 #define SERVER_SYSTEM_AI_HPP
 #include <tempo/component/ComponentAI.hpp>
+#include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/component/ComponentStage.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
@@ -8,12 +9,13 @@
 #include <server/system/SystemAttack.hpp>
 
 #include <anax/System.hpp>
+#include <anax/World.hpp>
 
 namespace server
 {
 struct SystemAI : anax::System<anax::Requires<tempo::ComponentStageTranslation,
                                               tempo::ComponentAI>> {
-	void update(server::SystemAttack s_attack);
+	void update(anax::World& world, server::SystemAttack s_attack);
 };
 }
 
