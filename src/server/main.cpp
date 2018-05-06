@@ -131,112 +131,112 @@ int main(int argc, const char **argv)
 	// Needed so that the player cannot see other feeder areas
 	int emptySpace = 40;
 	int fheight = 10 + emptySpace;
-	int feeder_areas = 1;
+	int feeder_areas = 10;
 
 	for (int i = 0; i < feeder_areas; i++) {
 		// Starter areas
 		glm::ivec2 spawn_loc = glm::ivec2(10 + (i * fheight), 0);
 		{
-			std::vector<glm::ivec2> wall = {{10, 5}};
-			RythmButton(world, {{{10, 1}}, {{10, 2}}, {{10, 3}}}, wall, {}, spawn_loc, rhythmID);
+			std::vector<glm::ivec2> wall = {{10+ (i * fheight), 5}};
+			RythmButton(world, {{{10+ (i * fheight), 1}}, {{10+ (i * fheight), 2}}, {{10+ (i * fheight), 3}}}, wall, {}, spawn_loc, rhythmID);
 
-			std::vector<glm::ivec2> wall1 = {{8, 5}};
-			RythmButton(world, {{{8, 1}}, {{8, 2}}, {{8, 3}}}, wall1, {}, spawn_loc, rhythmID);
+			std::vector<glm::ivec2> wall1 = {{8+ (i * fheight), 5}};
+			RythmButton(world, {{{8+ (i * fheight), 1}}, {{8+ (i * fheight), 2}}, {{8+ (i * fheight), 3}}}, wall1, {}, spawn_loc, rhythmID);
 
-			std::vector<glm::ivec2> wall2 = {{10, 5}};
-			RythmButton(world, {{{6, 1}}, {{6, 2}}, {{6, 3}}}, wall2, {}, spawn_loc, rhythmID);
+			std::vector<glm::ivec2> wall2 = {{10+ (i * fheight), 5}};
+			RythmButton(world, {{{6+ (i * fheight), 1}}, {{6+ (i * fheight), 2}}, {{6+ (i * fheight), 3}}}, wall2, {}, spawn_loc, rhythmID);
 
-			std::vector<glm::ivec2> wall3 = {{5, 6}};
-			RythmButton(world, {{{1, 6}}, {{2, 6}}, {{3, 6}}}, wall3, {}, spawn_loc, rhythmID);
+			std::vector<glm::ivec2> wall3 = {{5+ (i * fheight), 6}};
+			RythmButton(world, {{{1+ (i * fheight), 6}}, {{2+ (i * fheight), 6}}, {{3+ (i * fheight), 6}}}, wall3, {}, spawn_loc, rhythmID);
 
-			std::vector<glm::ivec2> wall4 = {{5, 8}};
-			RythmButton(world, {{{1, 8}}, {{2, 8}}, {{3, 8}}}, wall4, {}, spawn_loc, rhythmID);
+			std::vector<glm::ivec2> wall4 = {{5+ (i * fheight), 8}};
+			RythmButton(world, {{{1+ (i * fheight), 8}}, {{2+ (i * fheight), 8}}, {{3+ (i * fheight), 8}}}, wall4, {}, spawn_loc, rhythmID);
 
-			std::vector<glm::ivec2> wall5 = {{5, 10}};
-			RythmButton(world, {{{1, 10}}, {{2, 10}}, {{3, 10}}}, wall5, {}, spawn_loc, rhythmID);
+			std::vector<glm::ivec2> wall5 = {{5+ (i * fheight), 10}};
+			RythmButton(world, {{{1+ (i * fheight), 10}}, {{2+ (i * fheight), 10}}, {{3+ (i * fheight), 10}}}, wall5, {}, spawn_loc, rhythmID);
 		}
-		
+
 		// Room 1
 		spawn_loc = glm::ivec2(8 + (i * fheight), 12);
 		{
-			std::vector<glm::ivec2> wall = {{7, 11}, {8, 11}, {9, 11}};
-			newButton(world, {{8, 9}}, wall, {}, spawn_loc);
+			std::vector<glm::ivec2> wall = {{7+ (i * fheight), 11}, {8+ (i * fheight), 11}, {9+ (i * fheight), 11}};
+			newButton(world, {{8+ (i * fheight), 9}}, wall, {}, spawn_loc);
 		}
 
 		// Room 2
 		spawn_loc = glm::ivec2(8 + (i * fheight), 12);
 		{
-			tempo::createMobStill(world, glm::ivec2(7, 13));
-			tempo::createMobStill(world, glm::ivec2(7, 20));
+			tempo::createMobStill(world, glm::ivec2(7+ (i * fheight), 13));
+			tempo::createMobStill(world, glm::ivec2(7+ (i * fheight), 20));
 
-			std::deque<glm::ivec2> path = {glm::ivec2(9, 13), glm::ivec2(9, 14), glm::ivec2(9, 15),
-			                               glm::ivec2(9, 16), glm::ivec2(9, 17), glm::ivec2(9, 18),
-			                               glm::ivec2(9, 19), glm::ivec2(9, 20)};
+			std::deque<glm::ivec2> path = {glm::ivec2(9+ (i * fheight), 13), glm::ivec2(9+ (i * fheight), 14), glm::ivec2(9+ (i * fheight), 15),
+			                               glm::ivec2(9+ (i * fheight), 16), glm::ivec2(9+ (i * fheight), 17), glm::ivec2(9+ (i * fheight), 18),
+			                               glm::ivec2(9+ (i * fheight), 19), glm::ivec2(9+ (i * fheight), 20)};
 			tempo::createMobPatroller(world, path[0], path);
 		}
 
 		// Room 3
 		{
-			std::vector<glm::ivec2> wall = {{11, 24}, {11, 25}, {11, 26}};
-			newButton(world, {{7, 24}, {7, 26}}, wall, {}, spawn_loc);
+			std::vector<glm::ivec2> wall = {{11+ (i * fheight), 24}, {11+ (i * fheight), 25}, {11+ (i * fheight), 26}};
+			newButton(world, {{7+ (i * fheight), 24}, {7+ (i * fheight), 26}}, wall, {}, spawn_loc);
 		}
 
 
 		// Room 4
 		{
 			std::vector<glm::ivec2> spikes = {
-			  {14, 22}, {14, 23}, {14, 24}, {14, 25}, {15, 22}, {15, 26}, {15, 27}, {16, 22},
-			  {16, 24}, {17, 22}, {17, 25}, {17, 26}, {17, 27}, {17, 28}, {18, 22}, {18, 23}};
+			  {14+ (i * fheight), 22}, {14+ (i * fheight), 23}, {14+ (i * fheight), 24}, {14+ (i * fheight), 25}, {15+ (i * fheight), 22}, {15+ (i * fheight), 26}, {15+ (i * fheight), 27}, {16+ (i * fheight), 22},
+			  {16+ (i * fheight), 24}, {17+ (i * fheight), 22}, {17+ (i * fheight), 25}, {17+ (i * fheight), 26}, {17+ (i * fheight), 27}, {17+ (i * fheight), 28}, {18+ (i * fheight), 22}, {18+ (i * fheight), 23}};
 			tempo::createSpikes(world, spikes);
 
-			std::vector<glm::ivec2> spikes2 = {{14, 26}, {14, 27}, {14, 28}, {15, 23}, {15, 24},
-			                                   {15, 25}, {15, 28}, {16, 23}, {16, 25}, {16, 26},
-			                                   {16, 27}, {16, 28}, {17, 23}, {17, 24}, {18, 24},
-			                                   {18, 25}, {18, 26}, {18, 27}, {18, 28}};
-			newButton(world, {{13, 25}}, {}, spikes2, spawn_loc);
-			newButton(world, {{18, 29}}, {}, spikes2, spawn_loc);
+			std::vector<glm::ivec2> spikes2 = {{14+ (i * fheight), 26}, {14+ (i * fheight), 27}, {14+ (i * fheight), 28}, {15+ (i * fheight), 23}, {15+ (i * fheight), 24},
+			                                   {15+ (i * fheight), 25}, {15+ (i * fheight), 28}, {16+ (i * fheight), 23}, {16+ (i * fheight), 25}, {16+ (i * fheight), 26},
+			                                   {16+ (i * fheight), 27}, {16+ (i * fheight), 28}, {17+ (i * fheight), 23}, {17+ (i * fheight), 24}, {18+ (i * fheight), 24},
+			                                   {18+ (i * fheight), 25}, {18+ (i * fheight), 26}, {18+ (i * fheight), 27}, {18+ (i * fheight), 28}};
+			newButton(world, {{13+ (i * fheight), 25}}, {}, spikes2, spawn_loc);
+			newButton(world, {{18+ (i * fheight), 29}}, {}, spikes2, spawn_loc);
 
-			tempo::createMobCreeper(world, glm::ivec2(15, 23));
-			tempo::createMobCreeper(world, glm::ivec2(15, 27));
-			tempo::createMobCreeper(world, glm::ivec2(16, 25));
-			tempo::createMobCreeper(world, glm::ivec2(17, 23));
-			tempo::createMobCreeper(world, glm::ivec2(17, 27));
+			tempo::createMobCreeper(world, glm::ivec2(15+ (i * fheight), 23));
+			tempo::createMobCreeper(world, glm::ivec2(15+ (i * fheight), 27));
+			tempo::createMobCreeper(world, glm::ivec2(16+ (i * fheight), 25));
+			tempo::createMobCreeper(world, glm::ivec2(17+ (i * fheight), 23));
+			tempo::createMobCreeper(world, glm::ivec2(17+ (i * fheight), 27));
 		}
 
 		// Room 5 (Prongs)
 		spawn_loc = glm::ivec2(18 + (i * fheight), 30);
 		{
-			newButton(world, {{17, 30}}, {}, {{17, 32}}, spawn_loc);
-			newButton(world, {{16, 34}}, {}, {{16, 32}}, spawn_loc);
-			newButton(world, {{15, 34}, {15, 30}}, {}, {{15, 32}}, spawn_loc);
-			newButton(world, {{13, 34}, {13, 30}}, {}, {{13, 32}}, spawn_loc);
-			newButton(world, {{11, 34}, {11, 30}}, {}, {{11, 32}}, spawn_loc);
-			newButton(world, {{10, 34}, {10, 30}}, {}, {{10, 32}}, spawn_loc);
-			newButton(world, {{9, 34}, {9, 30}}, {}, {{9, 32}}, spawn_loc);
+			newButton(world, {{17+ (i * fheight), 30}}, {}, {{17+ (i * fheight), 32}}, spawn_loc);
+			newButton(world, {{16+ (i * fheight), 34}}, {}, {{16+ (i * fheight), 32}}, spawn_loc);
+			newButton(world, {{15+ (i * fheight), 34}, {15+ (i * fheight), 30}}, {}, {{15+ (i * fheight), 32}}, spawn_loc);
+			newButton(world, {{13+ (i * fheight), 34}, {13+ (i * fheight), 30}}, {}, {{13+ (i * fheight), 32}}, spawn_loc);
+			newButton(world, {{11+ (i * fheight), 34}, {11+ (i * fheight), 30}}, {}, {{11+ (i * fheight), 32}}, spawn_loc);
+			newButton(world, {{10+ (i * fheight), 34}, {10+ (i * fheight), 30}}, {}, {{10+ (i * fheight), 32}}, spawn_loc);
+			newButton(world, {{9+ (i * fheight), 34}, {9+ (i * fheight), 30}}, {}, {{9+ (i * fheight), 32}}, spawn_loc);
 
-			newButton(world, {{7, 32}}, {{7, 31}, {7, 33}}, {}, spawn_loc);
+			newButton(world, {{7+ (i * fheight), 32}}, {{7+ (i * fheight), 31}, {7+ (i * fheight), 33}}, {}, spawn_loc);
 		}
 
 
 		// Room 6
 		{
-			std::vector<glm::ivec2> wall = {{2, 37}, {3, 37}, {4, 37}};
-			RythmButton(world, {{{4, 31}}, {{3, 31}}, {{2, 31}}, {{2, 32}}, {{3, 32}}}, wall, {}, spawn_loc,
+			std::vector<glm::ivec2> wall = {{2+ (i * fheight), 37}, {3+ (i * fheight), 37}, {4+ (i * fheight), 37}};
+			RythmButton(world, {{{4+ (i * fheight), 31}}, {{3+ (i * fheight), 31}}, {{2+ (i * fheight), 31}}, {{2+ (i * fheight), 32}}, {{3+ (i * fheight), 32}}}, wall, {}, spawn_loc,
 			            rhythmID);
 
-			std::vector<glm::ivec2> wall1 = {{2, 38}, {3, 38}, {4, 38}};
-			RythmButton(world, {{{2, 35}}, {{3, 35}}, {{4, 35}}, {{4, 34}}, {{3, 34}}}, wall1, {}, spawn_loc,
+			std::vector<glm::ivec2> wall1 = {{2+ (i * fheight), 38}, {3+ (i * fheight), 38}, {4+ (i * fheight), 38}};
+			RythmButton(world, {{{2+ (i * fheight), 35}}, {{3+ (i * fheight), 35}}, {{4+ (i * fheight), 35}}, {{4+ (i * fheight), 34}}, {{3+ (i * fheight), 34}}}, wall1, {}, spawn_loc,
 			            rhythmID);
 
-			tempo::createMobStill(world, glm::ivec2(5, 31));
-			tempo::createMobStill(world, glm::ivec2(5, 33));
+			tempo::createMobStill(world, glm::ivec2(5+ (i * fheight), 31));
+			tempo::createMobStill(world, glm::ivec2(5+ (i * fheight), 33));
 
-			std::deque<glm::ivec2> path = {glm::ivec2(4, 31), glm::ivec2(3, 31), glm::ivec2(2, 31),
-			                               glm::ivec2(3, 32), glm::ivec2(3, 32), glm::ivec2(4, 32)};
+			std::deque<glm::ivec2> path = {glm::ivec2(4+ (i * fheight), 31), glm::ivec2(3+ (i * fheight), 31), glm::ivec2(2+ (i * fheight), 31),
+			                               glm::ivec2(3+ (i * fheight), 32), glm::ivec2(3+ (i * fheight), 32), glm::ivec2(4+ (i * fheight), 32)};
 			tempo::createMobPatroller(world, path[0], path);
 
-			std::deque<glm::ivec2> path1 = {glm::ivec2(2, 35), glm::ivec2(3, 35), glm::ivec2(4, 35),
-			                               glm::ivec2(4, 34), glm::ivec2(3, 34), glm::ivec2(4, 34)};
+			std::deque<glm::ivec2> path1 = {glm::ivec2(2+ (i * fheight), 35), glm::ivec2(3+ (i * fheight), 35), glm::ivec2(4+ (i * fheight), 35),
+			                               glm::ivec2(4+ (i * fheight), 34), glm::ivec2(3+ (i * fheight), 34), glm::ivec2(4+ (i * fheight), 34)};
 			tempo::createMobPatroller(world, path1[0], path1);
 		}
 
@@ -244,45 +244,45 @@ int main(int argc, const char **argv)
 		// Room 7 (Maze)
 		spawn_loc = glm::ivec2(3 + (i * fheight), 31);
 		{
-			std::vector<glm::ivec2> spikes = {{1, 40}, {2, 40}, {3, 40}, {4, 40}, {5, 40}, {8, 39},
-			                                  {8, 40}, {2, 42}, {2, 43}, {2, 44}, {2, 45}, {4, 44},
-			                                  {5, 43}, {5, 44}, {5, 42}, {6, 42}, {7, 42}, {8, 42},
-			                                  {7, 44}, {7, 45}, {8, 44}};
+			std::vector<glm::ivec2> spikes = {{1+ (i * fheight), 40}, {2+ (i * fheight), 40}, {3+ (i * fheight), 40}, {4+ (i * fheight), 40}, {5+ (i * fheight), 40}, {8+ (i * fheight), 39},
+			                                  {8+ (i * fheight), 40}, {2+ (i * fheight), 42}, {2+ (i * fheight), 43}, {2+ (i * fheight), 44}, {2+ (i * fheight), 45}, {4+ (i * fheight), 44},
+			                                  {5+ (i * fheight), 43}, {5+ (i * fheight), 44}, {5+ (i * fheight), 42}, {6+ (i * fheight), 42}, {7+ (i * fheight), 42}, {8+ (i * fheight), 42},
+			                                  {7+ (i * fheight), 44}, {7+ (i * fheight), 45}, {8+ (i * fheight), 44}};
 			tempo::createSpikes(world, spikes);
 
-			glm::ivec2 spike1 = {4, 42};
-			glm::ivec2 spike7 = {6, 40};
-			glm::ivec2 spike2 = {7, 40};
-			glm::ivec2 spike3 = {8, 41};
-			glm::ivec2 spike4 = {8, 43};
-			glm::ivec2 spike5 = {9, 42};
-			glm::ivec2 spike6 = {9, 47};
+			glm::ivec2 spike1 = {4+ (i * fheight), 42};
+			glm::ivec2 spike7 = {6+ (i * fheight), 40};
+			glm::ivec2 spike2 = {7+ (i * fheight), 40};
+			glm::ivec2 spike3 = {8+ (i * fheight), 41};
+			glm::ivec2 spike4 = {8+ (i * fheight), 43};
+			glm::ivec2 spike5 = {9+ (i * fheight), 42};
+			glm::ivec2 spike6 = {9+ (i * fheight), 47};
 
-			newButton(world, {{1, 39}}, {}, {spike2}, spawn_loc);
-			newButton(world, {{1, 45}}, {}, {spike1}, spawn_loc);
-			newButton(world, {{7, 43}}, {}, {spike7, spike3}, spawn_loc);
-			newButton(world, {{9, 39}}, {}, {spike4}, spawn_loc);
-			newButton(world, {{9, 44}}, {}, {{3, 42}, spike6}, spawn_loc);
-			newButton(world, {{9, 48}}, {}, {spike5, {8, 45}, {8, 46}, {8, 47}}, spawn_loc);
+			newButton(world, {{1+ (i * fheight), 39}}, {}, {spike2}, spawn_loc);
+			newButton(world, {{1+ (i * fheight), 45}}, {}, {spike1}, spawn_loc);
+			newButton(world, {{7+ (i * fheight), 43}}, {}, {spike7, spike3}, spawn_loc);
+			newButton(world, {{9+ (i * fheight), 39}}, {}, {spike4}, spawn_loc);
+			newButton(world, {{9+ (i * fheight), 44}}, {}, {{3+ (i * fheight), 42}, spike6}, spawn_loc);
+			newButton(world, {{9+ (i * fheight), 48}}, {}, {spike5, {8+ (i * fheight), 45}, {8+ (i * fheight), 46}, {8+ (i * fheight), 47}}, spawn_loc);
 
-			tempo::createMobCreeper(world, glm::ivec2(5, 42));
-			tempo::createMobCreeper(world, glm::ivec2(5, 42));
-			tempo::createMobCreeper(world, glm::ivec2(5, 42));
-			tempo::createMobCreeper(world, glm::ivec2(5, 42));
-			tempo::createMobCreeper(world, glm::ivec2(5, 42));
-			tempo::createMobCreeper(world, glm::ivec2(5, 42));
-			tempo::createMobCreeper(world, glm::ivec2(5, 42));
+			tempo::createMobCreeper(world, glm::ivec2(5+ (i * fheight), 42));
+			tempo::createMobCreeper(world, glm::ivec2(5+ (i * fheight), 42));
+			tempo::createMobCreeper(world, glm::ivec2(5+ (i * fheight), 42));
+			tempo::createMobCreeper(world, glm::ivec2(5+ (i * fheight), 42));
+			tempo::createMobCreeper(world, glm::ivec2(5+ (i * fheight), 42));
+			tempo::createMobCreeper(world, glm::ivec2(5+ (i * fheight), 42));
+			tempo::createMobCreeper(world, glm::ivec2(5+ (i * fheight), 42));
 		}
 
 		// Room 8
 		{
-			std::vector<glm::ivec2> wall = {{12, 44}, {12, 43}, {12, 42},
-			                                {13, 44}, {13, 43}, {13, 42}};
+			std::vector<glm::ivec2> wall = {{12+ (i * fheight), 44}, {12+ (i * fheight), 43}, {12+ (i * fheight), 42},
+			                                {13+ (i * fheight), 44}, {13+ (i * fheight), 43}, {13+ (i * fheight), 42}};
 			RythmButton(world,
-			            {{{12, 47}, {12, 49}},
-			             {{13, 47}, {13, 49}},
-			             {{13, 46}, {13, 50}},
-			             {{12, 46}, {12, 50}}},
+			            {{{12+ (i * fheight), 47}, {12+ (i * fheight), 49}},
+			             {{13+ (i * fheight), 47}, {13+ (i * fheight), 49}},
+			             {{13+ (i * fheight), 46}, {13+ (i * fheight), 50}},
+			             {{12+ (i * fheight), 46}, {12+ (i * fheight), 50}}},
 			            wall, {}, spawn_loc, rhythmID);
 		}
 	}
