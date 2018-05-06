@@ -79,8 +79,23 @@ namespace client
 	 		//return;
 
 	 		auto& entities = getEntities();
+			collisionMap.clear();
+	 		for (auto& entity : entities) {
+				auto& sp = entity.getComponent<tempo::ComponentStagePosition>();
+	 			glm::ivec2 origin = sp.getOrigin();
+				if (!sp.isPhased)
+				if (entity.hasComponent<tempo::ComponentHealth>())
+				if (entity.getComponent<tempo::ComponentHealth>().current_health > 0)
+				{
+					collisionMap[origin] = true;
+				}
+			}
 
 	 		for (auto& entity : entities) {
+	 			glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
+
+				tempo::ComponentStage &stage = entity.getComponent<tempo::ComponentStage>();
+
 	 			tempo::ComponentStageTranslation& trans = entity.getComponent<tempo::ComponentStageTranslation>();
 	 			tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
 	 			glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
