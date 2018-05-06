@@ -1,4 +1,5 @@
 #include <client/system/SystemTranslationAnimation.hpp>
+#include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/time.hpp>
 
 #include <anax/World.hpp>
@@ -8,6 +9,8 @@
 #include <glm/glm.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+
+#include <iostream>
 
 namespace
 {
@@ -156,14 +159,8 @@ void SystemTranslationAnimation::endBeat()
 
 		auto& node = entity.getComponent<client::ComponentRenderSceneNode>();
 		// removeAnimators not used in case other animations added
-		node.node->removeAnimator(it->second.first);
-		node.billboard->removeAnimator(it->second.second);
-		
-		client::ComponentRenderSceneNode& sn = entity.getComponent<client::ComponentRenderSceneNode>();
-		tempo::ComponentStagePosition& sp = entity.getComponent<tempo::ComponentStagePosition>();
-		tempo::ComponentStage& s = entity.getComponent<tempo::ComponentStage>();
-		glm::ivec2 pos = sp.getOrigin();
-		sn.node->setPosition(irr::core::vector3df(pos.x, s.getHeight(pos), pos.y));
+		node.node->removeAnimators();
+		node.billboard->removeAnimators();
 	}
 	animators.clear();
 }
