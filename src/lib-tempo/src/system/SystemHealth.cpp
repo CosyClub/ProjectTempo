@@ -3,6 +3,7 @@
 #include <tempo/component/ComponentStagePosition.hpp>  //Just temporary
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentParty.hpp>
+#include <tempo/component/ComponentRespawn.hpp>
 
 namespace tempo
 {
@@ -22,20 +23,10 @@ void SystemHealth::check_health()
 			if (entity.hasComponent<ComponentPlayerRemote>() ||
 			    entity.hasComponent<ComponentPlayerLocal>())
 			{
-
-				int party_number = 0;
-
-				int emptySpace = 40;
-
-				int fheight = 69 + emptySpace;
-
-				if (entity.hasComponent<ComponentParty>()) {
-					party_number = entity.getComponent<ComponentParty>().party_number;
-				}
+				glm::ivec2 spawn_loc = entity.getComponent<ComponentRespawn>().spawn_location;
 
 				if (entity.hasComponent<ComponentStagePosition>()) {
-					entity.getComponent<ComponentStagePosition>().setPosition(
-					  glm::ivec2(40 + + (party_number* fheight), 7));  // poof
+					entity.getComponent<ComponentStagePosition>().setPosition(spawn_loc);
 					h.current_health = h.max_health;
 				}
 			}

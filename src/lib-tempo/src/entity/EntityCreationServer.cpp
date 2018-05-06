@@ -28,6 +28,7 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 
 	int fheight = 69 + emptySpace;
 
+	entity_player.addComponent<tempo::ComponentRespawn>(glm::ivec2(40 + (party_number * fheight), 7));
 	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(40 + (party_number * fheight), 7));
 	entity_player.addComponent<tempo::ComponentStageRotation>(NORTH);
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
@@ -168,13 +169,14 @@ anax::Entity createButtonGroup(anax::World &           world,
                                std::vector<glm::ivec2> positions,
                                std::vector<glm::ivec2> tiles,
                                std::vector<glm::ivec2> spikes,
+                               glm::ivec2              respawn_pos,
                                glm::ivec2              prev,
                                glm::ivec2              next,
                                bool                    triggerable,
                                int                     ID)
 {
 	anax::Entity entity_button = world.createEntity();
-	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles, spikes, prev, next, triggerable, ID);
+	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles, spikes, respawn_pos, prev, next, triggerable, ID);
 	entity_button.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	entity_button.activate();
 
