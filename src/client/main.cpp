@@ -470,8 +470,6 @@ int main(int argc, const char** argv)
 			playerpos =
 				entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-			//system_stage_renderer.colorStage(j, playerpos, random_colour, colour_grey);
-
 			// Check for new entities from server
 			system_entity.creationCheck(world);
 			system_entity.deletionCheck(world);
@@ -540,10 +538,8 @@ int main(int argc, const char** argv)
 
 			system_translation_animation.endBeat();
 
-
 			colour_index = rand() % 10;
 			random_colour = client::randomHSV(colour_index);
-
 
 			system_lighting.update(random_colour);
 			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
@@ -564,18 +560,7 @@ int main(int argc, const char** argv)
 			system_combo.advanceBeat();
 		}
 
-
-		// std::clock_t    start;
-		//
-		// 				start = std::clock();
-		//system_stage_renderer.AnimateTiles(dt, playerpos);
-		// std::cout << "Time: " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
-
 		system_stage_renderer.Update(smgr, driver, playerpos, random_colour, colour_grey, j, dt);
-
-
-		//system_stage_renderer.Update(smgr, driver, playerpos);
-
 
 		driver->beginScene(true, true);
 		smgr->drawAll();
