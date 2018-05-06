@@ -23,7 +23,7 @@ class SystemRenderAttack : public anax::System<anax::Requires<tempo::ComponentAt
 	public:
 	SystemRenderAttack();
 
-	void update(SystemStageRenderer& sr);
+	void update(SystemStageRenderer& sr, irr::video::SColor colour);
 };
 
 }
