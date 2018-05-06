@@ -87,40 +87,23 @@ namespace client
 	 		//return;
 
 	 		auto& entities = getEntities();
+			collisionMap.clear();
+	 		for (auto& entity : entities) {
+				auto& sp = entity.getComponent<tempo::ComponentStagePosition>();
+	 			glm::ivec2 origin = sp.getOrigin();
+				if (!sp.isPhased)
+				if (entity.hasComponent<tempo::ComponentHealth>())
+				if (entity.getComponent<tempo::ComponentHealth>().current_health > 0)
+				{
+					collisionMap[origin] = true;
+				}
+			}
 
 	 		for (auto& entity : entities) {
 	 			glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
-				if(posMap.find(entity.getId().index) == posMap.end())
-				{
-					posMap[entity.getId().index] = origin;
-				}
-				if(posMap[entity.getId().index] == origin)
-				{
-					if (!entity.getComponent<tempo::ComponentStagePosition>().isPhased)
-					{
-						collisionMap[posMap[entity.getId().index]] = false;
-						posMap[entity.getId().index] = origin;
-						collisionMap[posMap[entity.getId().index]] = true;
-					}
-				}
-
 				tempo::ComponentStage &stage = entity.getComponent<tempo::ComponentStage>();
 
-				auto &positions = entity.getComponent<tempo::ComponentStagePosition>().occupied;
-				if (entity.hasComponent<tempo::ComponentHealth>())
-				{
-					if (entity.getComponent<tempo::ComponentHealth>().current_health <= 0)
-					{
-						for (auto &position : positions) {
-							if (!entity.getComponent<tempo::ComponentStagePosition>().isPhased)
-							{
-								collisionMap[position] = false;
-							}
-						}
-						continue;
-					}
-				}
 	 			tempo::ComponentStageTranslation& trans = entity.getComponent<tempo::ComponentStageTranslation>();
 
 				if (origin.x < playerpos.x - 24 || origin.x > playerpos.x + 7 ||
@@ -137,7 +120,7 @@ namespace client
 				if (collisionMap.find(dest) == collisionMap.end())
 					collisionMap[dest] = false;
 				can_move &= !collisionMap[dest];
-	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5 || !can_move) {
+	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5 || stage.getHeight(dest) <= -3 || !can_move) {
 	 				// consume the moment before the server rejects you
 	 				// currently combos aren't server protected, so maybe this should move into lib-tempo?
 	 				// this produces a lovely jumping against the wall animation!
@@ -148,9 +131,6 @@ namespace client
 	 				//	combo.advanceBeat();
 	 				//}
 	 			}
-				else
-				{
-				}
 	 		}
 	 	}
 	 };
