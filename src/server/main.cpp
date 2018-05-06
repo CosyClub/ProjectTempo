@@ -132,7 +132,7 @@ int main(int argc, const char **argv)
 	// int fheight = 69 + emptySpace;
 	int feeder_areas = 1;
 
-	for (int i = 0; i < feeder_areas; i++) {
+  for (int i = 0; i < feeder_areas; i++) {
 		// Starter areas
 		{
 			std::vector<glm::ivec2> wall = {{10, 5}};
