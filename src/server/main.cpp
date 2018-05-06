@@ -157,7 +157,6 @@ int main(int argc, const char **argv)
 		}
 		
 		// Room 1
-		spawn_loc = glm::ivec2(8 + (i * fheight), 12);
 		{
 			std::vector<glm::ivec2> wall = {{7, 11}, {8, 11}, {9, 11}};
 			newButton(world, {{8, 9}}, wall, {}, spawn_loc);

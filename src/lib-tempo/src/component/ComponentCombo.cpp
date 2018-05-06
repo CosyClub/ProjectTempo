@@ -8,7 +8,7 @@ ComponentCombo::ComponentCombo()
 	comboCounter     = 0;
 }
 
-void ComponentCombo::ComboBreakAction()
+void ComponentCombo::breakAction()
 {
 	if (comboCounter == 0) return;
 	comboCounter -= std::max(comboCounter / 4, 1);
@@ -18,7 +18,7 @@ void ComponentCombo::ComboBreakAction()
 void ComponentCombo::advanceBeat()
 {
 	if (actionedThisBeat == false) {
-		ComboBreakAction();
+		breakAction();
 	}
 	actionedThisBeat = false;
 }
@@ -30,7 +30,7 @@ bool ComponentCombo::performAction()
 		comboCounter++;
 		return true;
 	} else {
-		ComboBreakAction();
+		breakAction();
 		return false;
 	}
 }
@@ -38,9 +38,14 @@ bool ComponentCombo::performAction()
 void ComponentCombo::breakCombo()
 {
 	actionedThisBeat = true;
-	ComboBreakAction();
+	breakAction();
 }
 
+void ComponentCombo::zeroCombo()
+{
+	actionedThisBeat = true;
+	comboCounter = 0;
+}
 
 /////
 // Required for networking
