@@ -1,4 +1,5 @@
 #include <client/system/SystemStageRenderer.hpp>
+#include <client/misc/Color.hpp>
 
 #include <tempo/component/ComponentStage.hpp>
 
@@ -17,6 +18,7 @@
 
 namespace client
 {
+
 inline void SystemStageRenderer::addFloorTilesToScene(irr::scene::ISceneManager *smgr,
                                                       irr::video::IVideoDriver * driver,
                                                       tempo::ComponentStage &    stage)
@@ -86,137 +88,6 @@ void SystemStageRenderer::setTileColor(glm::ivec2 pos, irr::video::SColor color)
 	tileMap[pos].color = color;
 }
 
-void SystemStageRenderer::colorStage(int                step,
-                                     glm::ivec2 playerpos,
-                                     irr::video::SColor C1,
-                                     irr::video::SColor C2)
-{
-	auto  entities = getEntities();
-
-	for (auto& it : tileMap)
-	{
-		tile_t tile = it.second;
-		glm::ivec2 pos = tile.pos;
-
-		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
-		    || pos.y > playerpos.y + 33) {
-			continue;
-		}
-
-		bool render;
-		switch (step) {
-		case 0:
-		case 1:
-		case 2:
-		case 3:
-		case 9:
-		case 10:
-		case 11:
-		case 12: render = checkerBoardPattern(pos, step); break;
-		case 4:
-		case 5:
-		case 6:
-		case 7:
-		case 8: render = linePattern(0, 5, pos, step - 4); break;
-		case 13:
-		case 14:
-		case 15:
-		case 16:
-		case 17: render = linePattern(1, 5, pos, step - 13); break;
-		case 18:
-		case 19:
-		case 20:
-		case 21: render = squarePattern(1, 12, pos, step); break;
-		}
-
-		if (render) {
-			setTileColor(pos, C1);
-			continue;
-		}
-		else{
-			setTileColor(pos, C2);
-			continue;
-		}
-	}
-}
-
-void SystemStageRenderer::AnimateTiles(float dt, glm::ivec2 playerpos)
-{
-
-	auto &entities = getEntities();
-	auto  entity   = std::begin(entities);
-	auto &stage    = entity->getComponent<tempo::ComponentStage>();
-
-	for (auto& it : tileMap)
-	{
-		tile_t tile = it.second;
-		const glm::ivec2 pos = tile.pos;
-
-		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 ||
-		    pos.y < playerpos.y - 33 || pos.y > playerpos.y + 33) {
-				continue;
-		}
-
-		if ((*stage.heightDelta).find(pos) != (*stage.heightDelta).end())
-		{
-			if ((*stage.heightDelta)[pos])
-			{
-				tileMap[pos].height_target = stage.getHeight(pos);
-				(*stage.heightDelta)[pos] = false;
-			}
-		}
-
-		if (tile.height != tile.height_target)
-		{
-			float gap = tile.height_target - tile.height;
-			float delta = 5.f * (gap / fabs(gap)) * dt / 1.5f; //1.5 seconds to collapse
-			if (fabs(delta) > fabs(gap))
-			{
-				delta = gap;
-			}
-			tileMap[pos].height += delta;
-		}
-	}
-
-}
-
-void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
-                                 irr::video::IVideoDriver * driver,
-                                 glm::ivec2                 playerpos)
-{
-	batchMesh = new irr::scene::CBatchingMesh();
-	irr::scene::ISceneNode *par = this->node->getParent();
-	par->removeChild(this->node);
-
-
-	for (auto& it : tileMap)
-	{
-		tile_t tile = it.second;
-		glm::ivec2 pos = tile.pos;
-
-		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
-		    || pos.y > playerpos.y + 33) {
-			continue;
-		}
-
-		if (tile.height >= 5) {
-			batchMesh->addMesh(walls, irr::core::vector3df(pos.x, tile.height, pos.y));
-			continue;
-		}
-
-		if (meshMap.find(tile.color) == meshMap.end())
-		{
-			initColorMesh(tile.color, smgr);
-		}
-		batchMesh->addMesh(meshMap[tile.color], irr::core::vector3df(pos.x, tile.height, pos.y));
-	}
-
-	batchMesh->update();
-	batchMesh->finalize();
-	this->node = smgr->addMeshSceneNode(batchMesh, 0);
-	batchMesh->drop();
-}
-
 void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
                                  irr::video::IVideoDriver * driver,
                                  glm::ivec2                 playerpos,
@@ -234,12 +105,13 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 	auto &stage    = entity->getComponent<tempo::ComponentStage>();
 
 
-	for (auto& it : tileMap)
-	{
+	for (auto& it : tileMap) {
 		tile_t tile = it.second;
 		glm::ivec2 pos = tile.pos;
 
-		if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 || pos.y < playerpos.y - 33
+		if (pos.x < playerpos.x - 24 
+		    || pos.x > playerpos.x + 7 
+		    || pos.y < playerpos.y - 33
 		    || pos.y > playerpos.y + 33) {
 			continue;
 		}
@@ -269,39 +141,25 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 			continue;
 		}
 
+		int64_t local_step = step % client::palettes.size();
 		bool render;
-		switch (step) {
-		case 0:
-		case 1:
-		case 2:
-		case 3:
-		case 9:
-		case 10:
-		case 11:
-		case 12: render = checkerBoardPattern(pos, step); break;
-		case 4:
-		case 5:
-		case 6:
-		case 7:
-		case 8: render = linePattern(0, 5, pos, step - 4); break;
-		case 13:
-		case 14:
-		case 15:
-		case 16:
-		case 17: render = linePattern(1, 5, pos, step - 13); break;
-		case 18:
-		case 19:
-		case 20:
-		case 21: render = squarePattern(1, 12, pos, step); break;
+
+		if (local_step <=  3) {
+			render = checkerBoardPattern(pos, local_step);
+		} else if (local_step <=  8) {
+			render = linePattern(0, 5, pos, local_step - 4);
+		} else if (local_step <= 12) {
+			render = checkerBoardPattern(pos, local_step);
+		} else if (local_step <= 17) {
+			render = linePattern(1, 5, pos, local_step - 13);
+		} else {
+			render = squarePattern(1, 12, pos, local_step);
 		}
 
 		if (render) {
 			setTileColor(pos, C1);
-			//continue;
-		}
-		else{
+		} else {
 			setTileColor(pos, C2);
-			//continue;
 		}
 
 		if (meshMap.find(tile.color) == meshMap.end())
