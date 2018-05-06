@@ -24,7 +24,6 @@ struct ComponentStagePosition
 	ComponentStagePosition(glm::ivec2 bottom_left, glm::ivec2 top_right);
 	// Generate an entity that only occupies a single square.
 	ComponentStagePosition(glm::ivec2 position);
-	ComponentStagePosition(glm::ivec2 position, bool phased);
 
 	// DO NOT CALL: Moves the occupied position by a delta
 	void movePosition(glm::ivec2 delta);
@@ -36,8 +35,6 @@ struct ComponentStagePosition
 	std::vector<glm::ivec2> getOccupied();
 	// Returns the origin of the entity.
 	glm::ivec2 getOrigin();
-
-	bool isPhased;
 
 	/////
 	// Required for inital network sync
