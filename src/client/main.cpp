@@ -423,8 +423,7 @@ int main(int argc, const char** argv)
 	
 	printf("Entering main loop\n");
 	while (device->run()) {
-
-
+		
 		// Work out a frame delta time.
 		// const irr::u32 now = device->getTimer()->getTime();
 		dt = frame_clock.restart().asSeconds();
@@ -435,8 +434,6 @@ int main(int argc, const char** argv)
 		////////////////
 		// Events all the time
 		{
-			playerpos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-
 			// Check for new entities from server
 			system_entity.creationCheck(world);
 			system_entity.deletionCheck(world);
@@ -453,6 +450,7 @@ int main(int argc, const char** argv)
 			system_attack.processServerResponses(world);
 			system_combo.checkForUpdates(world);
 			system_attack.processServerResponses(world);
+			playerpos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
 			// Deal with local input
 			system_update_key_input.clear();
@@ -511,11 +509,7 @@ int main(int argc, const char** argv)
 
 			client::next_palette(synced_tick % client::palettes.size());
 			system_lighting.update(client::curr_pallette.light);
-		}
-
-		playerpos =
-		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-
+		}\
 
 		////////////////
 		// Events at "Delta End"

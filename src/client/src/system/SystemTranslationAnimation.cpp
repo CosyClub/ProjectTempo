@@ -158,6 +158,12 @@ void SystemTranslationAnimation::endBeat()
 		// removeAnimators not used in case other animations added
 		node.node->removeAnimator(it->second.first);
 		node.billboard->removeAnimator(it->second.second);
+		
+		client::ComponentRenderSceneNode& sn = entity.getComponent<client::ComponentRenderSceneNode>();
+		tempo::ComponentStagePosition& sp = entity.getComponent<tempo::ComponentStagePosition>();
+		tempo::ComponentStage& s = entity.getComponent<tempo::ComponentStage>();
+		glm::ivec2 pos = sp.getOrigin();
+		sn.node->setPosition(irr::core::vector3df(pos.x, s.getHeight(pos), pos.y));
 	}
 	animators.clear();
 }
