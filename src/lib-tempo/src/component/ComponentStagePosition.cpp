@@ -74,6 +74,7 @@ ComponentStagePosition::ComponentStagePosition(sf::Packet p)
 		p >> x >> y;
 		occupied.push_back(glm::ivec2(x, y));
 	}
+	p >> isPhased;
 }
 
 sf::Packet ComponentStagePosition::dumpComponent()
@@ -85,6 +86,7 @@ sf::Packet ComponentStagePosition::dumpComponent()
 	for (unsigned int i = 0; i < size; i++) {
 		p << occupied[i].x << occupied[i].y;
 	}
+	p << isPhased;
 
 	return p;
 }
