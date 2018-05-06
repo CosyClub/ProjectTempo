@@ -14,7 +14,7 @@
 #include <IVideoDriver.h>
 #include <IrrlichtDevice.h>
 
-#include <map>
+#include <unordered_map>
 #include <utility>
 
 namespace tempo
@@ -34,9 +34,7 @@ class SystemTranslationAnimation
 	anax::World* world;
 	irr::IrrlichtDevice* device;
 	tempo::Clock& clock;
-	std::map<anax::Entity::Id::int_type,
-	         std::pair<irr::scene::ISceneNodeAnimator*, irr::scene::ISceneNodeAnimator*>>
-	  animators;
+	std::unordered_map<anax::Entity::Id::int_type, bool> animators;
 
    public:
 	SystemTranslationAnimation(anax::World* world,
