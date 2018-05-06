@@ -161,7 +161,6 @@ void the_end(uint32_t             code,
              std::thread         &listener,
              irr::IrrlichtDevice *device)
 {
-	std::cout << message << std::endl;
 	running.store(false);
 
 	// Close server listener and destroy the game
@@ -169,6 +168,7 @@ void the_end(uint32_t             code,
 	world.clear();
 	device->drop();
 
+	std::cout << message << std::endl;
 	exit(code);
 }
 
@@ -490,8 +490,6 @@ int main(int argc, const char** argv)
 		glm::vec4 c1;
 		glm::vec4 c2;
 		if (clock.passed_beat()) {
-			// click.play();
-			
 			// For christ sake, leave this code alone
 			synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 			if (synced_tick++ % 20 == 0)
@@ -499,6 +497,8 @@ int main(int argc, const char** argv)
 				          << clock.get_time().asMilliseconds()
 				          << "+++++++++++++++" << std::endl;
 			// End of leave this code alone
+			
+			// click.play();
 
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
@@ -515,7 +515,6 @@ int main(int argc, const char** argv)
 		////////////////
 		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
-			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 		}
 
@@ -544,6 +543,8 @@ int main(int argc, const char** argv)
 
 	}  // main loop
 	
+	click.~Sound();
+	clickbuf.~SoundBuffer();
 	tempo::disconnectFromServer(entity_player);
-	the_end(0, "Goodbye!.", world, running, listener, device);
+	the_end(0, "Goodbye!\r\n", world, running, listener, device);
 }
