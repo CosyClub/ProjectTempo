@@ -7,10 +7,8 @@
 
 namespace tempo
 {
-struct ComponentPlayerLocal
-    : anax::Component
-    , NetworkedComponent {
-	// Anthony it's broken because you removed all the fucking constructors
+struct ComponentPlayerLocal : anax::Component, NetworkedComponent {
+	
 	ComponentPlayerLocal();
 
 	/////
