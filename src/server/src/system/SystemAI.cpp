@@ -17,7 +17,7 @@ bool ai_attack(anax::Entity entity, server::SystemAttack s_attack)
 		tempo::ComponentStageTranslation &st = entity.getComponent<tempo::ComponentStageTranslation>();
 
 		//if we're already attacking then just keep going
-		if (a.beats_until_attack > -1) return false;
+		if (a.beats_until_attack > -1) return true;
 
 		glm::ivec2 direction;
 		if (s_attack.bestAttack(entity, direction))
@@ -192,17 +192,14 @@ glm::ivec2 Astar_pathfind(glm::ivec2 pos, glm::ivec2 tgt, tempo::ComponentStage 
 	{
 		if (open.size() == 0) return pos;
 		node S = pop_min(open);
-		std::cout << "Exploring " << S.pos.x << " " << S.pos.y << std::endl; 
 		closed.push_back(S);
 
 		std::vector<glm::ivec2> moves = gen_moves(S.pos, s);
-		std::cout << open.size() << std::endl;
 		for (glm::ivec2 T : moves)
 		{
 			node N(T, S.G + 1, tgt, S.pos);
 			if (T == tgt)
 			{
-				std::cout << "FOUND SOLUTION AT " << T.x << " " << T.y << std::endl;
 				done = true;
 				closed.push_back(N);
 			}
@@ -218,8 +215,6 @@ glm::ivec2 Astar_pathfind(glm::ivec2 pos, glm::ivec2 tgt, tempo::ComponentStage 
 		N = getParent(closed, c_pos);
 		c_pos = N.parent;
 	}
-
-	std::cout << "Chosing move to " << N.pos.x << " " << N.pos.x << std::endl;
 
 	return N.pos;
 }
@@ -318,7 +313,6 @@ void SystemAI::update(anax::World& world, server::SystemAttack s_attack)
 
 				if(nearest == glm::ivec2(0, 0) || dist > 10)
 				{
-					std::cout  << "Skipping" << std::endl;
 					st.delta = glm::ivec2(0, 0);
 				}
 				else if(nearest == sp.getOrigin())
