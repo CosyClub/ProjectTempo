@@ -63,7 +63,7 @@ void ComponentStage::loadLevel(const char *stage_file)
 			uint8_t *pixel = &pixel_data[base + x * 4];
 
 			if (pixel[0] > 0) {
-				int height = (int) (pixel[0] - 127) / 25.6;
+				float height = (pixel[0] - 127) / 25.6;
 					_global_stage.emplace(glm::ivec2(y, x),
 					                      (stage_tile(glm::ivec2(y, x), (float) height)));
 			}
@@ -74,7 +74,7 @@ void ComponentStage::loadLevel(const char *stage_file)
 				uint8_t *modPixel = &pixel_data[modBase + x * 4];
 
 				if (modPixel[0] > 0) {
-					int modHeight = (int) (modPixel[0] - 127) / 25.6;
+					float modHeight =  (modPixel[0] - 127) / 25.6;
 					_global_stage.emplace(glm::ivec2(y, x),
 					                      (stage_tile(glm::ivec2(y, x), (float) modHeight)));
 				}

@@ -1,6 +1,7 @@
 #include <tempo/system/SystemHealth.hpp>
 
-#include <tempo/component/ComponentStagePosition.hpp>  //Just temporary
+#include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentParty.hpp>
 #include <tempo/component/ComponentRespawn.hpp>
@@ -28,6 +29,23 @@ void SystemHealth::check_health()
 				if (entity.hasComponent<ComponentStagePosition>()) {
 					entity.getComponent<ComponentStagePosition>().setPosition(spawn_loc);
 					h.current_health = h.max_health;
+		
+					// Send update to everyone
+					auto &positions = entity.getComponent<tempo::ComponentStagePosition>().occupied;
+					sf::Packet p;
+					p << entity.getId();
+					p << static_cast<uint32_t>(positions.size());
+					for (auto &position : positions) {
+						p << position.x << position.y;
+					}
+
+					// Add facing direction
+					if (entity.hasComponent<tempo::ComponentStageRotation>()) {
+						p << entity.getComponent<tempo::ComponentStageRotation>().facing.x;
+						p << entity.getComponent<tempo::ComponentStageRotation>().facing.y;
+					}
+					
+					tempo::broadcastMessage(tempo::QueueID::MOVEMENT_UPDATES, p);
 				}
 			}
 			else
