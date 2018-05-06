@@ -57,7 +57,7 @@
 #include <iostream>
 #include <thread>
 
-#define BPM 138              // Beats per minutes
+#define BPM 60              // Beats per minutes
 #define DELTA 100            // Delta around a beat a player can hit (millisecs)
 #define TIME 60000000 / BPM  // Time between beats (microsecs)
 
@@ -212,7 +212,6 @@ int main(int argc, const char** argv)
 	// irr::IrrlichtDevice *device = irr::createDevice(
 	//   irr::video::EDT_OPENGL, deskres, 16, true, false, false);
 
-
 	bool enable_hud = false;
 	if (argc == 4) {
 		std::string HUD = argv[3];
@@ -251,8 +250,7 @@ int main(int argc, const char** argv)
 	/////////////////////////////////////////////////
 	// Setup ECS
 	anax::World world;
-	// tempo::SystemRender           system_render(app);
-
+	
 	tempo::SystemHealth            system_health;
 	tempo::SystemTrigger           system_trigger(world);
 	client::SystemAttack           system_attack;
@@ -416,26 +414,14 @@ int main(int argc, const char** argv)
 		client::createDiscoBalls(smgr, driver, { {40 + (i*fheight),6} }, startingPos);
 	}
 
-
 	/////////////////////////////////////////////////
 	// Main loop
 	int frame_counter = 0;
-	sf::Clock fps_timer;
-
-	int j = 0;
-	int colour_index;
-
-	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	sf::Clock fps_timer;	
 	sf::Clock frame_clock = sf::Clock();
 	sf::Clock update_floor_clock = sf::Clock();
 	update_floor_clock.restart();
 
-	client::init_palettes();
-	irr::video::SColor colour;
-	irr::video::SColor colour_red(255, 255, 0, 0);
-	irr::video::SColor colour_purple(255, 255, 0, 255);
-	irr::video::SColor colour_grey(255, 50, 50, 50);
-	irr::video::SColor random_colour;
 	srand(clock.get_time().asMicroseconds());
 
 	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
@@ -445,14 +431,16 @@ int main(int argc, const char** argv)
 		-1,
 		irr::core::vector3df(7, 7, 0),
 		irr::core::vector3df(0, 0, 0));
-	//irr::core::matrix4 cpm = camera_node->getProjectionMatrix();
-
-	//camera_node->setFOV(1.0f);
 
 	smgr->setActiveCamera(camera_node);
 	float dt;
-
-
+	
+	sf::Int64 t = clock.get_time().asMicroseconds();
+	std::cout << "\n\n\n\n\n\n" << t << "\n\n\n\n\n\n\n";
+	sf::Int64 synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	std::cout << "\n\n\n\n\n\n" << synced_tick << "\n\n\n\n\n\n\n";
+	client::next_palette(synced_tick % client::palettes.size());
+	
 	printf("Entering main loop\n");
 	while (device->run()) {
 
@@ -467,8 +455,7 @@ int main(int argc, const char** argv)
 		////////////////
 		// Events all the time
 		{
-			playerpos =
-				entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
+			playerpos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
 			// Check for new entities from server
 			system_entity.creationCheck(world);
@@ -478,7 +465,6 @@ int main(int argc, const char** argv)
 			system_gc.addEntities(driver, smgr, world);
 			system_render_scene_node.setup(smgr, driver);
 			system_render_health_bars.setup(smgr);
-			system_render_attack.update(system_stage_renderer);
 			system_button_renderer.setup(smgr, driver);
 
 			// Receive updates from the server
@@ -502,6 +488,8 @@ int main(int argc, const char** argv)
 			system_translation_animation.updateAnimations();
 
 			// Graphics updates
+			system_render_attack.update(system_stage_renderer, 
+			                            client::curr_pallette.attack);
 			system_render_scene_node.update(playerpos);
 			system_render_health_bars.update(playerpos);
 			system_render_healing.update();
@@ -524,12 +512,15 @@ int main(int argc, const char** argv)
 		glm::vec4 c2;
 		if (clock.passed_beat()) {
 			// click.play();
-			if (tick++ % 20 == 0)
-				std::cout << "TICK (" << tick << ") " << clock.get_time().asMilliseconds()
+			
+			// For christ sake, leave this code alone
+			synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+			if (synced_tick++ % 20 == 0)
+				std::cout << "SYNCED_TICK (" << synced_tick << ") " 
+				          << clock.get_time().asMilliseconds()
 				          << "+++++++++++++++" << std::endl;
+			// End of leave this code alone
 
-			j++;
-			j = j % 22;
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
 
@@ -538,15 +529,8 @@ int main(int argc, const char** argv)
 
 			system_translation_animation.endBeat();
 
-			colour_index = rand() % 10;
-			random_colour = client::randomHSV(colour_index);
-
-			system_lighting.update(random_colour);
-			// sf::Int64 tick2 = update_floor_clock.getElapsedTime().asMilliseconds();
-			// std::cout << "Time to update floor: " << (int)(tick2-tick1)<<"ms"
-			// << std::endl;
-			// system_lighting.update();
-
+			client::next_palette(synced_tick % client::palettes.size());
+			system_lighting.update(client::curr_pallette.light);
 		}
 
 		playerpos =
@@ -560,7 +544,10 @@ int main(int argc, const char** argv)
 			system_combo.advanceBeat();
 		}
 
-		system_stage_renderer.Update(smgr, driver, playerpos, random_colour, colour_grey, j, dt);
+		system_stage_renderer.Update(smgr, driver, playerpos,
+		                             client::curr_pallette.floor1,
+		                             client::curr_pallette.floor2, 
+		                             synced_tick, dt);
 
 		driver->beginScene(true, true);
 		smgr->drawAll();
@@ -568,14 +555,14 @@ int main(int argc, const char** argv)
 
 		system_render_gui.update(driver, gui_env, clock, combo,
 		                         comp_health, comp_player_input,
-		                         colour_index, enable_hud
-		                        );
+		                         synced_tick % client::palettes.size(),
+		                         enable_hud);
 		driver->endScene();
 
 		++frame_counter;
 		if (fps_timer.getElapsedTime().asSeconds() > 1.0f) {
-			float seconds = fps_timer.getElapsedTime().asSeconds();
-			std::cout << "FPS: " << (int)(frame_counter / seconds) << std::endl;
+			// float seconds = fps_timer.getElapsedTime().asSeconds();
+			// std::cout << "FPS: " << (int)(frame_counter / seconds) << std::endl;
 			fps_timer.restart();
 			frame_counter = 0;
 		}
