@@ -96,12 +96,16 @@ std::vector<glm::ivec2> gen_moves(glm::ivec2 pos, tempo::ComponentStage &s)
 	std::vector<glm::ivec2> moves;
 	for (int I = -1; I < 2; I+=2)
 	{
-		for (int J = -1; J < 2; J+=2)
-		{
-			glm::ivec2 delta(I, J);
-			glm::ivec2 move = pos + delta;
-			if (s.isNavigable(move)) moves.push_back(move);
-		}
+		glm::ivec2 delta(I, 0);
+		glm::ivec2 move = pos + delta;
+		if (s.isNavigable(move)) moves.push_back(move);
+	}
+
+	for (int I = -1; I < 2; I+=2)
+	{
+		glm::ivec2 delta(0, I);
+		glm::ivec2 move = pos + delta;
+		if (s.isNavigable(move)) moves.push_back(move);
 	}
 
 	return moves;
@@ -316,7 +320,9 @@ void SystemAI::update(anax::World& world, server::SystemAttack s_attack)
 					st.delta = glm::ivec2(0, 0);
 				}
 				else if(nearest == sp.getOrigin())
-					break;
+				{
+					st.delta = glm::ivec2(0, 0);
+				}
 				else
 				{
 					glm::ivec2 newpos = Astar_pathfind(sp.getOrigin(), nearest, cs);

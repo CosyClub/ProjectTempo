@@ -21,7 +21,6 @@ void SystemRenderAttack::update(SystemStageRenderer& sr)
 		auto& rot   = entity.getComponent<tempo::ComponentStageRotation>();
 
 		auto targets = attack.getAbsolutePositions(pos.getOrigin(), rot.facing);
-		
 
 		for (auto& target : targets)
 		{
