@@ -122,10 +122,12 @@ void SystemRenderSceneNode::update(const glm::ivec2 playerpos)
 
 		sr.previousFacing = sr.facing;
 		sn.node->setPosition(irr::core::vector3df(pos.x, s.getHeight(pos), pos.y));
-		//if (entity.hasComponent<tempo::ComponentPlayerLocal>()) {
-		//	printf("SRSN %d %d - %d %d - ", pos.x, pos.y, playerpos.x, playerpos.y);
-		//	printf("%f %f %f\n", sn.node->getPosition().X, sn.node->getPosition().Y, sn.node->getPosition().Z);
-		//}
+
+		// // DEBUG Printing for player location/node location
+		// if (entity.hasComponent<tempo::ComponentPlayerLocal>()) {
+		// 	printf("SRSN %d %d - %d %d - ", pos.x, pos.y, playerpos.x, playerpos.y);
+		// 	printf("%f %f %f\n", sn.node->getPosition().X, sn.node->getPosition().Y, sn.node->getPosition().Z);
+		// }
 	}
 }
 
