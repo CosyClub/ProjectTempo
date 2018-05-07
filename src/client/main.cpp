@@ -501,6 +501,7 @@ int main(int argc, const char** argv)
 		glm::vec4 c1;
 		glm::vec4 c2;
 		if (clock.passed_beat()) {
+
 			// For christ sake, leave this code alone
 			synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 			if (synced_tick++ % 20 == 0)
@@ -520,8 +521,9 @@ int main(int argc, const char** argv)
 			system_translation_animation.endBeat();
 
 			client::next_palette(synced_tick % client::palettes.size());
+
 			system_lighting.update(client::curr_pallette.light);
-		}\
+		}
 
 		////////////////
 		// Events at "Delta End"
@@ -531,7 +533,8 @@ int main(int argc, const char** argv)
 
 		system_stage_renderer.Update(smgr, driver, playerpos,
 		                             client::curr_pallette.floor1,
-		                             client::curr_pallette.floor2,
+		                             combo < 20 ? irr::video::SColor(255, 50, 50, 50)
+		                                        : client::curr_pallette.floor2,
 		                             synced_tick, dt);
 
 		driver->beginScene(true, true);
@@ -556,6 +559,7 @@ int main(int argc, const char** argv)
 
 	click.~Sound();
 	clickbuf.~SoundBuffer();
+
 	tempo::disconnectFromServer(entity_player);
 	the_end(0, "Goodbye!\r\n", world, running, listener, device);
 }
