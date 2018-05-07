@@ -33,11 +33,11 @@
 #define TIME 60000000.f / BPM  // Time between beats (microsecs)
 
 void RythmButton(anax::World &          world,
-				std::vector<std::vector<glm::ivec2>>  positions,
-				std::vector<glm::ivec2>               tiles,
-				std::vector<glm::ivec2>               spikes,
-				glm::ivec2                            respawn_pos,
-				int                                  &ID) {
+                 std::vector<std::vector<glm::ivec2>>  positions,
+                 std::vector<glm::ivec2>               tiles,
+                 std::vector<glm::ivec2>               spikes,
+                 glm::ivec2                            respawn_pos,
+                 int                                  &ID) {
 
 	for (uint32_t i = 0; i < positions.size(); i++) {
 
@@ -88,7 +88,8 @@ void newButton(anax::World &    world,
 
 int main(int argc, const char **argv)
 {
-	tempo::Song mainsong("resources/sound/ravecave_loop_clicktrack.ogg");
+	tempo::Song mainsong("resources/sound/rave-cave-boss-1.ogg");
+	// tempo::Song mainsong("resources/sound/rave-cave-level-1.ogg");
 	mainsong.set_volume(0.f);
 	mainsong.skip(sf::microseconds(PHASE));
 	mainsong.set_volume(20.f);
