@@ -46,7 +46,7 @@ bool ai_attack(anax::Entity entity, server::SystemAttack s_attack)
 			
 			tempo::Queue<sf::Packet> *q = get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
 			q->push(p);
-			return false;
+			return true;
 		}
 	}
 	return false;
@@ -223,7 +223,7 @@ glm::ivec2 Astar_pathfind(glm::ivec2 pos, glm::ivec2 tgt, tempo::ComponentStage 
 	return N.pos;
 }
 
-void SystemAI::update(anax::World& world, server::SystemAttack s_attack)
+void SystemAI::update(anax::World& world, tempo::SystemPlayer s_player, server::SystemAttack s_attack)
 {
 	auto entities = getEntities();
 
@@ -241,7 +241,17 @@ void SystemAI::update(anax::World& world, server::SystemAttack s_attack)
 			if (ch.current_health <= 0) continue;
 		}
 
-		if (ai_attack(entity, s_attack)) continue;
+		anax::Entity nearest_player = s_player.nearest_player(sp.getOrigin());
+		if (!nearest_player.isValid()) return;
+		glm::ivec2 nearest = nearest_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
+		float dist = length(glm::vec2(sp.getOrigin() - nearest));
+
+		if (dist > 33) continue;
+
+		if (dist < 4)
+		{
+			if (ai_attack(entity, s_attack)) continue;
+		}
 
 		switch(ai.type)
 		{
@@ -298,24 +308,8 @@ void SystemAI::update(anax::World& world, server::SystemAttack s_attack)
 			}
 			case tempo::MoveType::MOVE_AGGRO:
 			{
-				float dist = 999999;
-				glm::ivec2 nearest(0, 0);
-				for (auto& en : world.getEntities())
-				{
-					if (en.hasComponent<tempo::ComponentPlayerRemote>())
-					{
-						glm::ivec2 pos = en.getComponent<tempo::ComponentStagePosition>().getOrigin();
-						glm::ivec2 ai = sp.getOrigin();
-						int len = length(glm::vec2(pos - ai));
-						if (len < dist)
-						{
-							dist = len;
-							nearest = pos;
-						}
-					}
-				}
 
-				if(nearest == glm::ivec2(0, 0) || dist > 10)
+				if(nearest == glm::ivec2(0, 0) || dist > 10 || dist <= 1)
 				{
 					st.delta = glm::ivec2(0, 0);
 				}

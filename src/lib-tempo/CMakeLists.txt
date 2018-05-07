@@ -17,6 +17,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentPickup.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentPlayerLocal.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentPlayerRemote.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentRespawn.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentSpikes.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentStage.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/component/ComponentStagePosition.hpp"
@@ -34,6 +35,7 @@ set(TEMPO_LIB_TEMPO_HEADERS
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/ID.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/network/server.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemHealth.hpp"
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemPlayer.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/system/SystemTrigger.hpp"
 )
 
@@ -54,6 +56,7 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentPickup.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentPlayerLocal.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentPlayerRemote.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentRespawn.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentSpikes.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentStage.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/component/ComponentStagePosition.cpp"
@@ -70,6 +73,7 @@ set(TEMPO_LIB_TEMPO_SOURCE
 	"${CMAKE_CURRENT_LIST_DIR}/src/network/ID.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/network/server.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemHealth.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemPlayer.cpp"
 	"${CMAKE_CURRENT_LIST_DIR}/src/system/SystemTrigger.cpp"
 )
 

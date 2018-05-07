@@ -10,6 +10,7 @@
 #include <tempo/component/ComponentParty.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
+#include <tempo/component/ComponentRespawn.hpp>
 #include <tempo/component/ComponentSpikes.hpp>
 #include <tempo/component/ComponentStage.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
@@ -28,14 +29,14 @@
 
 #include <cassert>
 
-#define CASE(NAME, CID)                                                                            \
-	case ComponentID::CID:                                                                         \
-		if (!e.hasComponent<NAME>()) {                                                             \
-			e.addComponent<NAME>(part);                                                            \
-		} else {                                                                                   \
-			std::cout << "Warning: Reinstanciation of "                                            \
-			          << "" #NAME << std::endl;                                                    \
-		}                                                                                          \
+#define CASE(NAME, CID)                                             \
+	case ComponentID::CID:                                      \
+		if (!e.hasComponent<NAME>()) {                      \
+			e.addComponent<NAME>(part);                 \
+		} else {                                            \
+			std::cout << "Warning: Reinstanciation of " \
+			          << "" #NAME << std::endl;         \
+		}                                                   \
 		break;
 
 namespace tempo
@@ -84,6 +85,7 @@ anax::Entity addComponent(anax::World &w, sf::Packet p)
 			CASE(ComponentParty, PARTY)
 			CASE(ComponentPlayerLocal, PLAYER_LOCAL)
 			CASE(ComponentPlayerRemote, PLAYER_REMOTE)
+			CASE(ComponentRespawn, RESPAWN)
 			CASE(ComponentSpikes, SPIKES)
 			CASE(ComponentStage, STAGE)
 			CASE(ComponentStagePosition, STAGE_POSITION)
