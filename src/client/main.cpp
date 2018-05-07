@@ -417,10 +417,7 @@ int main(int argc, const char** argv)
 	smgr->setActiveCamera(camera_node);
 	float dt;
 	
-	sf::Int64 t = clock.get_time().asMicroseconds();
-	std::cout << "\n\n\n\n\n\n" << t << "\n\n\n\n\n\n\n";
 	sf::Int64 synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
-	std::cout << "\n\n\n\n\n\n" << synced_tick << "\n\n\n\n\n\n\n";
 	client::next_palette(synced_tick % client::palettes.size());
 	
 	printf("Entering main loop\n");
@@ -493,7 +490,7 @@ int main(int argc, const char** argv)
 		if (clock.passed_beat()) {
 			// For christ sake, leave this code alone
 			synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
-			if (synced_tick++ % 20 == 0)
+			if (synced_tick % 20 == 0)
 				std::cout << "SYNCED_TICK (" << synced_tick << ") " 
 				          << clock.get_time().asMilliseconds()
 				          << "+++++++++++++++" << std::endl;
@@ -509,9 +506,9 @@ int main(int argc, const char** argv)
 
 			system_translation_animation.endBeat();
 
-			client::next_palette(synced_tick % client::palettes.size());
+			client::next_palette((synced_tick * 7) % client::palettes.size());
 			system_lighting.update(client::curr_pallette.light);
-		}\
+		}
 
 		////////////////
 		// Events at "Delta End"
