@@ -255,46 +255,79 @@ void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
 	if(indicator_left  < combo_width_left ){ indicator_left  = combo_width_left;  }
 	if(indicator_right > combo_width_right){ indicator_right = combo_width_right; }
 
-	driver->draw2DRectangle(irr::video::SColor(150, 00, 255, 0),
+	bool last_key_was_this_beat = false;
+	float key_at = 0;
+	if(comp_input.actions.size() > 0){
+		if(comp_input.actions.back().delta < 0){
+			// Then the key was pressed before start of this beat
+			last_key_was_this_beat = (clock.get_beat_number() + 1 ==
+			                          comp_input.actions.back().beat
+			                         );
+		} else {
+			// then key was pressed after start of this beat
+			last_key_was_this_beat = (clock.get_beat_number() ==
+			                          comp_input.actions.back().beat
+			                         );
+		}
+
+		key_at = ((comp_input.actions.back().delta + (beat_size / 2.0f)) /
+		          beat_size
+		         );
+	}
+
+	////////////////////////////////////////////////////////
+	// Highlight the window keys can be pressed in
+	driver->draw2DRectangle(irr::video::SColor(150, 0, 255, 0),
 	                        irr::core::rect<irr::s32>(window_left,  combo_height_top,
 	                                                  window_right, combo_height_bottom));
 
 
+	////////////////////////////////////////////////////////
+	// Bars at the side of the screen
 	irr::video::SColor colour_combo_bar = irr::video::SColor(255, 50, 50, 50);
 
-	if(comp_input.actions.size() > 0 &&
-	   comp_input.actions.back().beat == clock.get_beat_number() &&
-	   comp_input.actions.back().outside_window){
-	  colour_combo_bar = irr::video::SColor(255, 255, 0, 0);
-		driver->draw2DRectangle(colour_combo_bar,
-		                        irr::core::rect<irr::s32>(combo_width_left,  combo_height_top,
-		                        window_left, combo_height_bottom));
-		                        driver->draw2DRectangle(colour_combo_bar,
-		                        irr::core::rect<irr::s32>(window_right,  combo_height_top,
-		                        combo_width_right, combo_height_bottom));
+	// If last key press was on this beat then flash the bar
+	if(last_key_was_this_beat){
+		if(comp_input.actions.back().outside_window){
+			colour_combo_bar = irr::video::SColor(255, 255,   0,   0);
+		} else  {
+			printf("key was at: %f, IE: %f, progress is: %f\n",
+			       comp_input.actions.back().delta,
+			       key_at,
+			       clock.beat_progress());
+
+			if(comp_input.actions.back().delta < 0){
+				colour_combo_bar = irr::video::SColor(255, 204, 223, 255);
+			} else if (clock.beat_progress() < 0.5f){
+				// Then key press was after beat, only flash for a short while
+				colour_combo_bar = irr::video::SColor(255, 204, 223, 255);
+			}
+
+		}
 	}
+	driver->draw2DRectangle(colour_combo_bar,
+	                        irr::core::rect<irr::s32>(combo_width_left,  combo_height_top,
+	                                                  window_left, combo_height_bottom));
 
-	if(comp_input.actions.size() > 0 &&
-	   comp_input.actions.back().beat >= clock.get_beat_number() - 1){
+	driver->draw2DRectangle(colour_combo_bar,
+	                        irr::core::rect<irr::s32>(window_right,  combo_height_top,
+	                                                  combo_width_right, combo_height_bottom));
 
+	////////////////////////////////////////////////////////
+	// Last key press indicator
+	if(last_key_was_this_beat){
 		int last_indicator_center = (combo_width_left +
-		                             (int)(
-		                                   ((comp_input.actions.back().delta + (beat_size / 2.0f)) /
-		                                    beat_size
-		                                   ) * combo_width
-		                                   )
-		                             );
+		                             (int)(key_at * combo_width)
+		                            );
 
-		//	if(comp_input.actions.size > 1)
-
-		driver->draw2DRectangle(irr::video::SColor(255, 50, 50, 50),
+		driver->draw2DRectangle(irr::video::SColor(255, 20, 20, 20),
 	                        irr::core::rect<irr::s32>(last_indicator_center-7, combo_height_center-12,
 	                                                  last_indicator_center+7, combo_height_center+12));
-
-
 	}
 
-	driver->draw2DRectangle(irr::video::SColor(255, 50, 50, 50),
+	////////////////////////////////////////////////////////
+	// Beat progress indicator
+	driver->draw2DRectangle(irr::video::SColor(255, 20, 20, 20),
 	                        irr::core::rect<irr::s32>(indicator_left, combo_height_top,
 	                                                  indicator_right, combo_height_bottom));
 

@@ -41,12 +41,12 @@ void SystemHeartbeat::checkForHeatbeats(anax::World &world)
 
 	}
 
-	// Check for anyone who hasn't sent a message in 10 beats
+	// Check for anyone who hasn't sent a message in 100 beats, printing to console in windows is pretty slow
 	tempo::Queue<sf::Packet> *dcq = tempo::get_system_queue(tempo::QueueID::ENTITY_DELETION);
 	bool killed = false;
 	tempo::cmtx.lock();
 	for (tempo::clientpair element : tempo::clients) {
-		if (element.second.heartbeat > 10) {
+		if (element.second.heartbeat > 100) {
 			sf::Packet dp;
 			dp << element.second.id << element.second.ip << element.second.iport << false;
 			dcq->push(dp);
