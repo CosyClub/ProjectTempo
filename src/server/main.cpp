@@ -86,20 +86,29 @@ void newButton(anax::World &    world,
 // ./RaveCave_Server DELTA BPM SONG
 int main(int argc, const char **argv)
 {
+	std::string song = "resources / sound / ravecave_loop_clicktrack.ogg";
 
+	if (argc >= 4) {
+		song = argv[3];
+	}
 
-	tempo::Song mainsong("resources/sound/ravecave_loop_clicktrack.ogg");
+	tempo::Song mainsong(song);
 	mainsong.set_volume(0.f);
 	mainsong.skip(sf::microseconds(PHASE));
 	mainsong.set_volume(20.f);
 
-	int delta = DELTA;
+	unsigned int delta = DELTA;
+	unsigned int bpm = BPM;
+
 	if (argc >= 2) {
-		delta = atoi(argv[2]);
+		delta = atoi(argv[1]);
+	}
+	if (argc >= 3) {
+		bpm = atoi(argv[2]);
 	}
 
 	// Clock
-	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME(BPM)), sf::milliseconds(delta));
+	tempo::Clock clock = tempo::Clock(sf::microseconds(sf::Int64(TIME(bpm))), sf::milliseconds(delta));
 	mainsong.start();
 
 
@@ -312,7 +321,7 @@ int main(int argc, const char **argv)
 	          << sf::IpAddress::getLocalAddress().toString() << ":"
 	          << tempo::port_si << std::endl;
 
-	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME(bpm));
 	tick++;
 	sf::Int64 tick_time_s = clock.get_time().asMicroseconds();
 	sf::Int64 tick_time_e = 0;

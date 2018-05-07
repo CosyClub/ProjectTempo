@@ -169,21 +169,23 @@ void the_end(uint32_t             code,
 	exit(code);
 }
 
-// ./RaveCave [ServerIP] [PlayerParty] HUD DELTA BPM SONG
+// ./RaveCave [ServerIP] [PlayerParty] HUD DELTA BPM
 int main(int argc, const char** argv)
 {
-	sf::SoundBuffer clickbuf;
-	clickbuf.loadFromFile("resources/sound/tick.ogg");
-	sf::Sound click;
-	click.setBuffer(clickbuf);
-
-	int delta = DELTA;
+	unsigned int delta = DELTA;
+	unsigned int bpm = BPM;
+	
 	if (argc >= 5) {
-		delta = atoi(argv[2]);
+		delta = atoi(argv[4]);
+	}
+	if (argc >= 6) {
+		bpm = atoi(argv[5]);
 	}
 
 	// Clock
-	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME(BPM)), sf::milliseconds(delta));
+	tempo::Clock clock = tempo::Clock(
+		sf::microseconds(sf::Int64(TIME(bpm))),
+		sf::milliseconds(delta));
 
 	bool enable_hud = false;
 	if (argc >= 4) {
@@ -410,7 +412,7 @@ int main(int argc, const char** argv)
 
 	smgr->setActiveCamera(camera_node);
 	float dt;
-	sf::Int64 synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	sf::Int64 synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME(bpm));
 	client::next_palette(synced_tick % client::palettes.size());
 
 	printf("Entering main loop\n");
@@ -490,7 +492,7 @@ int main(int argc, const char** argv)
 		glm::vec4 c2;
 		if (clock.passed_beat()) {
 			// For christ sake, leave this code alone
-			synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+			synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME(bpm));
 			if (synced_tick % 20 == 0)
 				std::cout << "SYNCED_TICK (" << synced_tick << ") " 
 				          << clock.get_time().asMilliseconds()
@@ -542,8 +544,7 @@ int main(int argc, const char** argv)
 		}
 
 	}  // main loop
-	click.~Sound();
-	clickbuf.~SoundBuffer();
+
 	tempo::disconnectFromServer(entity_player);
 	the_end(0, "Goodbye!\r\n", world, running, listener, device);
 }
