@@ -1,6 +1,7 @@
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
 #include <tempo/component/ComponentStage.hpp>
+#include <tempo/component/ComponentRespawn.hpp>
 #include <tempo/system/SystemTrigger.hpp>
 
 #include <iostream>
@@ -28,8 +29,7 @@ void SystemTrigger::updateButtons(anax::World& world)
 	bool skipNext = false;
 
 	// find all player locations in game
-	playerPos = subSystemPlayers.getPlayers();
-
+	std::vector<anax::Entity> players = subSystemPlayers.getPlayers();
 	untriggerPos.clear();
 
 	// get all the button groups
@@ -41,6 +41,7 @@ void SystemTrigger::updateButtons(anax::World& world)
 		// get deque of all buttons in the group
 		auto& button_group = entity.getComponent<tempo::ComponentButtonGroup>();
 		std::deque<button>& buttons = button_group.buttons;
+		glm::ivec2 spawn_loc = button_group.respawn_pos;
 
 		// RHYTHMLESS BUTTONS
 
@@ -54,9 +55,12 @@ void SystemTrigger::updateButtons(anax::World& world)
 
 				bool is_in = false;
 
-				for (uint32_t k = 0; k < playerPos.size(); k++) {
-					if ((tempButtonPos.x == playerPos[k].x) && (tempButtonPos.y == playerPos[k].y)) {
+				for (uint32_t k = 0; k < players.size(); k++) {
+					int x = players[k].getComponent<tempo::ComponentStagePosition>().getOrigin().x;
+					int y = players[k].getComponent<tempo::ComponentStagePosition>().getOrigin().y;
+					if ((tempButtonPos.x == x) && (tempButtonPos.y == y)) {
 						is_in = true;
+						players[k].getComponent<tempo::ComponentRespawn>().spawn_location = spawn_loc;
 						break;
 					}
 				}
@@ -115,9 +119,12 @@ void SystemTrigger::updateButtons(anax::World& world)
 
 				bool is_in = false;
 
-				for (uint32_t k = 0; k < playerPos.size(); k++) {
-					if ((tempButtonPos.x == playerPos[k].x) && (tempButtonPos.y == playerPos[k].y)) {
+				for (uint32_t k = 0; k < players.size(); k++) {
+					int x = players[k].getComponent<tempo::ComponentStagePosition>().getOrigin().x;
+					int y = players[k].getComponent<tempo::ComponentStagePosition>().getOrigin().y;
+					if ((tempButtonPos.x == x) && (tempButtonPos.y == y)) {
 						is_in = true;
+						players[k].getComponent<tempo::ComponentRespawn>().spawn_location = spawn_loc;
 						break;
 					}
 				}
@@ -297,9 +304,9 @@ void SystemTrigger::blockButtons(int rhythmID) {
 
 }
 
-std::vector<glm::ivec2> SubSystemGetPlayers::getPlayers()
+std::vector<anax::Entity> SubSystemGetPlayers::getPlayers()
 {
-	std::vector<glm::ivec2> currentPlayerPos;
+	std::vector<anax::Entity> currentPlayers;
 
 	auto& entities = getEntities();
 
@@ -307,13 +314,11 @@ std::vector<glm::ivec2> SubSystemGetPlayers::getPlayers()
 	for (auto& entity : entities) {
 		if (entity.hasComponent<tempo::ComponentPlayerLocal>() ||
 		    entity.hasComponent<tempo::ComponentPlayerRemote>()) {
-			glm::ivec2 tempPlayerPos =
-			  entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
-			currentPlayerPos.push_back(tempPlayerPos);
+			currentPlayers.push_back(entity);
 		}
 	}
 
-	return currentPlayerPos;
+	return currentPlayers;
 }
 
 void SubSystemUpdateSpikes::updateSpikes(std::vector<glm::ivec2> untriggerPos)

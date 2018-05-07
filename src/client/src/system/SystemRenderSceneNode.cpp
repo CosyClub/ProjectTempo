@@ -2,6 +2,7 @@
 #include <client/system/SystemRenderSceneNode.hpp>
 
 #include <tempo/component/ComponentStageRotation.hpp>
+#include <tempo/component/ComponentPlayerLocal.hpp>
 
 #include <IBillboardSceneNode.h>
 #include <IVideoDriver.h>
@@ -77,8 +78,7 @@ void SystemRenderSceneNode::update(const glm::ivec2 playerpos)
 		tempo::ComponentStage& s = entity.getComponent<tempo::ComponentStage>();
 		tempo::ComponentStagePosition& sp = entity.getComponent<tempo::ComponentStagePosition>();
 		tempo::ComponentStageRotation& sr = entity.getComponent<tempo::ComponentStageRotation>();
-		client::ComponentRenderSceneNode& sn =
-		  entity.getComponent<client::ComponentRenderSceneNode>();
+		client::ComponentRenderSceneNode& sn = entity.getComponent<client::ComponentRenderSceneNode>();
 
 		glm::ivec2 pos = sp.getOrigin();
 
@@ -110,7 +110,6 @@ void SystemRenderSceneNode::update(const glm::ivec2 playerpos)
 			sn.updateNeeded = false;
 		}
 
-		// TODO: remove this jank
 		if (entity.hasComponent<tempo::ComponentCombo>()) {
 			tempo::ComponentCombo& c = entity.getComponent<tempo::ComponentCombo>();
 			float scale = c.comboCounter / 20.f;
@@ -123,6 +122,10 @@ void SystemRenderSceneNode::update(const glm::ivec2 playerpos)
 
 		sr.previousFacing = sr.facing;
 		sn.node->setPosition(irr::core::vector3df(pos.x, s.getHeight(pos), pos.y));
+		//if (entity.hasComponent<tempo::ComponentPlayerLocal>()) {
+		//	printf("SRSN %d %d - %d %d - ", pos.x, pos.y, playerpos.x, playerpos.y);
+		//	printf("%f %f %f\n", sn.node->getPosition().X, sn.node->getPosition().Y, sn.node->getPosition().Z);
+		//}
 	}
 }
 

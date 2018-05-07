@@ -25,9 +25,9 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 	entity_player.addComponent<tempo::ComponentCombo>();
 
 	int emptySpace = 40;
+	int fheight = 10 + emptySpace;
 
-	int fheight = 69 + emptySpace;
-
+	entity_player.addComponent<tempo::ComponentRespawn>(glm::ivec2(10 + (party_number * fheight), 0));
 	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(10 + (party_number * fheight), 0));
 	entity_player.addComponent<tempo::ComponentStageRotation>(NORTH);
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
@@ -103,13 +103,13 @@ anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 200, 200), false, glm::vec2(2,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	e.addComponent<tempo::ComponentHealth>(50);
+	e.addComponent<tempo::ComponentHealth>(30);
 	float arr[9] = {50, 50, 50,
 	                50, 50, 50,
 	                50, 50, 50};
 	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
 	e.addComponent<tempo::ComponentAttack>();
-	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)5);
+	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)3);
 	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
 
 	e.activate();
@@ -168,13 +168,14 @@ anax::Entity createButtonGroup(anax::World &           world,
                                std::vector<glm::ivec2> positions,
                                std::vector<glm::ivec2> tiles,
                                std::vector<glm::ivec2> spikes,
+                               glm::ivec2              respawn_pos,
                                glm::ivec2              prev,
                                glm::ivec2              next,
                                bool                    triggerable,
                                int                     ID)
 {
 	anax::Entity entity_button = world.createEntity();
-	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles, spikes, prev, next, triggerable, ID);
+	entity_button.addComponent<tempo::ComponentButtonGroup>(positions, tiles, spikes, respawn_pos, prev, next, triggerable, ID);
 	entity_button.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	entity_button.activate();
 

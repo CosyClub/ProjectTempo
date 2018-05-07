@@ -4,6 +4,7 @@
 #include <anax/Component.hpp>
 #include <anax/System.hpp>
 #include <anax/World.hpp>
+#include <anax/Entity.hpp>
 
 #include <glm/vec2.hpp>
 
@@ -18,7 +19,7 @@ namespace tempo
 class SubSystemGetPlayers : public anax::System<anax::Requires<tempo::ComponentStagePosition>>
 {
    public:
-	std::vector<glm::ivec2> getPlayers();
+	std::vector<anax::Entity> getPlayers();
 };
 
 class SubSystemUpdateSpikes : public anax::System<anax::Requires<tempo::ComponentSpikes>>
@@ -31,7 +32,6 @@ class SystemTrigger : public anax::System<anax::Requires<tempo::ComponentButtonG
 {
    public:
 	std::vector<glm::ivec2> untriggerPos; // track which spikes need to drop
-	std::vector<glm::ivec2> playerPos; // track current player positions
 	SystemTrigger(anax::World &world);
 	void updateButtons(anax::World &world);
 
@@ -40,7 +40,7 @@ class SystemTrigger : public anax::System<anax::Requires<tempo::ComponentButtonG
 	void blockButtons(int rhythmID); // make all buttons untriggerable, until players get off buttons
 
    private:
-	SubSystemGetPlayers subSystemPlayers;
+	SubSystemGetPlayers    subSystemPlayers;
 	SubSystemUpdateSpikes  subSystemSpikes;
 };
 }
