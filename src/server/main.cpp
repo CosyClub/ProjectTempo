@@ -10,6 +10,7 @@
 
 #include <tempo/entity/EntityCreationServer.hpp>
 #include <tempo/system/SystemHealth.hpp>
+#include <tempo/system/SystemPlayer.hpp>
 #include <tempo/system/SystemTrigger.hpp>
 
 #include <tempo/network/base.hpp>
@@ -109,6 +110,7 @@ int main(int argc, const char **argv)
 	server::SystemHeartbeat system_heatbeat;
 	server::SystemMovement  system_movement;
 	tempo::SystemHealth     system_health;
+	tempo::SystemPlayer     system_player;
 	tempo::SystemTrigger    system_trigger(world);
 
 	world.addSystem(system_ai);
@@ -117,6 +119,7 @@ int main(int argc, const char **argv)
 	world.addSystem(system_heatbeat);
 	world.addSystem(system_movement);
 	world.addSystem(system_health);
+	world.addSystem(system_player);
 	world.addSystem(system_trigger);
 	world.refresh();
 
