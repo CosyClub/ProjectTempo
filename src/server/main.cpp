@@ -30,11 +30,11 @@
 #include "tempo/constants.hpp"
 
 void RythmButton(anax::World &          world,
-				std::vector<std::vector<glm::ivec2>>  positions,
-				std::vector<glm::ivec2>               tiles,
-				std::vector<glm::ivec2>               spikes,
-				glm::ivec2                            respawn_pos,
-				int                                  &ID) {
+                 std::vector<std::vector<glm::ivec2>>  positions,
+                 std::vector<glm::ivec2>               tiles,
+                 std::vector<glm::ivec2>               spikes,
+                 glm::ivec2                            respawn_pos,
+                 int                                  &ID) {
 
 	for (uint32_t i = 0; i < positions.size(); i++) {
 
@@ -86,7 +86,7 @@ void newButton(anax::World &    world,
 // ./RaveCave_Server DELTA BPM SONG
 int main(int argc, const char **argv)
 {
-	std::string song = "resources / sound / ravecave_loop_clicktrack.ogg";
+	std::string song = SONG;
 
 	if (argc >= 4) {
 		song = argv[3];
