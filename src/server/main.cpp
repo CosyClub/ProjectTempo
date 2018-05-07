@@ -280,7 +280,6 @@ int main(int argc, const char **argv)
 		
 		// Room 8
 		{
-			glm::ivec2 spawn_loc = spawn_loc = glm::ivec2(3 + (i * fheight), 31);
 			std::vector<glm::ivec2> wall = {{12+ (i * fheight), 44}, {12+ (i * fheight), 43}, {12+ (i * fheight), 42},
 			                                {13+ (i * fheight), 44}, {13+ (i * fheight), 43}, {13+ (i * fheight), 42}};
 			RythmButton(world,

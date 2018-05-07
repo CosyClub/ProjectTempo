@@ -396,16 +396,18 @@ int main(int argc, const char** argv)
 
 	srand(clock.get_time().asMicroseconds());
 
-	//client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
-	//irr::scene::ICameraSceneNode *camera_node = new irr::scene::Camera(
-	//	sn.node,
-	//	smgr,
-	//	-1,
-	//	irr::core::vector3df(7, 7, 0),
-	//	irr::core::vector3df(0, 0, 0));
+	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
+	irr::scene::ICameraSceneNode *camera_node = new irr::scene::Camera(
+		sn.node,
+		smgr,
+		-1,
+		irr::core::vector3df(7, 7, 0),
+		irr::core::vector3df(0, 0, 0));
 
-	//smgr->setActiveCamera(camera_node);
-	smgr->addCameraSceneNodeMaya(0, -100, 100, 50);
+	smgr->setActiveCamera(camera_node);
+	//smgr->addCameraSceneNodeMaya(0, -100, 100, 50);
+
+
 	float dt;
 	sf::Int64 synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	client::next_palette(synced_tick % client::palettes.size());
