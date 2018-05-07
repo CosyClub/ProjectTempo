@@ -81,7 +81,7 @@ void SystemMovement::processTranslation()
 		for (auto &position : positions) {
 			can_move &= stage.existstTile(position + st.delta);
 			can_move &= -3 < stage.getHeight(position + st.delta);
-			can_move &= stage.getHeight(position + st.delta) < 5;
+			can_move &= abs(stage.getHeight(position) - stage.getHeight(position + st.delta)) < 5;
 			if (collisionMap.find(position + st.delta) == collisionMap.end())
 				collisionMap[position + st.delta] = false;
 			can_move &= !collisionMap[position + st.delta];

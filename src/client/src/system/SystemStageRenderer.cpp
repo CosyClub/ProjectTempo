@@ -136,7 +136,7 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 			tileMap[pos].height += delta;
 		}
 
-		if (tile.height >= 5) {
+		if (tile.height - tileMap[playerpos].height >= 7) {
 			batchMesh->addMesh(walls, irr::core::vector3df(pos.x, tile.height, pos.y));
 			continue;
 		}
