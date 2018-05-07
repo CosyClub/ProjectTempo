@@ -35,7 +35,7 @@ void SystemHealth::check_health()
 
 				if (entity.hasComponent<ComponentStagePosition>()) {
 					entity.getComponent<ComponentStagePosition>().setPosition(
-					  glm::ivec2(40 + + (party_number* fheight), 7));  // poof
+					  glm::ivec2(10 + (party_number* fheight), 0));  // poof
 					h.current_health = h.max_health;
 				}
 			}
