@@ -134,7 +134,7 @@ int main(int argc, const char **argv)
 	// Needed so that the player cannot see other feeder areas
 	int emptySpace = 40;
 	int fheight = 10 + emptySpace;
-	int feeder_areas = 10;
+	int feeder_areas = 1;
 
 	for (int i = 0; i < feeder_areas; i++) {
 		// Starter areas
@@ -162,6 +162,7 @@ int main(int argc, const char **argv)
 		// Room 1
 		spawn_loc = glm::ivec2(8 + (i * fheight), 12);
 		{
+
 			std::vector<glm::ivec2> wall = {{7+ (i * fheight), 11}, {8+ (i * fheight), 11}, {9+ (i * fheight), 11}};
 			newButton(world, {{8+ (i * fheight), 9}}, wall, {}, spawn_loc);
 		}
@@ -292,21 +293,61 @@ int main(int argc, const char **argv)
 
 	//Arena Room 1
 	{
-		glm::ivec2 spawn_loc = {};
-		std::vector<glm::ivec2> spikes = {{20,148}, {19,148}, {18,148}, {17,148}, {16,148}, {15,148},{15,149},{15,150}};
-		newButton(world, {{9,144},{11,146},{13,144},{15,146},{17,144}}, {}, spikes, spawn_loc);
+		glm::ivec2 spawn_loc = {18,145};
+		std::vector<glm::ivec2> spikes = {{20,148}, {19,148}, {18,148}, {17,148}, {16,148}};
+		newButton(world, {{18,145}}, {}, spikes, spawn_loc);
 		newButton(world, {{18,149}}, {}, spikes, spawn_loc);
 	}
 
 	//Arena Room 2
 	{
+		std::deque<glm::ivec2> path = {{28,172},{27,172},{26,172},{25,172},{24,172},{23,172},{22,172},{21,172},{20,172},{19,172},{18,172},
+		                               {18,173},{18,174},{18,175},{18,176},{18,177},{18,178},{18,179},{18,180},{18,181},{18,182},
+		                               {19,182},{20,182},{21,182},{22,182},{23,182},{24,182},{25,182},{26,182},{27,182},{28,182},
+		                               {28,181},{28,180},{28,179},{28,178},{28,177},{28,176},{28,175},{28,174},{28,173}};
 
+		std::deque<glm::ivec2> path1 = {{26,174},{26,175},{26,176},{26,177},{26,178},{26,179},{26,180},
+		                               {25,180},{24,180},{23,180},{22,180},{21,180},{20,180},
+		                               {20,179},{20,178},{20,177},{20,176},{20,175},{20,174},
+		                               {21,174},{22,174},{23,174},{24,174},{25,174}};
+
+		std::deque<glm::ivec2> path2 = {{23,177}};
+
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+
+		tempo::createMobPatroller(world, path2[0], path2);
 	}
 
 	//Arena Room 3
 	{
-		for(int i = 0; i < 149; i=i+2 ){
-			for(int j = 0; j < 39; j=j+2){
+
+		for(int i = 0; i < 10; i=i+2 ){
+			for(int j = 0; j < 11; j=j+2){
 				tempo::createMobCreeper(world, glm::ivec2(27 + j, 137 + i));
 			}
 		}
@@ -314,20 +355,16 @@ int main(int argc, const char **argv)
 
 	//Arena Room 4
 	{
-		glm::ivec2 spawn_loc = {};
-		std::vector<glm::ivec2> wall = {};
-		RythmButton(world,
-					{{{37,180},{42,181},{43,180},{42,175}},
-					 {{38,180},{42,182},{44,180},{42,176}},
-					 {{39,180},{42,183},{45,180},{42,177}},
-					 {{40,180},{42,184},{46,180},{42,178}},
-					 {{41,180},{42,185},{47,180},{42,179}}},
-					wall, {}, spawn_loc, rhythmID);
+		for(int i = 0; i < 12; i++ ){
+			for(int j = 0; j < 12; j++){
+				tempo::createMobStill(world, glm::ivec2(36 + j, 171 + i));
+			}
+		}
 	}
 
 	//Arena Room 5
 	{
-		tempo::createSnake(world, {58,143}, tempo::SOUTH, 10);
+		tempo::createSnake(world, {58,144}, tempo::NORTH, 5);
 	}
 
 	world.refresh();
