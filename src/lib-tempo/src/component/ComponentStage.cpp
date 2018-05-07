@@ -132,7 +132,7 @@ bool ComponentStage::existstTile(glm::ivec2 position)
 bool ComponentStage::isNavigable(glm::ivec2 position)
 {
 	auto itr = (*tiles).find(position);
-	if (itr == (*tiles).end())
+	if (itr != (*tiles).end())
 	{
 		return itr->second.height < 5;
 	}
