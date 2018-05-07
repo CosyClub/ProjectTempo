@@ -2,9 +2,9 @@
 #include<iostream>
 
 #define TELEPORT_LEFT 30
-#define TELEPORT_RIGHT 1100
+#define TELEPORT_RIGHT 40
 
-#define TELEPORT_EXIT glm::ivec2(1000,1000)
+#define TELEPORT_EXIT glm::ivec2(6,137)
 
 namespace tempo
 {
