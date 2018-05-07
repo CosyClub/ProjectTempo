@@ -228,32 +228,77 @@ void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
                                      client::ComponentKeyInput  comp_input,
 	                                   const irr::core::dimension2du screenSize)
 {
-	float combo_scale = clock.beat_progress_desc();
-
-	int combo_width_left    = screenSize.Width / 2 - (screenSize.Width * 0.26) * combo_scale;
-	int combo_width_right   = screenSize.Width / 2 + (screenSize.Width * 0.26) * combo_scale;
+	int combo_width_center  = screenSize.Width / 2;
+	int combo_width_left    = combo_width_center - (screenSize.Width * 0.25);
+	int combo_width_right   = combo_width_center + (screenSize.Width * 0.25);
+	int combo_width         = combo_width_right - combo_width_left;
 	int combo_height_top    = (1.f - 3.f / 36) * screenSize.Height;
+	int combo_height_center = (1.f - 2.f / 36) * screenSize.Height;
 	int combo_height_bottom = (1.f - 1.f / 36) * screenSize.Height;
 
-	irr::video::SColor colour_combo_bar;
 
-	if(combo_scale >= 0.3){
-		colour_combo_bar = colour_white;
-	} else {
-		colour_combo_bar = colour_blue;
-	}
+	float beat_size   = clock.get_beat_length      ().asSeconds();
+	float window_size = clock.get_beat_window_delta().asSeconds();
+
+	float window_proportion = window_size / beat_size;
+
+	int window_left   = combo_width_center - (int)(combo_width * window_proportion);
+	int window_right  = combo_width_center + (int)(combo_width * window_proportion);
+
+	int indicator_center = combo_width_left + (int)(combo_width * (clock.beat_progress() > 0.5 ?
+	                                                               clock.beat_progress() - 0.5 :
+	                                                               clock.beat_progress() + 0.5));
+	int indicator_left   = indicator_center - 6;
+	int indicator_right  = indicator_center + 6;
+	if(indicator_left  < combo_width_left ){ indicator_left  = combo_width_left;  }
+	if(indicator_right > combo_width_right){ indicator_right = combo_width_right; }
+
+	driver->draw2DRectangle(irr::video::SColor(150, 00, 255, 0),
+	                        irr::core::rect<irr::s32>(window_left,  combo_height_top,
+	                                                  window_right, combo_height_bottom));
+
+
+	irr::video::SColor colour_combo_bar = irr::video::SColor(255, 50, 50, 50);
 
 	if(comp_input.actions.size() > 0 &&
 	   comp_input.actions.back().beat == clock.get_beat_number() &&
 	   comp_input.actions.back().outside_window){
-		colour_combo_bar = irr::video::SColor(255, 255, 0, 0);
+	  colour_combo_bar = irr::video::SColor(255, 255, 0, 0);
+		driver->draw2DRectangle(colour_combo_bar,
+														irr::core::rect<irr::s32>(combo_width_left,  combo_height_top,
+																											window_left, combo_height_bottom));
+
+		driver->draw2DRectangle(colour_combo_bar,
+														irr::core::rect<irr::s32>(window_right,  combo_height_top,
+																											combo_width_right, combo_height_bottom));
 	}
 
+	if(comp_input.actions.size() > 0 &&
+	   comp_input.actions.back().beat >= clock.get_beat_number() - 1){
 
-	driver->draw2DRectangle(
-		colour_combo_bar,
-		irr::core::rect<irr::s32>(combo_width_left, combo_height_top,
-	                            combo_width_right, combo_height_bottom));
+		int last_indicator_center = (combo_width_left +
+		                             (int)(
+		                                   ((comp_input.actions.back().delta + (beat_size / 2.0f)) /
+		                                    beat_size
+		                                   ) * combo_width
+		                                   )
+		                             );
+
+		//	if(comp_input.actions.size > 1)
+
+		driver->draw2DRectangle(irr::video::SColor(255, 50, 50, 50),
+	                        irr::core::rect<irr::s32>(last_indicator_center-7, combo_height_center-12,
+	                                                  last_indicator_center+7, combo_height_center+12));
+
+
+	}
+
+	driver->draw2DRectangle(irr::video::SColor(255, 50, 50, 50),
+	                        irr::core::rect<irr::s32>(indicator_left, combo_height_top,
+	                                                  indicator_right, combo_height_bottom));
+
+
+
 }
 
 void SystemRenderGUI::updateHealthBar(irr::video::IVideoDriver * driver,
