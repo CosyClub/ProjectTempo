@@ -202,6 +202,7 @@ int main(int argc, const char **argv)
 			tempo::createMobCreeper(world, glm::ivec2(17, 27));
 		}
 
+
 		// Room 5 (Prongs)
 		spawn_loc = glm::ivec2(18 + (i * fheight), 30);
 		{
