@@ -248,7 +248,10 @@ void SystemAI::update(anax::World& world, tempo::SystemPlayer s_player, server::
 
 		if (dist > 33) continue;
 
-		if (ai_attack(entity, s_attack)) continue;
+		if (dist < 4)
+		{
+			if (ai_attack(entity, s_attack)) continue;
+		}
 
 		switch(ai.type)
 		{
