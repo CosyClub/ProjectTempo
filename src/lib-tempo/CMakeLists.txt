@@ -1,4 +1,5 @@
 set(TEMPO_LIB_TEMPO_HEADERS
+	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/constants.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/config.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/mask.hpp"
 	"${CMAKE_CURRENT_LIST_DIR}/include/tempo/model.hpp"
