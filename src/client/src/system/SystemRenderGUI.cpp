@@ -291,11 +291,6 @@ void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
 		if(comp_input.actions.back().outside_window){
 			colour_combo_bar = irr::video::SColor(255, 255,   0,   0);
 		} else  {
-			printf("key was at: %f, IE: %f, progress is: %f\n",
-			       comp_input.actions.back().delta,
-			       key_at,
-			       clock.beat_progress());
-
 			if(comp_input.actions.back().delta < 0){
 				colour_combo_bar = irr::video::SColor(255, 204, 223, 255);
 			} else if (clock.beat_progress() < 0.5f){

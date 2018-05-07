@@ -128,7 +128,7 @@ void SystemStageRenderer::Update(irr::scene::ISceneManager *smgr,
 		if (tile.height != tile.height_target)
 		{
 			float gap = tile.height_target - tile.height;
-			float delta = 5.f * (gap / fabs(gap)) * dt / 1.f; //1.5 seconds to collapse
+			float delta = 7.5f * (gap / fabs(gap)) * dt / 1.f; //1.5 seconds to collapse
 			if (fabs(delta) > fabs(gap))
 			{
 				delta = gap;
