@@ -178,11 +178,16 @@ int main(int argc, const char** argv)
 	sf::Sound click;
 	click.setBuffer(clickbuf);
 
+	int delta = DELTA;
+	if (argc >= 5) {
+		delta = atoi(argv[2]);
+	}
+
 	// Clock
-	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
+	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(delta));
 
 	bool enable_hud = false;
-	if (argc == 4) {
+	if (argc >= 4) {
 		std::string HUD = argv[3];
 		enable_hud = (HUD == "HUD" || HUD == "hud" || HUD == "42");
 	}
