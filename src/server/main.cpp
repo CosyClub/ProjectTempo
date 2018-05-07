@@ -146,7 +146,7 @@ int main(int argc, const char **argv)
 			std::vector<glm::ivec2> wall1 = {{8+ (i * fheight), 5}};
 			RythmButton(world, {{{8+ (i * fheight), 1}}, {{8+ (i * fheight), 2}}, {{8+ (i * fheight), 3}}}, wall1, {}, spawn_loc, rhythmID);
 
-			std::vector<glm::ivec2> wall2 = {{10+ (i * fheight), 5}};
+			std::vector<glm::ivec2> wall2 = {{6+ (i * fheight), 5}};
 			RythmButton(world, {{{6+ (i * fheight), 1}}, {{6+ (i * fheight), 2}}, {{6+ (i * fheight), 3}}}, wall2, {}, spawn_loc, rhythmID);
 
 			std::vector<glm::ivec2> wall3 = {{5+ (i * fheight), 6}};
