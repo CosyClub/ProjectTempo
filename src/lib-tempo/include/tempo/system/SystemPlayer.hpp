@@ -12,6 +12,7 @@ namespace tempo
 {
 struct SystemPlayer : anax::System<anax::Requires<ComponentPlayerRemote>> {
 	anax::Entity nearest_player(glm::ivec2 pos);
+	void TeleportPlayers();
 
 };
 }
