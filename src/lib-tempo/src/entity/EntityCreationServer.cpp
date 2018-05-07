@@ -224,10 +224,11 @@ anax::Entity createSnake(anax::World& world, glm::ivec2 pos, tempo::Facing f, in
 
 	head.activate();
 
-	pos += -1 * f;
 	auto& cs = head.getComponent<ComponentStage>();
+	float height = cs.getHeight(pos);
+	pos += -1 * f;
 
-	for (int I = 1; I < len && cs.isNavigable(pos) ; I++)
+	for (int I = 1; I < len && cs.isNavigable(pos, height) ; I++)
 	{
 
 		anax::Entity seg = world.createEntity();
