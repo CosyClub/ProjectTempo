@@ -181,16 +181,6 @@ int main(int argc, const char** argv)
 	// Clock
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
 
-	KeyInput receiver;
-
-	// This makes it full-screen
-	// irr::IrrlichtDevice *nulldevice = irr::createDevice(irr::video::EDT_NULL);
-	// irr::core::dimension2d<irr::u32> deskres =
-	// nulldevice->getVideoModeList()->getDesktopResolution();
-	// nulldevice -> drop();
-	// irr::IrrlichtDevice *device = irr::createDevice(
-	//   irr::video::EDT_OPENGL, deskres, 16, true, false, false);
-
 	bool enable_hud = false;
 	if (argc == 4) {
 		std::string HUD = argv[3];
@@ -198,8 +188,7 @@ int main(int argc, const char** argv)
 	}
 
 	irr::IrrlichtDevice *device = irr::createDevice(
-	//irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1280, 720), 16, enable_hud, false, false);
-	irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1980, 1080), 16, enable_hud, false, false);
+	irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1920, 1080), 16, enable_hud, false, false);
 
 	if (!device) {
 		printf("Failed to create Irrlicht Device\n");

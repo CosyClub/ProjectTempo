@@ -83,10 +83,6 @@ void SystemMovement::processTranslation()
 			can_move &= !collisionMap[position + st.delta];
 		}
 
-		if (entity.hasComponent<tempo::ComponentPlayerRemote>()) {
-			std::cout << "Recieved thing " << can_move << std::endl;
-		}
-
 		if (can_move) {
 			for (auto &position : positions) {
 				if (!entity.getComponent<tempo::ComponentStagePosition>().isPhased) {
