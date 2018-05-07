@@ -408,15 +408,16 @@ int main(int argc, const char** argv)
 
 	srand(clock.get_time().asMicroseconds());
 
-	client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
-	irr::scene::ICameraSceneNode *camera_node = new irr::scene::Camera(
-		sn.node,
-		smgr,
-		-1,
-		irr::core::vector3df(7, 7, 0),
-		irr::core::vector3df(0, 0, 0));
+	//client::ComponentRenderSceneNode& sn = entity_player.getComponent<client::ComponentRenderSceneNode>();
+	//irr::scene::ICameraSceneNode *camera_node = new irr::scene::Camera(
+	//	sn.node,
+	//	smgr,
+	//	-1,
+	//	irr::core::vector3df(7, 7, 0),
+	//	irr::core::vector3df(0, 0, 0));
 
-	smgr->setActiveCamera(camera_node);
+	//smgr->setActiveCamera(camera_node);
+	smgr->addCameraSceneNodeMaya(0, -100, 100, 50);
 	float dt;
 
 	sf::Int64 t = clock.get_time().asMicroseconds();
@@ -513,7 +514,7 @@ int main(int argc, const char** argv)
 			// click.play();
 
 			system_trigger.updateButtons(world);
-			system_button_renderer.updateButtons(driver);
+			system_button_renderer.updateButtons(playerpos);
 
 			system_render_healing.endBeat();
 			system_render_spikes.updateSpikes(driver, playerpos);
