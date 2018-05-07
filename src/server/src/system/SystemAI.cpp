@@ -94,18 +94,19 @@ void generate_moves(tempo::ComponentAI &ai)
 std::vector<glm::ivec2> gen_moves(glm::ivec2 pos, tempo::ComponentStage &s)
 {
 	std::vector<glm::ivec2> moves;
+	float height = s.getHeight(pos);
 	for (int I = -1; I < 2; I+=2)
 	{
 		glm::ivec2 delta(I, 0);
 		glm::ivec2 move = pos + delta;
-		if (s.isNavigable(move)) moves.push_back(move);
+		if (s.isNavigable(move, height)) moves.push_back(move);
 	}
 
 	for (int I = -1; I < 2; I+=2)
 	{
 		glm::ivec2 delta(0, I);
 		glm::ivec2 move = pos + delta;
-		if (s.isNavigable(move)) moves.push_back(move);
+		if (s.isNavigable(move, height)) moves.push_back(move);
 	}
 
 	return moves;

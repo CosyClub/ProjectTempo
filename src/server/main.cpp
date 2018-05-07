@@ -27,17 +27,14 @@
 #include <thread>
 #include <vector>
 
-#define BPM 138                // Beats per minutes
-#define PHASE 0                // Microseconds
-#define PLAYER_DELTA 100       // Delta around a beat a player can hit (millisecs)
-#define TIME 60000000.f / BPM  // Time between beats (microsecs)
+#include "tempo/constants.hpp"
 
 void RythmButton(anax::World &          world,
-				std::vector<std::vector<glm::ivec2>>  positions,
-				std::vector<glm::ivec2>               tiles,
-				std::vector<glm::ivec2>               spikes,
-				glm::ivec2                            respawn_pos,
-				int                                  &ID) {
+                 std::vector<std::vector<glm::ivec2>>  positions,
+                 std::vector<glm::ivec2>               tiles,
+                 std::vector<glm::ivec2>               spikes,
+                 glm::ivec2                            respawn_pos,
+                 int                                  &ID) {
 
 	for (uint32_t i = 0; i < positions.size(); i++) {
 
@@ -86,15 +83,35 @@ void newButton(anax::World &    world,
 
 }
 
+// ./RaveCave_Server DELTA BPM SONG
 int main(int argc, const char **argv)
 {
-	tempo::Song mainsong("resources/sound/ravecave_loop_clicktrack.ogg");
+	std::string song = SONG;
+
+	if (argc >= 4) {
+		song = argv[3];
+	}
+
+	tempo::Song mainsong(song);
 	mainsong.set_volume(0.f);
 	mainsong.skip(sf::microseconds(PHASE));
 	mainsong.set_volume(20.f);
-	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(PLAYER_DELTA));
+
+	unsigned int delta = DELTA;
+	unsigned int bpm = BPM;
+
+	if (argc >= 2) {
+		delta = atoi(argv[1]);
+	}
+	if (argc >= 3) {
+		bpm = atoi(argv[2]);
+	}
+
+	// Clock
+	tempo::Clock clock = tempo::Clock(sf::microseconds(sf::Int64(TIME(bpm))), sf::milliseconds(delta));
 	mainsong.start();
 
+	std::cout << delta << std::endl << bpm << std::endl << song << std::endl;
 
 	// Set up remote address, local ports and remote handshake port
 	tempo::port_si = DEFAULT_PORT_IN;
@@ -305,7 +322,7 @@ int main(int argc, const char **argv)
 	          << sf::IpAddress::getLocalAddress().toString() << ":"
 	          << tempo::port_si << std::endl;
 
-	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
+	sf::Int64 tick = clock.get_time().asMicroseconds() / sf::Int64(TIME(bpm));
 	tick++;
 	sf::Int64 tick_time_s = clock.get_time().asMicroseconds();
 	sf::Int64 tick_time_e = 0;
