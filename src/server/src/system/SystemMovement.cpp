@@ -61,15 +61,11 @@ void SystemMovement::processTranslation()
 		tempo::ComponentStage &stage = entity.getComponent<tempo::ComponentStage>();
 
 		auto &positions = entity.getComponent<tempo::ComponentStagePosition>().occupied;
-		if (entity.hasComponent<tempo::ComponentHealth>())
-		{
-			if (entity.getComponent<tempo::ComponentHealth>().current_health <= 0)
-			{
+		if (entity.hasComponent<tempo::ComponentHealth>()) {
+			if (entity.getComponent<tempo::ComponentHealth>().current_health <= 0) {
 				for (auto &position : positions) {
 					if (!entity.getComponent<tempo::ComponentStagePosition>().isPhased)
-					{
 						collisionMap[position] = false;
-					}
 				}
 				continue;
 			}
@@ -87,15 +83,28 @@ void SystemMovement::processTranslation()
 			can_move &= !collisionMap[position + st.delta];
 		}
 
+		if (entity.hasComponent<tempo::ComponentPlayerRemote>()) {
+			std::cout << "Recieved thing " << can_move << std::endl;
+		}
+
 		if (can_move) {
 			for (auto &position : positions) {
-				if (!entity.getComponent<tempo::ComponentStagePosition>().isPhased)
-				{
+				if (!entity.getComponent<tempo::ComponentStagePosition>().isPhased) {
 					collisionMap[position] = false;
 					collisionMap[position + st.delta] = true;
 				}
 				position += st.delta;
 			}
+		} else {
+	 		if (entity.hasComponent<tempo::ComponentCombo>()) {
+				sf::Packet p;
+				anax::Entity::Id id = entity.getId();
+				if (!id.isNull()) {
+					tempo::operator<<(p, id);
+					p << static_cast<uint8_t>(tempo::MessageCombo::BROKEN_COMBO);
+					tempo::broadcastMessage(tempo::QueueID::COMBO_UPDATES, p);
+				}
+	 		}
 		}
 
 		st.delta = {0, 0};

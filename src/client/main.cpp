@@ -122,23 +122,13 @@ namespace client
 				bool can_move = true;
 				if (collisionMap.find(dest) == collisionMap.end())
 					collisionMap[dest] = false;
+				can_move &= !collisionMap[dest];
 	 			
 	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5 || stage.getHeight(dest) <= -3 || !can_move) {
 	 				// consume the moment before the server rejects you
 	 				// currently combos aren't server protected, so maybe this should move into lib-tempo?
 	 				// this produces a lovely jumping against the wall animation!
 	 				trans.delta = glm::ivec2(0, 0);
-					
-	 				if (entity.hasComponent<tempo::ComponentCombo>()) {
-						sf::Packet p;
-						anax::Entity::Id id = entity.getId();
-						LOCALTOSERVER(id)
-						if (!id.isNull()) {
-							tempo::operator<<(p, id);
-							p << static_cast<uint8_t>(tempo::MessageCombo::BROKEN_COMBO);
-							tempo::sendMessage(tempo::QueueID::COMBO_UPDATES, p);
-						}
-	 				}
 	 			}
 	 		}
 	 	}
@@ -262,7 +252,7 @@ int main(int argc, const char** argv)
 	client::SystemRenderSpikes     system_render_spikes;
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
-	client::SystemLessJank system_less_jank;
+	client::SystemLessJank         system_less_jank;
 
 	// Add Systems
 	world.addSystem(system_attack);
