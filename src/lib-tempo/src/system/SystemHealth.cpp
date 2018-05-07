@@ -30,7 +30,7 @@ void SystemHealth::check_health()
 					entity.getComponent<ComponentStagePosition>().setPosition(spawn_loc);
 					h.current_health = h.max_health;
 		
-					// Send update to everyone
+					// Tell everyone they have moved to a respawn position
 					auto &positions = entity.getComponent<tempo::ComponentStagePosition>().occupied;
 					sf::Packet p;
 					p << entity.getId();
@@ -39,13 +39,18 @@ void SystemHealth::check_health()
 						p << position.x << position.y;
 					}
 
-					// Add facing direction
+          // Add facing direction
 					if (entity.hasComponent<tempo::ComponentStageRotation>()) {
 						p << entity.getComponent<tempo::ComponentStageRotation>().facing.x;
 						p << entity.getComponent<tempo::ComponentStageRotation>().facing.y;
 					}
-					
-					tempo::broadcastMessage(tempo::QueueID::MOVEMENT_UPDATES, p);
+          tempo::broadcastMessage(tempo::QueueID::MOVEMENT_UPDATES, p);
+
+					// Tell everyone they have broken combo
+					entity.getComponent<tempo::ComponentCombo>().zeroCombo();
+					p = sf::Packet();
+					p << entity.getId() << tempo::MessageCombo::ZERO_COMBO;
+					tempo::broadcastMessage(tempo::QueueID::COMBO_UPDATES, p);
 				}
 			}
 			else
