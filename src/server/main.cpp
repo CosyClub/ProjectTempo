@@ -278,7 +278,7 @@ int main(int argc, const char **argv)
 		////////////////
 		// Events at "Beat Passed"
 		if (clock.passed_beat()) {
-			system_ai.update(system_attack);
+			system_ai.update(world, system_attack);
 			system_trigger.updateButtons(world);
 
 			if (tick++ % 20 == 0)
