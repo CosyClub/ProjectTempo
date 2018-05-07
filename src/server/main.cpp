@@ -374,7 +374,6 @@ int main(int argc, const char **argv)
 		// Time spend doing things (in microseconds) is:
 		// tick_time_e - tick_time_s
 		tick_time_e = clock.get_time().asMicroseconds();
-		printf("%lld\n", tick_time_e-tick_time_s);
 		std::this_thread::sleep_for(std::chrono::microseconds(20000 - (tick_time_e - tick_time_s)));
 	}
 	return 0;
