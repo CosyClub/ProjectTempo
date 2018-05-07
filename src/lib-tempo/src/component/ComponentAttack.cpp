@@ -1,4 +1,5 @@
 #include <tempo/component/ComponentAttack.hpp>
+#include <unistd.h>
 
 namespace tempo
 {

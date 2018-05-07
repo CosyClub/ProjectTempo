@@ -56,7 +56,6 @@ void SystemHealth::check_health()
 				if (entity.hasComponent<ComponentStagePosition>()) {
 					entity.getComponent<ComponentStagePosition>().setPosition(
 					  glm::ivec2(1000, 1000));  // poof
-					h.current_health = h.max_health;
 				}
 			}
 			// entity.deactivate();
