@@ -46,7 +46,7 @@ bool ai_attack(anax::Entity entity, server::SystemAttack s_attack)
 			
 			tempo::Queue<sf::Packet> *q = get_system_queue(tempo::QueueID::SYSTEM_ATTACK);
 			q->push(p);
-			return false;
+			return true;
 		}
 	}
 	return false;
@@ -309,7 +309,7 @@ void SystemAI::update(anax::World& world, tempo::SystemPlayer s_player, server::
 			case tempo::MoveType::MOVE_AGGRO:
 			{
 
-				if(nearest == glm::ivec2(0, 0) || dist > 10)
+				if(nearest == glm::ivec2(0, 0) || dist > 10 || dist <= 1)
 				{
 					st.delta = glm::ivec2(0, 0);
 				}
