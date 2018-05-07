@@ -6,6 +6,7 @@
 
 #include <client/component/ComponentRenderButtonGroup.hpp>
 #include <tempo/component/ComponentButtonGroup.hpp>
+#include <tempo/component/ComponentStage.hpp>
 
 #include <ISceneManager.h>
 #include <IVideoDriver.h>

@@ -292,7 +292,7 @@ int main(int argc, const char **argv)
 
 	//Arena Room 1
 	{
-		spwan_loc = {};
+		glm::ivec2 spawn_loc = {};
 		std::vector<glm::ivec2> spikes = {{20,148}, {19,148}, {18,148}, {17,148}, {16,148}, {15,148},{15,149},{15,150}};
 		newButton(world, {{9,144},{11,146},{13,144},{15,146},{17,144}}, {}, spikes, spawn_loc);
 		newButton(world, {{18,149}}, {}, spikes, spawn_loc);
@@ -314,14 +314,14 @@ int main(int argc, const char **argv)
 
 	//Arena Room 4
 	{
-		std::vector<glm::ivec2> spawn_loc = {};
+		glm::ivec2 spawn_loc = {};
 		std::vector<glm::ivec2> wall = {};
 		RythmButton(world,
 					{{{37,180},{42,181},{43,180},{42,175}},
 					 {{38,180},{42,182},{44,180},{42,176}},
 					 {{39,180},{42,183},{45,180},{42,177}},
 					 {{40,180},{42,184},{46,180},{42,178}},
-					  {41,180},{42,185},{47,180},{42,179}},
+					 {{41,180},{42,185},{47,180},{42,179}}},
 					wall, {}, spawn_loc, rhythmID);
 	}
 

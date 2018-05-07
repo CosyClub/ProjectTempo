@@ -30,6 +30,7 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager* smgr, irr::video::IV
 	for (auto &entity : entities) {
 		auto &group = entity.getComponent<tempo::ComponentButtonGroup>();
 		auto &rend  = entity.getComponent<client::ComponentRenderButtonGroup>();
+		auto &stage = entity.getComponent<tempo::ComponentStage>();
 
 		if (rend.setup)
 			continue;
@@ -49,9 +50,9 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager* smgr, irr::video::IV
 				buttonRend.button = smgr->addMeshSceneNode(mesh_button, 0);
 
 				buttonRend.button_housing->setPosition(
-					irr::core::vector3df(buttons[i].pos.x, 0.0, buttons[i].pos.y));
+					irr::core::vector3df(buttons[i].pos.x, stage.getHeight({buttons[i].pos.x,buttons[i].pos.y}), buttons[i].pos.y));
 				buttonRend.button->setPosition(
-					irr::core::vector3df(buttons[i].pos.x, 0.0, buttons[i].pos.y));
+					irr::core::vector3df(buttons[i].pos.x, stage.getHeight({buttons[i].pos.x,buttons[i].pos.y}), buttons[i].pos.y));
 
 				irr::video::SMaterial &material_button_housing =
 					buttonRend.button_housing->getMaterial(0);
@@ -84,9 +85,9 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager* smgr, irr::video::IV
 				buttonRend.button = smgr->addMeshSceneNode(mesh_button, 0);
 
 				buttonRend.button_housing->setPosition(
-					irr::core::vector3df(buttons[i].pos.x, 0.0, buttons[i].pos.y));
+					irr::core::vector3df(buttons[i].pos.x, stage.getHeight({buttons[i].pos.x,buttons[i].pos.y}), buttons[i].pos.y));
 				buttonRend.button->setPosition(
-					irr::core::vector3df(buttons[i].pos.x, 0.0, buttons[i].pos.y));
+					irr::core::vector3df(buttons[i].pos.x, stage.getHeight({buttons[i].pos.x,buttons[i].pos.y}), buttons[i].pos.y));
 
 
 				irr::video::SMaterial &material_button_housing =
@@ -170,6 +171,7 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 		auto &entity = entities[i];
 		auto &group = entity.getComponent<tempo::ComponentButtonGroup>();
 		auto &rend = entity.getComponent<client::ComponentRenderButtonGroup>();
+		auto &stage = entity.getComponent<tempo::ComponentStage>();
 
 		// button data
 		auto& buttons = group.buttons;
@@ -187,13 +189,13 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 				for (uint32_t j = 0; j < buttons.size(); j++) {
 					if (buttons[j].triggered == true) {
 						buttonRend[j].button->setPosition(
-							irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
+							irr::core::vector3df(buttons[j].pos.x, stage.getHeight({buttons[j].pos.x,buttons[j].pos.y}) -0.1, buttons[j].pos.y));
 						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
 						material_button.EmissiveColor.set(255, 0, 255, 0);
 					}
 					else {
 						buttonRend[j].button->setPosition(
-							irr::core::vector3df(buttons[j].pos.x, 0, buttons[j].pos.y));
+							irr::core::vector3df(buttons[j].pos.x, stage.getHeight({buttons[j].pos.x,buttons[j].pos.y}), buttons[j].pos.y));
 						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
 						material_button.EmissiveColor.set(255, 255, 0, 0);
 					}
@@ -202,7 +204,7 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 			else {
 				for (uint32_t j = 0; j < buttons.size(); j++) {
 					buttonRend[j].button->setPosition(
-						irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
+						irr::core::vector3df(buttons[j].pos.x, stage.getHeight({buttons[j].pos.x,buttons[j].pos.y}) -0.1, buttons[j].pos.y));
 					irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
 					material_button.EmissiveColor.set(255, 0, 255, 0);
 				}
@@ -220,7 +222,7 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 				for (uint32_t j = 0; j < buttons.size(); j++) {
 
 					buttonRend[j].button->setPosition(
-						irr::core::vector3df(buttons[j].pos.x, 0, buttons[j].pos.y));
+						irr::core::vector3df(buttons[j].pos.x, stage.getHeight({buttons[j].pos.x,buttons[j].pos.y}), buttons[j].pos.y));
 					irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
 					material_button.setTexture(0, this->buttonArrow);
 					material_button.EmissiveColor.set(255, 255, 255, 255);
@@ -238,7 +240,7 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 
 					if (group.groupTriggered) {
 						buttonRend[j].button->setPosition(
-							irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
+							irr::core::vector3df(buttons[j].pos.x, stage.getHeight({buttons[j].pos.x,buttons[j].pos.y})-0.1, buttons[j].pos.y));
 						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
 						material_button.setTexture(0, this->buttonArrow);
 						material_button.EmissiveColor.set(255, 0, 255, 0);
@@ -246,7 +248,7 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 
 					else if (group.blocked) {
 						buttonRend[j].button->setPosition(
-							irr::core::vector3df(buttons[j].pos.x, 0, buttons[j].pos.y));
+							irr::core::vector3df(buttons[j].pos.x, stage.getHeight({buttons[j].pos.x,buttons[j].pos.y}), buttons[j].pos.y));
 						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
 						material_button.setTexture(0, this->buttonBlocked);
 						material_button.EmissiveColor.set(255, 200, 0, 0);
@@ -254,7 +256,7 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 
 					else {
 						buttonRend[j].button->setPosition(
-							irr::core::vector3df(buttons[j].pos.x, 0, buttons[j].pos.y));
+							irr::core::vector3df(buttons[j].pos.x, stage.getHeight({buttons[j].pos.x,buttons[j].pos.y}), buttons[j].pos.y));
 						irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
 						material_button.setTexture(0, this->buttonArrow);
 						material_button.EmissiveColor.set(255, 255, 0, 0);
