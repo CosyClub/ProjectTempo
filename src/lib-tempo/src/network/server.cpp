@@ -380,6 +380,8 @@ void checkForClientDeletion(anax::World &world)
 
 		if (!id.isNull()) {
 			anax::Entity e(world, id);
+			auto& comp_party = e.getComponent<tempo::ComponentParty>();
+			comp_party.freePartySlot();
 			world.killEntity(e);
 		}
 		removeClientId(ip.toInteger(), port);
