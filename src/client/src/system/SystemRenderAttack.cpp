@@ -21,7 +21,6 @@ void SystemRenderAttack::update(SystemStageRenderer& sr, irr::video::SColor colo
 		auto& rot   = entity.getComponent<tempo::ComponentStageRotation>();
 
 		auto targets = attack.getAbsolutePositions(pos.getOrigin(), rot.facing);
-		
 
 		for (auto& target : targets)
 		{
