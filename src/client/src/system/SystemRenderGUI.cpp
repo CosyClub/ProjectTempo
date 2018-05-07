@@ -179,11 +179,13 @@ void SystemRenderGUI::updateNudge(irr::gui::IGUIFont *font,
 	// by in relation to the beat per beat
 	float drift = beat_length - avg_key_delta;
 
-	if(drift > 0 && avg_beat_delta + drift * 5 > window_size){
-		msg = "Too fast!";
-	}
-	if(drift < 0 && avg_beat_delta + drift * 5 < -window_size){
-		msg = "Too slow!";
+	if(beats_missed > 0){
+		if(drift > 0 && avg_beat_delta + drift * 5 > window_size){
+			msg = "Too fast!";
+		}
+		if(drift < 0 && avg_beat_delta + drift * 5 < -window_size){
+			msg = "Too slow!";
+		}
 	}
 
 	if(msg != nullptr){
