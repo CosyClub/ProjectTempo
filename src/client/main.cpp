@@ -210,7 +210,7 @@ int main(int argc, const char** argv)
 	irr::video::IVideoDriver* driver = device->getVideoDriver();
 	irr::scene::ISceneManager* smgr = device->getSceneManager();
 	irr::gui::IGUIEnvironment* gui_env = device->getGUIEnvironment();
-	
+
 	irr::video::ITexture* splash_texture[4];
 	splash_texture[0] = driver->getTexture("resources/materials/textures/splash-full.png");
 	splash_texture[1] = driver->getTexture("resources/materials/textures/splash-minimal.png");
@@ -234,7 +234,7 @@ int main(int argc, const char** argv)
 	/////////////////////////////////////////////////
 	// Setup ECS
 	anax::World world;
-	
+
 	tempo::SystemHealth            system_health;
 	tempo::SystemTrigger           system_trigger(world);
 	client::SystemAttack           system_attack;
@@ -303,7 +303,7 @@ int main(int argc, const char** argv)
 		tempo::port_ci = DEFAULT_PORT_IN;
 		tempo::port_co = DEFAULT_PORT_OUT;
 	}
-	
+
 	// Bind sockets
 	// Note: other server ports aquired dynamically on handshake
 	tempo::port_si = DEFAULT_PORT_IN;
@@ -315,9 +315,9 @@ int main(int argc, const char** argv)
 	std::thread listener(tempo::listenForServerUpdates, std::ref(running));
 	// Hack to allow printouts to line up a bit nicer :)
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
-	
 
-	// Connect to server and sync level/time  
+
+	// Connect to server and sync level/time
 	if (!tempo::connectToAndSyncWithServer(world))
 		the_end(1, "Failed to connect/sync with server.", world, running, listener, device);
 	sync_time(clock);
@@ -340,7 +340,7 @@ int main(int argc, const char** argv)
 				splash_timer.restart();
 				splashScreen->setImage(splash_texture[flash++ % 2]);
 			}
-			
+
 			driver->beginScene(true, true);
 			smgr->drawAll();
 			gui_env->drawAll();
@@ -401,7 +401,7 @@ int main(int argc, const char** argv)
 	/////////////////////////////////////////////////
 	// Main loop
 	int frame_counter = 0;
-	sf::Clock fps_timer;	
+	sf::Clock fps_timer;
 	sf::Clock frame_clock = sf::Clock();
 	sf::Clock update_floor_clock = sf::Clock();
 	update_floor_clock.restart();
@@ -418,13 +418,13 @@ int main(int argc, const char** argv)
 
 	smgr->setActiveCamera(camera_node);
 	float dt;
-	
+
 	sf::Int64 t = clock.get_time().asMicroseconds();
 	std::cout << "\n\n\n\n\n\n" << t << "\n\n\n\n\n\n\n";
 	sf::Int64 synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 	std::cout << "\n\n\n\n\n\n" << synced_tick << "\n\n\n\n\n\n\n";
 	client::next_palette(synced_tick % client::palettes.size());
-	
+
 	printf("Entering main loop\n");
 	while (device->run()) {
 		
@@ -470,7 +470,7 @@ int main(int argc, const char** argv)
 			system_translation_animation.updateAnimations();
 
 			// Graphics updates
-			system_render_attack.update(system_stage_renderer, 
+			system_render_attack.update(system_stage_renderer,
 			                            client::curr_pallette.attack);
 			system_render_scene_node.update(playerpos);
 			system_render_health_bars.update(playerpos);
@@ -493,10 +493,11 @@ int main(int argc, const char** argv)
 		glm::vec4 c1;
 		glm::vec4 c2;
 		if (clock.passed_beat()) {
+
 			// For christ sake, leave this code alone
 			synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
 			if (synced_tick++ % 20 == 0)
-				std::cout << "SYNCED_TICK (" << synced_tick << ") " 
+				std::cout << "SYNCED_TICK (" << synced_tick << ") "
 				          << clock.get_time().asMilliseconds()
 				          << "+++++++++++++++" << std::endl;
 			// End of leave this code alone
@@ -512,8 +513,9 @@ int main(int argc, const char** argv)
 			system_translation_animation.endBeat();
 
 			client::next_palette(synced_tick % client::palettes.size());
+
 			system_lighting.update(client::curr_pallette.light);
-		}\
+		}
 
 		////////////////
 		// Events at "Delta End"
@@ -523,7 +525,8 @@ int main(int argc, const char** argv)
 
 		system_stage_renderer.Update(smgr, driver, playerpos,
 		                             client::curr_pallette.floor1,
-		                             client::curr_pallette.floor2, 
+		                             combo < 20 ? irr::video::SColor(255, 50, 50, 50)
+		                                        : client::curr_pallette.floor2,
 		                             synced_tick, dt);
 
 		driver->beginScene(true, true);
@@ -545,9 +548,10 @@ int main(int argc, const char** argv)
 		}
 
 	}  // main loop
-	
+
 	click.~Sound();
 	clickbuf.~SoundBuffer();
+
 	tempo::disconnectFromServer(entity_player);
 	the_end(0, "Goodbye!\r\n", world, running, listener, device);
 }

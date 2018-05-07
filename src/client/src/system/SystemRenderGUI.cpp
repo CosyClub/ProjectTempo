@@ -267,12 +267,11 @@ void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
 	   comp_input.actions.back().outside_window){
 	  colour_combo_bar = irr::video::SColor(255, 255, 0, 0);
 		driver->draw2DRectangle(colour_combo_bar,
-														irr::core::rect<irr::s32>(combo_width_left,  combo_height_top,
-																											window_left, combo_height_bottom));
-
-		driver->draw2DRectangle(colour_combo_bar,
-														irr::core::rect<irr::s32>(window_right,  combo_height_top,
-																											combo_width_right, combo_height_bottom));
+		                        irr::core::rect<irr::s32>(combo_width_left,  combo_height_top,
+		                        window_left, combo_height_bottom));
+		                        driver->draw2DRectangle(colour_combo_bar,
+		                        irr::core::rect<irr::s32>(window_right,  combo_height_top,
+		                        combo_width_right, combo_height_bottom));
 	}
 
 	if(comp_input.actions.size() > 0 &&
