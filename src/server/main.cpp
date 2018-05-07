@@ -362,6 +362,7 @@ int main(int argc, const char **argv)
 			system_attack.processAttacks();
 			system_health.regenerate();
 			system_movement.processTranslation();
+			system_player.TeleportPlayers();
 		}
 
 		////////////////
