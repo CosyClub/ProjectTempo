@@ -200,7 +200,7 @@ int main(int argc, const char** argv)
 
 	irr::IrrlichtDevice *device = irr::createDevice(
 	//irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1280, 720), 16, enable_hud, false, false);
-	irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1980, 1080), 16, enable_hud, false, false);
+	irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1920, 1080), 16, enable_hud, false, false);
 
 	if (!device) {
 		printf("Failed to create Irrlicht Device\n");
