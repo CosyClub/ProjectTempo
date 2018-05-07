@@ -88,6 +88,8 @@ namespace client
 
 	 		auto& entities = getEntities();
 			collisionMap.clear();
+
+			// Update collision map
 	 		for (auto& entity : entities) {
 				auto& sp = entity.getComponent<tempo::ComponentStagePosition>();
 	 			glm::ivec2 origin = sp.getOrigin();
@@ -99,6 +101,7 @@ namespace client
 				}
 			}
 
+			// Check if we need to clear movements
 	 		for (auto& entity : entities) {
 	 			glm::ivec2 origin = entity.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
@@ -120,16 +123,12 @@ namespace client
 				if (collisionMap.find(dest) == collisionMap.end())
 					collisionMap[dest] = false;
 				can_move &= !collisionMap[dest];
+
 	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5 || stage.getHeight(dest) <= -3 || !can_move) {
 	 				// consume the moment before the server rejects you
 	 				// currently combos aren't server protected, so maybe this should move into lib-tempo?
 	 				// this produces a lovely jumping against the wall animation!
 	 				trans.delta = glm::ivec2(0, 0);
-	 				//if (entity.hasComponent<tempo::ComponentCombo>()) {
-	 				//	// what the heck this is a jank class anyway
-	 				//	tempo::ComponentCombo& combo = entity.getComponent<tempo::ComponentCombo>();
-	 				//	combo.advanceBeat();
-	 				//}
 	 			}
 	 		}
 	 	}
@@ -182,16 +181,6 @@ int main(int argc, const char** argv)
 	// Clock
 	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(DELTA));
 
-	KeyInput receiver;
-
-	// This makes it full-screen
-	// irr::IrrlichtDevice *nulldevice = irr::createDevice(irr::video::EDT_NULL);
-	// irr::core::dimension2d<irr::u32> deskres =
-	// nulldevice->getVideoModeList()->getDesktopResolution();
-	// nulldevice -> drop();
-	// irr::IrrlichtDevice *device = irr::createDevice(
-	//   irr::video::EDT_OPENGL, deskres, 16, true, false, false);
-
 	bool enable_hud = false;
 	if (argc == 4) {
 		std::string HUD = argv[3];
@@ -199,7 +188,6 @@ int main(int argc, const char** argv)
 	}
 
 	irr::IrrlichtDevice *device = irr::createDevice(
-	//irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1280, 720), 16, enable_hud, false, false);
 	irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1920, 1080), 16, enable_hud, false, false);
 
 	if (!device) {
@@ -254,7 +242,7 @@ int main(int argc, const char** argv)
 	client::SystemRenderSpikes     system_render_spikes;
 	client::SystemUpdateKeyInput   system_update_key_input;
 	client::SystemTranslationAnimation system_translation_animation(&world, device, clock);
-	client::SystemLessJank system_less_jank;
+	client::SystemLessJank         system_less_jank;
 
 	// Add Systems
 	world.addSystem(system_attack);
@@ -418,11 +406,7 @@ int main(int argc, const char** argv)
 
 	smgr->setActiveCamera(camera_node);
 	float dt;
-
-	sf::Int64 t = clock.get_time().asMicroseconds();
-	std::cout << "\n\n\n\n\n\n" << t << "\n\n\n\n\n\n\n";
 	sf::Int64 synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
-	std::cout << "\n\n\n\n\n\n" << synced_tick << "\n\n\n\n\n\n\n";
 	client::next_palette(synced_tick % client::palettes.size());
 
 	printf("Entering main loop\n");
@@ -501,10 +485,9 @@ int main(int argc, const char** argv)
 		glm::vec4 c1;
 		glm::vec4 c2;
 		if (clock.passed_beat()) {
-
 			// For christ sake, leave this code alone
 			synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
-			if (synced_tick++ % 20 == 0)
+			if (synced_tick % 20 == 0)
 				std::cout << "SYNCED_TICK (" << synced_tick << ") "
 				          << clock.get_time().asMilliseconds()
 				          << "+++++++++++++++" << std::endl;
@@ -520,8 +503,7 @@ int main(int argc, const char** argv)
 
 			system_translation_animation.endBeat();
 
-			client::next_palette(synced_tick % client::palettes.size());
-
+			client::next_palette((synced_tick * 7) % client::palettes.size());
 			system_lighting.update(client::curr_pallette.light);
 		}
 
@@ -556,10 +538,8 @@ int main(int argc, const char** argv)
 		}
 
 	}  // main loop
-
 	click.~Sound();
 	clickbuf.~SoundBuffer();
-
 	tempo::disconnectFromServer(entity_player);
 	the_end(0, "Goodbye!\r\n", world, running, listener, device);
 }

@@ -43,10 +43,9 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 	case 5: player_spawn_location += glm::ivec2(-10, 10); break;
 	}
 
-
 	entity_player.addComponent<tempo::ComponentRespawn>(player_spawn_location);
 	entity_player.addComponent<tempo::ComponentStagePosition>(player_spawn_location);
-	entity_player.addComponent<tempo::ComponentStageRotation>(NORTH);
+	entity_player.addComponent<tempo::ComponentStageRotation>(SOUTH);
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
 	entity_player.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 255, 255), false, glm::vec2(4,4));
@@ -68,7 +67,7 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 
 	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_NONE, false, false);
 	e.addComponent<tempo::ComponentStagePosition>(pos, false);
-	e.addComponent<tempo::ComponentStageRotation>(NORTH);
+	e.addComponent<tempo::ComponentStageRotation>(SOUTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
 	int a = rand()%2;
 	std::string path = "resources/materials/textures/zombie-sheet-" + std::to_string(a) + ".png";
@@ -90,7 +89,7 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 
 	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_NONE, false, false);
 	e.addComponent<tempo::ComponentStagePosition>(pos, false);
-	e.addComponent<tempo::ComponentStageRotation>(NORTH);
+	e.addComponent<tempo::ComponentStageRotation>(SOUTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>("resources/materials/textures/totem.png", glm::vec3(255, 255, 255), false, glm::vec2(1,1));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
@@ -115,7 +114,7 @@ anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 
 	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_AGGRO, false, false);
 	e.addComponent<tempo::ComponentStagePosition>(pos, false);
-	e.addComponent<tempo::ComponentStageRotation>(NORTH);
+	e.addComponent<tempo::ComponentStageRotation>(SOUTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 200, 200), false, glm::vec2(2,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
@@ -142,7 +141,7 @@ anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<g
 
 	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_PATROL, false, false, path);
 	e.addComponent<tempo::ComponentStagePosition>(pos, false);
-	e.addComponent<tempo::ComponentStageRotation>(NORTH);
+	e.addComponent<tempo::ComponentStageRotation>(SOUTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>(path1, glm::vec3(255, 255, 255), false, glm::vec2(5,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
@@ -164,7 +163,7 @@ anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
 	path.push_back(pos);
 	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_PATH, false, false, path);
 	e.addComponent<tempo::ComponentStagePosition>(pos, false);
-	e.addComponent<tempo::ComponentStageRotation>(NORTH);
+	e.addComponent<tempo::ComponentStageRotation>(SOUTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
@@ -250,7 +249,7 @@ anax::Entity createSnake(anax::World& world, glm::ivec2 pos, tempo::Facing f, in
 
 		seg.addComponent<tempo::ComponentAI>(MoveType::MOVE_SNAKE, false, false);
 		seg.addComponent<tempo::ComponentStagePosition>(pos);
-		seg.addComponent<tempo::ComponentStageRotation>(NORTH);
+		seg.addComponent<tempo::ComponentStageRotation>(SOUTH);
 		seg.addComponent<tempo::ComponentStageTranslation>();
 		seg.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 200, 200), false, glm::vec2(4,4));
 		seg.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
