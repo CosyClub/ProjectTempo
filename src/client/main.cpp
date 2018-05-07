@@ -427,7 +427,7 @@ int main(int argc, const char** argv)
 
 	printf("Entering main loop\n");
 	while (device->run()) {
-		
+
 		// Work out a frame delta time.
 		// const irr::u32 now = device->getTimer()->getTime();
 		dt = frame_clock.restart().asSeconds();
@@ -435,15 +435,23 @@ int main(int argc, const char** argv)
 
 		glm::ivec2 playerpos;
 
+
+		// std::clock_t    start;
+		//
+		// start = std::clock();
 		////////////////
 		// Events all the time
 		{
 			// Check for new entities from server
-			system_entity.creationCheck(world);
+			bool ent_created = system_entity.creationCheck(world);
 			system_entity.deletionCheck(world);
 
 			// Initialise Graphics for new entities
-			system_gc.addEntities(driver, smgr, world);
+			if(ent_created) {
+				system_gc.addEntities(driver, smgr, world);
+			}
+			//std::cout << "Time: " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
+
 			system_render_scene_node.setup(smgr, driver);
 			system_render_health_bars.setup(smgr);
 			system_button_renderer.setup(smgr, driver);
@@ -501,7 +509,7 @@ int main(int argc, const char** argv)
 				          << clock.get_time().asMilliseconds()
 				          << "+++++++++++++++" << std::endl;
 			// End of leave this code alone
-			
+
 			// click.play();
 
 			system_trigger.updateButtons(world);

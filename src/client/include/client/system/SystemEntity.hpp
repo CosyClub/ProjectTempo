@@ -6,7 +6,7 @@
 namespace client
 {
 struct SystemEntity : anax::System<anax::Requires<>> {
-	void creationCheck(anax::World &w);
+	bool creationCheck(anax::World &w);
 	void deletionCheck(anax::World &w);
 };
 
