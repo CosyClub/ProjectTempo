@@ -38,11 +38,13 @@ void SystemHealth::check_health()
 					for (auto &position : positions) {
 						p << position.x << position.y;
 					}
+
+          // Add facing direction
 					if (entity.hasComponent<tempo::ComponentStageRotation>()) {
 						p << entity.getComponent<tempo::ComponentStageRotation>().facing.x;
 						p << entity.getComponent<tempo::ComponentStageRotation>().facing.y;
 					}
-					tempo::broadcastMessage(tempo::QueueID::MOVEMENT_UPDATES, p);
+          tempo::broadcastMessage(tempo::QueueID::MOVEMENT_UPDATES, p);
 
 					// Tell everyone they have broken combo
 					entity.getComponent<tempo::ComponentCombo>().zeroCombo();
