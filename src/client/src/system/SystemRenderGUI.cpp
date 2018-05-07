@@ -255,6 +255,21 @@ void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
 	if(indicator_left  < combo_width_left ){ indicator_left  = combo_width_left;  }
 	if(indicator_right > combo_width_right){ indicator_right = combo_width_right; }
 
+	bool last_key_was_this_beat = false;
+	if(comp_input.actions.size() > 0){
+		if(comp_input.actions.back().delta < 0){
+			// Then the key was pressed before start of this beat
+			last_key_was_this_beat = (clock.get_beat_number() + 1 ==
+			                          comp_input.actions.back().beat
+			                         );
+		} else {
+			// then key was pressed after start of this beat
+			last_key_was_this_beat = (clock.get_beat_number() ==
+			                          comp_input.actions.back().beat
+			                         );
+		}
+	}
+
 	////////////////////////////////////////////////////////
 	// Highlight the window keys can be pressed in
 	driver->draw2DRectangle(irr::video::SColor(150, 0, 255, 0),
@@ -267,9 +282,7 @@ void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
 	irr::video::SColor colour_combo_bar = irr::video::SColor(255, 50, 50, 50);
 
 	// If last key press was on this beat then flash the bar
-	if(comp_input.actions.size() > 0 &&
-	   comp_input.actions.back().beat == clock.get_beat_number()){
-
+	if(last_key_was_this_beat){
 		if(comp_input.actions.back().outside_window){
 			colour_combo_bar = irr::video::SColor(255, 255,   0,   0);
 		} else  {
@@ -286,8 +299,7 @@ void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
 
 	////////////////////////////////////////////////////////
 	// Last key press indicator
-	if(comp_input.actions.size() > 0 &&
-	   comp_input.actions.back().beat >= clock.get_beat_number() - 1){
+	if(last_key_was_this_beat){
 
 		int last_indicator_center = (combo_width_left +
 		                             (int)(
