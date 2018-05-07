@@ -21,8 +21,8 @@ SystemTrigger::SystemTrigger(anax::World& world)
 void SystemTrigger::updateButtons(anax::World& world)
 {
 	//Sets to keep track of which rhythm Button groups need resetting or blocking after each update
-	std::set<int> rhythmID_resets;
-	std::set<int> rhythmID_blocks;
+	std::unordered_set<int> rhythmID_resets;
+	std::unordered_set<int> rhythmID_blocks;
 
 	//this stops the overwrite when making nextButton Triggerable
 	bool skipNext = false;
@@ -240,7 +240,7 @@ void SystemTrigger::syncFloorWithButtons() {
 	}
 
 }
-void SystemTrigger::resetButtons(std::set<int>& rhythmID_resets) {
+void SystemTrigger::resetButtons(std::unordered_set<int>& rhythmID_resets) {
 
 	auto& entities = getEntities();
 
