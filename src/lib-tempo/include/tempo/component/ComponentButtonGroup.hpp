@@ -22,6 +22,7 @@ struct ComponentButtonGroup : anax::Component , NetworkedComponent {
 	std::deque<button>      buttons;
 	std::vector<glm::ivec2> wall_positions;
 	std::vector<glm::ivec2> spike_positions;
+	glm::ivec2              respawn_pos;
 
 	glm::ivec2 prev = {-1,-1};
 	glm::ivec2 next = {-1,-1};
@@ -36,6 +37,7 @@ struct ComponentButtonGroup : anax::Component , NetworkedComponent {
 	ComponentButtonGroup(std::vector<glm::ivec2> button_positions,
 	                     std::vector<glm::ivec2> wall_positions,
 	                     std::vector<glm::ivec2> spike_positions,
+	                     glm::ivec2              respawn_pos,
 	                     glm::ivec2              prev,
 	                     glm::ivec2              next,
 	                     bool                    triggerable,

@@ -1,8 +1,10 @@
 #include <tempo/system/SystemHealth.hpp>
 
-#include <tempo/component/ComponentStagePosition.hpp>  //Just temporary
+#include <tempo/component/ComponentStagePosition.hpp>
+#include <tempo/component/ComponentStageRotation.hpp>
 #include <tempo/component/ComponentCombo.hpp>
 #include <tempo/component/ComponentParty.hpp>
+#include <tempo/component/ComponentRespawn.hpp>
 
 namespace tempo
 {
@@ -22,21 +24,28 @@ void SystemHealth::check_health()
 			if (entity.hasComponent<ComponentPlayerRemote>() ||
 			    entity.hasComponent<ComponentPlayerLocal>())
 			{
-
-				int party_number = 0;
-
-				int emptySpace = 40;
-
-				int fheight = 69 + emptySpace;
-
-				if (entity.hasComponent<ComponentParty>()) {
-					party_number = entity.getComponent<ComponentParty>().party_number;
-				}
+				glm::ivec2 spawn_loc = entity.getComponent<ComponentRespawn>().spawn_location;
 
 				if (entity.hasComponent<ComponentStagePosition>()) {
-					entity.getComponent<ComponentStagePosition>().setPosition(
-					  glm::ivec2(10 + (party_number* fheight), 0));  // poof
+					entity.getComponent<ComponentStagePosition>().setPosition(spawn_loc);
 					h.current_health = h.max_health;
+		
+					// Send update to everyone
+					auto &positions = entity.getComponent<tempo::ComponentStagePosition>().occupied;
+					sf::Packet p;
+					p << entity.getId();
+					p << static_cast<uint32_t>(positions.size());
+					for (auto &position : positions) {
+						p << position.x << position.y;
+					}
+
+					// Add facing direction
+					if (entity.hasComponent<tempo::ComponentStageRotation>()) {
+						p << entity.getComponent<tempo::ComponentStageRotation>().facing.x;
+						p << entity.getComponent<tempo::ComponentStageRotation>().facing.y;
+					}
+					
+					tempo::broadcastMessage(tempo::QueueID::MOVEMENT_UPDATES, p);
 				}
 			}
 			else

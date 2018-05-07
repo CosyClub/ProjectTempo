@@ -15,6 +15,7 @@
 #include <tempo/component/ComponentModel.hpp>
 #include <tempo/component/ComponentParty.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
+#include <tempo/component/ComponentRespawn.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageTranslation.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
@@ -43,11 +44,12 @@ void         createSpikes(anax::World &world, std::vector<glm::ivec2> spikes);
 anax::Entity createButtonGroup(anax::World &           world,
                                std::vector<glm::ivec2> positions,
                                std::vector<glm::ivec2> tiles,
-							   std::vector<glm::ivec2> spikes,
-							   glm::ivec2			   prev,
-							   glm::ivec2			   next,
-							   bool					   triggerable,
-							   int					   ID);
+                               std::vector<glm::ivec2> spikes,
+                               glm::ivec2              respawn_pos,
+                               glm::ivec2              prev,
+                               glm::ivec2              next,
+                               bool                    triggerable,
+                               int                     ID);
 
 }  // namespace tempo
 
