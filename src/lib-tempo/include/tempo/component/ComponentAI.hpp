@@ -19,6 +19,7 @@ enum MoveType{
 	MOVE_PATH,
 	MOVE_PATROL,
 	MOVE_WANDER,
+	MOVE_AGGRO,
 	MOVE_SNAKE,
 };
 
