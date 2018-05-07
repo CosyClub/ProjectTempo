@@ -297,7 +297,7 @@ void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
 		                                   )
 		                             );
 
-		driver->draw2DRectangle(irr::video::SColor(255, 50, 50, 50),
+		driver->draw2DRectangle(irr::video::SColor(255, 20, 20, 20),
 	                        irr::core::rect<irr::s32>(last_indicator_center-7, combo_height_center-12,
 	                                                  last_indicator_center+7, combo_height_center+12));
 
@@ -306,7 +306,7 @@ void SystemRenderGUI::updateComboBar(irr::video::IVideoDriver * driver,
 
 	////////////////////////////////////////////////////////
 	// Beat progress indicator
-	driver->draw2DRectangle(irr::video::SColor(255, 50, 50, 50),
+	driver->draw2DRectangle(irr::video::SColor(255, 20, 20, 20),
 	                        irr::core::rect<irr::s32>(indicator_left, combo_height_top,
 	                                                  indicator_right, combo_height_bottom));
 
