@@ -16,15 +16,17 @@ namespace client
 using tempo::operator<<;
 using tempo::operator>>;
 
-void SystemEntity::creationCheck(anax::World &w)
+bool SystemEntity::creationCheck(anax::World &w)
 {
 	tempo::Queue<sf::Packet> *q = get_system_queue(tempo::QueueID::ENTITY_CREATION);
+	bool flag = !q->empty();
 	while (!q->empty()) {
 		sf::Packet p = q->front();
 		q->pop();
 		tempo::addComponent(w, p);
 	}
 	w.refresh();
+	return flag;
 }
 
 void SystemEntity::deletionCheck(anax::World &w)
