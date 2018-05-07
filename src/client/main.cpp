@@ -513,7 +513,8 @@ int main(int argc, const char** argv)
 			system_translation_animation.endBeat();
 
 			client::next_palette(synced_tick % client::palettes.size());
-			system_lighting.update(client::curr_pallette.light);
+			system_lighting.update(combo < 20 ? irr::video::SColor(255, 50, 50, 50) 
+			                                  : client::curr_pallette.light);
 		}
 
 		playerpos =
@@ -529,8 +530,8 @@ int main(int argc, const char** argv)
 
 		system_stage_renderer.Update(smgr, driver, playerpos,
 		                             client::curr_pallette.floor1,
-		                              irr::video::SColor(255, 50, 50, 50),
-		                             //client::curr_pallette.floor2,
+		                             combo < 20 ? irr::video::SColor(255, 50, 50, 50)
+		                                        : client::curr_pallette.floor2,
 		                             synced_tick, dt);
 
 		driver->beginScene(true, true);
