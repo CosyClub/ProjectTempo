@@ -111,6 +111,7 @@ int main(int argc, const char **argv)
 	tempo::Clock clock = tempo::Clock(sf::microseconds(sf::Int64(TIME(bpm))), sf::milliseconds(delta));
 	mainsong.start();
 
+	std::cout << delta << std::endl << bpm << std::endl << song << std::endl;
 
 	// Set up remote address, local ports and remote handshake port
 	tempo::port_si = DEFAULT_PORT_IN;

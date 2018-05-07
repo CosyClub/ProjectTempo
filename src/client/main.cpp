@@ -183,9 +183,9 @@ int main(int argc, const char** argv)
 	}
 
 	// Clock
-	tempo::Clock clock = tempo::Clock(
-		sf::microseconds(sf::Int64(TIME(bpm))),
-		sf::milliseconds(delta));
+	tempo::Clock clock = tempo::Clock(sf::microseconds(sf::Int64(TIME(bpm))),sf::milliseconds(delta));
+
+	std::cout << delta << std::endl << bpm << std::endl;
 
 	bool enable_hud = false;
 	if (argc >= 4) {
