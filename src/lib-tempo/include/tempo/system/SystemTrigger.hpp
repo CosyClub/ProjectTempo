@@ -6,6 +6,7 @@
 #include <anax/World.hpp>
 #include <anax/Entity.hpp>
 
+#include <set>
 #include <glm/vec2.hpp>
 
 #include <tempo/component/ComponentButtonGroup.hpp>
@@ -36,7 +37,7 @@ class SystemTrigger : public anax::System<anax::Requires<tempo::ComponentButtonG
 	void updateButtons(anax::World &world);
 
 	void syncFloorWithButtons();
-	void resetButtons(int rhythmID); // make the first button triggerable and all others not
+	void resetButtons(std::set<int>& rhythmID_resets); // make the first button triggerable and all others not
 	void blockButtons(int rhythmID); // make all buttons untriggerable, until players get off buttons
 
    private:

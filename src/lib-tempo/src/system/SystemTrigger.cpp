@@ -5,7 +5,6 @@
 #include <tempo/system/SystemTrigger.hpp>
 
 #include <iostream>
-#include <set>
 
 namespace tempo
 {
@@ -213,14 +212,13 @@ void SystemTrigger::updateButtons(anax::World& world)
 	}
 
 	//reset all groups that need resetting
-	for (int id : rhythmID_resets) {
-		resetButtons(id);
-	}
+	resetButtons(rhythmID_resets);
 
 	//block all groups that need blocking
 	for (int id : rhythmID_blocks) {
 		blockButtons(id);
 	}
+
 
 	//Drop spikes where buttons have been triggered
 	subSystemSpikes.updateSpikes(untriggerPos);
@@ -236,13 +234,13 @@ void SystemTrigger::syncFloorWithButtons() {
 		// get deque of all buttons in the group
 		auto &button_group = entity.getComponent<tempo::ComponentButtonGroup>();
 		if (button_group.groupTriggered) {
-			for (glm::ivec2 pos : button_group.wall_positions) 
+			for (glm::ivec2 pos : button_group.wall_positions)
 				stage.setHeight(pos, 0);
 		}
 	}
 
 }
-void SystemTrigger::resetButtons(int rhythmID) {
+void SystemTrigger::resetButtons(std::set<int>& rhythmID_resets) {
 
 	auto& entities = getEntities();
 
@@ -254,7 +252,7 @@ void SystemTrigger::resetButtons(int rhythmID) {
 
 		for (uint32_t j = 0; j < buttons.size(); j++) {
 
-			if (button_group.rhythmID != rhythmID) {
+			if (rhythmID_resets.find(button_group.rhythmID) == rhythmID_resets.end()) {
 				continue;
 			}
 
