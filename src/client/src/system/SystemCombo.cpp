@@ -39,6 +39,9 @@ void SystemCombo::checkForUpdates(anax::World &world)
 		anax::Entity e(world, id);
 
 		switch (static_cast<tempo::MessageCombo>(message)) {
+		case tempo::MessageCombo::ZERO_COMBO:
+			e.getComponent<tempo::ComponentCombo>().zeroCombo();
+			break;
 		case tempo::MessageCombo::BROKEN_COMBO:
 			e.getComponent<tempo::ComponentCombo>().breakCombo();
 			break;
