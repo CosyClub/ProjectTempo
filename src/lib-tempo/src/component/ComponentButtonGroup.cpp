@@ -8,11 +8,12 @@ namespace tempo
 ComponentButtonGroup::ComponentButtonGroup(std::vector<glm::ivec2> positions,
                                            std::vector<glm::ivec2> wall_positions,
                                            std::vector<glm::ivec2> spike_positions,
+	                                   glm::ivec2              respawn_pos,
                                            glm::ivec2              prev,
                                            glm::ivec2              next,
                                            bool	                   triggerable,
                                            int                     ID)
-    : wall_positions(wall_positions), spike_positions(spike_positions), prev(prev), next(next), groupTriggerable(triggerable), rhythmID(ID)
+    : wall_positions(wall_positions), spike_positions(spike_positions), respawn_pos(respawn_pos), prev(prev), next(next), groupTriggerable(triggerable), rhythmID(ID)
 {
 	for (glm::ivec2 pos : positions) {
 		button newbutton;
@@ -64,20 +65,13 @@ ComponentButtonGroup::ComponentButtonGroup(sf::Packet p)
 		spike_positions.push_back(v);
 	}
 
-	glm::ivec2 v1;
-
-	p >> v1;
-
+	glm::ivec2 v1, v2, respawn;
+	
+	p >> respawn >> v1 >> v2 >> rhythmID;
+	
+	respawn_pos = respawn;
 	prev = v1;
-
-	glm::ivec2 v2;
-
-	p >> v2;
-
 	next = v2;
-
-	p >> rhythmID;
-
 }
 
 ComponentID ComponentButtonGroup::getId()
@@ -112,11 +106,7 @@ sf::Packet ComponentButtonGroup::dumpComponent()
 		p << spike_positions[i];
 	}
 
-	p << prev;
-
-	p << next;
-
-	p << rhythmID;
+	p << respawn_pos << prev << next << rhythmID;
 
 	return p;
 }

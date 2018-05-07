@@ -1,4 +1,5 @@
 #include <client/system/SystemTranslationAnimation.hpp>
+#include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/time.hpp>
 
 #include <anax/World.hpp>
@@ -8,6 +9,8 @@
 #include <glm/glm.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+
+#include <iostream>
 
 namespace
 {
@@ -119,15 +122,18 @@ void SystemTranslationAnimation::updateAnimations()
 			continue;
 		}
 
+		client::ComponentRenderSceneNode& node =
+			entity.getComponent<client::ComponentRenderSceneNode>();
+
 		if (animators.count(entity_id) > 0) {
 			// Then we've already added an animator to this entity
-			continue;
+			node.node->removeAnimators();
+			node.billboard->removeAnimators();
 		}
 
 		tempo::ComponentStagePosition& pos = entity.getComponent<tempo::ComponentStagePosition>();
 		tempo::ComponentStage& stage = entity.getComponent<tempo::ComponentStage>();
-		client::ComponentRenderSceneNode& node =
-		  entity.getComponent<client::ComponentRenderSceneNode>();
+
 
 		irr::core::vector3df bp = node.billboard->getPosition();
 		irr::scene::ISceneNodeAnimator* hop =
@@ -145,7 +151,7 @@ void SystemTranslationAnimation::updateAnimations()
 				glm::fvec3(target.x, stage.getHeight(target), target.y));
 		node.node->addAnimator(move);
 
-		animators[entity_id] = std::make_pair(hop, move);
+		animators[entity_id] = true;
 	}
 }
 
@@ -156,8 +162,8 @@ void SystemTranslationAnimation::endBeat()
 
 		auto& node = entity.getComponent<client::ComponentRenderSceneNode>();
 		// removeAnimators not used in case other animations added
-		node.node->removeAnimator(it->second.first);
-		node.billboard->removeAnimator(it->second.second);
+		node.node->removeAnimators();
+		node.billboard->removeAnimators();
 	}
 	animators.clear();
 }

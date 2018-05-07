@@ -329,7 +329,6 @@ bool sendMessage(tempo::QueueID id, sf::Packet payload)
 
 bool broadcastMessage(QueueID id, sf::Packet p)
 {
-	assert(false);  // I think this should nevevr happen
 	return false;
 }
 

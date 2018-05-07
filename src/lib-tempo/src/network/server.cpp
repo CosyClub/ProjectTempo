@@ -10,6 +10,7 @@
 #include <tempo/component/ComponentParty.hpp>
 #include <tempo/component/ComponentPlayerLocal.hpp>
 #include <tempo/component/ComponentPlayerRemote.hpp>
+#include <tempo/component/ComponentRespawn.hpp>
 #include <tempo/component/ComponentStage.hpp>
 #include <tempo/component/ComponentStagePosition.hpp>
 #include <tempo/component/ComponentStageRotation.hpp>
@@ -218,6 +219,7 @@ sf::Packet packageComponents(anax::Entity entity)
 	ADD_COMPONENT(entity, c, packet, ComponentParty)
 	ADD_COMPONENT(entity, c, packet, ComponentPlayerLocal)
 	ADD_COMPONENT(entity, c, packet, ComponentPlayerRemote)
+	ADD_COMPONENT(entity, c, packet, ComponentRespawn)
 	ADD_COMPONENT(entity, c, packet, ComponentStage)
 	ADD_COMPONENT(entity, c, packet, ComponentStagePosition)
 	ADD_COMPONENT(entity, c, packet, ComponentStageRotation)

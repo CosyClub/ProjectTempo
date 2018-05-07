@@ -161,7 +161,6 @@ void the_end(uint32_t             code,
              std::thread         &listener,
              irr::IrrlichtDevice *device)
 {
-	std::cout << message << std::endl;
 	running.store(false);
 
 	// Close server listener and destroy the game
@@ -169,6 +168,7 @@ void the_end(uint32_t             code,
 	world.clear();
 	device->drop();
 
+	std::cout << message << std::endl;
 	exit(code);
 }
 
@@ -199,7 +199,8 @@ int main(int argc, const char** argv)
 	}
 
 	irr::IrrlichtDevice *device = irr::createDevice(
-	irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1920, 1080), 16, enable_hud, false, false);
+	//irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1280, 720), 16, enable_hud, false, false);
+	irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(1980, 1080), 16, enable_hud, false, false);
 
 	if (!device) {
 		printf("Failed to create Irrlicht Device\n");
@@ -426,8 +427,7 @@ int main(int argc, const char** argv)
 
 	printf("Entering main loop\n");
 	while (device->run()) {
-
-
+		
 		// Work out a frame delta time.
 		// const irr::u32 now = device->getTimer()->getTime();
 		dt = frame_clock.restart().asSeconds();
@@ -438,8 +438,6 @@ int main(int argc, const char** argv)
 		////////////////
 		// Events all the time
 		{
-			playerpos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-
 			// Check for new entities from server
 			system_entity.creationCheck(world);
 			system_entity.deletionCheck(world);
@@ -456,6 +454,7 @@ int main(int argc, const char** argv)
 			system_attack.processServerResponses(world);
 			system_combo.checkForUpdates(world);
 			system_attack.processServerResponses(world);
+			playerpos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
 			// Deal with local input
 			system_update_key_input.clear();
@@ -494,7 +493,6 @@ int main(int argc, const char** argv)
 		glm::vec4 c1;
 		glm::vec4 c2;
 		if (clock.passed_beat()) {
-			// click.play();
 
 			// For christ sake, leave this code alone
 			synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME);
@@ -503,6 +501,8 @@ int main(int argc, const char** argv)
 				          << clock.get_time().asMilliseconds()
 				          << "+++++++++++++++" << std::endl;
 			// End of leave this code alone
+			
+			// click.play();
 
 			system_trigger.updateButtons(world);
 			system_button_renderer.updateButtons(driver);
@@ -513,18 +513,13 @@ int main(int argc, const char** argv)
 			system_translation_animation.endBeat();
 
 			client::next_palette(synced_tick % client::palettes.size());
-			system_lighting.update(combo < 20 ? irr::video::SColor(255, 50, 50, 50) 
-			                                  : client::curr_pallette.light);
+
+			system_lighting.update(client::curr_pallette.light);
 		}
-
-		playerpos =
-		  entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
-
 
 		////////////////
 		// Events at "Delta End"
 		if (clock.passed_delta_end()) {
-			// std::cout << "End" << std::endl;
 			system_combo.advanceBeat();
 		}
 
@@ -546,14 +541,17 @@ int main(int argc, const char** argv)
 
 		++frame_counter;
 		if (fps_timer.getElapsedTime().asSeconds() > 1.0f) {
-			// float seconds = fps_timer.getElapsedTime().asSeconds();
-			// std::cout << "FPS: " << (int)(frame_counter / seconds) << std::endl;
+			float seconds = fps_timer.getElapsedTime().asSeconds();
+			std::cout << "FPS: " << (int)(frame_counter / seconds) << std::endl;
 			fps_timer.restart();
 			frame_counter = 0;
 		}
 
 	}  // main loop
 
+	click.~Sound();
+	clickbuf.~SoundBuffer();
+
 	tempo::disconnectFromServer(entity_player);
-	the_end(0, "Goodbye!.", world, running, listener, device);
+	the_end(0, "Goodbye!\r\n", world, running, listener, device);
 }
