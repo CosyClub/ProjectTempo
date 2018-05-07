@@ -97,7 +97,7 @@ anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 
 	std::string path = "resources/materials/textures/creeper.png";
 
-	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_WANDER, false, false);
+	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_AGGRO, false, false);
 	e.addComponent<tempo::ComponentStagePosition>(pos, false);
 	e.addComponent<tempo::ComponentStageRotation>(NORTH);
 	e.addComponent<tempo::ComponentStageTranslation>();
