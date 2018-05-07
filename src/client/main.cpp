@@ -57,9 +57,7 @@
 #include <iostream>
 #include <thread>
 
-#define BPM 138              // Beats per minutes
-#define DELTA 100            // Delta around a beat a player can hit (millisecs)
-#define TIME 60000000 / BPM  // Time between beats (microsecs)
+#include "tempo/constants.hpp"
 
 #include <tempo/component/ComponentStage.hpp>
 namespace client
@@ -171,6 +169,7 @@ void the_end(uint32_t             code,
 	exit(code);
 }
 
+// ./RaveCave [ServerIP] [PlayerParty] HUD DELTA BPM SONG
 int main(int argc, const char** argv)
 {
 	sf::SoundBuffer clickbuf;
@@ -184,7 +183,7 @@ int main(int argc, const char** argv)
 	}
 
 	// Clock
-	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(delta));
+	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME(BPM)), sf::milliseconds(delta));
 
 	bool enable_hud = false;
 	if (argc >= 4) {

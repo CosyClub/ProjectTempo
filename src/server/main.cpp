@@ -27,10 +27,7 @@
 #include <thread>
 #include <vector>
 
-#define BPM 138                // Beats per minutes
-#define PHASE 0                // Microseconds
-#define PLAYER_DELTA 100       // Delta around a beat a player can hit (millisecs)
-#define TIME 60000000.f / BPM  // Time between beats (microsecs)
+#include "tempo/constants.hpp"
 
 void RythmButton(anax::World &          world,
 				std::vector<std::vector<glm::ivec2>>  positions,
@@ -86,6 +83,7 @@ void newButton(anax::World &    world,
 
 }
 
+// ./RaveCave_Server DELTA BPM SONG
 int main(int argc, const char **argv)
 {
 
@@ -95,13 +93,13 @@ int main(int argc, const char **argv)
 	mainsong.skip(sf::microseconds(PHASE));
 	mainsong.set_volume(20.f);
 
-	int delta = PLAYER_DELTA;
-	if (argc >= 5) {
+	int delta = DELTA;
+	if (argc >= 2) {
 		delta = atoi(argv[2]);
 	}
 
 	// Clock
-	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME), sf::milliseconds(delta));
+	tempo::Clock clock = tempo::Clock(sf::microseconds(TIME(BPM)), sf::milliseconds(delta));
 	mainsong.start();
 
 
