@@ -123,8 +123,34 @@ void SystemHealth::regenerate()
 		auto &h = entity.getComponent<tempo::ComponentHealth>();
 		auto &c = entity.getComponent<tempo::ComponentCombo>();
 
-		if( c.comboCounter > 20) {
+		
+		// more healing for everyone!
+		if (c.comboCounter >= 200) {
+			h.HealthUpdate(9);
+		}
+		else if (c.comboCounter >= 120) {
+			h.HealthUpdate(8);
+		}
+		else if (c.comboCounter >= 60) {
+			h.HealthUpdate(7);
+		}
+		else if (c.comboCounter >= 35) {
+			h.HealthUpdate(6);
+		}
+		else if (c.comboCounter >= 22) {
+			h.HealthUpdate(5);
+		}
+		else if (c.comboCounter >= 15) {
+			h.HealthUpdate(4);
+		}
+		else if (c.comboCounter >= 10) {
+			h.HealthUpdate(3);
+		}
+		else if (c.comboCounter >= 7) {
 			h.HealthUpdate(2);
+		}
+		else if (c.comboCounter >= 4) {
+			h.HealthUpdate(1);
 		}
 	}
 }
