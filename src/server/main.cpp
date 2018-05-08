@@ -362,7 +362,7 @@ int main(int argc, const char **argv)
                   wall, {}, spawn_loc, rhythmID);
 
 
-      std::vector<glm::ivec2> wall = {{17+ (i * fheight), 54}};
+      std::vector<glm::ivec2> wall2 = {{17+ (i * fheight), 54}};
       RythmButton(world,
 			            {{{19+ (i * fheight), 47}, {19+ (i * fheight), 49}, {19+ (i * fheight), 50}},
 			             {{20+ (i * fheight), 47}, {20+ (i * fheight), 49}, {20+ (i * fheight), 50}},
@@ -372,7 +372,7 @@ int main(int argc, const char **argv)
                    {{24+ (i * fheight), 47}, {24+ (i * fheight), 49}, {24+ (i * fheight), 50}},
                    {{25+ (i * fheight), 47}, {25+ (i * fheight), 49}, {25+ (i * fheight), 50}},
                    {{26+ (i * fheight), 47}, {26+ (i * fheight), 49}, {26+ (i * fheight), 50}},},
-			            wall, {}, spawn_loc, rhythmID);
+			            wall2, {}, spawn_loc, rhythmID);
 
     }
 	}
