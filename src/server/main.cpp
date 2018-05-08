@@ -352,7 +352,6 @@ int main(int argc, const char **argv)
                    {{25+ (i * fheight), 43}},
                    {{26+ (i * fheight), 43}},
                    {{26+ (i * fheight), 44}},
-                   {{26+ (i * fheight), 44}},
                    {{25+ (i * fheight), 44}},
                    {{24+ (i * fheight), 44}},
                    {{23+ (i * fheight), 44}},
