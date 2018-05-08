@@ -179,6 +179,7 @@ int main(int argc, const char **argv)
 		// Room 1
 		spawn_loc = glm::ivec2(8 + (i * fheight), 12);
 		{
+
 			std::vector<glm::ivec2> wall = {{7+ (i * fheight), 11}, {8+ (i * fheight), 11}, {9+ (i * fheight), 11}};
 			newButton(world, {{8+ (i * fheight), 9}}, wall, {}, spawn_loc);
 		}
@@ -307,6 +308,94 @@ int main(int argc, const char **argv)
 			            wall, {}, spawn_loc, rhythmID);
 		}
 	}
+
+	//Arena Room 1
+	{
+		glm::ivec2 spawn_loc = {18,145};
+		std::vector<glm::ivec2> spikes2 = {{20,148}, {17,148}, {16,148},{20,145}, {17,145}, {16,145},{20,142}, {17,142}, {16,142},{20,139}, {17,139}, {16,139}};
+		std::vector<glm::ivec2> spikes3 = { {18,148}, {18,145}};
+		std::vector<glm::ivec2> spikes31 = { {19,148}, {19,145}};
+		std::vector<glm::ivec2> spikes4 = { {18,145}, {18,142}};
+		std::vector<glm::ivec2> spikes41 = { {19,145}, {19,142}};
+		std::vector<glm::ivec2> spikes5 = { {18,142}, {18,139}};
+		std::vector<glm::ivec2> spikes51 = { {19,142}, {19,139}};
+		std::vector<glm::ivec2> spikes6 = { {18,139}};
+		newButton(world, {{18,137}}, {}, spikes6, spawn_loc);
+		newButton(world, {{18,140}}, {}, spikes51 , spawn_loc);
+		newButton(world, {{18,143}}, {}, spikes4 , spawn_loc);
+		newButton(world, {{18,146}}, {}, spikes31 , spawn_loc);
+		newButton(world, {{18,149}}, {}, spikes2 , spawn_loc);
+		tempo::createSpikes(world, {{18,148}});
+	}
+
+	//Arena Room 2
+	{
+		std::deque<glm::ivec2> path = {{28,172},{27,172},{26,172},{25,172},{24,172},{23,172},{22,172},{21,172},{20,172},{19,172},{18,172},
+		                               {18,173},{18,174},{18,175},{18,176},{18,177},{18,178},{18,179},{18,180},{18,181},{18,182},
+		                               {19,182},{20,182},{21,182},{22,182},{23,182},{24,182},{25,182},{26,182},{27,182},{28,182},
+		                               {28,181},{28,180},{28,179},{28,178},{28,177},{28,176},{28,175},{28,174},{28,173}};
+
+		std::deque<glm::ivec2> path1 = {{26,174},{26,175},{26,176},{26,177},{26,178},{26,179},{26,180},
+		                               {25,180},{24,180},{23,180},{22,180},{21,180},{20,180},
+		                               {20,179},{20,178},{20,177},{20,176},{20,175},{20,174},
+		                               {21,174},{22,174},{23,174},{24,174},{25,174}};
+
+		std::deque<glm::ivec2> path2 = {{23,177}};
+
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+		tempo::createMobPatroller(world, path[0], path);
+
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+		tempo::createMobPatroller(world, path1[0], path1);
+
+		tempo::createMobPatroller(world, path2[0], path2);
+	}
+
+	//Arena Room 3
+	{
+
+		for(int i = 0; i < 10; i=i+2 ){
+			for(int j = 0; j < 11; j=j+2){
+				tempo::createMobCreeper(world, glm::ivec2(27 + j, 137 + i));
+			}
+		}
+	}
+
+	//Arena Room 4
+	{
+		for(int i = 0; i < 12; i++ ){
+			for(int j = 0; j < 12; j++){
+				tempo::createMobStill(world, glm::ivec2(36 + j, 171 + i));
+			}
+		}
+	}
+
+	//Arena Room 5
+	{
+		tempo::createSnake(world, {58,144}, tempo::NORTH, 5);
+	}
+
 	world.refresh();
 
 	//////////////////////////////////
@@ -380,6 +469,7 @@ int main(int argc, const char **argv)
 			system_attack.processAttacks();
 			system_health.regenerate();
 			system_movement.processTranslation();
+			system_player.TeleportPlayers();
 		}
 
 		////////////////
