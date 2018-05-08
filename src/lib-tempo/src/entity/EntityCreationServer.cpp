@@ -1,4 +1,5 @@
 #include <tempo/entity/EntityCreationServer.hpp>
+#include <tempo/constants.hpp>
 
 namespace tempo
 {
@@ -13,8 +14,8 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 	//
 	float arr[12] = {0, 0, 0,
 	                 10, 10, 10,
-	                 10, 10, 10,
-	                 10, 10, 10};
+	                 0, 10, 0,
+	                 0, 10, 0};
 	Mask  m(glm::ivec2(1, 0), arr, glm::ivec2(3, 4));
 
 	int min = 0;
@@ -37,7 +38,7 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 	entity_player.addComponent<tempo::ComponentAttack>();
 	entity_player.addComponent<tempo::ComponentWeapon>(m);
 	entity_player.addComponent<tempo::ComponentAOEIndicator>();
-	entity_player.addComponent<tempo::ComponentHealth>(100);
+	entity_player.addComponent<tempo::ComponentHealth>(PLAYER_MAX_HEALTH);
 	entity_player.addComponent<tempo::ComponentTeam>(Team::BADGUYS);
 	entity_player.addComponent<tempo::ComponentParty>(party_number);
 
@@ -59,7 +60,7 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 255, 255), false, glm::vec2(2,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(10);
-	float arr[2] = {0, 40};
+	float arr[2] = {0, PLAYER_MAX_HEALTH * 0.4};
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m);
@@ -79,9 +80,9 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentModel>("resources/materials/textures/totem.png", glm::vec3(255, 255, 255), false, glm::vec2(1,1));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(20);
-	float arr[9] = {30, 30, 30,
-	                30, 0,  30,
-	                30, 30, 30};
+	float arr[9] = { PLAYER_MAX_HEALTH * 0.3, PLAYER_MAX_HEALTH * 0.3, PLAYER_MAX_HEALTH * 0.3,
+		PLAYER_MAX_HEALTH * 0.3, 0,  PLAYER_MAX_HEALTH * 0.3,
+		PLAYER_MAX_HEALTH * 0.3, PLAYER_MAX_HEALTH * 0.3, PLAYER_MAX_HEALTH * 0.3 };
 	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m);
@@ -103,10 +104,10 @@ anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 200, 200), false, glm::vec2(2,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	e.addComponent<tempo::ComponentHealth>(30);
-	float arr[9] = {80, 80, 80,
-	                80, 80, 80,
-	                80, 80, 80};
+	e.addComponent<tempo::ComponentHealth>(20);
+	float arr[9] = { PLAYER_MAX_HEALTH * 0.7, PLAYER_MAX_HEALTH * 0.8, PLAYER_MAX_HEALTH * 0.8,
+		PLAYER_MAX_HEALTH * 0.8, PLAYER_MAX_HEALTH * 0.9, PLAYER_MAX_HEALTH * 0.8,
+		PLAYER_MAX_HEALTH * 0.7, PLAYER_MAX_HEALTH * 0.8, PLAYER_MAX_HEALTH * 0.7 };
 	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)3);
@@ -128,8 +129,8 @@ anax::Entity createMobChaser(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>(path1, glm::vec3(255, 255, 255), false, glm::vec2(5, 4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	e.addComponent<tempo::ComponentHealth>(30);
-	float arr[2] = { 0, 30 };
+	e.addComponent<tempo::ComponentHealth>(20);
+	float arr[2] = { 0, PLAYER_MAX_HEALTH * 0.3 };
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)3);
@@ -154,8 +155,8 @@ anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<g
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>(path1, glm::vec3(255, 255, 255), false, glm::vec2(5,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	e.addComponent<tempo::ComponentHealth>(50);
-	float arr[2] = {0, 20};
+	e.addComponent<tempo::ComponentHealth>(30);
+	float arr[2] = {0, PLAYER_MAX_HEALTH * 0.25 };
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
@@ -177,8 +178,8 @@ anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	e.addComponent<tempo::ComponentHealth>(50);
-	float arr[2] = {0, 20};
+	e.addComponent<tempo::ComponentHealth>(30);
+	float arr[2] = {0, PLAYER_MAX_HEALTH * 0.2 };
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
@@ -216,7 +217,7 @@ void createSpikes(anax::World & world, std::vector<glm::ivec2> positions) {
 		entity_spikes.addComponent<tempo::ComponentStageTranslation>();
 		entity_spikes.addComponent<tempo::ComponentStageRotation>(SOUTH);
 		entity_spikes.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-		float arr[1] = {75};
+		float arr[1] = { PLAYER_MAX_HEALTH * 0.65 };
 		Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 1));
 		entity_spikes.addComponent<tempo::ComponentAttack>();
 		entity_spikes.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
@@ -237,10 +238,10 @@ anax::Entity createSnake(anax::World& world, glm::ivec2 pos, tempo::Facing f, in
 	head.addComponent<tempo::ComponentStageTranslation>();
 	head.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 200, 200), false, glm::vec2(4,4));
 	head.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	head.addComponent<tempo::ComponentHealth>(5);
-	float arr[9] = {90, 90, 90,
-	                90,  0, 90,
-	                90, 90, 90};
+	head.addComponent<tempo::ComponentHealth>(10);
+	float arr[9] = { PLAYER_MAX_HEALTH * 0.4, PLAYER_MAX_HEALTH * 0.4, PLAYER_MAX_HEALTH * 0.4,
+		PLAYER_MAX_HEALTH * 0.4,  0, PLAYER_MAX_HEALTH * 0.4,
+		PLAYER_MAX_HEALTH * 0.4, PLAYER_MAX_HEALTH * 0.4, PLAYER_MAX_HEALTH * 0.4 };
 	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
 	head.addComponent<tempo::ComponentAttack>();
 	head.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
@@ -263,7 +264,7 @@ anax::Entity createSnake(anax::World& world, glm::ivec2 pos, tempo::Facing f, in
 		seg.addComponent<tempo::ComponentStageTranslation>();
 		seg.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 200, 200), false, glm::vec2(4,4));
 		seg.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-		seg.addComponent<tempo::ComponentHealth>(5);
+		seg.addComponent<tempo::ComponentHealth>(10);
 		seg.addComponent<tempo::ComponentAttack>();
 		seg.addComponent<tempo::ComponentWeapon>(m, (unsigned int)5);
 		seg.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);

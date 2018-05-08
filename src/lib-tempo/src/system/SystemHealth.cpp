@@ -6,6 +6,8 @@
 #include <tempo/component/ComponentParty.hpp>
 #include <tempo/component/ComponentRespawn.hpp>
 
+#include <tempo/constants.hpp>
+
 namespace tempo
 {
 
@@ -123,34 +125,34 @@ void SystemHealth::regenerate()
 		auto &h = entity.getComponent<tempo::ComponentHealth>();
 		auto &c = entity.getComponent<tempo::ComponentCombo>();
 
-		
 		// more healing for everyone!
+		// h.HealthUpdate(PLAYER_MAX_HEALTH / 10) = n beats to heal
 		if (c.comboCounter >= 200) {
-			h.HealthUpdate(9);
+			h.HealthUpdate(PLAYER_MAX_HEALTH / 10);
 		}
 		else if (c.comboCounter >= 120) {
-			h.HealthUpdate(8);
+			h.HealthUpdate(PLAYER_MAX_HEALTH / 15);
 		}
 		else if (c.comboCounter >= 60) {
-			h.HealthUpdate(7);
+			h.HealthUpdate(PLAYER_MAX_HEALTH / 25);
 		}
 		else if (c.comboCounter >= 35) {
-			h.HealthUpdate(6);
+			h.HealthUpdate(PLAYER_MAX_HEALTH / 40);
 		}
 		else if (c.comboCounter >= 22) {
-			h.HealthUpdate(5);
+			h.HealthUpdate(PLAYER_MAX_HEALTH / 50);
 		}
 		else if (c.comboCounter >= 15) {
-			h.HealthUpdate(4);
+			h.HealthUpdate(PLAYER_MAX_HEALTH / 65);
 		}
 		else if (c.comboCounter >= 10) {
-			h.HealthUpdate(3);
+			h.HealthUpdate(PLAYER_MAX_HEALTH / 80);
 		}
 		else if (c.comboCounter >= 7) {
-			h.HealthUpdate(2);
+			h.HealthUpdate(PLAYER_MAX_HEALTH / 90);
 		}
 		else if (c.comboCounter >= 4) {
-			h.HealthUpdate(1);
+			h.HealthUpdate(PLAYER_MAX_HEALTH / 100);
 		}
 	}
 }
