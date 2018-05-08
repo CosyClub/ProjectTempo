@@ -1,8 +1,8 @@
 #include <tempo/system/SystemPlayer.hpp>
 #include<iostream>
 
-#define TELEPORT_LEFT 30
-#define TELEPORT_RIGHT 40
+#define TELEPORT_LEFT 60
+#define TELEPORT_RIGHT 70
 
 #define TELEPORT_EXIT glm::ivec2(20,136)
 
