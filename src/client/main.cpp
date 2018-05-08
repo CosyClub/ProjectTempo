@@ -121,7 +121,7 @@ namespace client
 				if (collisionMap.find(dest) == collisionMap.end())
 					collisionMap[dest] = false;
 				can_move &= !collisionMap[dest];
-	 			if (!stage.existstTile(dest) || abs(stage.getHeight(origin) - stage.getHeight(dest)) >= 5 || stage.getHeight(dest) <= -3 || !can_move) {
+	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5 || stage.getHeight(dest) <= -3 || !can_move) {
 	 				// consume the moment before the server rejects you
 	 				// currently combos aren't server protected, so maybe this should move into lib-tempo?
 	 				// this produces a lovely jumping against the wall animation!
@@ -173,7 +173,7 @@ int main(int argc, const char** argv)
 {
 	unsigned int delta = DELTA;
 	unsigned int bpm = BPM;
-	
+
 	if (argc >= 5) {
 		delta = atoi(argv[4]);
 	}

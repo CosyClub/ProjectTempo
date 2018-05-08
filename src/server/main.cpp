@@ -295,7 +295,7 @@ int main(int argc, const char **argv)
 			tempo::createMobCreeper(world, glm::ivec2(5+ (i * fheight), 42));
 		}
 
-		
+
 		// Room 8
 		{
 			std::vector<glm::ivec2> wall = {{12+ (i * fheight), 44}, {12+ (i * fheight), 43}, {12+ (i * fheight), 42},
