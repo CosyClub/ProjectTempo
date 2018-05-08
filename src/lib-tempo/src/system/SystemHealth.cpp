@@ -128,32 +128,26 @@ void SystemHealth::regenerate()
 		// more healing for everyone!
 		// h.HealthUpdate(PLAYER_MAX_HEALTH / 10) = n beats to heal
 		if (c.comboCounter >= 200) {
-			h.HealthUpdate(PLAYER_MAX_HEALTH / 10);
-		}
-		else if (c.comboCounter >= 120) {
-			h.HealthUpdate(PLAYER_MAX_HEALTH / 15);
-		}
-		else if (c.comboCounter >= 60) {
 			h.HealthUpdate(PLAYER_MAX_HEALTH / 25);
 		}
-		else if (c.comboCounter >= 35) {
+		else if (c.comboCounter >= 120) {
+			h.HealthUpdate(PLAYER_MAX_HEALTH / 30);
+		}
+		else if (c.comboCounter >= 60) {
 			h.HealthUpdate(PLAYER_MAX_HEALTH / 40);
 		}
-		else if (c.comboCounter >= 22) {
-			h.HealthUpdate(PLAYER_MAX_HEALTH / 50);
+		else if (c.comboCounter >= 40) {
+			h.HealthUpdate(PLAYER_MAX_HEALTH / 55);
+		}
+		else if (c.comboCounter >= 20) {
+			h.HealthUpdate(PLAYER_MAX_HEALTH / 70);
 		}
 		else if (c.comboCounter >= 15) {
-			h.HealthUpdate(PLAYER_MAX_HEALTH / 65);
-		}
-		else if (c.comboCounter >= 10) {
 			h.HealthUpdate(PLAYER_MAX_HEALTH / 80);
 		}
-		else if (c.comboCounter >= 7) {
-			h.HealthUpdate(PLAYER_MAX_HEALTH / 90);
-		}
-		else if (c.comboCounter >= 4) {
-			h.HealthUpdate(PLAYER_MAX_HEALTH / 100);
-		}
+		else if (c.comboCounter >= 10) {
+			h.HealthUpdate(PLAYER_MAX_HEALTH / 95);
+		} 
 	}
 }
 

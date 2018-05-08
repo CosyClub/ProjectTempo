@@ -13,9 +13,9 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 	// entity_player.addComponent<tempo::ComponentStagePosition>(system_grid_motion.spawn());
 	//
 	float arr[12] = {0, 0, 0,
-	                 10, 10, 10,
-	                 0, 10, 0,
-	                 0, 10, 0};
+	                 4, 10, 4,
+	                 2, 10, 2,
+	                 0, 8, 0};
 	Mask  m(glm::ivec2(1, 0), arr, glm::ivec2(3, 4));
 
 	int min = 0;
@@ -59,7 +59,7 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	std::string path = "resources/materials/textures/zombie-sheet-" + std::to_string(a) + ".png";
 	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 255, 255), false, glm::vec2(2,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	e.addComponent<tempo::ComponentHealth>(10);
+	e.addComponent<tempo::ComponentHealth>(9);
 	float arr[2] = {0, PLAYER_MAX_HEALTH * 0.4};
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
@@ -79,7 +79,7 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>("resources/materials/textures/totem.png", glm::vec3(255, 255, 255), false, glm::vec2(1,1));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	e.addComponent<tempo::ComponentHealth>(20);
+	e.addComponent<tempo::ComponentHealth>(18);
 	float arr[9] = { PLAYER_MAX_HEALTH * 0.3, PLAYER_MAX_HEALTH * 0.3, PLAYER_MAX_HEALTH * 0.3,
 		PLAYER_MAX_HEALTH * 0.3, 0,  PLAYER_MAX_HEALTH * 0.3,
 		PLAYER_MAX_HEALTH * 0.3, PLAYER_MAX_HEALTH * 0.3, PLAYER_MAX_HEALTH * 0.3 };
@@ -104,7 +104,7 @@ anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 200, 200), false, glm::vec2(2,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	e.addComponent<tempo::ComponentHealth>(20);
+	e.addComponent<tempo::ComponentHealth>(28);
 	float arr[9] = { PLAYER_MAX_HEALTH * 0.7, PLAYER_MAX_HEALTH * 0.8, PLAYER_MAX_HEALTH * 0.8,
 		PLAYER_MAX_HEALTH * 0.8, PLAYER_MAX_HEALTH * 0.9, PLAYER_MAX_HEALTH * 0.8,
 		PLAYER_MAX_HEALTH * 0.7, PLAYER_MAX_HEALTH * 0.8, PLAYER_MAX_HEALTH * 0.7 };
@@ -129,7 +129,7 @@ anax::Entity createMobChaser(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>(path1, glm::vec3(255, 255, 255), false, glm::vec2(5, 4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	e.addComponent<tempo::ComponentHealth>(20);
+	e.addComponent<tempo::ComponentHealth>(38);
 	float arr[2] = { 0, PLAYER_MAX_HEALTH * 0.3 };
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
@@ -155,7 +155,7 @@ anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<g
 	e.addComponent<tempo::ComponentStageTranslation>();
 	e.addComponent<tempo::ComponentModel>(path1, glm::vec3(255, 255, 255), false, glm::vec2(5,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	e.addComponent<tempo::ComponentHealth>(30);
+	e.addComponent<tempo::ComponentHealth>(40);
 	float arr[2] = {0, PLAYER_MAX_HEALTH * 0.25 };
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
@@ -178,7 +178,7 @@ anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 255, 255), false, glm::vec2(4,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-	e.addComponent<tempo::ComponentHealth>(30);
+	e.addComponent<tempo::ComponentHealth>(28);
 	float arr[2] = {0, PLAYER_MAX_HEALTH * 0.2 };
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
