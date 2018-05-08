@@ -216,11 +216,11 @@ int main(int argc, const char **argv)
 			newButton(world, {{13+ (i * fheight), 25}}, {}, spikes2, spawn_loc);
 			newButton(world, {{18+ (i * fheight), 29}}, {}, spikes2, spawn_loc);
 
-			tempo::createMobCreeper(world, glm::ivec2(15+ (i * fheight), 23));
-			tempo::createMobCreeper(world, glm::ivec2(15+ (i * fheight), 27));
-			tempo::createMobCreeper(world, glm::ivec2(16+ (i * fheight), 25));
-			tempo::createMobCreeper(world, glm::ivec2(17+ (i * fheight), 23));
-			tempo::createMobCreeper(world, glm::ivec2(17+ (i * fheight), 27));
+			tempo::createMobChaser(world, glm::ivec2(15+ (i * fheight), 23));
+			tempo::createMobChaser(world, glm::ivec2(15+ (i * fheight), 27));
+			tempo::createMobChaser(world, glm::ivec2(16+ (i * fheight), 25));
+			tempo::createMobChaser(world, glm::ivec2(17+ (i * fheight), 23));
+			tempo::createMobChaser(world, glm::ivec2(17+ (i * fheight), 27));
 		}
 
 		// Room 5 (Prongs)

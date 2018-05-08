@@ -59,7 +59,7 @@ anax::Entity createMobStill(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 255, 255), false, glm::vec2(2,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(10);
-	float arr[2] = {0, 10};
+	float arr[2] = {0, 40};
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m);
@@ -79,9 +79,9 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentModel>("resources/materials/textures/totem.png", glm::vec3(255, 255, 255), false, glm::vec2(1,1));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(20);
-	float arr[9] = {10, 10, 10,
-	                10, 0,  10,
-	                10, 10, 10};
+	float arr[9] = {40, 40, 40,
+	                40, 0,  40,
+	                40, 40, 40};
 	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m);
@@ -104,9 +104,9 @@ anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentModel>(path, glm::vec3(255, 200, 200), false, glm::vec2(2,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(30);
-	float arr[9] = {50, 50, 50,
-	                50, 50, 50,
-	                50, 50, 50};
+	float arr[9] = {80, 80, 80,
+	                80, 80, 80,
+	                80, 80, 80};
 	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)3);
@@ -115,11 +115,35 @@ anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos)
 	e.activate();
 	return e;
 }
+
+anax::Entity createMobChaser(anax::World &world, glm::ivec2 pos)
+{
+	anax::Entity e = world.createEntity();
+
+	std::string path1 = "resources/materials/textures/knight-0.png";
+
+	e.addComponent<tempo::ComponentAI>(MoveType::MOVE_AGGRO, false, false);
+	e.addComponent<tempo::ComponentStagePosition>(pos, false);
+	e.addComponent<tempo::ComponentStageRotation>(SOUTH);
+	e.addComponent<tempo::ComponentStageTranslation>();
+	e.addComponent<tempo::ComponentModel>(path1, glm::vec3(255, 255, 255), false, glm::vec2(5, 4));
+	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
+	e.addComponent<tempo::ComponentHealth>(30);
+	float arr[2] = { 0, 30 };
+	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
+	e.addComponent<tempo::ComponentAttack>();
+	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)3);
+	e.addComponent<tempo::ComponentTeam>(Team::GOODGUYS);
+
+	e.activate();
+	return e;
+}
+
 anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<glm::ivec2> path)
 {
 	anax::Entity e = world.createEntity();
 
-	int min = 0;
+	int min = 1;
 	int max = 2;
 	int randNum = rand()%(max-min + 1) + min;
 	std::string path1 = "resources/materials/textures/knight-" + std::to_string(randNum) + ".png";
@@ -131,7 +155,7 @@ anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<g
 	e.addComponent<tempo::ComponentModel>(path1, glm::vec3(255, 255, 255), false, glm::vec2(5,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(50);
-	float arr[2] = {0, 10};
+	float arr[2] = {0, 50};
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
@@ -154,7 +178,7 @@ anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(50);
-	float arr[2] = {0, 10};
+	float arr[2] = {0, 50};
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
@@ -192,7 +216,7 @@ void createSpikes(anax::World & world, std::vector<glm::ivec2> positions) {
 		entity_spikes.addComponent<tempo::ComponentStageTranslation>();
 		entity_spikes.addComponent<tempo::ComponentStageRotation>(SOUTH);
 		entity_spikes.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
-		float arr[1] = {25};
+		float arr[1] = {75};
 		Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 1));
 		entity_spikes.addComponent<tempo::ComponentAttack>();
 		entity_spikes.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
@@ -214,9 +238,9 @@ anax::Entity createSnake(anax::World& world, glm::ivec2 pos, tempo::Facing f, in
 	head.addComponent<tempo::ComponentModel>("resources/materials/textures/player.png", glm::vec3(255, 200, 200), false, glm::vec2(4,4));
 	head.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	head.addComponent<tempo::ComponentHealth>(5);
-	float arr[9] = {1, 1, 1,
-	                1, 0, 1,
-	                1, 1, 1};
+	float arr[9] = {90, 90, 90,
+	                90,  0, 90,
+	                90, 90, 90};
 	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
 	head.addComponent<tempo::ComponentAttack>();
 	head.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
