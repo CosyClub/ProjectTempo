@@ -150,8 +150,8 @@ int main(int argc, const char **argv)
 
 	// Needed so that the player cannot see other feeder areas
 	int emptySpace = 40;
-	int fheight = 10 + emptySpace;
-	int feeder_areas = 1;
+	int fheight = 40 + emptySpace;
+	int feeder_areas = 5;
 
 	for (int i = 0; i < feeder_areas; i++) {
 		// Starter areas
@@ -163,7 +163,7 @@ int main(int argc, const char **argv)
 			std::vector<glm::ivec2> wall1 = {{8+ (i * fheight), 5}};
 			RythmButton(world, {{{8+ (i * fheight), 1}}, {{8+ (i * fheight), 2}}, {{8+ (i * fheight), 3}}}, wall1, {}, spawn_loc, rhythmID);
 
-			std::vector<glm::ivec2> wall2 = {{10+ (i * fheight), 5}};
+			std::vector<glm::ivec2> wall2 = {{6+ (i * fheight), 5}};
 			RythmButton(world, {{{6+ (i * fheight), 1}}, {{6+ (i * fheight), 2}}, {{6+ (i * fheight), 3}}}, wall2, {}, spawn_loc, rhythmID);
 
 			std::vector<glm::ivec2> wall3 = {{5+ (i * fheight), 6}};

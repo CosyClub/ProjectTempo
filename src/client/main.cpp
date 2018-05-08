@@ -383,8 +383,8 @@ int main(int argc, const char** argv)
 	glm::ivec2 startingPos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
 	int emptySpace = 40;
-	int fheight = 69 + emptySpace;
-	int feeder_areas = 10;
+	int fheight = 40 + emptySpace;
+	int feeder_areas = 5;
 
 	for (int i=0; i < feeder_areas; i++) {
 		client::createLasers(smgr, driver, { {40 + (i*fheight),12}, {40 + (i*fheight),52}, {40 + (i*fheight),92} }, startingPos);

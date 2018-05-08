@@ -26,10 +26,26 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 	entity_player.addComponent<tempo::ComponentCombo>();
 
 	int emptySpace = 40;
-	int fheight = 10 + emptySpace;
+	int fheight = 40 + emptySpace;
 
-	entity_player.addComponent<tempo::ComponentRespawn>(glm::ivec2(10 + (party_number * fheight), 0));
-	entity_player.addComponent<tempo::ComponentStagePosition>(glm::ivec2(10 + (party_number * fheight), 0));
+	auto& comp_party = entity_player.addComponent<tempo::ComponentParty>(party_number);
+
+	glm::ivec2 player_spawn_location = glm::ivec2(10 + (party_number * fheight), 0);
+
+	// Modify the spawn location based on the entity index within the party
+	// This is hard coded but relies on the level design!
+	switch(comp_party.entity_index){
+
+	case 1: player_spawn_location += glm::ivec2(- 2 + (party_number * fheight),  0); break;
+	case 2: player_spawn_location += glm::ivec2(- 4 + (party_number * fheight),  0); break;
+
+	case 3: player_spawn_location += glm::ivec2(-10 + (party_number * fheight),  6); break;
+	case 4: player_spawn_location += glm::ivec2(-10 + (party_number * fheight),  8); break;
+	case 5: player_spawn_location += glm::ivec2(-10 + (party_number * fheight), 10); break;
+	}
+
+	entity_player.addComponent<tempo::ComponentRespawn>(player_spawn_location);
+	entity_player.addComponent<tempo::ComponentStagePosition>(player_spawn_location);
 	entity_player.addComponent<tempo::ComponentStageRotation>(SOUTH);
 	entity_player.addComponent<tempo::ComponentStageTranslation>();
 	entity_player.addComponent<tempo::ComponentPlayerRemote>();
@@ -40,7 +56,6 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 	entity_player.addComponent<tempo::ComponentAOEIndicator>();
 	entity_player.addComponent<tempo::ComponentHealth>(PLAYER_MAX_HEALTH);
 	entity_player.addComponent<tempo::ComponentTeam>(Team::BADGUYS);
-	entity_player.addComponent<tempo::ComponentParty>(party_number);
 
 	entity_player.activate();
 
