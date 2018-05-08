@@ -36,12 +36,12 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 	// This is hard coded but relies on the level design!
 	switch(comp_party.entity_index){
 
-	case 1: player_spawn_location += glm::ivec2(- 2 + (party_number * fheight),  0); break;
-	case 2: player_spawn_location += glm::ivec2(- 4 + (party_number * fheight),  0); break;
+	case 1: player_spawn_location += glm::ivec2(- 2,  0); break;
+	case 2: player_spawn_location += glm::ivec2(- 4,  0); break;
 
-	case 3: player_spawn_location += glm::ivec2(-10 + (party_number * fheight),  6); break;
-	case 4: player_spawn_location += glm::ivec2(-10 + (party_number * fheight),  8); break;
-	case 5: player_spawn_location += glm::ivec2(-10 + (party_number * fheight), 10); break;
+	case 3: player_spawn_location += glm::ivec2(-10,  6); break;
+	case 4: player_spawn_location += glm::ivec2(-10,  8); break;
+	case 5: player_spawn_location += glm::ivec2(-10, 10); break;
 	}
 
 	entity_player.addComponent<tempo::ComponentRespawn>(player_spawn_location);
