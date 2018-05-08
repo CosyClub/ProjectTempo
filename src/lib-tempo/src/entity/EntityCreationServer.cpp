@@ -79,9 +79,9 @@ anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentModel>("resources/materials/textures/totem.png", glm::vec3(255, 255, 255), false, glm::vec2(1,1));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(20);
-	float arr[9] = {40, 40, 40,
-	                40, 0,  40,
-	                40, 40, 40};
+	float arr[9] = {30, 30, 30,
+	                30, 0,  30,
+	                30, 30, 30};
 	Mask  m(glm::ivec2(1, 1), arr, glm::ivec2(3, 3));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m);
@@ -155,7 +155,7 @@ anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<g
 	e.addComponent<tempo::ComponentModel>(path1, glm::vec3(255, 255, 255), false, glm::vec2(5,4));
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(50);
-	float arr[2] = {0, 50};
+	float arr[2] = {0, 20};
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
@@ -178,7 +178,7 @@ anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos)
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentStage>("resources/levels/levelTest.bmp");
 	e.addComponent<tempo::ComponentHealth>(50);
-	float arr[2] = {0, 50};
+	float arr[2] = {0, 20};
 	Mask  m(glm::ivec2(0, 0), arr, glm::ivec2(1, 2));
 	e.addComponent<tempo::ComponentAttack>();
 	e.addComponent<tempo::ComponentWeapon>(m, (unsigned int)0);
