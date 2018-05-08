@@ -170,14 +170,14 @@ int main(int argc, const char **argv)
 
 
 // 20 22 to 20 34
-      std::deque<glm::ivec2> path3;
+      std::deque<glm::ivec2> path4;
       for (int x = 22; x <= 34; x++) {
-        path3.push_back(glm::ivec2(20+ (i * fheight), x))
+        path4.push_back(glm::ivec2(20+ (i * fheight), x));
       }
       for (int x = 33; x >= 21; x--) {
-        path3.push_back(glm::ivec2(20+ (i * fheight), x))
+        path4.push_back(glm::ivec2(20+ (i * fheight), x));
       }
-      tempo::createMobPatroller(world, path4[0], path3);
+      tempo::createMobPatroller(world, path4[0], path4);
 
       tempo::createMobStill(world, glm::ivec2(12+ (i * fheight), 36));
       tempo::createMobStill(world, glm::ivec2(12+ (i * fheight), 40));
