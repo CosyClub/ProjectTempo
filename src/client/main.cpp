@@ -411,6 +411,9 @@ int main(int argc, const char** argv)
 		irr::core::vector3df(0, 0, 0));
 
 	smgr->setActiveCamera(camera_node);
+	//smgr->addCameraSceneNodeMaya(0, -100, 100, 50);
+
+
 	float dt;
 	sf::Int64 synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME(bpm));
 	client::next_palette(synced_tick % client::palettes.size());
@@ -502,7 +505,7 @@ int main(int argc, const char** argv)
 			// click.play();
 
 			system_trigger.updateButtons(world);
-			system_button_renderer.updateButtons(driver);
+			system_button_renderer.updateButtons(playerpos);
 
 			system_render_healing.endBeat();
 			system_render_spikes.updateSpikes(driver, playerpos);

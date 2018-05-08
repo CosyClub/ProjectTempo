@@ -118,11 +118,9 @@ void SystemButtonRenderer::setup(irr::scene::ISceneManager* smgr, irr::video::IV
 		rend.setup = true;
 		j++;
 	}
-
 }
 
 void SystemButtonRenderer::setRotation(std::vector<anax::Entity> entities, uint32_t j, uint32_t i, irr::scene::IMeshSceneNode *button, glm::ivec2 pos) {
-
 	//Last button group in level
 	if (j == entities.size() - 1) {
 		return;
@@ -160,10 +158,9 @@ void SystemButtonRenderer::setRotation(std::vector<anax::Entity> entities, uint3
 	}
 
 	button->setRotation(irr::core::vector3df(0, n, 0));
-
 }
 
-void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
+void SystemButtonRenderer::updateButtons(const glm::ivec2 playerpos)
 {
 	auto& entities = getEntities();
 	for (int i = entities.size() - 1; i >= 0; i--) {
@@ -185,6 +182,17 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 
 			if (!group.groupTriggered) {
 				for (uint32_t j = 0; j < buttons.size(); j++) {
+					glm::ivec2 pos = buttons[j].pos;
+					if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 ||
+						pos.y < playerpos.y - 33 || pos.y > playerpos.y + 33) {
+
+						buttonRend[j].button->setVisible(false);
+						buttonRend[j].button_housing->setVisible(false);
+						continue;
+					}
+					buttonRend[j].button->setVisible(true);
+					buttonRend[j].button_housing->setVisible(true);
+
 					if (buttons[j].triggered == true) {
 						buttonRend[j].button->setPosition(
 							irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
@@ -201,6 +209,17 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 			}
 			else {
 				for (uint32_t j = 0; j < buttons.size(); j++) {
+					glm::ivec2 pos = buttons[j].pos;
+					if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 ||
+						pos.y < playerpos.y - 33 || pos.y > playerpos.y + 33) {
+
+						buttonRend[j].button->setVisible(false);
+						buttonRend[j].button_housing->setVisible(false);
+						continue;
+					}
+					buttonRend[j].button->setVisible(true);
+					buttonRend[j].button_housing->setVisible(true);
+
 					buttonRend[j].button->setPosition(
 						irr::core::vector3df(buttons[j].pos.x, -0.1, buttons[j].pos.y));
 					irr::video::SMaterial &material_button = buttonRend[j].button->getMaterial(0);
@@ -218,6 +237,16 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 
 			if (group.groupTriggerable) {
 				for (uint32_t j = 0; j < buttons.size(); j++) {
+					glm::ivec2 pos = buttons[j].pos;
+					if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 ||
+						pos.y < playerpos.y - 33 || pos.y > playerpos.y + 33) {
+
+						buttonRend[j].button->setVisible(false);
+						buttonRend[j].button_housing->setVisible(false);
+						continue;
+					}
+					buttonRend[j].button->setVisible(true);
+					buttonRend[j].button_housing->setVisible(true);
 
 					buttonRend[j].button->setPosition(
 						irr::core::vector3df(buttons[j].pos.x, 0, buttons[j].pos.y));
@@ -235,6 +264,16 @@ void SystemButtonRenderer::updateButtons(irr::video::IVideoDriver* driver)
 
 			else {
 				for (uint32_t j = 0; j < buttons.size(); j++) {
+					glm::ivec2 pos = buttons[j].pos;
+					if (pos.x < playerpos.x - 24 || pos.x > playerpos.x + 7 ||
+						pos.y < playerpos.y - 33 || pos.y > playerpos.y + 33) {
+
+						buttonRend[j].button->setVisible(false);
+						buttonRend[j].button_housing->setVisible(false);
+						continue;
+					}
+					buttonRend[j].button->setVisible(true);
+					buttonRend[j].button_housing->setVisible(true);
 
 					if (group.groupTriggered) {
 						buttonRend[j].button->setPosition(
