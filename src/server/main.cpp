@@ -311,9 +311,20 @@ int main(int argc, const char **argv)
 	//Arena Room 1
 	{
 		glm::ivec2 spawn_loc = {18,145};
-		std::vector<glm::ivec2> spikes = {{20,148}, {19,148}, {18,148}, {17,148}, {16,148}};
-		newButton(world, {{18,145}}, {}, spikes, spawn_loc);
-		newButton(world, {{18,149}}, {}, spikes, spawn_loc);
+		std::vector<glm::ivec2> spikes2 = {{20,148}, {17,148}, {16,148},{20,145}, {17,145}, {16,145},{20,142}, {17,142}, {16,142},{20,139}, {17,139}, {16,139}};
+		std::vector<glm::ivec2> spikes3 = { {18,148}, {18,145}};
+		std::vector<glm::ivec2> spikes31 = { {19,148}, {19,145}};
+		std::vector<glm::ivec2> spikes4 = { {18,145}, {18,142}};
+		std::vector<glm::ivec2> spikes41 = { {19,145}, {19,142}};
+		std::vector<glm::ivec2> spikes5 = { {18,142}, {18,139}};
+		std::vector<glm::ivec2> spikes51 = { {19,142}, {19,139}};
+		std::vector<glm::ivec2> spikes6 = { {18,139}};
+		newButton(world, {{18,137}}, {}, spikes6, spawn_loc);
+		newButton(world, {{18,140}}, {}, spikes51 , spawn_loc);
+		newButton(world, {{18,143}}, {}, spikes4 , spawn_loc);
+		newButton(world, {{18,146}}, {}, spikes31 , spawn_loc);
+		newButton(world, {{18,149}}, {}, spikes2 , spawn_loc);
+		tempo::createSpikes(world, {{18,148}});
 	}
 
 	//Arena Room 2

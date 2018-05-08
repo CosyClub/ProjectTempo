@@ -4,7 +4,7 @@
 #define TELEPORT_LEFT 30
 #define TELEPORT_RIGHT 40
 
-#define TELEPORT_EXIT glm::ivec2(6,137)
+#define TELEPORT_EXIT glm::ivec2(20,136)
 
 namespace tempo
 {
@@ -35,7 +35,7 @@ void SystemPlayer::TeleportPlayers()
 		if (pos.y > TELEPORT_LEFT && pos.y < TELEPORT_RIGHT)
 		{
 			entity.getComponent<ComponentStagePosition>().setPosition(TELEPORT_EXIT);
-		
+
 			// Send update to everyone
 			auto &positions = entity.getComponent<tempo::ComponentStagePosition>().occupied;
 			sf::Packet p;
@@ -50,7 +50,7 @@ void SystemPlayer::TeleportPlayers()
 				p << entity.getComponent<tempo::ComponentStageRotation>().facing.x;
 				p << entity.getComponent<tempo::ComponentStageRotation>().facing.y;
 			}
-			
+
 			tempo::broadcastMessage(tempo::QueueID::MOVEMENT_UPDATES, p);
 		}
 
