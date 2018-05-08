@@ -1,4 +1,10 @@
 #include <tempo/system/SystemPlayer.hpp>
+#include<iostream>
+
+#define TELEPORT_LEFT 30
+#define TELEPORT_RIGHT 1100
+
+#define TELEPORT_EXIT glm::ivec2(1000,1000)
 
 namespace tempo
 {
@@ -19,6 +25,17 @@ anax::Entity SystemPlayer::nearest_player(glm::ivec2 pos)
 	}
 
 	return out;
+}
+
+void SystemPlayer::TeleportPlayers()
+{
+	for (auto entity : getEntities())
+	{
+		glm::vec2 pos = entity.getComponent<ComponentStagePosition>().getOrigin();
+		if (pos.y > TELEPORT_LEFT && pos.y < TELEPORT_RIGHT)
+		entity.getComponent<ComponentStagePosition>().setPosition(TELEPORT_EXIT);
+
+	}
 }
 
 }
