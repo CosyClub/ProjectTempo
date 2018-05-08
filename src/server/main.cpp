@@ -151,7 +151,7 @@ int main(int argc, const char **argv)
 	// Needed so that the player cannot see other feeder areas
 	int emptySpace = 40;
 	int fheight = 10 + emptySpace;
-	int feeder_areas = 1;
+	int feeder_areas = 5;
 
 	for (int i = 0; i < feeder_areas; i++) {
 		// Starter areas
