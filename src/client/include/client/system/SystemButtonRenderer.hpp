@@ -24,7 +24,7 @@ class SystemButtonRenderer
    public:
 	void setup(irr::scene::ISceneManager *smgr, irr::video::IVideoDriver *driver);
 
-	void updateButtons(irr::video::IVideoDriver *driver);
+	void updateButtons(const glm::ivec2 playerpos);
 
 private:
 	irr::video::ITexture *buttonBlocked;
