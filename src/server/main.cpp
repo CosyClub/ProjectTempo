@@ -338,6 +338,43 @@ int main(int argc, const char **argv)
 			             {{13+ (i * fheight), 46}, {13+ (i * fheight), 49}}},
 			            wall, {}, spawn_loc, rhythmID);
 		}
+
+    // Room 9
+    {
+      glm::ivec2 spawn_loc = glm::ivec2(17 + (i * fheight), 42);
+      std::vector<glm::ivec2> wall = {{17+ (i * fheight), 53}};
+      RythmButton(world,
+                  {{{20+ (i * fheight), 43}},
+                   {{21+ (i * fheight), 43}},
+                   {{22+ (i * fheight), 43}},
+                   {{23+ (i * fheight), 43}},
+                   {{24+ (i * fheight), 43}},
+                   {{25+ (i * fheight), 43}},
+                   {{26+ (i * fheight), 43}},
+                   {{26+ (i * fheight), 44}},
+                   {{26+ (i * fheight), 44}},
+                   {{25+ (i * fheight), 44}},
+                   {{24+ (i * fheight), 44}},
+                   {{23+ (i * fheight), 44}},
+                   {{22+ (i * fheight), 44}},
+                   {{21+ (i * fheight), 44}},
+                   {{20+ (i * fheight), 44}}},
+                  wall, {}, spawn_loc, rhythmID);
+
+
+      std::vector<glm::ivec2> wall = {{17+ (i * fheight), 54}};
+      RythmButton(world,
+			            {{{19+ (i * fheight), 47}, {19+ (i * fheight), 49}, {19+ (i * fheight), 50}},
+			             {{20+ (i * fheight), 47}, {20+ (i * fheight), 49}, {20+ (i * fheight), 50}},
+			             {{21+ (i * fheight), 47}, {21+ (i * fheight), 49}, {21+ (i * fheight), 50}},
+			             {{22+ (i * fheight), 47}, {22+ (i * fheight), 49}, {22+ (i * fheight), 50}},
+                   {{23+ (i * fheight), 47}, {23+ (i * fheight), 49}, {23+ (i * fheight), 50}},
+                   {{24+ (i * fheight), 47}, {24+ (i * fheight), 49}, {24+ (i * fheight), 50}},
+                   {{25+ (i * fheight), 47}, {25+ (i * fheight), 49}, {25+ (i * fheight), 50}},
+                   {{26+ (i * fheight), 47}, {26+ (i * fheight), 49}, {26+ (i * fheight), 50}},},
+			            wall, {}, spawn_loc, rhythmID);
+
+    }
 	}
 
 	//Arena Room 1
