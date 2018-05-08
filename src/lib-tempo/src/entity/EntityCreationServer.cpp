@@ -13,8 +13,8 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number)
 	// entity_player.addComponent<tempo::ComponentStagePosition>(system_grid_motion.spawn());
 	//
 	float arr[12] = {0, 0, 0,
-	                 4, 10, 4,
-	                 2, 10, 2,
+	                 9, 10, 8,
+	                 7, 10, 7,
 	                 0, 8, 0};
 	Mask  m(glm::ivec2(1, 0), arr, glm::ivec2(3, 4));
 
