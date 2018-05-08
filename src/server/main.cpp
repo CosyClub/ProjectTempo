@@ -170,14 +170,7 @@ int main(int argc, const char **argv)
 
 
 // 20 22 to 20 34
-      std::deque<glm::ivec2> path4;
-      for (int x = 22; x <= 34; x++) {
-        path4.push_back(glm::ivec2(20+ (i * fheight), x));
-      }
-      for (int x = 33; x >= 21; x--) {
-        path4.push_back(glm::ivec2(20+ (i * fheight), x));
-      }
-      tempo::createMobPatroller(world, path4[0], path4);
+      std::deque<glm::ivec2> path4 = {glm::ivec2(22+ (i * fheight), 20), glm::ivec2(34+ (i * fheight), 20)};
 
       tempo::createMobStill(world, glm::ivec2(12+ (i * fheight), 36));
       tempo::createMobStill(world, glm::ivec2(12+ (i * fheight), 40));
@@ -267,7 +260,7 @@ int main(int argc, const char **argv)
 			newButton(world, {{15+ (i * fheight), 34}, {15+ (i * fheight), 30}}, {}, {{15+ (i * fheight), 32}}, spawn_loc);
 			newButton(world, {{13+ (i * fheight), 34}, {13+ (i * fheight), 30}}, {}, {{13+ (i * fheight), 32}}, spawn_loc);
 			newButton(world, {{11+ (i * fheight), 34}, {11+ (i * fheight), 30}}, {}, {{11+ (i * fheight), 32}}, spawn_loc);
-			newButton(world, {{10+ (i * fheight), 34}, {10+ (i * fheight), 30}}, {}, {{10+ (i * fheight), 32}}, spawn_loc);
+			// newButton(world, {{10+ (i * fheight), 34}, {10+ (i * fheight), 30}}, {}, {{10+ (i * fheight), 32}}, spawn_loc);
 			newButton(world, {{9+ (i * fheight), 34}, {9+ (i * fheight), 30}}, {}, {{9+ (i * fheight), 32}}, spawn_loc);
 
 			newButton(world, {{7+ (i * fheight), 32}}, {{7+ (i * fheight), 31}, {7+ (i * fheight), 33}}, {}, spawn_loc1);
@@ -339,17 +332,17 @@ int main(int argc, const char **argv)
 			std::vector<glm::ivec2> wall = {{12+ (i * fheight), 44}, {12+ (i * fheight), 43}, {12+ (i * fheight), 42},
 			                                {13+ (i * fheight), 44}, {13+ (i * fheight), 43}, {13+ (i * fheight), 42}};
 			RythmButton(world,
-			            {{{12+1+ (i * fheight), 47}, {12+ (i * fheight), 49}},
-			             {{13+1+ (i * fheight), 47}, {13+ (i * fheight), 49}},
-			             {{13+1+ (i * fheight), 46}, {13+ (i * fheight), 50}},
-			             {{12+1+ (i * fheight), 46}, {12+ (i * fheight), 50}}},
+			            {{{13+ (i * fheight), 47}, {13+ (i * fheight), 50}},
+			             {{14+ (i * fheight), 47}, {14+ (i * fheight), 50}},
+			             {{14+ (i * fheight), 46}, {14+ (i * fheight), 49}},
+			             {{13+ (i * fheight), 46}, {13+ (i * fheight), 49}}},
 			            wall, {}, spawn_loc, rhythmID);
 		}
 	}
 
 	//Arena Room 1
 	{
-		glm::ivec2 spawn_loc = {18,145};
+		glm::ivec2 spawn_loc = {18,150};
 		std::vector<glm::ivec2> spikes2 = {{20,148}, {17,148}, {16,148},{20,145}, {17,145}, {16,145},{20,142}, {17,142}, {16,142},{20,139}, {17,139}, {16,139}};
 		std::vector<glm::ivec2> spikes3 = { {18,148}, {18,145}};
 		std::vector<glm::ivec2> spikes31 = { {19,148}, {19,145}};
