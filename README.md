@@ -23,11 +23,14 @@ To run the game you must start a server and at least one client. The steps
 outlined below give commands to be run from the terminal assuming the current
 working directory is the bin directory within the root of the repository.
 
-1. Run the server with no arguments: `bin/RaveCave_Server` 
-2. Run clients on other machines with the command:
-
+1. Run the server with no arguments: 
 ```
-./RaveCave [ServerIP] [PlayerParty] [HUD]
+./bin/RaveCave_Server
+```
+
+2. Run clients on other machines with the command:
+```
+./bin/RaveCave [ServerIP] [PlayerParty] [HUD]
 ```
 
 The ServerIP will be printed by the server executable on startup, PlayerParty 
