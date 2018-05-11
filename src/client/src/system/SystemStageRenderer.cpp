@@ -197,7 +197,6 @@ inline bool SystemStageRenderer::squarePattern(int orientation, int size, glm::i
 	int dx = abs(pos.x - centrePoint.x);
 	int dy = abs(pos.y - centrePoint.y);
 
-	//What the fuck
 	return ((((dx % 2 == 0 && dy == 0) || (dx > 0 && dx % 2 == 0 && dy < dx)) ||  // columns
 	         ((dy % 2 == 0 && dx == 0) || (dy > 0 && dy % 2 == 0 && dx < dy)) ||  // rows
 	         (dx == dy && dx % 2 == 0 && dy % 2 == 0))                            // corners
