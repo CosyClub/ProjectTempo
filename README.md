@@ -1,6 +1,6 @@
 # Rave Cave
 
-  Repository containing the source of Rave Cave client, server, and related tools.
+Repository containing the source of Rave Cave client, server, and related tools.
 
 [![Build Status](https://travis-ci.org/jnterry/nano-orm.svg?branch=master)](https://travis-ci.org/CosyClub/ProjectTempo.svg?branch=master)
 
@@ -9,37 +9,29 @@
 The build is managed by CMake, hence the project can be built from command line
 or in an IDE of your choice.
 
-1. Clone Repository
-2. Create a directory `build` in root of repository
-3. Navigate to build directory in terminal
-4. Run the command `cmake ..` from the build directory, this will take a while
-   as it builds Ogre and its dependencies
-5. Build the project:
-    - On Linux CMake will generate make files by default, so just run `make` in
-      the build directory
-    - On Windows CMake will generate Visual Studio Project Files by default,
-      open these and build as usual
-6. Produced binaries will be placed in the `bin` folder, run them from there
+1. Create a directory `build` in the project’s root directory
+2. Run `cmake ..` from in the build directory from the terminal
+3. Use the generated build files to compile the project. On Linux, make files
+   are generated, so run make in the build directory. On Windows Visual Studio 
+   project files are generated, so open and build the project
+4. The produced executables will be placed in the bin directory inside the 
+   project's root
 
-# Running on lab machine
-Instructions for building and running on Lab Machines:
+# Run Steps
 
-  1. Pull the repo and navigate to the root folder. Then run:
+To run the game you must start a server and at least one client. The steps 
+outlined below give commands to be run from the terminal assuming the current
+working directory is the bin directory within the root of the repository.
 
-```  
-mkdir build
-cd build
-cmake ..
-make [-j8]
-cd ../bin/
+1. Run the server with no arguments: `bin/RaveCave_Server` 
+2. Run clients on other machines with the command:
+
+```
+./RaveCave [ServerIP] [PlayerParty] [HUD]
 ```
 
-  2. Now you need your IP address, for that run `ifconfig` and look for the IPv4
-     address under `eno1`, it should be something like ~`137.222.xxx.xxx`~. Keep
-     note of this IP address, I'll refer to it as `[ip_address]`
-  3. Now run the server on one machine with `./RaveCave_Server`
-  4. Now run the client on any machine in the lab with `./RaveCave [ip_address]`
-  5. Et voila! You should be good to go!
+The ServerIP will be printed by the server executable on startup, PlayerParty 
+should be an integer between 0 and 4
 
 _Note: Running clients on the same machine as the server may incur performance
 losses._
