@@ -35,8 +35,10 @@ directory is the bin directory within the root of the repository.
 ./RaveCave [ServerIP] [PlayerParty] [HUD]
 ```
 
-The ServerIP will be printed by the server executable on startup, PlayerParty 
-should be an integer between 0 and 4.
+The `ServerIP` will be printed by the server executable on startup, 
+`PlayerParty` should be an integer between 0 and 4. The `HUD` argument is 
+optional, and should be added on a 1920x1080 screen to enable the splash screen
+and HUD.
 
 _Note: Running clients on the same machine as the server may incur performance
 losses._
