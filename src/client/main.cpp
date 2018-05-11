@@ -121,8 +121,7 @@ namespace client
 				if (collisionMap.find(dest) == collisionMap.end())
 					collisionMap[dest] = false;
 				can_move &= !collisionMap[dest];
-	 			
-	 			if (!stage.existstTile(dest) || stage.getHeight(dest) >= 5 || stage.getHeight(dest) <= -3 || !can_move) {
+	 			if (!stage.existstTile(dest) || abs(stage.getHeight(origin) - stage.getHeight(dest)) >= 5 || !can_move) {
 	 				// consume the moment before the server rejects you
 	 				// currently combos aren't server protected, so maybe this should move into lib-tempo?
 	 				// this produces a lovely jumping against the wall animation!
@@ -174,7 +173,7 @@ int main(int argc, const char** argv)
 {
 	unsigned int delta = DELTA;
 	unsigned int bpm = BPM;
-	
+
 	if (argc >= 5) {
 		delta = atoi(argv[4]);
 	}
@@ -384,8 +383,8 @@ int main(int argc, const char** argv)
 	glm::ivec2 startingPos = entity_player.getComponent<tempo::ComponentStagePosition>().getOrigin();
 
 	int emptySpace = 40;
-	int fheight = 69 + emptySpace;
-	int feeder_areas = 10;
+	int fheight = 40 + emptySpace;
+	int feeder_areas = 5;
 
 	for (int i=0; i < feeder_areas; i++) {
 		client::createLasers(smgr, driver, { {40 + (i*fheight),12}, {40 + (i*fheight),52}, {40 + (i*fheight),92} }, startingPos);
@@ -497,7 +496,7 @@ int main(int argc, const char** argv)
 			// For christ sake, leave this code alone
 			synced_tick = clock.get_time().asMicroseconds() / sf::Int64(TIME(bpm));
 			if (synced_tick % 20 == 0)
-				std::cout << "SYNCED_TICK (" << synced_tick << ") " 
+				std::cout << "SYNCED_TICK (" << synced_tick << ") "
 				          << clock.get_time().asMilliseconds()
 				          << "+++++++++++++++" << std::endl;
 			// End of leave this code alone

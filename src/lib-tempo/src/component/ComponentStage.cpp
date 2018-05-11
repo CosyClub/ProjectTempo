@@ -23,8 +23,8 @@ void ComponentStage::loadLevel(const char *stage_file)
 	int emptySpace = 40;
 
 	int fwidth = 150;
-	int fheight = 10 + emptySpace;
-	int feeder_areas = 10;
+	int fheight = 40 + emptySpace;
+	int feeder_areas = 5;
 
 	if (_global_stage_loaded == std::string(stage_file)) {
 		tiles = &_global_stage;
@@ -62,7 +62,7 @@ void ComponentStage::loadLevel(const char *stage_file)
 			uint8_t *pixel = &pixel_data[base + x * 4];
 
 			if (pixel[0] > 0) {
-				float height = (pixel[0] - 127) / 25.6;
+				int height = (pixel[0] - 127);
 					_global_stage.emplace(glm::ivec2(y, x),
 					                      (stage_tile(glm::ivec2(y, x), (float) height)));
 			}
@@ -73,7 +73,7 @@ void ComponentStage::loadLevel(const char *stage_file)
 				uint8_t *modPixel = &pixel_data[modBase + x * 4];
 
 				if (modPixel[0] > 0) {
-					float modHeight =  (modPixel[0] - 127) / 25.6;
+					int modHeight =  (modPixel[0] - 127);
 					_global_stage.emplace(glm::ivec2(y, x),
 					                      (stage_tile(glm::ivec2(y, x), (float) modHeight)));
 				}

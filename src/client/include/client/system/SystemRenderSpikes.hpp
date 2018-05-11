@@ -6,6 +6,7 @@
 
 #include <client/component/ComponentRenderSpikes.hpp>
 #include <tempo/component/ComponentSpikes.hpp>
+#include <tempo/component/ComponentStage.hpp>
 
 #include <ISceneManager.h>
 #include <IVideoDriver.h>

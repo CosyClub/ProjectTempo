@@ -42,30 +42,17 @@ extern std::mutex cmtx;
 // timeSyncServer
 // WARNING: Should be run on separate thread.
 // Server with "master time" for clients to sync to.
-//
-// Arguments:
-//         clock - pointer to server's "master time"
-// Returns:
-//         void (is a thread)
 void timeSyncServer(tempo::Clock *clock);
 
 // listenForNewClients
 // Checks for and orchestrates initialisation of new clients on
 // `port_sh`.
-//
-// TODO: Write parameters
-//
-// Returns:
-//         void (is a thread)
 void checkForClientCreation(anax::World *world);
 void checkForClientDeletion(anax::World &world);
 
 // listenForClientUpdates
 // WARNING: Should be run on separate thread.
 // Listens and processes any incoming client updates on `port_si`.
-//
-// Returns:
-//         void (is a thread)
 void listenForClientUpdates();
 
 // findClientID
@@ -81,10 +68,16 @@ void listenForClientUpdates();
 //         such client exists.
 uint32_t findClientID(sf::Uint32 ip, unsigned short port);
 
+// sendMessage
+// Sends a packet to the specified queue id. Rarely used on server.
 bool sendMessage(tempo::QueueID id, sf::Packet p);
 
+// broadcastMessage
+// Broadcasts a packet to all clients on the queue id specified.
 bool broadcastMessage(tempo::QueueID, sf::Packet p);
 
+// sendMessage
+// Sends a packet to a specific client to the specified queue id.
 bool sendMessage(tempo::QueueID id, sf::Packet payload, uint32_t client_id);
 }
 

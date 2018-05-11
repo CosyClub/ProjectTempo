@@ -37,6 +37,7 @@ anax::Entity newPlayer(anax::World &world, uint32_t party_number);
 anax::Entity createMobStill(anax::World &world, glm::ivec2 pos);
 anax::Entity createMobStillAOE(anax::World &world, glm::ivec2 pos);
 anax::Entity createMobCreeper(anax::World &world, glm::ivec2 pos);
+anax::Entity createMobChaser(anax::World &world, glm::ivec2 pos);
 anax::Entity createMobPatroller(anax::World &world, glm::ivec2 pos, std::deque<glm::ivec2> path);
 anax::Entity createMobAntiSnail(anax::World &world, glm::ivec2 pos);
 anax::Entity createSnake(anax::World& world, glm::ivec2 pos, tempo::Facing f, int len);

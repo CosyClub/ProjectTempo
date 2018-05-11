@@ -1,5 +1,6 @@
 #include <client/system/SystemRenderSpikes.hpp>
 
+
 #include <IAnimatedMesh.h>
 #include <IAnimatedMeshSceneNode.h>
 #include <irrlicht.h>  // :TODO: sort out includes
@@ -20,6 +21,7 @@ void SystemRenderSpikes::setup(irr::scene::ISceneManager *smgr, irr::video::IVid
 	for (auto &entity : entities) {
 		auto &spikes = entity.getComponent<tempo::ComponentSpikes>();
 		auto &rend  = entity.getComponent<client::ComponentRenderSpikes>();
+		auto &stage = entity.getComponent<tempo::ComponentStage>();
 
 		auto &positions = spikes.spike_positions;
 
@@ -29,7 +31,7 @@ void SystemRenderSpikes::setup(irr::scene::ISceneManager *smgr, irr::video::IVid
 			spikeNode.spikeNode = smgr->addMeshSceneNode(spike_mesh, 0);
 
 			spikeNode.spikeNode->setPosition(
-				irr::core::vector3df(positions[i].x, 0.0, positions[i].y));
+				irr::core::vector3df(positions[i].x,stage.getHeight({positions[i].x,positions[i].y}), positions[i].y));
 
 			irr::video::SMaterial &material_spikes =
 				spikeNode.spikeNode->getMaterial(0);

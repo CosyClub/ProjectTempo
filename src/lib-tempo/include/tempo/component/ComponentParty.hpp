@@ -10,7 +10,8 @@ namespace tempo
 {
 
 struct ComponentParty : anax::Component {
-	int party_number;
+	int party_number; // Which party is this entity in?
+	int entity_index; // Which entity is this within the party?
 
 	ComponentParty();
 
@@ -21,6 +22,10 @@ struct ComponentParty : anax::Component {
 	sf::Packet dumpComponent();
 
 	ComponentID getId();
+
+	// Frees the party slot this entity is occupying allowing it to be reused
+	// later by some other client joining
+	void freePartySlot();
 
 };
 }

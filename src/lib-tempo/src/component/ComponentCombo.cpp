@@ -10,8 +10,34 @@ ComponentCombo::ComponentCombo()
 
 void ComponentCombo::breakAction()
 {
-	if (comboCounter == 0) return;
-	comboCounter -= std::max(comboCounter / 4, 1);
+	if (comboCounter <= 0) {
+		comboCounter = 0;
+	}
+	else if (comboCounter <= 10) {
+		comboCounter -= 1;
+	}
+	else if (comboCounter <= 20) {
+		comboCounter -= 2;
+	}
+	else if (comboCounter <= 35) {
+		comboCounter -= 5;
+	}
+	else if (comboCounter <= 50) {
+		comboCounter -= 7;
+	}
+	else if (comboCounter <= 80) {
+		comboCounter -= 10;
+	}
+	else if (comboCounter <= 120) {
+		comboCounter -= 50;
+	}
+	else if (comboCounter <= 200) {
+		comboCounter -= 10;
+	}
+	else if (comboCounter <= 500) {
+		comboCounter -= 200;
+	}
+ 
 	comboCounter =  std::max(comboCounter, 0);
 }
 

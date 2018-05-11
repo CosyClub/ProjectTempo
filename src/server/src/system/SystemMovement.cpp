@@ -77,7 +77,7 @@ void SystemMovement::processTranslation()
 		for (auto &position : positions) {
 			can_move &= stage.existstTile(position + st.delta);
 			can_move &= -3 < stage.getHeight(position + st.delta);
-			can_move &= stage.getHeight(position + st.delta) < 5;
+			can_move &= abs(stage.getHeight(position) - stage.getHeight(position + st.delta)) < 5;
 			if (collisionMap.find(position + st.delta) == collisionMap.end())
 				collisionMap[position + st.delta] = false;
 			can_move &= !collisionMap[position + st.delta];
@@ -92,15 +92,16 @@ void SystemMovement::processTranslation()
 				position += st.delta;
 			}
 		} else {
-	 		if (entity.hasComponent<tempo::ComponentCombo>()) {
-				sf::Packet p;
-				anax::Entity::Id id = entity.getId();
-				if (!id.isNull()) {
-					tempo::operator<<(p, id);
-					p << static_cast<uint8_t>(tempo::MessageCombo::BROKEN_COMBO);
-					tempo::broadcastMessage(tempo::QueueID::COMBO_UPDATES, p);
-				}
-	 		}
+			// this is pretty harsh and without good visual indication of "combo break" i'm leaving this out
+	 		//if (entity.hasComponent<tempo::ComponentCombo>()) {
+				//sf::Packet p;
+				//anax::Entity::Id id = entity.getId();
+				//if (!id.isNull()) {
+				//	tempo::operator<<(p, id);
+				//	p << static_cast<uint8_t>(tempo::MessageCombo::BROKEN_COMBO);
+				//	tempo::broadcastMessage(tempo::QueueID::COMBO_UPDATES, p);
+				//}
+	 		//}
 		}
 
 		st.delta = {0, 0};
